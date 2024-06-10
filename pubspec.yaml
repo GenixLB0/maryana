@@ -1,0 +1,46 @@
+name: maryana
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment: 
+  sdk: '>=3.4.1 <4.0.0'
+
+dependencies: 
+  cupertino_icons: ^1.0.6
+  svg_flutter:
+  lottie:
+  flutter_screenutil:
+
+
+  page_transition:
+  animated_splash_screen:
+  google_fonts:
+  get: 4.6.6
+  flutter: 
+    sdk: flutter
+
+dev_dependencies: 
+  flutter_lints: 4.0.0
+  flutter_native_splash:
+  shimmer:
+  flutter_test: 
+    sdk: flutter
+
+flutter_native_splash:
+  color: "#f7f8fa"
+  image: assets/logo-D4X8uOTiU-transformed-removebg-preview.png
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+
+  fonts:
+    - family: Cormorant
+      fonts:
+        - asset: assets/Cormorant-VariableFont_wght.ttf
+
+
+
+
+
