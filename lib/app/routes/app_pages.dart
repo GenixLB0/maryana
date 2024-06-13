@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 
+import '../modules/auth/bindings/auth_binding.dart';
+import '../modules/auth/views/login_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/onboarding_screen/bindings/onboarding_screen_binding.dart';
 import '../modules/onboarding_screen/views/onboarding_screen1_view.dart';
+import '../modules/auth/views/register_view.dart';
 
 part 'app_routes.dart';
 
@@ -22,6 +25,16 @@ class AppPages {
       name: _Paths.ONBOARDING_SCREEN,
       page: () => const OnboardingScreen1View(),
       binding: OnboardingScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () => LoginView(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGISTER,
+      page: () => RegisterView(),
+      binding: AuthBinding(),
     ),
   ];
 }

@@ -5,10 +5,14 @@ abstract class Routes {
   Routes._();
   static const HOME = _Paths.HOME;
   static const ONBOARDING_SCREEN = _Paths.ONBOARDING_SCREEN;
+  static const LOGIN = _Paths.LOGIN;
+  static const REGISTER = _Paths.REGISTER;
 }
 
 abstract class _Paths {
   _Paths._();
   static const HOME = '/home';
   static const ONBOARDING_SCREEN = '/onboarding-screen';
+  static const LOGIN = '/login';
+  static const REGISTER = '/register';
 }
