@@ -45,11 +45,11 @@ To get started with Maryana Outfit, follow these steps:
 ## Project Structure
 The project structure is organized to ensure scalability and maintainability. Key directories include:
 
- ** models: Data models.
- **controllers: GetX controllers for state management.
- **views: UI components.
- **services: Backend interaction and services.
- **utils: Utility functions and constants.
+ * models: Data models.
+  * controllers: GetX controllers for state management.
+  * views: UI components.
+  * services: Backend interaction and services.
+  * utils: Utility functions and constants.
 
 ## Backend Services
 
@@ -61,7 +61,7 @@ Constants Management: Centralized location for constants to maintain consistency
 We are using GetX for state management, providing efficient and reactive state handling throughout the application.
 
 ## Contributions
-** Team Members
+* Team Members
 * Mahmoud Ramadan: User Authentication
 * Fathey: Onboarding Splash Screens + Reset Password
 * Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure that your code adheres to the established project structure and includes appropriate documentation.
