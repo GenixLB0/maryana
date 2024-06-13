@@ -60,12 +60,6 @@ Constants Management: Centralized location for constants to maintain consistency
 ## State Management
 We are using GetX for state management, providing efficient and reactive state handling throughout the application.
 
-## Contributions
-* Team Members
-* Mahmoud Ramadan: User Authentication
-* Fathey: Onboarding Splash Screens + Reset Password
-* Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure that your code adheres to the established project structure and includes appropriate documentation.
-
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
