@@ -39,3 +39,38 @@ To get started with Maryana Outfit, follow these steps:
    ```bash
    git clone https://github.com/GenixLB0/maryana.git
    cd maryana
+   flutter pub get
+   flutter run
+
+## Project Structure
+The project structure is organized to ensure scalability and maintainability. Key directories include:
+
+- ** models: Data models.
+- **controllers: GetX controllers for state management.
+- **views: UI components.
+- **services: Backend interaction and services.
+- **utils: Utility functions and constants.
+
+## Backend Services
+
+The backend is configured to handle various services, including:
+Error Handling: Robust error management to ensure smooth operation.
+Constants Management: Centralized location for constants to maintain consistency.
+
+State Management
+We are using GetX for state management, providing efficient and reactive state handling throughout the application.
+
+Contributions
+Team Members
+Mahmoud Ramadan: User Authentication
+Fathey: Onboarding Splash Screens + Reset Password
+Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure that your code adheres to the established project structure and includes appropriate documentation.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+For further information, feel free to contact us. Your feedback and suggestions are invaluable as we continue to develop and enhance Maryana Outfit.
+
+Mahmoud Ramadan
+
+
