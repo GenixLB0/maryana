@@ -1,25 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maryana/app/modules/services/api_service.dart';
+import 'package:nb_utils/nb_utils.dart';
+
+import '../../global/config/constant.dart';
+import '../../global/model/model_response.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
-
-  final count = 0.obs;
-  @override
-  void onInit() {
+  final ScrollController scrollController = ScrollController();
 
 
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

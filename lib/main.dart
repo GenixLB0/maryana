@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
                             builder: (_) => GetMaterialApp(
                                   title: APP_NAME,
                                   theme: AppTheme.lightTheme(color: snap.data),
-                                  initialRoute: Routes.SPLASH,
+                                  initialRoute: Routes.HOME,
                                   getPages: AppPages.routes,
                                 ));
                       });

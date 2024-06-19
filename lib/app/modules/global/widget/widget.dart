@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:shimmer/shimmer.dart';
 
 Widget gridSocialIcon() {
   return   Row(
@@ -497,5 +499,460 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       backgroundColor: const Color(0xffFDFDFD),
     );
+  }
+}
+
+Widget LoadingWidget(Widget child){
+  return Shimmer.fromColors(
+      child: child,
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
+    direction: ShimmerDirection.ttb,
+
+  );
+}
+
+class CustomNavBar extends StatefulWidget {
+  const CustomNavBar({super.key});
+
+  @override
+  State<CustomNavBar> createState() => _CustomNavBarState();
+
+}
+
+
+class _CustomNavBarState extends State<CustomNavBar> {
+
+
+  int index  = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+        height: 95.h,
+
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+            boxShadow: [
+              BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
+            ],
+            color: Colors.transparent
+        ),
+        child:ClipRRect(
+
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+          ),
+          child: BottomNavigationBar(
+
+            backgroundColor: Colors.white,
+            unselectedItemColor: Color(0xFFB9B9B9),
+            selectedItemColor: Color(0xFF53178C),
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            onTap: (i){
+              index = i;
+              setState(() {
+
+              });
+
+            },
+            currentIndex: index,
+
+            unselectedLabelStyle: primaryTextStyle(
+              color: index==0 ? Colors.purple : Color(0xFFB9B9B9),
+              size: 10.sp.round(),
+              weight: FontWeight.w700,
+              height: 0,
+
+            ),
+            selectedLabelStyle:
+            primaryTextStyle(
+              color: Color(0xFF53178C),
+              size: 10.sp.round(),
+              weight: FontWeight.w700,
+              height: 0,
+
+            ),
+
+            elevation: 5,
+            items: [
+              //Home
+              BottomNavigationBarItem(
+                  icon:  index == 0 ?
+
+
+                  Container(
+
+                      height: 70.h,
+                      width: 70.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffE8DEF8),
+                        borderRadius: BorderRadius.circular(30.sp),
+
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+
+                            "assets/icons/home_active.svg",
+
+                            height: 30.h,
+
+
+
+
+                          ),
+                          SizedBox(height: 3.h,),
+                          Text("Home" ,
+                              style:
+                              primaryTextStyle(
+                                weight: FontWeight.w700,
+                                size: 8.sp.round(),
+
+                              )
+                          )
+
+                        ],
+                      )
+                  )
+                      :
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+
+                        "assets/icons/home.svg",
+                        height: 30.h,
+
+
+
+
+                      ),
+                      SizedBox(height: 3.h,),
+                      Text("Home" ,
+                          style:
+                          primaryTextStyle(
+                              weight: FontWeight.w700,
+                              size: 8.sp.round(),
+                              color: Colors.grey
+
+                          )
+                      )
+
+                    ],
+                  )
+                  ,
+                  label:'Home'
+
+
+
+
+              ),
+              //Shop
+              BottomNavigationBarItem(
+                  icon: index ==1 ?
+
+                  Container(
+
+                      height: 70.h,
+                      width: 70.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffE8DEF8),
+                        borderRadius: BorderRadius.circular(30.sp),
+
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+
+                            "assets/icons/shop_active.svg"
+                            ,
+
+                            height: 30.h,
+
+
+
+
+                          ),
+                          SizedBox(height: 3.h,),
+                          Text("Shop" ,
+                              style:
+                              primaryTextStyle(
+                                weight: FontWeight.w700,
+                                size: 8.sp.round(),
+
+                              )
+                          )
+
+                        ],
+                      )
+                  )
+                      :
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+
+                        "assets/icons/shop.svg",
+                        height: 30.h,
+
+
+
+
+                      ),
+                      SizedBox(height: 3.h,),
+                      Text("Shop" ,
+                          style:
+                          primaryTextStyle(
+                              weight: FontWeight.w700,
+                              size: 8.sp.round(),
+                              color: Colors.grey
+
+                          )
+                      )
+
+                    ],
+                  )
+                  ,
+                  label:'Shop'
+
+
+
+
+              ),
+              //Bag
+              BottomNavigationBarItem(
+                  icon: index ==2 ?
+
+                  Container(
+
+                      height: 70.h,
+                      width: 70.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffE8DEF8),
+                        borderRadius: BorderRadius.circular(30.sp),
+
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+
+                            "assets/icons/bag_active.svg",
+                            height: 30.h,
+
+
+
+
+                          ),
+                          SizedBox(height: 3.h,),
+                          Text("Bag" ,
+                              style:
+                              primaryTextStyle(
+                                weight: FontWeight.w700,
+                                size: 8.sp.round(),
+
+                              )
+                          )
+
+                        ],
+                      )
+                  )
+                      :
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+
+                        "assets/icons/bag.svg",
+                        height: 30.h,
+
+
+
+
+                      ),
+                      SizedBox(height: 3.h,),
+                      Text("Bag" ,
+                          style:
+                          primaryTextStyle(
+                              weight: FontWeight.w700,
+                              size: 8.sp.round(),
+                              color: Colors.grey
+
+                          )
+                      )
+
+                    ],
+                  )
+                  ,
+                  label:'Bag'
+
+
+
+
+              ),
+              //Wishlist
+              BottomNavigationBarItem(
+                  icon: index ==3 ?
+
+                  Container(
+
+                      height: 70.h,
+                      width: 70.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffE8DEF8),
+                        borderRadius: BorderRadius.circular(30.sp),
+
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+
+                            "assets/icons/wishlist_active.svg",
+                            height: 30.h,
+
+
+
+
+                          ),
+                          SizedBox(height: 3.h,),
+                          Text("Wishlist" ,
+                              style:
+                              primaryTextStyle(
+                                  weight: FontWeight.w700,
+                                  size: 8.sp.round(),
+                                  color: Color(0xff5C2493)
+
+                              )
+                          )
+
+                        ],
+                      )
+                  )
+                      :
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+
+                        "assets/icons/wishlist.svg",
+                        height: 30.h,
+
+
+
+
+                      ),
+                      SizedBox(height: 3.h,),
+                      Text("Wishlist" ,
+                          style:
+                          primaryTextStyle(
+                              weight: FontWeight.w700,
+                              size: 8.sp.round(),
+                              color: Colors.grey
+
+                          )
+                      )
+
+                    ],
+                  )
+                  ,
+                  label:'Wishlist'
+
+
+
+
+              ),
+              //Profile
+              BottomNavigationBarItem(
+                  icon: index ==4 ?
+
+                  Container(
+
+                      height: 70.h,
+                      width: 70.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffE8DEF8),
+                        borderRadius: BorderRadius.circular(30.sp),
+
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+
+                            "assets/icons/profile_active.svg",
+                            height: 30.h,
+
+
+
+
+                          ),
+                          SizedBox(height: 3.h,),
+                          Text("Profile" ,
+                              style:
+                              primaryTextStyle(
+                                weight: FontWeight.w700,
+                                size: 8.sp.round(),
+
+                              )
+                          )
+
+                        ],
+                      )
+                  )
+                      :
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+
+                        "assets/icons/profile.svg",
+                        height: 30.h,
+
+
+
+
+                      ),
+                      SizedBox(height: 3.h,),
+                      Text("Profile" ,
+                          style:
+                          primaryTextStyle(
+                              weight: FontWeight.w700,
+                              size: 8.sp.round(),
+                              color: Colors.grey
+
+                          )
+                      )
+
+                    ],
+                  )
+                  ,
+                  label:'Profile'
+
+
+
+
+              ),
+            ],
+          ),
+        ),
+      );
+
   }
 }

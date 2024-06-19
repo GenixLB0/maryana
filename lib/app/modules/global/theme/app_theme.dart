@@ -179,6 +179,7 @@ class AppTheme {
         fontFamily: GoogleFonts.bebasNeue().fontFamily,
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
             backgroundColor: scaffoldSecondaryDark),
+
         iconTheme: IconThemeData(color: Colors.white),
         textTheme: GoogleFonts.workSansTextTheme(),
         dialogBackgroundColor: scaffoldSecondaryDark,
