@@ -546,7 +546,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
             topRight: Radius.circular(30.0),
           ),
           child: BottomNavigationBar(
-
+type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
             unselectedItemColor: Color(0xFFB9B9B9),
             selectedItemColor: Color(0xFF53178C),
