@@ -108,14 +108,8 @@ class AuthController extends GetxController {
         endpoint: 'register',
         method: 'POST',
         data: {
-          'first_name': firstName.value,
-          'last_name': lastName.value,
-          'email': email.value,
-          'password': password.value,
-          'password_confirmation': confirmPassword.value,
-          'imei': '1234',
-          'token': 'ffff',
-          'device_type': 'android',
+          'keywords': 'r',
+          'category_ids[0]': '1'
         },
       );
 

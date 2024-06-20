@@ -8,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:shimmer/shimmer.dart';
 
 Widget gridSocialIcon() {
   return   Row(
@@ -498,4 +499,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: const Color(0xffFDFDFD),
     );
   }
+}
+
+Widget LoadingWidget(Widget child){
+  return Shimmer.fromColors(
+      child: child,
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
+    direction: ShimmerDirection.ttb,
+
+  );
 }

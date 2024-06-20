@@ -55,7 +55,7 @@ class ApiService extends GetxService {
       baseUrl: BASE_URL,
       headers: {
         if (userToken != null) 'Authorization': 'Bearer $userToken',
-        'Content-Type': 'application/json',
+
       },
     ),
   );

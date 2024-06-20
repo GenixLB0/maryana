@@ -15,6 +15,9 @@ dependencies:
   page_transition:
   flutter_svg: 
   flutter_screenutil: ^5.9.3
+  cached_network_image:
+  shimmer:
+
   loading_animation_widget: ^1.2.1
   awesome_snackbar_content:
   flutter_spinkit:
@@ -39,5 +42,6 @@ flutter:
     - assets/images/splash/
     - assets/images/onboarding/
     - assets/images/forgot_password/
+    - assets/images/home/
 
 

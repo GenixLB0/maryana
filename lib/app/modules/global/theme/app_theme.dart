@@ -39,6 +39,7 @@ TextStyle boldTextStyle({
   Color? decorationColor,
   Color? backgroundColor,
   double? height,
+  List<Shadow>? textShadows,
 }) {
   return TextStyle(
     fontSize: size != null ? size.toDouble() : textBoldSizeGlobal,
@@ -54,6 +55,7 @@ TextStyle boldTextStyle({
     textBaseline: textBaseline,
     backgroundColor: backgroundColor,
     height: height,
+    shadows: textShadows
   );
 }
 
@@ -179,6 +181,7 @@ class AppTheme {
         fontFamily: GoogleFonts.bebasNeue().fontFamily,
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
             backgroundColor: scaffoldSecondaryDark),
+
         iconTheme: IconThemeData(color: Colors.white),
         textTheme: GoogleFonts.workSansTextTheme(),
         dialogBackgroundColor: scaffoldSecondaryDark,

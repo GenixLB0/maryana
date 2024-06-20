@@ -10,6 +10,7 @@ abstract class Routes {
   static const SPLASH = _Paths.SPLASH;
   static const ONBOARDING = _Paths.ONBOARDING;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const SEARCH = _Paths.SEARCH;
 }
 
 abstract class _Paths {
@@ -21,4 +22,5 @@ abstract class _Paths {
   static const SPLASH = '/splash';
   static const ONBOARDING = '/onboarding';
   static const FORGOT_PASSWORD = '/forgot-password';
+  static const SEARCH = '/search';
 }

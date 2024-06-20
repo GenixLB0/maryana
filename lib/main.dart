@@ -42,9 +42,10 @@ class MyApp extends StatelessWidget {
                       builder: (_, child) {
                         return Observer(
                             builder: (_) => GetMaterialApp(
+                              debugShowCheckedModeBanner: false,
                                   title: APP_NAME,
                                   theme: AppTheme.lightTheme(color: snap.data),
-                                  initialRoute: Routes.SPLASH,
+                                  initialRoute: Routes.HOME,
                                   getPages: AppPages.routes,
                                 ));
                       });
