@@ -9,7 +9,7 @@ import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../global/model/model_response.dart';
-import '../../main/views/home_view.dart';
+
 import '../controllers/search_controller.dart';
 
 class SearchView extends GetView<SearchController> {

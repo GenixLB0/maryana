@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
+import 'package:maryana/app/modules/home/views/home_view.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
-import 'package:maryana/app/modules/main/views/home_view.dart';
+
 import 'package:maryana/app/modules/profile/views/profile_view.dart';
 
 class MainView extends StatelessWidget {
@@ -10,7 +11,7 @@ class MainView extends StatelessWidget {
       Get.put(NavigationsBarController());
 
   final List<Widget> _screens = [
-    HomeView(),
+   HomeView(),
     SizedBox(),
     SizedBox(),
     ProfileView(),

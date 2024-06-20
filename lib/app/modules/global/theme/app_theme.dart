@@ -39,6 +39,7 @@ TextStyle boldTextStyle({
   Color? decorationColor,
   Color? backgroundColor,
   double? height,
+   List<BoxShadow>? textShadows,
 }) {
   return TextStyle(
     fontSize: size != null ? size.toDouble() : textBoldSizeGlobal,
@@ -54,6 +55,7 @@ TextStyle boldTextStyle({
     textBaseline: textBaseline,
     backgroundColor: backgroundColor,
     height: height,
+    shadows: textShadows
   );
 }
 
