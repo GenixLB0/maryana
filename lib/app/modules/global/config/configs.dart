@@ -10,3 +10,11 @@ const BASE_URL = '$DOMAIN_URL/api/';
 
 const DEFAULT_LANGUAGE = 'en';
 const LOGO = 'assets/images/logo.svg';
+const String cachedRandomQuote = 'CACHED_RANDOM_QUOTE';
+const String contentType = 'Content-Type';
+const String applicationJson = 'application/json';
+const String serverFailure = 'Server Failure';
+const String cacheFailure = 'Cache Failure';
+const String networkError = 'Network Error';
+const String unexpectedError = 'Unexpected Error';
+const String unAuthorizedFailure = 'unAuthorizedFailures';

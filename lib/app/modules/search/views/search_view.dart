@@ -9,16 +9,21 @@ import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../global/model/model_response.dart';
-import '../../home/views/home_view.dart';
+import '../../main/views/home_view.dart';
 import '../controllers/search_controller.dart';
 
-class SearchView extends GetView<CustomSearchController> {
+class SearchView extends GetView<SearchController> {
 
    SearchView({Key? key} ) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(child: Center(child: Text("Working")));
+    return Scaffold(
+resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Text("Working")
+      )
+    );
   }
 
 }

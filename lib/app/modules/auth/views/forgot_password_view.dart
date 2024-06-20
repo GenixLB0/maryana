@@ -8,7 +8,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maryana/app/modules/forgot_password/views/verification_code_view.dart';
+import 'package:maryana/app/modules/auth/views/verification_code_view.dart';
 import 'package:maryana/app/modules/global/config/helpers.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:nb_utils/nb_utils.dart' hide boldTextStyle;

@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
 
 Widget gridSocialIcon() {
-  return   Row(
+  return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       ShowUp(
@@ -204,7 +206,7 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final String? icon;
   final ValueChanged<String>? onSubmitted;
-final TextEditingController? customTextEditingController;
+  final TextEditingController? customTextEditingController;
   const CustomTextField({
     super.key,
     required this.labelText,
@@ -212,7 +214,8 @@ final TextEditingController? customTextEditingController;
     this.errorText,
     this.obscureText = false,
     this.icon,
-    this.onSubmitted, this.customTextEditingController,
+    this.onSubmitted,
+    this.customTextEditingController,
   });
 
   @override
@@ -462,31 +465,32 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: function != null && !Navigator.canPop(context)
           ? IconButton(
-        icon:  Container(
-          height: 40.h,
-          width: 40.w,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.4),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
+              icon: Container(
+                height: 40.h,
+                width: 40.w,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.4),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: SvgPicture.asset(
+                    "assets/images/forgot_password/Frame 361.svg"),
               ),
-            ],
-          ),
-          child: SvgPicture.asset("assets/images/forgot_password/Frame 361.svg"),
-        ),
-        onPressed: () {
-          if (function != null) {
-            function!();
-          } else {
-            Get.back();
-          }
-        },
-      )
+              onPressed: () {
+                if (function != null) {
+                  function!();
+                } else {
+                  Get.back();
+                }
+              },
+            )
           : SizedBox(),
       title: Center(
         child: Text(
@@ -501,12 +505,125 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-Widget LoadingWidget(Widget child){
+Widget LoadingWidget(Widget child) {
   return Shimmer.fromColors(
-      child: child,
+    child: child,
     baseColor: Colors.grey.shade300,
     highlightColor: Colors.grey.shade100,
     direction: ShimmerDirection.ttb,
-
   );
+}
+
+class CustomNavBar extends StatelessWidget {
+  final NavigationsBarController _tabController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 95.h,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(30),
+          topLeft: Radius.circular(30),
+        ),
+        boxShadow: const [
+          BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
+        ],
+        color: Colors.transparent,
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+        ),
+        child: Obx(
+          () => BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            unselectedItemColor: const Color(0xFFB9B9B9),
+            selectedItemColor: const Color(0xFF53178C),
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            onTap: (index) {
+              _tabController.changeIndex(index);
+            },
+            currentIndex: _tabController.selectedIndex.value,
+            items: [
+              // Home
+              _buildBottomNavigationBarItem(0, "Home", "home"),
+              // Shop
+              _buildBottomNavigationBarItem(1, "Shop", "shop"),
+              // Bag
+              _buildBottomNavigationBarItem(2, "Bag", "bag"),
+              // Wishlist
+              _buildBottomNavigationBarItem(3, "Wishlist", "wishlist"),
+              // Profile
+              _buildBottomNavigationBarItem(4, "Profile", "profile"),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  BottomNavigationBarItem _buildBottomNavigationBarItem(
+      int tabIndex, String label, String iconName) {
+    final isSelected = _tabController.selectedIndex.value == tabIndex;
+    return BottomNavigationBarItem(
+      icon: isSelected
+          ? _buildSelectedIcon(iconName, label)
+          : _buildUnselectedIcon(iconName, label),
+      label: label,
+    );
+  }
+
+  Widget _buildSelectedIcon(String iconName, String label) {
+    return Container(
+        height: 60.h,
+        width: 60.w,
+        decoration: BoxDecoration(
+          color: const Color(0xffE8DEF8),
+          borderRadius: BorderRadius.circular(30.sp),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              "assets/icons/${iconName}_active.svg",
+              height: 30.h,
+            ),
+            SizedBox(height: 3.h),
+            Text(
+              label,
+              style: primaryTextStyle(
+                weight: FontWeight.w700,
+                size: 8.sp.round(),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildUnselectedIcon(String iconName, String label) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          "assets/icons/$iconName.svg",
+          height: 30.h,
+        ),
+        SizedBox(height: 3.h),
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 8.sp,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
 }

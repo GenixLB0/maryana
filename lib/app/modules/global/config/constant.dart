@@ -10,11 +10,11 @@ class AppConstants {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('user_data');
     if (userDataString != null) {
-      final userDataJson = jsonDecode(userDataString);
+      final userDataJson = jsonDecode(userDataString); // Use jsonDecode
       AppConstants.userData = UserData.fromJson(userDataJson);
       userToken = AppConstants.userData!.token;
 
-      print('User loaded from cache: ${userDataJson}');
+      print('User loaded from cache: $userDataJson');
     }
   }
 }

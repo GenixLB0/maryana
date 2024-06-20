@@ -135,9 +135,7 @@ class OnboardingView extends GetView<OnboardingController> {
 
               InkWell(
                   onTap: (){
-
                     controller.nextFunction();
-
                   },
                   child: SvgPicture.asset("assets/images/onboarding/BUTTON (1).svg"))
 

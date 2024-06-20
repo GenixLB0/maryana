@@ -10,7 +10,7 @@ import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../../routes/app_pages.dart';
-import '../../forgot_password/views/forgot_password_view.dart';
+import 'forgot_password_view.dart';
 import '../controllers/auth_controller.dart';
 
 class LoginView extends StatelessWidget {
@@ -59,7 +59,6 @@ class LoginView extends StatelessWidget {
             child: InkWell(
                 onTap: () {
                   Get.toNamed(Routes.FORGOT_PASSWORD);
-
                 },
                 child: Align(
                   alignment: AlignmentDirectional.topEnd,

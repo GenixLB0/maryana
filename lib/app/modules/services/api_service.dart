@@ -55,50 +55,50 @@ class ApiService extends GetxService {
       baseUrl: BASE_URL,
       headers: {
         if (userToken != null) 'Authorization': 'Bearer $userToken',
-
+        'Content-Type': 'application/json',
       },
     ),
   );
 
-  Future<dio.Response> request({
-    required String endpoint,
-    required String method,
-    Map<String, dynamic>? data,
-  }) async {
-    try {
-      if (method == 'GET') {
-        return await _dio.get(endpoint);
-      } else if (method == 'POST') {
-        logWithColor(endpoint, color: 'yallow');
+  // Future<dio.Response> request({
+  //   required String endpoint,
+  //   required String method,
+  //   Map<String, dynamic>? data,
+  // }) async {
+  //   try {
+  //     if (method == 'GET') {
+  //       return await _dio.get(endpoint);
+  //     } else if (method == 'POST') {
+  //       logWithColor(endpoint, color: 'yallow');
 
-        logWithColor(' POST Request : $data', color: 'yallow');
-        return await _dio.post(endpoint, data: data);
-      } else {
-        throw UnsupportedError('Method not supported');
-      }
-    } on dio.DioException catch (e) {
-      if (e.response != null) {
-        logWithColor('${e.response!.statusCode} Response: ${e.response}',
-            color: e.response!.statusCode == 200 ? 'green' : 'red');
-        handleApiError(e.response!.statusCode);
-        return e.response!;
-      } else {
-        logWithColor('Response: ${e.response}', color: 'red');
-        handleApiError(500);
-        return dio.Response(
-          requestOptions: e.requestOptions,
-          statusCode: 500,
-          statusMessage: 'Unexpected error occurred',
-        );
-      }
-    } catch (e) {
-      return dio.Response(
-        requestOptions: dio.RequestOptions(path: endpoint),
-        statusCode: 500,
-        statusMessage: 'Unexpected error occurred',
-      );
-    }
-  }
+  //       logWithColor(' POST Request : $data', color: 'yallow');
+  //       return await _dio.post(endpoint, data: data);
+  //     } else {
+  //       throw UnsupportedError('Method not supported');
+  //     }
+  //   } on dio.DioException catch (e) {
+  //     if (e.response != null) {
+  //       logWithColor('${e.response!.statusCode} Response: ${e.response}',
+  //           color: e.response!.statusCode == 200 ? 'green' : 'red');
+  //       handleApiError(e.response!.statusCode);
+  //       return e.response!;
+  //     } else {
+  //       logWithColor('Response: ${e.response}', color: 'red');
+  //       handleApiError(500);
+  //       return dio.Response(
+  //         requestOptions: e.requestOptions,
+  //         statusCode: 500,
+  //         statusMessage: 'Unexpected error occurred',
+  //       );
+  //     }
+  //   } catch (e) {
+  //     return dio.Response(
+  //       requestOptions: dio.RequestOptions(path: endpoint),
+  //       statusCode: 500,
+  //       statusMessage: 'Unexpected error occurred',
+  //     );
+  //   }
+  // }
 
   void logWithColor(String message, {String color = 'reset'}) {
     final colors = {

@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
-import 'package:maryana/app/modules/global/controller/controller.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
+import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
+import 'package:maryana/main.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:dio/dio.dart' as dio;
+import 'dart:convert';
 
 class AuthController extends GetxController {
   var email = ''.obs;
@@ -103,27 +106,32 @@ class AuthController extends GetxController {
     if (isValid) {
       isLoading.value = true;
       globalController.errorMessage.value = '';
-
-      final response = await apiService.request(
-        endpoint: 'register',
-        method: 'POST',
-        data: {
-          'keywords': 'r',
-          'category_ids[0]': '1'
-        },
-      );
-
-
+      var formData = dio.FormData.fromMap({
+        'first_name': firstName.value,
+        'last_name': lastName.value,
+        'email': email.value,
+        'password': password.value,
+        'password_confirmation': confirmPassword.value,
+        'imei': '1234',
+        'token': 'ffff',
+        'device_type': 'android',
+      });
       try {
-        final apiResponse = ApiResponse.fromJson(response.data);
+        final response = await apiConsumer.post(
+          'register',
+          formDataIsEnabled: true,
+          formData: formData,
+        );
+
+        final apiResponse = ApiResponse.fromJson(response);
         if (apiResponse.status == 'success') {
           print('Registration successful');
           // Handle successful registration
-          await _cacheUser(apiResponse.data!);
+          await cacheUserData(apiResponse.data!);
           AppConstants.userData = apiResponse.data!;
           user.value = apiResponse.data!.user;
           userToken = AppConstants.userData!.token;
-          Get.to(() => LoginView());
+          Get.off(() => MainView());
         } else {
           handleApiErrorUser(apiResponse.message);
           handleApiError(response.statusCode);
@@ -134,6 +142,9 @@ class AuthController extends GetxController {
         isLoading.value = false;
         print('Registration failed:  ${e} $stackTrace');
 
+        final apiResponse = ApiResponse.fromJson(jsonDecode(e.toString()));
+
+        handleApiErrorUser(apiResponse.message);
         print(e.toString() + stackTrace.toString());
       }
     }
@@ -143,43 +154,48 @@ class AuthController extends GetxController {
     if (validateEmail() && validatePassword()) {
       isLoading.value = true;
       globalController.errorMessage.value = '';
+      var formData = dio.FormData.fromMap({
+        'email': email.value,
+        'password': password.value,
+      });
       try {
-        final response = await apiService.request(
-          endpoint: 'login',
-          method: 'POST',
-          data: {
-            'email': email.value,
-            'password': password.value,
-          },
+        final response = await apiConsumer.post(
+          'login',
+          formDataIsEnabled: true,
+          formData: formData,
         );
-        isLoading.value = false;
 
-        final apiResponse = ApiResponse.fromJson(response.data);
+        isLoading.value = false;
+        final apiResponse = ApiResponse.fromJson(response);
         if (apiResponse.status == 'success') {
           print('Login successful');
           // Handle successful login
-          await _cacheUser(apiResponse.data!);
+          await cacheUserData(apiResponse.data!);
           AppConstants.userData = apiResponse.data!;
           user.value = apiResponse.data!.user;
           userToken = AppConstants.userData!.token;
+          Get.off(() => MainView());
         } else {
           handleApiErrorUser(apiResponse.message);
           handleApiError(response.statusCode);
-          print('Login failed: ${response.statusMessage}');
         }
         // Handle successful login
       } catch (e, stackTrace) {
         isLoading.value = false;
         print('Login failed: ${e}');
-
         print(e.toString() + stackTrace.toString());
+
+        final apiResponse = ApiResponse.fromJson(jsonDecode(e.toString()));
+
+        handleApiErrorUser(apiResponse.message);
       }
     }
   }
 
-  Future<void> _cacheUser(UserData data) async {
+  Future<void> cacheUserData(UserData data) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_data', data.toJson().toString());
-    print('User data cached: ${data.toJson()}');
+    final userDataString = jsonEncode(data.toJson()); // Use jsonEncode
+    await prefs.setString('user_data', userDataString);
+    print('User data cached: $userDataString');
   }
 }

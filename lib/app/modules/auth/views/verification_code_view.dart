@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maryana/app/modules/forgot_password/controllers/forgot_password_controller.dart';
+import 'package:maryana/app/modules/auth/controllers/forgot_password_controller.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../global/theme/app_theme.dart';

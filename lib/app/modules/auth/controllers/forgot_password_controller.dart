@@ -8,7 +8,7 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
 import 'package:http/http.dart' as http;
-import 'package:maryana/app/modules/forgot_password/views/create_new_password_view.dart';
+import 'package:maryana/app/modules/auth/views/create_new_password_view.dart';
 
 class ForgotPasswordController extends GetxController {
 
