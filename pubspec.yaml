@@ -7,6 +7,7 @@ environment:
 
 dependencies: 
   cupertino_icons: ^1.0.6
+  lottie:
   get: 4.6.6
   dio: ^4.0.6
   nb_utils: 6.1.0

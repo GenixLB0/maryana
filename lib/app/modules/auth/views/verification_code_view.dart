@@ -10,6 +10,7 @@ import 'package:maryana/app/modules/auth/controllers/forgot_password_controller.
 import 'package:pinput/pinput.dart';
 
 import '../../global/theme/app_theme.dart';
+import '../../global/widget/widget.dart';
 
 
 class VerificationCodeView extends GetView<ForgotPasswordController> {
@@ -197,7 +198,7 @@ Align(
                      width: 50.w,
                        height: 50.h,
 
-                       child: SpinKitThreeInOut(size: 12.sp, color: Color(0x7F121420),))
+                       child: loadingIndicatorWidget(),)
                  ),
 
                )

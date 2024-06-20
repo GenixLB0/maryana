@@ -164,7 +164,7 @@ backgroundColor: Colors.white,
             Obx(()=>
             controller.isLoading.value ?
 
-            SpinKitWaveSpinner(color: Theme.of(context).primaryColor, size: 100.h,)
+            loadingIndicatorWidget()
                 :
             SizedBox()
             )

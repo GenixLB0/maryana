@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:lottie/lottie.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -521,12 +522,12 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 95.h,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           topLeft: Radius.circular(30),
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
         ],
         color: Colors.transparent,
@@ -627,3 +628,18 @@ class CustomNavBar extends StatelessWidget {
     );
   }
 }
+
+Widget loadingIndicatorWidget(){
+  return Center(
+      child: LoadingAnimationWidget.flickr(
+        leftDotColor: primaryColor,
+        rightDotColor: const Color(0xFFFF0084),
+        size: 50,
+      ));
+}
+
+
+Widget placeHolderWidget(){
+  return Lottie.asset("assets/images/placeholder.json");
+}
+
