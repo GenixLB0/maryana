@@ -1,19 +1,24 @@
 import 'package:get/get.dart';
-import 'package:maryana/app/modules/main/bindings/main_binding.dart';
-import 'package:maryana/app/modules/main/views/main_view.dart';
 
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/bindings/forgot_password_binding.dart';
 import '../modules/auth/views/forgot_password_view.dart';
 import '../modules/auth/views/login_view.dart';
 import '../modules/auth/views/register_view.dart';
-import '../modules/main/views/home_view.dart';
+import '../modules/home/bindings/home_binding.dart';
+import '../modules/home/views/home_view.dart';
+import '../modules/main/bindings/main_binding.dart';
+import '../modules/main/views/main_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/product/bindings/product_binding.dart';
+import '../modules/product/views/product_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
+import '../modules/shop/bindings/shop_binding.dart';
+import '../modules/shop/views/shop_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -64,6 +69,21 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.HOME,
+      page: () => const HomeView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.SHOP,
+      page: () => const ShopView(),
+      binding: ShopBinding(),
+    ),
+    GetPage(
+      name: _Paths.PRODUCT,
+      page: () =>  ProductView(),
+      binding: ProductBinding(),
     ),
   ];
 }

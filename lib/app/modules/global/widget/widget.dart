@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:lottie/lottie.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -132,12 +133,14 @@ class MyDefaultButton extends StatefulWidget {
     this.width,
     this.Icon,
   }) : super(key: key);
+
   @override
   MyDefaultButtonState createState() => MyDefaultButtonState();
 }
 
 class MyDefaultButtonState extends State<MyDefaultButton> {
   bool isloading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -207,6 +210,7 @@ class CustomTextField extends StatefulWidget {
   final String? icon;
   final ValueChanged<String>? onSubmitted;
   final TextEditingController? customTextEditingController;
+
   const CustomTextField({
     super.key,
     required this.labelText,
@@ -451,6 +455,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final List<Widget>? actions;
   final Function()? function;
+
   const CustomAppBar({
     this.title,
     this.actions,
@@ -481,7 +486,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
                 child: SvgPicture.asset(
-                    "assets/images/forgot_password/Frame 361.svg"),
+                    "assets/images/forgot_password/BackBTN.svg"),
               ),
               onPressed: () {
                 if (function != null) {
@@ -521,12 +526,12 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 95.h,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           topLeft: Radius.circular(30),
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
         ],
         color: Colors.transparent,
@@ -626,4 +631,17 @@ class CustomNavBar extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget loadingIndicatorWidget() {
+  return Center(
+      child: LoadingAnimationWidget.flickr(
+    leftDotColor: primaryColor,
+    rightDotColor: const Color(0xFFFF0084),
+    size: 50,
+  ));
+}
+
+Widget placeHolderWidget() {
+  return Lottie.asset("assets/images/placeholder.json");
 }

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
+import 'package:maryana/app/modules/main/bindings/main_binding.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:maryana/app/modules/services/api_consumer.dart';
@@ -73,7 +74,7 @@ void main() async {
 
   // GoogleFonts.cormorant
   Get.put(ApiService());
-  ;
+
   runApp(MyApp());
 }
 

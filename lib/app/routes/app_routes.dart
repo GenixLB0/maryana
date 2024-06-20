@@ -3,7 +3,7 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   Routes._();
-   static const MAIN = _Paths.MAIN;
+  static const MAIN = _Paths.MAIN;
 
   static const LOGIN = _Paths.LOGIN;
   static const REGISTER = _Paths.REGISTER;
@@ -12,6 +12,9 @@ abstract class Routes {
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const SEARCH = _Paths.SEARCH;
   static const PROFILE = _Paths.PROFILE;
+  static const HOME = _Paths.HOME;
+  static const SHOP = _Paths.SHOP;
+  static const PRODUCT = _Paths.PRODUCT;
 }
 
 abstract class _Paths {
@@ -25,4 +28,7 @@ abstract class _Paths {
   static const FORGOT_PASSWORD = '/forgot-password';
   static const SEARCH = '/search';
   static const PROFILE = '/profile';
+  static const HOME = '/home';
+  static const SHOP = '/shop';
+  static const PRODUCT = '/product';
 }
