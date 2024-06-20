@@ -8,7 +8,7 @@ environment:
 dependencies: 
   cupertino_icons: ^1.0.6
   get: 4.6.6
-  dio: ^5.4.3+1
+  dio: ^4.0.6
   nb_utils: 6.1.0
   flutter_animate:
   delayed_widget:
@@ -17,8 +17,9 @@ dependencies:
   flutter_screenutil: ^5.9.3
   cached_network_image:
   shimmer:
-
+  logger: ^1.1.0
   loading_animation_widget: ^1.2.1
+  get_it:
   awesome_snackbar_content:
   flutter_spinkit:
   pinput:
