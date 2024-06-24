@@ -44,18 +44,6 @@ Future<void> init() async {
   }
 }
 
-void _checkUserToken() async {
-  if (userToken != null && userToken!.isNotEmpty) {
-    // Navigate to the main screen
-    print('test $userToken');
-    Get.off(() => MainView());
-  } else {
-    print('test2 $userToken');
-
-    navigateToOnboarding();
-  }
-}
-
 void navigateToOnboarding() {
   Get.off(() => OnboardingView());
 }
@@ -65,7 +53,7 @@ void main() async {
   await init();
 
   await AppConstants.loadUserFromCache();
-  Future.delayed(const Duration(milliseconds: 200))
+  Future.delayed(const Duration(milliseconds: 500))
       .then((_) => _checkUserToken());
   fontFamilyBoldGlobal = GoogleFonts.bebasNeue().fontFamily;
   fontFamilyPrimaryGlobal = GoogleFonts.lato().fontFamily;
@@ -76,6 +64,18 @@ void main() async {
   Get.put(ApiService());
 
   runApp(MyApp());
+}
+
+void _checkUserToken() {
+  if (userToken != null && userToken!.isNotEmpty) {
+    // Navigate to the main screen
+    print('get uset token $userToken');
+    Get.off(() => MainView());
+  } else {
+    print('faild to get token $userToken');
+
+    navigateToOnboarding();
+  }
 }
 
 class MyApp extends StatelessWidget {

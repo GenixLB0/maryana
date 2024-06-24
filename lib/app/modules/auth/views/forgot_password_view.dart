@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -124,18 +123,20 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                       if (value.toString() == "OK") {
                         Get.to(() => const VerificationCodeView());
                       } else {
-                        AppHelpers.showCustomSnackBar(
-                            context,
-                            'Email Not Found!',
-                            'Please Check your Email and try again!');
+                        Get.snackbar('Error', 'Email Not Found!');
+                        // AppHelpers.showCustomSnackBar(
+                        //     context,
+                        //     'Email Not Found!',
+                        //     'Please Check your Email and try again!');
                       }
                     });
                   } else {
-                    AppHelpers.showCustomSnackBar(
-                      context,
-                      'Invalid Email',
-                      'Please Check your Email Expression!',
-                    );
+                    Get.snackbar('Error', 'Invalid Email!');
+                    // AppHelpers.showCustomSnackBar(
+                    //   context,
+                    //   'Invalid Email',
+                    //   'Please Check your Email Expression!',
+                    // );
                   }
                 },
               ),

@@ -14,6 +14,7 @@ import 'package:nb_utils/nb_utils.dart'
     hide boldTextStyle;
 
 import '../../../routes/app_pages.dart';
+import '../../global/config/configs.dart';
 import '../../global/theme/app_theme.dart';
 import '../../search/views/result_view.dart';
 import '../controllers/shop_controller.dart';
@@ -31,12 +32,15 @@ class ShopView extends GetView<ShopController> {
           SizedBox(
             height: 15.h,
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Discover",
-              style: primaryTextStyle(
-                  size: 22.sp.round(), weight: FontWeight.w600),
+          ShowUp(
+            delay: 200,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Discover",
+                style: primaryTextStyle(
+                    size: 22.sp.round(), weight: FontWeight.w600),
+              ),
             ),
           ),
           SizedBox(
@@ -83,72 +87,77 @@ class ShopView extends GetView<ShopController> {
                               (BuildContext context, int index) {
                                 return controller.categories.isEmpty
                                     ? Text("No Categories Yet ...")
-                                    : Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 2.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(4.sp),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                                color: Colors.black12,
-                                                spreadRadius: 0,
-                                                blurRadius: 15),
-                                          ],
-                                        ),
-                                        child: controller
-                                                    .categories[index].image !=
-                                                null
-                                            ? Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  controller.categories[index]
-                                                          .image!.isEmpty
-                                                      ? placeHolderWidget()
-                                                      : Stack(
-                                                          alignment: Alignment
-                                                              .topRight,
-                                                          children: [
-                                                            CachedNetworkImage(
-                                                              imageUrl: controller
-                                                                  .categories[
-                                                                      index]
-                                                                  .image!,
-                                                              width: 135.w,
-                                                              height: 120.h,
-                                                              fit: BoxFit.cover,
-                                                              placeholder:
-                                                                  (ctx, v) {
-                                                                return placeHolderWidget();
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
-                                                  SizedBox(
-                                                    height: 3.h,
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 5.w),
-                                                    child: Text(
-                                                      controller
-                                                          .categories[index]
-                                                          .name!,
-                                                      style: primaryTextStyle(
-                                                          weight:
-                                                              FontWeight.w700,
-                                                          size: 16.sp.round(),
-                                                          color: Colors.black),
+                                    : ShowUp(
+                                        delay: 300,
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 2.w),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(4.sp),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 0,
+                                                  blurRadius: 15),
+                                            ],
+                                          ),
+                                          child: controller.categories[index]
+                                                      .image !=
+                                                  null
+                                              ? Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    controller.categories[index]
+                                                            .image!.isEmpty
+                                                        ? placeHolderWidget()
+                                                        : Stack(
+                                                            alignment: Alignment
+                                                                .topRight,
+                                                            children: [
+                                                              CachedNetworkImage(
+                                                                imageUrl: controller
+                                                                    .categories[
+                                                                        index]
+                                                                    .image!,
+                                                                width: 135.w,
+                                                                height: 120.h,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                placeholder:
+                                                                    (ctx, v) {
+                                                                  return placeHolderWidget();
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
+                                                    SizedBox(
+                                                      height: 3.h,
                                                     ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1.h,
-                                                  ),
-                                                ],
-                                              )
-                                            : placeHolderWidget(),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 5.w),
+                                                      child: Text(
+                                                        controller
+                                                            .categories[index]
+                                                            .name!,
+                                                        style: primaryTextStyle(
+                                                            weight:
+                                                                FontWeight.w700,
+                                                            size: 16.sp.round(),
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 1.h,
+                                                    ),
+                                                  ],
+                                                )
+                                              : placeHolderWidget(),
+                                        ),
                                       );
                               },
                               childCount: controller.categories.length,
@@ -187,136 +196,152 @@ class ShopView extends GetView<ShopController> {
                               (BuildContext context, int index) {
                                 return controller.products.isEmpty
                                     ? Text("No Products Yet ...")
-                                    : GestureDetector(
-                                        onTap: () {
-                                          if (ProductController().initialized) {
-                                            Get.find<ProductController>();
-                                            Get.toNamed(Routes.PRODUCT,
-                                                arguments:
-                                                    controller.products[index]);
-                                          } else {
-                                            Get.put<ProductController>(
-                                                ProductController());
-                                            Get.toNamed(Routes.PRODUCT,
-                                                arguments:
-                                                    controller.products[index]);
-                                          }
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(4.sp),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                  color: Colors.black12,
-                                                  spreadRadius: 0,
-                                                  blurRadius: 15),
-                                            ],
-                                          ),
-                                          child: controller
-                                                      .products[index].image !=
-                                                  null
-                                              ? Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    controller.products[index]
-                                                            .image!.isEmpty
-                                                        ? placeHolderWidget()
-                                                        : Stack(
-                                                            alignment: Alignment
-                                                                .topRight,
-                                                            children: [
-                                                              CachedNetworkImage(
-                                                                imageUrl: controller
-                                                                    .products[
-                                                                        index]
-                                                                    .image!,
-                                                                width: 175.w,
-                                                                height: 210.h,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                placeholder:
-                                                                    (ctx, v) {
-                                                                  return placeHolderWidget();
-                                                                },
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        8.0),
-                                                                child:
-                                                                    SvgPicture
-                                                                        .asset(
-                                                                  "assets/images/home/add_to_wishlist.svg",
-                                                                  width: 33.w,
-                                                                  height: 33.h,
+                                    : ShowUp(
+                                        delay: 300,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            if (ProductController()
+                                                .initialized) {
+                                              Get.find<ProductController>();
+                                              Get.toNamed(Routes.PRODUCT,
+                                                  arguments: controller
+                                                      .products[index]);
+                                            } else {
+                                              Get.put<ProductController>(
+                                                  ProductController());
+                                              Get.toNamed(Routes.PRODUCT,
+                                                  arguments: controller
+                                                      .products[index]);
+                                            }
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(4.sp),
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                    color: Colors.black12,
+                                                    spreadRadius: 0,
+                                                    blurRadius: 15),
+                                              ],
+                                            ),
+                                            child: controller.products[index]
+                                                        .image !=
+                                                    null
+                                                ? Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      controller.products[index]
+                                                              .image!.isEmpty
+                                                          ? placeHolderWidget()
+                                                          : Stack(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topRight,
+                                                              children: [
+                                                                CachedNetworkImage(
+                                                                  imageUrl: controller
+                                                                      .products[
+                                                                          index]
+                                                                      .image!,
+                                                                  width: 175.w,
+                                                                  height: 210.h,
                                                                   fit: BoxFit
                                                                       .cover,
+                                                                  placeholder:
+                                                                      (ctx, v) {
+                                                                    return placeHolderWidget();
+                                                                  },
                                                                 ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                    SizedBox(
-                                                      height: 3.h,
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 5.w),
-                                                      child: Text(
-                                                        controller
-                                                            .products[index]
-                                                            .name!,
-                                                        style: primaryTextStyle(
-                                                            weight:
-                                                                FontWeight.w700,
-                                                            size: 16.sp.round(),
-                                                            color:
-                                                                Colors.black),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SvgPicture
+                                                                          .asset(
+                                                                    "assets/images/home/add_to_wishlist.svg",
+                                                                    width: 33.w,
+                                                                    height:
+                                                                        33.h,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                      SizedBox(
+                                                        height: 3.h,
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 1.h,
-                                                    ),
-                                                    Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 5.w),
-                                                      width: 150.w,
-                                                      child: Text(
-                                                        controller
-                                                            .products[index]
-                                                            .description!,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: primaryTextStyle(
-                                                            weight:
-                                                                FontWeight.w300,
-                                                            size: 14.sp.round(),
-                                                            color: Color(
-                                                                0xff9B9B9B)),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 5.w),
+                                                        child: Text(
+                                                          controller
+                                                              .products[index]
+                                                              .name!,
+                                                          style:
+                                                              primaryTextStyle(
+                                                                  weight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  size: 16
+                                                                      .sp
+                                                                      .round(),
+                                                                  color: Colors
+                                                                      .black),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 1.h,
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 5.w),
-                                                      child: Text(
-                                                        "\$ ${controller.products[index].price!} ",
-                                                        style: primaryTextStyle(
-                                                            weight:
-                                                                FontWeight.w600,
-                                                            size: 15.sp.round(),
-                                                            color: Color(
-                                                                0xff370269)),
+                                                      SizedBox(
+                                                        height: 1.h,
                                                       ),
-                                                    ),
-                                                  ],
-                                                )
-                                              : placeHolderWidget(),
+                                                      Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 5.w),
+                                                        width: 150.w,
+                                                        child: Text(
+                                                          controller
+                                                              .products[index]
+                                                              .description!,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: primaryTextStyle(
+                                                              weight: FontWeight
+                                                                  .w300,
+                                                              size:
+                                                                  14.sp.round(),
+                                                              color: Color(
+                                                                  0xff9B9B9B)),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 1.h,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 5.w),
+                                                        child: Text(
+                                                          "\$ ${controller.products[index].price!} ",
+                                                          style: primaryTextStyle(
+                                                              weight: FontWeight
+                                                                  .w600,
+                                                              size:
+                                                                  15.sp.round(),
+                                                              color: Color(
+                                                                  0xff370269)),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : placeHolderWidget(),
+                                          ),
                                         ),
                                       );
                               },
@@ -337,7 +362,7 @@ class ShopView extends GetView<ShopController> {
     return Expanded(
       flex: 5,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w),
+        padding: EdgeInsets.symmetric(horizontal: smallSpacing),
         child: Column(
           children: [
             Align(
@@ -425,7 +450,7 @@ class ShopView extends GetView<ShopController> {
     return Expanded(
       flex: 12,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w),
+        padding: EdgeInsets.symmetric(horizontal: smallSpacing),
         child: controller.products.isEmpty
             ? Text("Empty")
             : Column(
@@ -554,7 +579,7 @@ class ShopView extends GetView<ShopController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 15.w,
+            width: smallSpacing,
           ),
           Flexible(
             flex: 12,
@@ -624,7 +649,7 @@ class ShopView extends GetView<ShopController> {
             ),
           ),
           SizedBox(
-            width: 15.w,
+            width: smallSpacing,
           )
         ],
       ),

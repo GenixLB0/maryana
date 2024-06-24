@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:nb_utils/nb_utils.dart' hide primaryTextStyle;
+import '../../global/config/configs.dart';
 import '../../global/widget/widget.dart';
 import '../controllers/search_controller.dart';
 import '../../global/theme/app_theme.dart';
@@ -78,7 +79,16 @@ class ResultView extends GetView<CustomSearchController> {
                             top: MediaQuery.of(context).size.height / 9),
                         child: loadingIndicatorWidget(),
                       )
-                    : buildCatScroll(context);
+                    : Padding(
+                        padding: EdgeInsets.only(left: smallSpacing),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: ShowUp(
+                            child: buildCatScroll(context),
+                            delay: 400,
+                          ),
+                        ),
+                      );
               }),
               Obx(() {
                 print("loading value is ${controller.isSearchLoading}");
@@ -88,7 +98,12 @@ class ResultView extends GetView<CustomSearchController> {
                             top: MediaQuery.of(context).size.height / 3),
                         child: loadingIndicatorWidget(),
                       )
-                    : buildProductGrid(context);
+                    : Expanded(
+                        child: ShowUp(
+                          child: buildProductGrid(context),
+                          delay: 400,
+                        ),
+                      );
               })
             ],
           ),
@@ -107,7 +122,7 @@ class ResultView extends GetView<CustomSearchController> {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      padding: EdgeInsets.symmetric(horizontal: smallSpacing),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -177,355 +192,344 @@ class ResultView extends GetView<CustomSearchController> {
     print("product grid are ${controller.resultSearchProducts}");
 
     return GetBuilder<CustomSearchController>(
-        builder: (_) => Expanded(
-              child: Container(
-                  padding: EdgeInsets.all(15),
-                  width: MediaQuery.of(context).size.width,
-                  child: controller.resultSearchProducts.isEmpty
-                      ? Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Sorry , No Products Found",
-                            style: primaryTextStyle(
-                                size: 20.sp.round(),
-                                color: Colors.black,
-                                weight: FontWeight.w400),
-                          ),
-                        )
-                      : GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio:
-                                      MediaQuery.of(context).size.width /
-                                          (MediaQuery.of(context).size.height /
-                                              1.2),
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 5.w),
-                          itemBuilder: (context, index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(4.sp),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Colors.black12,
-                                      spreadRadius: 0,
-                                      blurRadius: 15),
-                                ],
-                              ),
-                              child: controller
-                                          .resultSearchProducts[index].image !=
-                                      null
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        controller.resultSearchProducts[index]
-                                                .image!.isEmpty
-                                            ? placeHolderWidget()
-                                            : Stack(
-                                                alignment: Alignment.topRight,
-                                                children: [
-                                                  CachedNetworkImage(
-                                                    imageUrl: controller
-                                                        .resultSearchProducts[
-                                                            index]
-                                                        .image!,
-                                                    width: 175.w,
-                                                    height: 210.h,
-                                                    fit: BoxFit.cover,
-                                                    placeholder: (ctx, v) {
-                                                      return placeHolderWidget();
-                                                    },
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: SvgPicture.asset(
-                                                      "assets/images/home/add_to_wishlist.svg",
-                                                      width: 33.w,
-                                                      height: 33.h,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                        SizedBox(
-                                          height: 3.h,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 5.w),
-                                          child: Text(
-                                            controller
-                                                .resultSearchProducts[index]
-                                                .name!,
-                                            style: primaryTextStyle(
-                                                weight: FontWeight.w700,
-                                                size: 16.sp.round(),
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 5.w),
-                                          width: 150.w,
-                                          child: Text(
-                                            controller
-                                                .resultSearchProducts[index]
-                                                .description!,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: primaryTextStyle(
-                                                weight: FontWeight.w300,
-                                                size: 14.sp.round(),
-                                                color: Color(0xff9B9B9B)),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 5.w),
-                                          child: Text(
-                                            "\$ ${controller.resultSearchProducts[index].price!} ",
-                                            style: primaryTextStyle(
-                                                weight: FontWeight.w600,
-                                                size: 15.sp.round(),
-                                                color: Color(0xff370269)),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : placeHolderWidget(),
-                            );
-                          },
-                          itemCount: controller.resultSearchProducts.length,
-                        )
-                  // GetBuilder<SearchController>(builder: (_)=>
-                  //
-                  //     GridView.builder(
-                  //       gridDelegate:
-                  //       SliverGridDelegateWithFixedCrossAxisCount(
-                  //           childAspectRatio: MediaQuery.of(context).size.width /
-                  //               (MediaQuery.of(context).size.height / 1.2), crossAxisCount: 2,
-                  //           crossAxisSpacing: 5.w
-                  //
-                  //
-                  //       ),
-                  //       itemBuilder: (context, index) {
-                  //         if(controller.selectedId == 0){
-                  //           return Container(
-                  //
-                  //             decoration: BoxDecoration(
-                  //               color: Colors.white,
-                  //               borderRadius: BorderRadius.circular(4.sp),
-                  //               boxShadow: const [
-                  //                 BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 15),
-                  //               ],
-                  //
-                  //             ),
-                  //             child:
-                  //             controller.resultSearchProducts[index].image != null ?
-                  //             Column(
-                  //               crossAxisAlignment: CrossAxisAlignment.start,
-                  //               children: [
-                  //
-                  //                 controller.resultSearchProducts[index].image!.isEmpty?
-                  //                 Image.asset("assets/images/placeholder.png",
-                  //                   width: 160.w,
-                  //                   height: 210.h,
-                  //                 )
-                  //                     :
-                  //                 Stack(
-                  //                   alignment: Alignment.topRight,
-                  //                   children: [
-                  //                     CachedNetworkImage(
-                  //                       imageUrl:
-                  //
-                  //                       controller.resultSearchProducts[index].image! ,
-                  //                       width: 175.w,
-                  //                       height: 210.h,
-                  //                       fit: BoxFit.cover,
-                  //                       placeholder: (ctx , v){
-                  //                         return Image.asset("assets/images/placeholder.png",
-                  //                           width: 100.w,
-                  //                           height: 200.h,
-                  //                         );
-                  //                       },
-                  //
-                  //                     ),
-                  //                     Padding(
-                  //                       padding: const EdgeInsets.all(8.0),
-                  //                       child: SvgPicture.asset(
-                  //                         "assets/images/home/add_to_wishlist.svg",
-                  //                         width: 33.w,
-                  //                         height: 33.h,
-                  //                         fit: BoxFit.cover,
-                  //
-                  //                       ),
-                  //                     )
-                  //                   ],
-                  //                 ),
-                  //                 SizedBox(height: 3.h,),
-                  //                 Padding(
-                  //                   padding:  EdgeInsets.only(left: 5.w),
-                  //                   child: Text(
-                  //                     controller.resultSearchProducts[index].name!,
-                  //                     style: primaryTextStyle(
-                  //                         weight: FontWeight.w700,
-                  //                         size: 16.sp.round(),
-                  //                         color: Colors.black
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //                 SizedBox(height: 1.h,),
-                  //                 Container(
-                  //                   padding:  EdgeInsets.only(left: 5.w),
-                  //                   width: 150.w,
-                  //                   child: Text(
-                  //                     controller.resultSearchProducts[index].description!,
-                  //                     overflow: TextOverflow.ellipsis,
-                  //                     style: primaryTextStyle(
-                  //                         weight: FontWeight.w300,
-                  //                         size: 14.sp.round(),
-                  //                         color: Color(0xff9B9B9B)
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //                 SizedBox(height: 1.h,),
-                  //                 Padding(
-                  //                   padding:  EdgeInsets.only(left: 5.w),
-                  //                   child: Text(
-                  //                     "\$ ${controller.resultSearchProducts[index].price!} ",
-                  //                     style: primaryTextStyle(
-                  //                         weight: FontWeight.w600,
-                  //                         size: 15.sp.round(),
-                  //                         color: Color(0xff370269)
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //               ],
-                  //             )
-                  //                 :
-                  //             Image.asset("assets/images/placeholder.png",
-                  //               width: 200.w,
-                  //               height: 200.h,
-                  //             ),
-                  //           );
-                  //         } else if(controller.selectedId == controller.products[index].id){
-                  //           Container(
-                  //
-                  //             decoration: BoxDecoration(
-                  //               color: Colors.white,
-                  //               borderRadius: BorderRadius.circular(4.sp),
-                  //               boxShadow: const [
-                  //                 BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 15),
-                  //               ],
-                  //
-                  //             ),
-                  //             child:
-                  //             controller.resultSearchProducts[index].image != null ?
-                  //             Column(
-                  //               crossAxisAlignment: CrossAxisAlignment.start,
-                  //               children: [
-                  //
-                  //                 controller.resultSearchProducts[index].image!.isEmpty?
-                  //                 Image.asset("assets/images/placeholder.png",
-                  //                   width: 160.w,
-                  //                   height: 210.h,
-                  //                 )
-                  //                     :
-                  //                 Stack(
-                  //                   alignment: Alignment.topRight,
-                  //                   children: [
-                  //                     CachedNetworkImage(
-                  //                       imageUrl:
-                  //
-                  //                       controller.resultSearchProducts[index].image! ,
-                  //                       width: 175.w,
-                  //                       height: 210.h,
-                  //                       fit: BoxFit.cover,
-                  //                       placeholder: (ctx , v){
-                  //                         return Image.asset("assets/images/placeholder.png",
-                  //                           width: 100.w,
-                  //                           height: 200.h,
-                  //                         );
-                  //                       },
-                  //
-                  //                     ),
-                  //                     Padding(
-                  //                       padding: const EdgeInsets.all(8.0),
-                  //                       child: SvgPicture.asset(
-                  //                         "assets/images/home/add_to_wishlist.svg",
-                  //                         width: 33.w,
-                  //                         height: 33.h,
-                  //                         fit: BoxFit.cover,
-                  //
-                  //                       ),
-                  //                     )
-                  //                   ],
-                  //                 ),
-                  //                 SizedBox(height: 3.h,),
-                  //                 Padding(
-                  //                   padding:  EdgeInsets.only(left: 5.w),
-                  //                   child: Text(
-                  //                     controller.resultSearchProducts[index].name!,
-                  //                     style: primaryTextStyle(
-                  //                         weight: FontWeight.w700,
-                  //                         size: 16.sp.round(),
-                  //                         color: Colors.black
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //                 SizedBox(height: 1.h,),
-                  //                 Container(
-                  //                   padding:  EdgeInsets.only(left: 5.w),
-                  //                   width: 150.w,
-                  //                   child: Text(
-                  //                     controller.resultSearchProducts[index].description!,
-                  //                     overflow: TextOverflow.ellipsis,
-                  //                     style: primaryTextStyle(
-                  //                         weight: FontWeight.w300,
-                  //                         size: 14.sp.round(),
-                  //                         color: Color(0xff9B9B9B)
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //                 SizedBox(height: 1.h,),
-                  //                 Padding(
-                  //                   padding:  EdgeInsets.only(left: 5.w),
-                  //                   child: Text(
-                  //                     "\$ ${controller.resultSearchProducts[index].price!} ",
-                  //                     style: primaryTextStyle(
-                  //                         weight: FontWeight.w600,
-                  //                         size: 15.sp.round(),
-                  //                         color: Color(0xff370269)
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //               ],
-                  //             )
-                  //                 :
-                  //             Image.asset("assets/images/placeholder.png",
-                  //               width: 200.w,
-                  //               height: 200.h,
-                  //             ),
-                  //           );
-                  //         } else {
-                  //           return const SizedBox();
-                  //         }
-                  //         return const SizedBox();
-                  //
-                  //
-                  //
-                  //       },
-                  //       itemCount: controller.resultSearchProducts.length,
-                  //     )
-                  //
-                  // )
+      builder: (_) => Container(
+          padding: EdgeInsets.all(15),
+          width: MediaQuery.of(context).size.width,
+          child: controller.resultSearchProducts.isEmpty
+              ? Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Sorry , No Products Found",
+                    style: primaryTextStyle(
+                        size: 20.sp.round(),
+                        color: Colors.black,
+                        weight: FontWeight.w400),
                   ),
-            ));
+                )
+              : GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: MediaQuery.of(context).size.width /
+                          (MediaQuery.of(context).size.height / 1.2),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 5.w),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4.sp),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.black12,
+                              spreadRadius: 0,
+                              blurRadius: 15),
+                        ],
+                      ),
+                      child: controller.resultSearchProducts[index].image !=
+                              null
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                controller.resultSearchProducts[index].image!
+                                        .isEmpty
+                                    ? placeHolderWidget()
+                                    : Stack(
+                                        alignment: Alignment.topRight,
+                                        children: [
+                                          CachedNetworkImage(
+                                            imageUrl: controller
+                                                .resultSearchProducts[index]
+                                                .image!,
+                                            width: 175.w,
+                                            height: 210.h,
+                                            fit: BoxFit.cover,
+                                            placeholder: (ctx, v) {
+                                              return placeHolderWidget();
+                                            },
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SvgPicture.asset(
+                                              "assets/images/home/add_to_wishlist.svg",
+                                              width: 33.w,
+                                              height: 33.h,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 5.w),
+                                  child: Text(
+                                    controller
+                                        .resultSearchProducts[index].name!,
+                                    style: primaryTextStyle(
+                                        weight: FontWeight.w700,
+                                        size: 16.sp.round(),
+                                        color: Colors.black),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(left: 5.w),
+                                  width: 150.w,
+                                  child: Text(
+                                    controller.resultSearchProducts[index]
+                                        .description!,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: primaryTextStyle(
+                                        weight: FontWeight.w300,
+                                        size: 14.sp.round(),
+                                        color: Color(0xff9B9B9B)),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 5.w),
+                                  child: Text(
+                                    "\$ ${controller.resultSearchProducts[index].price!} ",
+                                    style: primaryTextStyle(
+                                        weight: FontWeight.w600,
+                                        size: 15.sp.round(),
+                                        color: Color(0xff370269)),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : placeHolderWidget(),
+                    );
+                  },
+                  itemCount: controller.resultSearchProducts.length,
+                )
+          // GetBuilder<SearchController>(builder: (_)=>
+          //
+          //     GridView.builder(
+          //       gridDelegate:
+          //       SliverGridDelegateWithFixedCrossAxisCount(
+          //           childAspectRatio: MediaQuery.of(context).size.width /
+          //               (MediaQuery.of(context).size.height / 1.2), crossAxisCount: 2,
+          //           crossAxisSpacing: 5.w
+          //
+          //
+          //       ),
+          //       itemBuilder: (context, index) {
+          //         if(controller.selectedId == 0){
+          //           return Container(
+          //
+          //             decoration: BoxDecoration(
+          //               color: Colors.white,
+          //               borderRadius: BorderRadius.circular(4.sp),
+          //               boxShadow: const [
+          //                 BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 15),
+          //               ],
+          //
+          //             ),
+          //             child:
+          //             controller.resultSearchProducts[index].image != null ?
+          //             Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //
+          //                 controller.resultSearchProducts[index].image!.isEmpty?
+          //                 Image.asset("assets/images/placeholder.png",
+          //                   width: 160.w,
+          //                   height: 210.h,
+          //                 )
+          //                     :
+          //                 Stack(
+          //                   alignment: Alignment.topRight,
+          //                   children: [
+          //                     CachedNetworkImage(
+          //                       imageUrl:
+          //
+          //                       controller.resultSearchProducts[index].image! ,
+          //                       width: 175.w,
+          //                       height: 210.h,
+          //                       fit: BoxFit.cover,
+          //                       placeholder: (ctx , v){
+          //                         return Image.asset("assets/images/placeholder.png",
+          //                           width: 100.w,
+          //                           height: 200.h,
+          //                         );
+          //                       },
+          //
+          //                     ),
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: SvgPicture.asset(
+          //                         "assets/images/home/add_to_wishlist.svg",
+          //                         width: 33.w,
+          //                         height: 33.h,
+          //                         fit: BoxFit.cover,
+          //
+          //                       ),
+          //                     )
+          //                   ],
+          //                 ),
+          //                 SizedBox(height: 3.h,),
+          //                 Padding(
+          //                   padding:  EdgeInsets.only(left: 5.w),
+          //                   child: Text(
+          //                     controller.resultSearchProducts[index].name!,
+          //                     style: primaryTextStyle(
+          //                         weight: FontWeight.w700,
+          //                         size: 16.sp.round(),
+          //                         color: Colors.black
+          //                     ),
+          //                   ),
+          //                 ),
+          //                 SizedBox(height: 1.h,),
+          //                 Container(
+          //                   padding:  EdgeInsets.only(left: 5.w),
+          //                   width: 150.w,
+          //                   child: Text(
+          //                     controller.resultSearchProducts[index].description!,
+          //                     overflow: TextOverflow.ellipsis,
+          //                     style: primaryTextStyle(
+          //                         weight: FontWeight.w300,
+          //                         size: 14.sp.round(),
+          //                         color: Color(0xff9B9B9B)
+          //                     ),
+          //                   ),
+          //                 ),
+          //                 SizedBox(height: 1.h,),
+          //                 Padding(
+          //                   padding:  EdgeInsets.only(left: 5.w),
+          //                   child: Text(
+          //                     "\$ ${controller.resultSearchProducts[index].price!} ",
+          //                     style: primaryTextStyle(
+          //                         weight: FontWeight.w600,
+          //                         size: 15.sp.round(),
+          //                         color: Color(0xff370269)
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ],
+          //             )
+          //                 :
+          //             Image.asset("assets/images/placeholder.png",
+          //               width: 200.w,
+          //               height: 200.h,
+          //             ),
+          //           );
+          //         } else if(controller.selectedId == controller.products[index].id){
+          //           Container(
+          //
+          //             decoration: BoxDecoration(
+          //               color: Colors.white,
+          //               borderRadius: BorderRadius.circular(4.sp),
+          //               boxShadow: const [
+          //                 BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 15),
+          //               ],
+          //
+          //             ),
+          //             child:
+          //             controller.resultSearchProducts[index].image != null ?
+          //             Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //
+          //                 controller.resultSearchProducts[index].image!.isEmpty?
+          //                 Image.asset("assets/images/placeholder.png",
+          //                   width: 160.w,
+          //                   height: 210.h,
+          //                 )
+          //                     :
+          //                 Stack(
+          //                   alignment: Alignment.topRight,
+          //                   children: [
+          //                     CachedNetworkImage(
+          //                       imageUrl:
+          //
+          //                       controller.resultSearchProducts[index].image! ,
+          //                       width: 175.w,
+          //                       height: 210.h,
+          //                       fit: BoxFit.cover,
+          //                       placeholder: (ctx , v){
+          //                         return Image.asset("assets/images/placeholder.png",
+          //                           width: 100.w,
+          //                           height: 200.h,
+          //                         );
+          //                       },
+          //
+          //                     ),
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: SvgPicture.asset(
+          //                         "assets/images/home/add_to_wishlist.svg",
+          //                         width: 33.w,
+          //                         height: 33.h,
+          //                         fit: BoxFit.cover,
+          //
+          //                       ),
+          //                     )
+          //                   ],
+          //                 ),
+          //                 SizedBox(height: 3.h,),
+          //                 Padding(
+          //                   padding:  EdgeInsets.only(left: 5.w),
+          //                   child: Text(
+          //                     controller.resultSearchProducts[index].name!,
+          //                     style: primaryTextStyle(
+          //                         weight: FontWeight.w700,
+          //                         size: 16.sp.round(),
+          //                         color: Colors.black
+          //                     ),
+          //                   ),
+          //                 ),
+          //                 SizedBox(height: 1.h,),
+          //                 Container(
+          //                   padding:  EdgeInsets.only(left: 5.w),
+          //                   width: 150.w,
+          //                   child: Text(
+          //                     controller.resultSearchProducts[index].description!,
+          //                     overflow: TextOverflow.ellipsis,
+          //                     style: primaryTextStyle(
+          //                         weight: FontWeight.w300,
+          //                         size: 14.sp.round(),
+          //                         color: Color(0xff9B9B9B)
+          //                     ),
+          //                   ),
+          //                 ),
+          //                 SizedBox(height: 1.h,),
+          //                 Padding(
+          //                   padding:  EdgeInsets.only(left: 5.w),
+          //                   child: Text(
+          //                     "\$ ${controller.resultSearchProducts[index].price!} ",
+          //                     style: primaryTextStyle(
+          //                         weight: FontWeight.w600,
+          //                         size: 15.sp.round(),
+          //                         color: Color(0xff370269)
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ],
+          //             )
+          //                 :
+          //             Image.asset("assets/images/placeholder.png",
+          //               width: 200.w,
+          //               height: 200.h,
+          //             ),
+          //           );
+          //         } else {
+          //           return const SizedBox();
+          //         }
+          //         return const SizedBox();
+          //
+          //
+          //
+          //       },
+          //       itemCount: controller.resultSearchProducts.length,
+          //     )
+          //
+          // )
+          ),
+    );
   }
 }

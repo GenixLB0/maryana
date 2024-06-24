@@ -5,9 +5,11 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
+import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../global/config/configs.dart';
 import '../../global/model/model_response.dart';
 import '../../home/views/home_view.dart';
 import '../controllers/search_controller.dart';
@@ -91,11 +93,16 @@ class SearchView extends GetView<CustomSearchController> {
                 height: 15.h,
               ),
               GetBuilder<CustomSearchController>(
-                  builder: (_) => buildSearchKeywords(context)),
+                  builder: (_) => ShowUp(
+                        child: buildSearchKeywords(context),
+                        delay: 400,
+                      )),
               Spacer(),
               GetBuilder<CustomSearchController>(
-                builder: (cont) => buildProductsScroll(context),
-              ),
+                  builder: (cont) => ShowUp(
+                        child: buildProductsScroll(context),
+                        delay: 400,
+                      )),
               SizedBox(
                 height: 40.h,
               ),
@@ -114,7 +121,7 @@ class SearchView extends GetView<CustomSearchController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 15.w,
+            width: smallSpacing,
           ),
           Flexible(
             flex: 12,
@@ -185,7 +192,7 @@ class SearchView extends GetView<CustomSearchController> {
             ),
           ),
           SizedBox(
-            width: 15.w,
+            width: smallSpacing,
           )
         ],
       ),
@@ -200,7 +207,7 @@ class SearchView extends GetView<CustomSearchController> {
           Row(
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 15.w),
+                padding: EdgeInsets.only(left: smallSpacing),
                 child: Text(
                   "POPULAR THIS WEEK",
                   style: boldTextStyle(
@@ -218,7 +225,7 @@ class SearchView extends GetView<CustomSearchController> {
                     color: Color(0xff9B9B9B)),
               ),
               SizedBox(
-                width: 15.w,
+                width: smallSpacing,
               )
             ],
           ),
@@ -226,7 +233,7 @@ class SearchView extends GetView<CustomSearchController> {
             height: 5.h,
           ),
           Container(
-            padding: EdgeInsets.all(15.w),
+            padding: EdgeInsets.all(smallSpacing),
             height: 330.h,
             width: MediaQuery.of(context).size.width,
             child: ListView.separated(

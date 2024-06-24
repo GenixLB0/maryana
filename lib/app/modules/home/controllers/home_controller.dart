@@ -19,11 +19,9 @@ class HomeController extends GetxController {
 
   RxBool isHomeLoading = false.obs;
   final count = 0.obs;
+
   @override
   void onInit() {
-
-
-
     super.onInit();
   }
 
@@ -40,38 +38,28 @@ class HomeController extends GetxController {
 
   void increment() => count.value++;
 
-  getHomeApi() async{
+  getHomeApi() async {
     isHomeLoading.value = true;
     print('home api successful');
 
-
     final response = await apiConsumer.get(
       'homepage',
-
     );
 
-
     try {
-
-
-
       final apiResponse = CustomHomeModel.fromJson(response);
       if (apiResponse.status == 'success') {
         print('home data successful');
         isHomeLoading.value = false;
         homeModel.value = apiResponse.data!;
-        List <String> banners = [];
+        List<String> banners = [];
         print("the type is ${homeModel.value.banners.runtimeType}");
-
 
         // Handle successful home data
         // await _cacheUser(apiResponse.data!);
         // AppConstants.userData = apiResponse.data!;
 
         print("the categories are ${apiResponse.data!.categories}");
-
-
-
       } else {
         handleApiErrorUser(apiResponse.message);
         handleApiError(response.statusCode);
@@ -85,7 +73,6 @@ class HomeController extends GetxController {
 
       print(e.toString() + stackTrace.toString());
     }
-
   }
 
   Future<void> _cacheUser(data) async {
@@ -94,7 +81,7 @@ class HomeController extends GetxController {
     print('User data cached: ${data.toJson()}');
   }
 
-  setCats(){
+  setCats() {
     homeModel.value.categories!.toSet().toList();
     print("the setted cats are ${homeModel.value.categories!}");
     update();

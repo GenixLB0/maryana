@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -425,10 +424,12 @@ class CreateNewPasswordView extends GetView<ForgotPasswordController> {
                                               );
                                             });
                                       } else {
-                                        AppHelpers.showCustomSnackBar(
-                                            context,
-                                            'Error !',
+                                        Get.snackbar('Error',
                                             'Something went Wrong please try again!');
+                                        // AppHelpers.showCustomSnackBar(
+                                        //     context,
+                                        //     'Error !',
+                                        //     'Something went Wrong please try again!');
                                       }
                                     });
                                   },

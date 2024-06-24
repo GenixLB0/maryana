@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
@@ -108,6 +109,103 @@ class _SocialMediaIconState extends State<SocialMediaIcon>
   }
 }
 
+class MySecondDefaultButton extends StatefulWidget {
+  final String? btnText;
+  final bool localeText;
+  final Function() onPressed;
+  final Color? color;
+  final Color? textColor;
+  final bool isSelected;
+  final String? Icon;
+  final double? height;
+  final bool isloading;
+  final double? width;
+
+  const MySecondDefaultButton({
+    Key? key,
+    this.btnText,
+    required this.onPressed,
+    this.color,
+    this.isSelected = true,
+    this.localeText = false,
+    required this.isloading,
+    this.textColor,
+    this.height,
+    this.width,
+    this.Icon,
+  }) : super(key: key);
+
+  @override
+  MySecondDefaultButtonState createState() => MySecondDefaultButtonState();
+}
+
+class MySecondDefaultButtonState extends State<MySecondDefaultButton> {
+  bool isloading = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isloading = widget.isloading!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return widget.isloading!
+        ? Center(
+            child: LoadingAnimationWidget.flickr(
+            leftDotColor: primaryColor,
+            rightDotColor: const Color(0xFFFF0084),
+            size: 50,
+          ))
+        : InkWell(
+            onTap: () => {
+              widget.onPressed(),
+            },
+            child: Container(
+              width: 315.w,
+              height: 48.h,
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                  color: Color(0xFF21034F),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  )),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                      widget.localeText
+                          ? widget.btnText!.toUpperCase()
+                          : widget.btnText!,
+                      textAlign: TextAlign.center,
+                      style: primaryTextStyle(
+                        color: Colors.white,
+                        size: 16.sp.round(),
+                        weight: FontWeight.w700,
+                      )),
+                ],
+              ),
+            ),
+          );
+  }
+}
+
+Widget MainLoading({double? width, double? height}) {
+  return SizedBox(
+      width: width ?? 375.w,
+      height: height ?? 812.h,
+      child: Center(
+          child: LoadingAnimationWidget.flickr(
+        leftDotColor: primaryColor,
+        rightDotColor: const Color(0xFFFF0084),
+        size: 50,
+      )));
+}
+
 class MyDefaultButton extends StatefulWidget {
   final String? btnText;
   final bool localeText;
@@ -206,10 +304,13 @@ class CustomTextField extends StatefulWidget {
   final String labelText;
   final ValueChanged<String> onChanged;
   final String? errorText;
+  final String? initialValue;
   final bool obscureText;
+  final double? width;
   final String? icon;
   final ValueChanged<String>? onSubmitted;
   final TextEditingController? customTextEditingController;
+  final TextInputType keyboardType;
 
   const CustomTextField({
     super.key,
@@ -218,8 +319,11 @@ class CustomTextField extends StatefulWidget {
     this.errorText,
     this.obscureText = false,
     this.icon,
+    this.initialValue,
     this.onSubmitted,
     this.customTextEditingController,
+    this.width,
+    this.keyboardType = TextInputType.text, // Default to TextInputType.text
   });
 
   @override
@@ -238,15 +342,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 310.w,
+      width: widget.width ?? 310.w,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
+          TextFormField(
             controller: widget.customTextEditingController,
             onChanged: widget.onChanged,
+            initialValue: widget.initialValue ?? '',
             obscureText: _obscureText,
-            onSubmitted: widget.onSubmitted,
+            onFieldSubmitted: widget.onSubmitted,
+            keyboardType: widget.keyboardType,
             style: primaryTextStyle(
               color: Colors.black,
               size: 14.sp.round(),
@@ -266,7 +372,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 height: 1,
               ),
               labelStyle: primaryTextStyle(
-                color: Colors.black,
+                color: Color(0xFFA6AAC3),
                 size: 14.sp.round(),
                 weight: FontWeight.w400,
                 height: 1,
@@ -398,6 +504,99 @@ Widget buttonSocialMedia(
                     ])));
 }
 
+void buildCustomShowModel(
+    {required BuildContext context,
+    required Widget child,
+    double? height,
+    EdgeInsets? padding}) async {
+  showModalBottomSheet(
+    backgroundColor: Colors.transparent,
+    context: context,
+    builder: (builder) {
+      return Container(
+        width: 375.w,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
+          color: Colors.white,
+        ),
+        height: height,
+        padding: padding ?? const EdgeInsets.symmetric(vertical: 16.0),
+        child: child,
+      );
+    },
+  );
+}
+
+void imagesSourcesShowModel({
+  required BuildContext context,
+  Function? onCameraPressed,
+  Function? onGalleryPressed,
+  bool allowMultiple = false,
+}) async {
+  buildCustomShowModel(
+    context: context,
+    height: 140.0.h,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        // Camera //
+        Expanded(
+          child: TextButton(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Take a Photo",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+              ),
+            ),
+            onPressed: onCameraPressed != null
+                ? () {
+                    onCameraPressed();
+                  }
+                : null,
+          ),
+        ),
+        Divider(height: 1, color: Colors.grey),
+        // Gallery //
+        Expanded(
+          child: TextButton(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Select from Gallery",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+              ),
+            ),
+            onPressed: onGalleryPressed != null
+                ? () {
+                    onGalleryPressed();
+                  }
+                : null,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 class ShowUp extends StatefulWidget {
   final Widget? child;
   final int? delay;
@@ -468,41 +667,41 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: function != null && !Navigator.canPop(context)
-          ? IconButton(
-              icon: Container(
-                height: 40.h,
-                width: 40.w,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: SvgPicture.asset(
-                    "assets/images/forgot_password/BackBTN.svg"),
+      leading: IconButton(
+        icon: Container(
+          height: 40.h,
+          width: 40.w,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                spreadRadius: 0,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
               ),
-              onPressed: () {
-                if (function != null) {
-                  function!();
-                } else {
-                  Get.back();
-                }
-              },
-            )
-          : SizedBox(),
-      title: Center(
-        child: Text(
-          title ?? '',
-          style: Theme.of(context).appBarTheme.titleTextStyle,
+            ],
+          ),
+          child:
+              SvgPicture.asset("assets/images/forgot_password/Frame 361.svg"),
         ),
+        onPressed: () {
+          if (function != null) {
+            function!();
+          } else {
+            Get.back();
+          }
+        },
       ),
+      title: Text(title ?? '',
+          style: TextStyle(
+            color: Color(0xFF1D1F22),
+            fontSize: 22.sp,
+            fontFamily: GoogleFonts.cormorant().fontFamily,
+            fontWeight: FontWeight.w700,
+            height: 0,
+          )),
       actions: actions ?? [Container()],
       centerTitle: true,
       backgroundColor: const Color(0xffFDFDFD),
@@ -526,20 +725,22 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 95.h,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
         ),
-        boxShadow: [
-          BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
+        shadows: [
+          BoxShadow(color: Colors.black38, spreadRadius: -5, blurRadius: 15),
         ],
-        color: Colors.transparent,
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(30.0),
-          topRight: Radius.circular(30.0),
+          topLeft: Radius.circular(12.0),
+          topRight: Radius.circular(12.0),
         ),
         child: Obx(
           () => BottomNavigationBar(

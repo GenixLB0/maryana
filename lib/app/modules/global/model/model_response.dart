@@ -88,14 +88,14 @@ class UserData {
 
 class User {
   final int id;
-  final String firstName;
-  final String lastName;
-  final String? username;
-  final String? photo;
-  final String email;
-  final String? phone;
+  String firstName;
+  String lastName;
+  String? username;
+  String? photo;
+  String email;
+  String? phone;
   final String? langCode;
-  final String? dob;
+    String? dob;
 
   User({
     required this.id,
@@ -115,7 +115,7 @@ class User {
       firstName: json['first_name'],
       lastName: json['last_name'],
       username: json['username'],
-      photo: json['photo'],
+      photo: json['avatar'],
       email: json['email'],
       phone: json['phone'],
       langCode: json['lang_code'],

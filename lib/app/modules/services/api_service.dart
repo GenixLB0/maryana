@@ -24,6 +24,8 @@ void handleApiErrorUser(String? message) {
   String displayMessage;
   if (message == 'Invalid Credentials') {
     displayMessage = 'Password or email is incorrect';
+  } else if (message == 'Invalid Credintials.') {
+    displayMessage = 'Current Password is incorrect';
   } else {
     displayMessage = message ?? 'An unexpected error occurred';
   }
