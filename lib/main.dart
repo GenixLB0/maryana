@@ -21,6 +21,7 @@ import 'package:nb_utils/nb_utils.dart';
 
 final sl = GetIt.instance;
 ApiConsumer apiConsumer = sl();
+
 Future<void> init() async {
   try {
     //Core injections
@@ -94,6 +95,7 @@ class MyApp extends StatelessWidget {
                       builder: (_, child) {
                         return Observer(
                             builder: (_) => GetMaterialApp(
+                                  debugShowCheckedModeBanner: false,
                                   title: APP_NAME,
                                   theme: AppTheme.lightTheme(color: snap.data),
                                   initialRoute: Routes.SPLASH,

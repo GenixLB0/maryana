@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/colors.dart';
 
 const APP_NAME = 'Maryana';
@@ -18,3 +19,5 @@ const String cacheFailure = 'Cache Failure';
 const String networkError = 'Network Error';
 const String unexpectedError = 'Unexpected Error';
 const String unAuthorizedFailure = 'unAuthorizedFailures';
+
+final smallSpacing = 5.w;

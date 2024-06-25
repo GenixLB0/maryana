@@ -12,13 +12,9 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print('testsssss $userToken');
   }
 
-  @override
-  void onReady() {
- 
-  }
- 
   void navigateToOnboarding() {
     Get.off(() => OnboardingView());
   }

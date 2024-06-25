@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -37,7 +39,7 @@ class HomeView extends GetView<HomeController> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 20.h,
+                  height: 20,
                 ),
                 buildUpperBar(context),
                 buildSearchAndFilter(context),
@@ -68,7 +70,15 @@ class HomeView extends GetView<HomeController> {
                           SizedBox(
                             height: 25.h,
                           ),
-                          buildRecommendedScroll(context),
+                          AnimatedOpacity(
+                            // If the widget is visible, animate to 0.0 (invisible).
+                            // If the widget is hidden, animate to 1.0 (fully visible).
+                            opacity: 1.0,
+
+                            duration: const Duration(milliseconds: 500),
+                            // The green box must be a child of the AnimatedOpacity widget.
+                            child: buildRecommendedScroll(context),
+                          )
                         ],
                       ),
                     ),
@@ -83,6 +93,8 @@ class HomeView extends GetView<HomeController> {
   }
 
   buildBannerScroll(context) {
+    print("type is ${controller.homeModel.value.banners}");
+    print("value is ${controller.homeModel.value.banners.runtimeType}");
     return controller.isHomeLoading.value
         ? LoadingWidget(
             Container(
@@ -100,16 +112,14 @@ class HomeView extends GetView<HomeController> {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (ctx, index) {
                           return Container(
-                              width: MediaQuery.of(context).size.width,
+                              width: MediaQuery.of(context).size.width - 2.w,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(2.sp),
                               ),
                               child: Align(
                                 alignment: Alignment.center,
-                                child: Image.asset(
-                                  "assets/images/placeholder.png",
-                                ),
+                                child: placeHolderWidget(),
                               ));
                         },
                         separatorBuilder: (ctx, index) => SizedBox(
@@ -120,24 +130,22 @@ class HomeView extends GetView<HomeController> {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (ctx, index) {
                           return Container(
+                              width: MediaQuery.of(context).size.width - 2.w,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(2.sp),
                               ),
-                              child: controller.homeModel.value.banners![index]
-                                      .isNotEmpty
-                                  ? CachedNetworkImage(
-                                      imageUrl: controller
-                                          .homeModel.value.banners![index],
-                                      placeholder: (ctx, v) {
-                                        return Image.asset(
-                                          "assets/images/placeholder.png",
-                                        );
-                                      },
-                                    )
-                                  : Image.asset(
-                                      "assets/images/placeholder.png",
-                                    ));
+                              child:
+                                  controller.homeModel.value.banners!.isNotEmpty
+                                      ? CachedNetworkImage(
+                                          imageUrl: controller.homeModel.value
+                                              .banners![index].image!,
+                                          fit: BoxFit.cover,
+                                          placeholder: (ctx, v) {
+                                            return placeHolderWidget();
+                                          },
+                                        )
+                                      : placeHolderWidget());
                         },
                         separatorBuilder: (ctx, index) => SizedBox(
                               width: 1.w,
@@ -157,7 +165,7 @@ class HomeView extends GetView<HomeController> {
 
   buildCustomCatScroll(context) {
     return Padding(
-      padding: EdgeInsets.only(left: 15.w),
+      padding: EdgeInsets.symmetric(horizontal: smallSpacing),
       child: Container(
         height: 200.h,
         width: MediaQuery.of(context).size.width,
@@ -205,11 +213,7 @@ class HomeView extends GetView<HomeController> {
                                         ? Stack(
                                             alignment: Alignment.bottomCenter,
                                             children: [
-                                              Image.asset(
-                                                "assets/images/placeholder.png",
-                                                width: 50.w,
-                                                height: 15.h,
-                                              ),
+                                              placeHolderWidget(),
                                               Text(
                                                 controller.homeModel.value
                                                     .categories![index].name!
@@ -224,18 +228,56 @@ class HomeView extends GetView<HomeController> {
                                               )
                                             ],
                                           )
-                                        : CachedNetworkImage(
-                                            imageUrl: controller.homeModel.value
-                                                .categories![index].image!,
-                                            width: 100.w,
-                                            height: 200.h,
-                                            placeholder: (ctx, v) {
-                                              return Image.asset(
-                                                "assets/images/placeholder.png",
-                                                width: 100.w,
-                                                height: 200.h,
-                                              );
-                                            },
+                                        : Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              ColorFiltered(
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                        Colors.black45,
+                                                        BlendMode.hardLight),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: controller
+                                                      .homeModel
+                                                      .value
+                                                      .categories![index]
+                                                      .image!,
+                                                  width: 130.w,
+                                                  height: 200.h,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (ctx, v) {
+                                                    return placeHolderWidget();
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 55.h),
+                                                child: SizedBox(
+                                                  width: 90.w,
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 5.w),
+                                                    child: Text(
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      controller
+                                                          .homeModel
+                                                          .value
+                                                          .categories![index]
+                                                          .name!,
+                                                      style: boldTextStyle(
+                                                          color: Colors.white,
+                                                          weight:
+                                                              FontWeight.w400,
+                                                          size: 34.sp.round()),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                     const SizedBox(
                                       width: 5,
@@ -250,11 +292,7 @@ class HomeView extends GetView<HomeController> {
                                     Stack(
                                       alignment: Alignment.bottomCenter,
                                       children: [
-                                        Image.asset(
-                                          "assets/images/placeholder.png",
-                                          width: 130.w,
-                                          height: 200.h,
-                                        ),
+                                        placeHolderWidget(),
                                         Text(
                                           controller.homeModel.value
                                               .categories![index].name!
@@ -264,7 +302,7 @@ class HomeView extends GetView<HomeController> {
                                             size: 22.sp.round(),
                                             color: Colors.white,
                                             textShadows: [
-                                              BoxShadow(
+                                              const BoxShadow(
                                                   color: Colors.black,
                                                   spreadRadius: 5,
                                                   blurRadius: 25),
@@ -306,7 +344,7 @@ class HomeView extends GetView<HomeController> {
                     width: 70.w,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 15.w),
+                    padding: EdgeInsets.only(left: smallSpacing),
                     child: Text(
                       "TRENDING COLLECTION",
                       style: boldTextStyle(
@@ -318,15 +356,38 @@ class HomeView extends GetView<HomeController> {
                 ],
               ),
               Spacer(),
-              Text(
-                "SHOW ALL",
-                style: boldTextStyle(
-                    weight: FontWeight.w400,
-                    size: 20.sp.round(),
-                    color: Color(0xff9B9B9B)),
+              GestureDetector(
+                onTap: () {
+                  if (CustomSearchController().initialized) {
+                    Get.find<CustomSearchController>()
+                        .filterProductsAccordingToCat(
+                      00,
+                      true,
+                      controller.homeModel.value.categories,
+                    );
+
+                    Get.to(() => const ResultView());
+                  } else {
+                    Get.put<CustomSearchController>(CustomSearchController())
+                        .filterProductsAccordingToCat(
+                      00,
+                      true,
+                      controller.homeModel.value.categories,
+                    );
+
+                    Get.to(() => const ResultView());
+                  }
+                },
+                child: Text(
+                  "SHOW ALL",
+                  style: boldTextStyle(
+                      weight: FontWeight.w400,
+                      size: 20.sp.round(),
+                      color: Color(0xff9B9B9B)),
+                ),
               ),
               SizedBox(
-                width: 15.w,
+                width: smallSpacing,
               )
             ],
           ),
@@ -335,7 +396,7 @@ class HomeView extends GetView<HomeController> {
           ),
           Container(
             color: Colors.white,
-            padding: EdgeInsets.all(15.w),
+            padding: EdgeInsets.all(smallSpacing),
             height: 340.h,
             width: MediaQuery.of(context).size.width,
             child: controller.isHomeLoading.value
@@ -385,11 +446,7 @@ class HomeView extends GetView<HomeController> {
                                       children: [
                                         controller.homeModel.value
                                                 .product![index].image!.isEmpty
-                                            ? Image.asset(
-                                                "assets/images/placeholder.png",
-                                                width: 160.w,
-                                                height: 210.h,
-                                              )
+                                            ? placeHolderWidget()
                                             : Stack(
                                                 alignment: Alignment.topRight,
                                                 children: [
@@ -403,11 +460,7 @@ class HomeView extends GetView<HomeController> {
                                                     height: 210.h,
                                                     fit: BoxFit.cover,
                                                     placeholder: (ctx, v) {
-                                                      return Image.asset(
-                                                        "assets/images/placeholder.png",
-                                                        width: 100.w,
-                                                        height: 200.h,
-                                                      );
+                                                      return placeHolderWidget();
                                                     },
                                                   ),
                                                   Padding(
@@ -468,11 +521,7 @@ class HomeView extends GetView<HomeController> {
                                         ),
                                       ],
                                     )
-                                  : Image.asset(
-                                      "assets/images/placeholder.png",
-                                      width: 200.w,
-                                      height: 200.h,
-                                    ),
+                                  : placeHolderWidget(),
                             ),
                           );
                         },
@@ -491,7 +540,7 @@ class HomeView extends GetView<HomeController> {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: EdgeInsets.only(left: 15.w),
+        padding: EdgeInsets.only(left: smallSpacing),
         child: Column(
           children: [
             Row(
@@ -504,15 +553,38 @@ class HomeView extends GetView<HomeController> {
                       color: Colors.black),
                 ),
                 Spacer(),
-                Text(
-                  "SHOW ALL",
-                  style: boldTextStyle(
-                      weight: FontWeight.w400,
-                      size: 20.sp.round(),
-                      color: Color(0xff9B9B9B)),
+                GestureDetector(
+                  onTap: () {
+                    if (CustomSearchController().initialized) {
+                      Get.find<CustomSearchController>()
+                          .filterProductsAccordingToCat(
+                        00,
+                        true,
+                        controller.homeModel.value.categories,
+                      );
+
+                      Get.to(() => const ResultView());
+                    } else {
+                      Get.put<CustomSearchController>(CustomSearchController())
+                          .filterProductsAccordingToCat(
+                        00,
+                        true,
+                        controller.homeModel.value.categories,
+                      );
+
+                      Get.to(() => const ResultView());
+                    }
+                  },
+                  child: Text(
+                    "SHOW ALL",
+                    style: boldTextStyle(
+                        weight: FontWeight.w400,
+                        size: 20.sp.round(),
+                        color: Color(0xff9B9B9B)),
+                  ),
                 ),
                 SizedBox(
-                  width: 15.w,
+                  width: smallSpacing,
                 )
               ],
             ),
@@ -568,96 +640,254 @@ class HomeView extends GetView<HomeController> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             25.w)),
-                                                child: Image.asset(
-                                                  "assets/images/placeholder.png",
-                                                  width: 215.w,
-                                                  height: 65.h,
-                                                ))
-                                            : Expanded(
-                                                flex: 2,
-                                                child: Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: controller
-                                                        .homeModel
-                                                        .value
-                                                        .product![index]
-                                                        .image!,
-                                                    fit: BoxFit.fitWidth,
-                                                    imageBuilder: (context,
-                                                            imageProvider) =>
-                                                        Container(
-                                                      width: 30.0,
-                                                      height: 80.0,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit:
-                                                                  BoxFit.cover),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15)),
+                                                child: placeHolderWidget())
+                                            : Container(
+                                                width: 213.w,
+                                                height: 110.h,
+                                                decoration: ShapeDecoration(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                ),
+                                                child: Stack(
+                                                  children: [
+                                                    Positioned(
+                                                      left: 10.w,
+                                                      top: 0,
+                                                      child: Container(
+                                                        width: 180.w,
+                                                        height: 66.h,
+                                                        decoration:
+                                                            ShapeDecoration(
+                                                          color: const Color(
+                                                              0xFFF9F5FF),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            side: const BorderSide(
+                                                                width: 1,
+                                                                color: Color(
+                                                                    0xFFF9F5FF)),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8),
+                                                          ),
+                                                          shadows: const [
+                                                            BoxShadow(
+                                                              color: Color(
+                                                                  0x26000000),
+                                                              blurRadius: 14,
+                                                              offset:
+                                                                  Offset(0, 6),
+                                                              spreadRadius: -12,
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
                                                     ),
-                                                    width: 35.w,
-                                                    placeholder: (ctx, v) {
-                                                      return Image.asset(
-                                                        "assets/images/placeholder.png",
-                                                        width: 85.w,
-                                                      );
-                                                    },
-                                                  ),
+                                                    Positioned(
+                                                      left: 0,
+                                                      top: 0,
+                                                      child: Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl: controller
+                                                              .homeModel
+                                                              .value
+                                                              .product![index]
+                                                              .image!,
+                                                          fit: BoxFit.fitWidth,
+                                                          imageBuilder: (context,
+                                                                  imageProvider) =>
+                                                              Container(
+                                                            width: 80.0.w,
+                                                            height: 80.0.h,
+                                                            decoration: BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image:
+                                                                        imageProvider,
+                                                                    fit: BoxFit
+                                                                        .cover),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.sp)),
+                                                          ),
+                                                          width: 65.w,
+                                                          placeholder:
+                                                              (ctx, v) {
+                                                            return placeHolderWidget();
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      left: 75.w,
+                                                      top: 12.50.h,
+                                                      child: Container(
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 134.w,
+                                                              height: 20.h,
+                                                              child: Text(
+                                                                  controller
+                                                                      .homeModel
+                                                                      .value
+                                                                      .product![
+                                                                          index]
+                                                                      .name!,
+                                                                  style:
+                                                                      primaryTextStyle(
+                                                                    weight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    letterSpacing:
+                                                                        -0.12,
+                                                                    size: 12
+                                                                        .sp
+                                                                        .round(),
+                                                                  )),
+                                                            ),
+                                                            SizedBox(
+                                                                height: 10.h),
+                                                            SizedBox(
+                                                              width: 58.w,
+                                                              height: 25.h,
+                                                              child: Text(
+                                                                  "\$ ${controller.homeModel.value.product![index].price!}",
+                                                                  style:
+                                                                      primaryTextStyle(
+                                                                    weight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    letterSpacing:
+                                                                        0.09.h,
+                                                                    size: 13
+                                                                        .sp
+                                                                        .round()
+                                                                        .round(),
+                                                                  )),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Color(0xffF9F5FF),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                                Text(
-                                                  controller.homeModel.value
-                                                      .product![index].name!,
-                                                  style: primaryTextStyle(
-                                                      size: 12.sp.round(),
-                                                      weight: FontWeight.w500,
-                                                      color: Color(0xff9B9B9B)),
-                                                ),
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                                Text(
-                                                  "\$ ${controller.homeModel.value.product![index].price!} ",
-                                                  style: primaryTextStyle(
-                                                      size: 16.sp.round(),
-                                                      weight: FontWeight.w700,
-                                                      color: Colors.black),
-                                                ),
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                              ],
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                            ),
-                                          ),
-                                        ),
+                                              )
+                                        // Expanded(
+                                        //         flex: 2,
+                                        //         child: Container(
+                                        //           decoration:
+                                        //               const BoxDecoration(
+                                        //             shape: BoxShape.circle,
+                                        //           ),
+                                        //           child: CachedNetworkImage(
+                                        //             imageUrl: controller
+                                        //                 .homeModel
+                                        //                 .value
+                                        //                 .product![index]
+                                        //                 .image!,
+                                        //             fit: BoxFit.fitWidth,
+                                        //             imageBuilder: (context,
+                                        //                     imageProvider) =>
+                                        //                 Container(
+                                        //               width: 30.0,
+                                        //               height: 80.0,
+                                        //               decoration: BoxDecoration(
+                                        //                   image: DecorationImage(
+                                        //                       image:
+                                        //                           imageProvider,
+                                        //                       fit:
+                                        //                           BoxFit.cover),
+                                        //                   borderRadius:
+                                        //                       BorderRadius
+                                        //                           .circular(
+                                        //                               15)),
+                                        //             ),
+                                        //             width: 35.w,
+                                        //             placeholder: (ctx, v) {
+                                        //               return placeHolderWidget();
+                                        //             },
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        // Expanded(
+                                        //     flex: 3,
+                                        //     child: Material(
+                                        //       elevation: 8,
+                                        //       color: Colors.white,
+                                        //       shadowColor: Colors.black12,
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(20),
+                                        //       child: Container(
+                                        //         decoration: const BoxDecoration(
+                                        //           color: Colors.white12,
+                                        //           boxShadow: [
+                                        //             BoxShadow(
+                                        //               color: Colors.black12,
+                                        //               blurRadius: 4,
+                                        //               offset: Offset(4,
+                                        //                   8), // Shadow position
+                                        //             ),
+                                        //           ],
+                                        //         ),
+                                        //         child: Column(
+                                        //           mainAxisAlignment:
+                                        //               MainAxisAlignment.center,
+                                        //           children: [
+                                        //             SizedBox(
+                                        //               height: 5.h,
+                                        //             ),
+                                        //             Text(
+                                        //               controller
+                                        //                   .homeModel
+                                        //                   .value
+                                        //                   .product![index]
+                                        //                   .name!,
+                                        //               style: primaryTextStyle(
+                                        //                   size: 12.sp.round(),
+                                        //                   weight:
+                                        //                       FontWeight.w500,
+                                        //                   color: Color(
+                                        //                       0xff9B9B9B)),
+                                        //             ),
+                                        //             SizedBox(
+                                        //               height: 5.h,
+                                        //             ),
+                                        //             Text(
+                                        //               "\$ ${controller.homeModel.value.product![index].price!} ",
+                                        //               style: primaryTextStyle(
+                                        //                   size: 16.sp.round(),
+                                        //                   weight:
+                                        //                       FontWeight.w700,
+                                        //                   color: Colors.black),
+                                        //             ),
+                                        //             SizedBox(
+                                        //               height: 5.h,
+                                        //             ),
+                                        //           ],
+                                        //         ),
+                                        //       ),
+                                        //     )),
                                       ],
                                     )
-                                  : Image.asset(
-                                      "assets/images/placeholder.png",
-                                      width: 200.w,
-                                      height: 200.h,
-                                    ),
+                                  : placeHolderWidget(),
                             );
                           },
                           separatorBuilder: (ctx, index) => SizedBox(
@@ -688,7 +918,7 @@ class HomeView extends GetView<HomeController> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(left: 15.w),
+      padding: EdgeInsets.only(left: smallSpacing),
       child: Container(
         height: 40.h,
         child: controller.isHomeLoading.value
@@ -717,11 +947,26 @@ class HomeView extends GetView<HomeController> {
                     itemBuilder: (ctx, index) {
                       return GestureDetector(
                         onTap: () {
-                          // CustomSearchController customSearchController = CustomSearchController();
-                          // Get.put<CustomSearchController>(CustomSearchController());
-                          // customSearchController.filterProductsAccordingToCat( myCatList[index].id!, true);
-                          //
-                          // Get.to(()=> ResultView());
+                          if (CustomSearchController().initialized) {
+                            Get.find<CustomSearchController>()
+                                .filterProductsAccordingToCat(
+                              myCatList[index].id!,
+                              true,
+                              myCatList,
+                            );
+
+                            Get.to(() => const ResultView());
+                          } else {
+                            Get.put<CustomSearchController>(
+                                    CustomSearchController())
+                                .filterProductsAccordingToCat(
+                              myCatList[index].id!,
+                              true,
+                              myCatList,
+                            );
+
+                            Get.to(() => const ResultView());
+                          }
                         },
                         child: SizedBox(
                           child: Container(
@@ -732,9 +977,10 @@ class HomeView extends GetView<HomeController> {
                                     Border.all(color: Colors.grey, width: 1)),
                             child: myCatList[index].image != null
                                 ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      const SizedBox(
-                                        width: 10,
+                                      SizedBox(
+                                        width: 3.w,
                                       ),
                                       myCatList[index].image!.isEmpty
                                           ? SvgPicture.asset(
@@ -744,11 +990,7 @@ class HomeView extends GetView<HomeController> {
                                               width: 50.w,
                                               height: 15.h,
                                               placeholder: (ctx, v) {
-                                                return Image.asset(
-                                                  "assets/images/placeholder.png",
-                                                  width: 50.w,
-                                                  height: 15.h,
-                                                );
+                                                return placeHolderWidget();
                                               },
                                             ),
                                       const SizedBox(
@@ -762,8 +1004,8 @@ class HomeView extends GetView<HomeController> {
                                   )
                                 : Row(
                                     children: [
-                                      const SizedBox(
-                                        width: 10,
+                                      SizedBox(
+                                        width: 3.w,
                                       ),
                                       SvgPicture.asset(
                                           "assets/images/home/cat_icon.svg"),
@@ -783,7 +1025,7 @@ class HomeView extends GetView<HomeController> {
                     separatorBuilder: (ctx, index) => SizedBox(
                           width: 10.w,
                         ),
-                    itemCount: myCatList!.length)
+                    itemCount: myCatList.length)
                 : SizedBox(),
       ),
     );
@@ -850,7 +1092,7 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           SizedBox(
-            width: 15.w,
+            width: smallSpacing,
           )
         ],
       ),
@@ -867,7 +1109,7 @@ class HomeView extends GetView<HomeController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 15.w,
+            width: smallSpacing,
           ),
           Flexible(
             flex: 12,
@@ -939,10 +1181,72 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           SizedBox(
-            width: 15.w,
+            width: smallSpacing,
           )
         ],
       ),
     );
+  }
+}
+
+class CustomSliverPersistentHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return LayoutBuilder(builder: (_, constraints) {
+      final t = shrinkOffset / maxExtent;
+      final width = constraints.maxWidth;
+      final itemMaxWidth = width / 4;
+
+      double xFactor = -.4;
+      return ColoredBox(
+        color: Colors.cyanAccent.withOpacity(.3),
+        child: Stack(
+          children: [
+            Align(
+              alignment:
+                  Alignment.lerp(Alignment.center, Alignment(xFactor, -.2), t)!
+                    ..x,
+              child: buildRow(
+                  color: Colors.deepPurple, itemMaxWidth: itemMaxWidth, t: t),
+            ),
+            Align(
+              alignment: Alignment.lerp(
+                  Alignment.centerRight, Alignment(xFactor, 0), t)!,
+              child:
+                  buildRow(color: Colors.red, itemMaxWidth: itemMaxWidth, t: t),
+            ),
+            Align(
+              alignment: Alignment.lerp(
+                  Alignment.centerLeft, Alignment(xFactor, .2), t)!,
+              child: buildRow(
+                  color: Colors.amber, itemMaxWidth: itemMaxWidth, t: t),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Container buildRow(
+      {required Color color, required double itemMaxWidth, required double t}) {
+    return Container(
+      width: lerpDouble(itemMaxWidth, itemMaxWidth * .3, t),
+      height: lerpDouble(itemMaxWidth, itemMaxWidth * .3, t),
+      color: color,
+    );
+  }
+
+  /// you need to increase when it it not pinned
+  @override
+  double get maxExtent => 400;
+
+  @override
+  double get minExtent => 300;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }

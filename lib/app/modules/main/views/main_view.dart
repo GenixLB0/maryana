@@ -5,6 +5,7 @@ import 'package:maryana/app/modules/home/views/home_view.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
 
 import 'package:maryana/app/modules/profile/views/profile_view.dart';
+import 'package:maryana/app/modules/shop/views/shop_view.dart';
 
 class MainView extends StatelessWidget {
   final NavigationsBarController _tabController =
@@ -12,7 +13,7 @@ class MainView extends StatelessWidget {
 
   final List<Widget> _screens = [
    HomeView(),
-    SizedBox(),
+    ShopView(),
     SizedBox(),
     ProfileView(),
     ProfileView(),

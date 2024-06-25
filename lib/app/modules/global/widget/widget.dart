@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:lottie/lottie.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -133,12 +134,14 @@ class MySecondDefaultButton extends StatefulWidget {
     this.width,
     this.Icon,
   }) : super(key: key);
+
   @override
   MySecondDefaultButtonState createState() => MySecondDefaultButtonState();
 }
 
 class MySecondDefaultButtonState extends State<MySecondDefaultButton> {
   bool isloading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -228,12 +231,14 @@ class MyDefaultButton extends StatefulWidget {
     this.width,
     this.Icon,
   }) : super(key: key);
+
   @override
   MyDefaultButtonState createState() => MyDefaultButtonState();
 }
 
 class MyDefaultButtonState extends State<MyDefaultButton> {
   bool isloading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -649,6 +654,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final List<Widget>? actions;
   final Function()? function;
+
   const CustomAppBar({
     this.title,
     this.actions,
@@ -826,4 +832,17 @@ class CustomNavBar extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget loadingIndicatorWidget() {
+  return Center(
+      child: LoadingAnimationWidget.flickr(
+    leftDotColor: primaryColor,
+    rightDotColor: const Color(0xFFFF0084),
+    size: 50,
+  ));
+}
+
+Widget placeHolderWidget() {
+  return Lottie.asset("assets/images/placeholder.json");
 }
