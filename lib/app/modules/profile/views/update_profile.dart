@@ -87,6 +87,88 @@ class _ProfileUpdateState extends State<ProfileUpdate>
     );
   }
 
+  void _showDeleteConfirmation(
+      BuildContext context, ProfileController controller) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 250.h,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 20.h),
+              Container(
+                  padding: EdgeInsetsDirectional.all(12),
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      border: Border.all(color: Colors.black12),
+                      shape: BoxShape.circle),
+                  child: Icon(Icons.delete_forever,
+                      color: Colors.white, size: 24.sp)),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      width: 300.w,
+                      child: Text(
+                          'Are you sure you want to delete your account?',
+                          style: primaryTextStyle(
+                              size: 18.sp.round(), weight: FontWeight.w600))),
+                ],
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        controller.deleteAccount();
+                        Get.back();
+                      },
+                      child: Container(
+                        width: 150.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            border: Border.all(color: Colors.black12),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: Center(
+                            child: Text('Yes',
+                                style: primaryTextStyle(
+                                    size: 16.sp.round(),
+                                    color: Colors.white,
+                                    weight: FontWeight.bold))),
+                      )),
+                  InkWell(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Container(
+                        width: 150.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: Center(
+                            child: Text('No',
+                                style: primaryTextStyle(
+                                    size: 16.sp.round(),
+                                    color: Colors.white,
+                                    weight: FontWeight.bold))),
+                      )),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   final ImagePicker _picker = ImagePicker();
 
   onPickImage() async {
@@ -307,6 +389,17 @@ class _ProfileUpdateState extends State<ProfileUpdate>
                   }
                 },
                 btnText: 'Save Change',
+                isloading: controller.isLoading.value,
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              MySecondDefaultButton(
+                onPressed: () {
+                  _showDeleteConfirmation(context, controller);
+                },
+                color: Colors.red,
+                btnText: 'Delete your account',
                 isloading: controller.isLoading.value,
               ),
             ],

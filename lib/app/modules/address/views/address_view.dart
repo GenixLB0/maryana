@@ -289,12 +289,14 @@ class AddressListScreen extends StatelessWidget {
         }
         ;
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => AddAddressScreen());
-        },
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: !addressController.addressList.isEmpty
+          ? FloatingActionButton(
+              onPressed: () {
+                Get.to(() => AddAddressScreen());
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

@@ -166,7 +166,7 @@ class MySecondDefaultButtonState extends State<MySecondDefaultButton> {
               height: 48.h,
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
-                  color: Color(0xFF21034F),
+                  color: widget.color ?? Color(0xFF21034F),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   )),

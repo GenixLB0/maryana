@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
+import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/profile/views/update_profile.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class ProfileController extends GetxController {
   var userModel = User(
@@ -123,6 +125,46 @@ class ProfileController extends GetxController {
 
       fetchProfile();
       Get.snackbar('Success', 'Information updated successfully');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> clearUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_data');
+    print('User data cleared');
+  }
+
+  void reset() {
+    userToken = null;
+    clearUserData();
+    Get.offAll(LoginView()); // Navigate to signup screen
+  }
+
+  void Logout() async {
+    try {
+      isLoading(true);
+      await apiConsumer.post(
+        'logout',
+      );
+
+      Get.snackbar('Success', 'Logged out successfully');
+      reset();
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  void deleteAccount() async {
+    try {
+      isLoading(true);
+      await apiConsumer.post(
+        'customer-delete',
+      );
+
+      Get.snackbar('Success', 'Account Deleted successfully');
+      reset();
     } finally {
       isLoading(false);
     }

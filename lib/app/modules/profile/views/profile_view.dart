@@ -56,14 +56,17 @@ class _ProfileViewState extends State<ProfileView>
                     _buildMenuItem('address.svg', 'Address', () {
                       Get.to(() => AddressListScreen());
                     }, 21, 1),
+                    // _buildMenuItem(
+                    //     'payment.svg', 'Payment method', () {}, 21, 2),
+                    _buildMenuItem('coupon.svg', 'Coupons', () {}, 24, 2),
+                    // _buildMenuItem('gift.svg', 'Gift Card', () {}, 24, 4),
+                    _buildMenuItem('order.svg', 'Orders', () {}, 24, 3),
+                    _buildMenuItem('rate.svg', 'Rate this app', () {}, 24, 4),
+                    _buildMenuItem('terms.svg', 'Terms of Use', () {}, 24, 5),
                     _buildMenuItem(
-                        'payment.svg', 'Payment method', () {}, 21, 2),
-                    _buildMenuItem('coupon.svg', 'Coupons', () {}, 24, 3),
-                    _buildMenuItem('gift.svg', 'Gift Card', () {}, 24, 4),
-                    _buildMenuItem('order.svg', 'Orders', () {}, 24, 5),
-                    _buildMenuItem('rate.svg', 'Rate this app', () {}, 24, 6),
+                        'privacy.svg', 'Privacy Policy', () {}, 24, 6),
                     _buildMenuItem('logout.svg', 'Log out', () {
-                      // Implement logout functionality
+                      _showLogoutConfirmation(context, controller);
                     }, 24, 7)
                   ],
                 ),
@@ -72,6 +75,87 @@ class _ProfileViewState extends State<ProfileView>
           ),
         );
       }),
+    );
+  }
+
+  void _showLogoutConfirmation(
+      BuildContext context, ProfileController controller) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 230.h,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 20.h),
+              Container(
+                  padding: EdgeInsetsDirectional.all(12),
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      border: Border.all(color: Colors.black12),
+                      shape: BoxShape.circle),
+                  child: Icon(Icons.logout_outlined,
+                      color: Colors.white, size: 24.sp)),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      width: 300.w,
+                      child: Text('Are you sure you want to log out?',
+                          style: primaryTextStyle(
+                              size: 18.sp.round(), weight: FontWeight.w600))),
+                ],
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        controller.Logout();
+                        Get.back(); // Use Get.back() instead of Navigator.pop(context)
+                      },
+                      child: Container(
+                        width: 150.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            border: Border.all(color: Colors.black12),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: Center(
+                            child: Text('Yes',
+                                style: primaryTextStyle(
+                                    size: 16.sp.round(),
+                                    color: Colors.white,
+                                    weight: FontWeight.bold))),
+                      )),
+                  InkWell(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Container(
+                        width: 150.w,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: Center(
+                            child: Text('No',
+                                style: primaryTextStyle(
+                                    size: 16.sp.round(),
+                                    color: Colors.white,
+                                    weight: FontWeight.bold))),
+                      )),
+                ],
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
