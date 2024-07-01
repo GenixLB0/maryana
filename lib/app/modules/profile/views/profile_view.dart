@@ -17,6 +17,7 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView>
     with TickerProviderStateMixin {
   final ProfileController controller = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,8 +113,8 @@ class _ProfileViewState extends State<ProfileView>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                      onPressed: () {
+                  InkWell(
+                      onTap: () {
                         controller.Logout();
                         Get.back(); // Use Get.back() instead of Navigator.pop(context)
                       },
@@ -122,7 +123,6 @@ class _ProfileViewState extends State<ProfileView>
                         height: 50.h,
                         decoration: BoxDecoration(
                             color: Colors.red,
-                            border: Border.all(color: Colors.black12),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12))),
                         child: Center(
@@ -132,6 +132,29 @@ class _ProfileViewState extends State<ProfileView>
                                     color: Colors.white,
                                     weight: FontWeight.bold))),
                       )),
+                  // ElevatedButton(
+                  //     style: ButtonStyle(
+                  //         backgroundColor:
+                  //             WidgetStateProperty.all(Colors.transparent)),
+                  //     onPressed: () {
+                  //       controller.Logout();
+                  //       Get.back(); // Use Get.back() instead of Navigator.pop(context)
+                  //     },
+                  //     child: Container(
+                  //       width: 150.w,
+                  //       height: 50.h,
+                  //       decoration: BoxDecoration(
+                  //           color: Colors.red,
+                  //           border: Border.all(color: Colors.black12),
+                  //           borderRadius:
+                  //               BorderRadius.all(Radius.circular(12))),
+                  //       child: Center(
+                  //           child: Text('Yes',
+                  //               style: primaryTextStyle(
+                  //                   size: 16.sp.round(),
+                  //                   color: Colors.white,
+                  //                   weight: FontWeight.bold))),
+                  //     )),
                   InkWell(
                       onTap: () {
                         Get.back();

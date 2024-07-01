@@ -20,6 +20,8 @@ dependencies:
   dio: ^4.0.6
   nb_utils: 6.1.0
   flutter_animate:
+  sliding_up_panel:
+  carousel_slider:
   delayed_widget:
   page_transition:
   flutter_svg:
@@ -37,6 +39,7 @@ dependencies:
   mobx: ^2.2.1
   flutter_mobx: ^2.2.0
   google_fonts: ^6.2.1
+  modal_bottom_sheet: ^3.0.0
 
   image_picker: ^1.1.2
   geocoding: ^3.0.0
