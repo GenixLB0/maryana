@@ -1,30 +1,64 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart' hide Material;
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart';
+
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
 import 'package:dio/dio.dart' as dio;
 
 class CustomSearchController extends GetxController {
-  List<Product> products = [];
-  List<Product> resultSearchProducts = [];
+  List<ViewProductData> products = [];
+  List<ViewProductData> resultSearchProducts = [];
   RxList<Categories> categories = <Categories>[].obs;
   late SharedPreferences prefs;
-  final count = 0.obs;
+  final Rx<int> resultCount = 0.obs;
+
   List<String> searchKeywords = [];
   String titleResult = "";
-  List<int> activeCats = [0, 0, 0, 0];
+  List<int> activeCats = [];
   RxBool isSearchLoading = false.obs;
+  RxBool isFromSearch = false.obs;
   String selectedId = "";
   ApiService apiService = Get.find();
   ApiConsumer apiConsumer = sl();
+  RxBool isFilterLoading = false.obs;
 
+//////////////////////Filter//////////////////////////////
+  RxList<ProductColor> colors = <ProductColor>[].obs;
+
+  RxList<Brands> brands = <Brands>[].obs;
+
+  RxList<Categories> categories_in_filter = <Categories>[].obs;
+
+  RxList<Collections> collections = <Collections>[].obs;
+
+  RxList<Styles> styles = <Styles>[].obs;
+  RxList<String> sizes = <String>[].obs;
+
+  RxList<Material> materials = <Material>[].obs;
+  RxList<String> seasons = <String>[].obs;
+  RxBool colorFullLength = false.obs;
+
+  RxList<String> selectedSizes = <String>[].obs;
+  RxList<Material> selectedMaterials = <Material>[].obs;
+  RxList<Styles> selectedStyles = <Styles>[].obs;
+
+  RxList<ProductColor> selectedColors = <ProductColor>[].obs;
+  RxList<String> selectedSeasons = <String>[].obs;
+  RxList<Brands> selectedBrands = <Brands>[].obs;
+  RxList<Collections> selectedCollections = <Collections>[].obs;
+  Rx<RangeValues> settedValue = RangeValues(1.0, 10000.0).obs;
+  Rx<TextEditingController> minPriceController = TextEditingController().obs;
+  Rx<TextEditingController> maxPriceController = TextEditingController().obs;
+
+  ////////////////////////////////////////////////////////////
   @override
   void onInit() {
     super.onInit();
@@ -32,14 +66,8 @@ class CustomSearchController extends GetxController {
 
   @override
   void onReady() async {
-    if (Get.arguments != [] || Get.arguments != null) {
-      print("the arguments are ${Get.arguments}");
-      products = Get.arguments[0] as List<Product>;
-      categories.value = Get.arguments[1] as List<Categories>;
-      mimicCatsForActiveCats(false, null);
-    }
-
     prefs = await SharedPreferences.getInstance();
+    await getFilterResults();
     getSearchKeywords();
     update();
   }
@@ -49,9 +77,8 @@ class CustomSearchController extends GetxController {
     super.onClose();
   }
 
-  void increment() => count.value++;
-
-  getSearchKeywords() {
+  getSearchKeywords() async {
+    prefs = await SharedPreferences.getInstance();
     List<String>? keyWords = prefs.getStringList("search_keywords");
     if (keyWords != null) {
       searchKeywords = keyWords;
@@ -60,9 +87,10 @@ class CustomSearchController extends GetxController {
     update();
   }
 
-  addSearchKeywords(searchValue) {
+  addSearchKeywords(searchValue) async {
     titleResult = searchValue;
     searchKeywords.add(searchValue);
+    prefs = await SharedPreferences.getInstance();
     prefs.setStringList("search_keywords", searchKeywords);
 
     getSearchKeywords();
@@ -92,7 +120,8 @@ class CustomSearchController extends GetxController {
           for (var product in apiResponse.data!.products!) {
             resultSearchProducts.add(product);
           }
-          print("searching 2 ${resultSearchProducts}");
+          print("searching 2 ${resultSearchProducts.length}");
+          resultCount.value = resultSearchProducts.length;
         } else {
           handleApiErrorUser(apiResponse.message);
           handleApiError(response.statusCode);
@@ -114,6 +143,71 @@ class CustomSearchController extends GetxController {
     } else {
       print("Searching 6 ${titleResult}");
     }
+  }
+
+  Future<List<dynamic>> getProductsInSection(
+      {required String sectionName, required payload}) async {
+    // if (categories.isEmpty) {
+    //   await getCategoriesList();
+    // }
+    // mimicCatsForActiveCats(false, 1);
+
+    isFromSearch.value = false;
+    titleResult = sectionName;
+    resultSearchProducts.clear();
+    isSearchLoading.value = true;
+
+    print("the payload ${payload}");
+    print("should called once...");
+    var bodyFields = payload;
+
+    var headers = {
+      'Accept': 'application/json',
+      'x-from': 'app',
+      'x-lang': 'en',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    final response = await http.post(
+      Uri.parse('https://mariana.genixarea.pro/api/products'),
+      headers: headers,
+      body: bodyFields,
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+        print("response data ${responseData['data'].length}");
+        for (var product in responseData['data']) {
+          resultSearchProducts.add(ViewProductData.fromJson(product));
+        }
+        resultCount.value = resultSearchProducts.length;
+        isSearchLoading.value = false;
+        resultCount.value = resultSearchProducts.length;
+        print("your map ${payload}");
+
+        print("your result ${resultSearchProducts}");
+
+        return resultSearchProducts;
+      } else {
+        print(response.reasonPhrase);
+        isSearchLoading.value = false;
+        print('products fetch failed 1: ${response.reasonPhrase} ');
+
+        return [];
+      }
+    } catch (e, stackTrace) {
+      isSearchLoading.value = false;
+      print('products fetch failed 2:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+
+      return [];
+    }
+  }
+
+  filterResultSearchProducts(filteredProducts) {
+    resultSearchProducts = filteredProducts;
   }
 
   addActiveCats(List<int> incomingActiveCats) {
@@ -228,7 +322,7 @@ class CustomSearchController extends GetxController {
         if (response.statusCode == 200) {
           var responseData = json.decode(response.body);
           for (var product in responseData['data']) {
-            resultSearchProducts.add(Product.fromJson(product));
+            resultSearchProducts.add(product);
           }
 
           print(resultSearchProducts.length);
@@ -259,7 +353,7 @@ class CustomSearchController extends GetxController {
           if (response.statusCode == 200) {
             var responseData = json.decode(response.body);
             for (var product in responseData['data']) {
-              resultSearchProducts.add(Product.fromJson(product));
+              resultSearchProducts.add(product);
             }
 
             print(resultSearchProducts.length);
@@ -284,7 +378,7 @@ class CustomSearchController extends GetxController {
           if (response.statusCode == 200) {
             var responseData = json.decode(response.body);
             for (var product in responseData['data']) {
-              resultSearchProducts.add(Product.fromJson(product));
+              resultSearchProducts.add(product);
             }
 
             print(resultSearchProducts.length);
@@ -335,6 +429,399 @@ class CustomSearchController extends GetxController {
       print(e.toString() + stackTrace.toString());
 
       update();
+    }
+  }
+
+  setArgs() {
+    getSearchKeywords();
+    if (Get.arguments == null) {
+    } else {
+      print("the arguments are ${Get.arguments}");
+      products = Get.arguments[0] as List<ViewProductData>;
+      categories.value = Get.arguments[1] as List<Categories>;
+      print("products from args ${products}");
+      mimicCatsForActiveCats(false, null);
+    }
+  }
+
+  getFilterResults() async {
+    isFilterLoading.value = true;
+    await getColors();
+    await getBrands();
+    await getCategories();
+    await getCollections();
+    await getStyles();
+    await getSeasons();
+    await getMaterials();
+    await getSizes();
+
+    isFilterLoading.value = false;
+  }
+
+  getColors() async {
+    print("getting colors");
+
+    colors.clear();
+    print('colors api Loading ..');
+
+    final response = await apiConsumer.post(
+      'colors',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiColorsResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('colors data successful');
+
+        for (var color in apiResponse.data!.colors!) {
+          colors.add(color);
+        }
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('colors api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  getBrands() async {
+    print("getting brands");
+
+    brands.clear();
+    print('brands api Loading ..');
+
+    final response = await apiConsumer.post(
+      'brands',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiBrandsResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('colors data successful');
+
+        for (var brand in apiResponse.data!.brands!) {
+          brands.add(brand);
+        }
+        print("gotten brands are ${brands}");
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('brands api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  getCategories() async {
+    print("categories getting");
+
+    categories_in_filter.clear();
+    print('categories api Loading ..');
+
+    final response = await apiConsumer.post(
+      'categories',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiCategoryResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('categories data successful');
+
+        for (var category in apiResponse.data!) {
+          categories_in_filter.add(category);
+        }
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('categories api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  getCollections() async {
+    print("collections getting");
+
+    collections.clear();
+    print('collections api Loading ..');
+
+    final response = await apiConsumer.post(
+      'collections',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiCollectionsResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('collections data successful');
+
+        for (var collection in apiResponse.data!.collections!) {
+          collections.add(collection);
+        }
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('collection api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  getStyles() async {
+    print("styles getting");
+
+    styles.clear();
+    print('styles api Loading ..');
+
+    final response = await apiConsumer.post(
+      'styles',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiStylesResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('styles data successful');
+
+        for (var style in apiResponse.data!.styles!) {
+          styles.add(style);
+        }
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('styles api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  getSeasons() async {
+    print("seasons getting");
+
+    seasons.clear();
+    print('seasons api Loading ..');
+
+    final response = await apiConsumer.post(
+      'seasons',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiSeasonsResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('seasons data successful');
+
+        for (var season in apiResponse.data!.seasons!) {
+          seasons.add(season);
+        }
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('seasons api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  getMaterials() async {
+    print("Materials getting");
+
+    materials.clear();
+    print('Materials api Loading ..');
+
+    final response = await apiConsumer.post(
+      'materials',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiMaterialsResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('Materials data successful');
+
+        for (var material in apiResponse.data!.materials!) {
+          materials.add(material);
+        }
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('Materials api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  getSizes() async {
+    print("Sizes getting");
+
+    sizes.clear();
+    print('Sizes api Loading ..');
+
+    final response = await apiConsumer.post(
+      'sizes',
+      formDataIsEnabled: true,
+    );
+
+    try {
+      final apiResponse = ApiSizesResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('Sizes data successful');
+
+        for (var size in apiResponse.data!.sizes!) {
+          sizes.add(size);
+        }
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+      }
+    } catch (e, stackTrace) {
+      print('Sizes api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+    }
+  }
+
+  changeLength(value) {
+    value.value = !value.value;
+  }
+
+  addOrRemoveSize(size) {
+    if (selectedSizes.contains(size)) {
+      selectedSizes.remove(size);
+    } else {
+      selectedSizes.add(size);
+    }
+
+    print("selected sizes are ${selectedSizes}");
+  }
+
+  addOrRemoveMaterial(material) {
+    if (selectedMaterials.contains(material)) {
+      selectedMaterials.remove(material);
+    } else {
+      selectedMaterials.add(material);
+    }
+
+    print("selected materials are ${selectedMaterials}");
+
+    for (var material in selectedMaterials) {
+      print("the id is ${material.id}");
+    }
+  }
+
+  addOrRemoveStyle(style) {
+    if (selectedStyles.contains(style)) {
+      selectedStyles.remove(style);
+    } else {
+      selectedStyles.add(style);
+    }
+
+    print("selected styles are ${selectedStyles}");
+
+    for (var style in selectedStyles) {
+      print("the id is ${style.id}");
+    }
+  }
+
+  addOrRemoveColor(color) {
+    if (selectedColors.contains(color)) {
+      selectedColors.remove(color);
+    } else {
+      selectedColors.add(color);
+    }
+
+    print("selected colors are ${selectedColors}");
+
+    for (var color in selectedColors) {
+      print("the id is ${color.name}");
+    }
+  }
+
+  addOrRemoveSeason(season) {
+    if (selectedSeasons.contains(season)) {
+      selectedSeasons.remove(season);
+    } else {
+      selectedSeasons.add(season);
+    }
+
+    print("selected season are ${selectedSeasons}");
+
+    for (var season in selectedSeasons) {
+      print("the name is ${season}");
+    }
+  }
+
+  addOrRemoveBrand(brand) {
+    if (selectedBrands.contains(brand)) {
+      selectedBrands.remove(brand);
+    } else {
+      selectedBrands.add(brand);
+    }
+
+    print("selected brand are ${selectedBrands}");
+
+    for (var brand in selectedBrands) {
+      print("the brand is ${brand}");
+    }
+  }
+
+  addOrRemoveCollection(collection) {
+    if (selectedCollections.contains(collection)) {
+      selectedCollections.remove(collection);
+    } else {
+      selectedCollections.add(collection);
+    }
+
+    print("selected collection are ${selectedCollections}");
+
+    for (var collection in selectedCollections) {
+      print("the collection is ${collection}");
+    }
+  }
+
+  clearSelectedFilters() {
+    selectedSizes.clear();
+    selectedMaterials.clear();
+    selectedStyles.clear();
+    selectedColors.clear();
+    selectedSeasons.clear();
+    selectedBrands.clear();
+    selectedCollections.clear();
+    minPriceController.value.text = "";
+    maxPriceController.value.text = "";
+    setNewValue(const RangeValues(1.0, 10000.0));
+  }
+
+  setNewValue(RangeValues value) {
+    if (value.end > value.start && value.end <= 10000.0 && value.start >= 1.0) {
+      settedValue.value = value;
+      minPriceController.value.text = value.start.toInt().toString();
+      maxPriceController.value.text = value.end.toInt().toString();
+      print(
+          "setted the start is ${minPriceController.value.text} and the end is ${maxPriceController.value.text}");
+    } else {
+      print("the con 1 ${value.end > value.start}");
+      print("the con 2 ${value.end <= 10000.0}");
+      print("the con 3 ${value.start >= 1.0}");
+      print("cannot be setted");
     }
   }
 }

@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:flutter/material.dart';
@@ -9,10 +12,23 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maryana/app/modules/global/model/model_response.dart';
+import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
+import 'package:maryana/app/modules/product/views/product_view.dart';
+import 'package:maryana/app/modules/search/controllers/search_controller.dart';
+import 'package:maryana/app/modules/search/views/result_view.dart';
+import 'package:maryana/app/modules/search/views/search_view.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../../main.dart';
+import '../../../routes/app_pages.dart';
+import '../../services/api_consumer.dart';
+import '../../services/api_service.dart';
 
 Widget gridSocialIcon() {
   return Row(
@@ -725,7 +741,7 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 95.h,
-      decoration: ShapeDecoration(
+      decoration: const ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -845,4 +861,1391 @@ Widget loadingIndicatorWidget() {
 
 Widget placeHolderWidget() {
   return Lottie.asset("assets/images/placeholder.json");
+}
+
+buildSearchAndFilter(
+    {required BuildContext context,
+    List<ViewProductData>? products,
+    List<Categories>? categories,
+    required bool isSearch,
+    final Function(String)? onSubmitted // Add this parameter
+    }) {
+  return Container(
+    width: MediaQuery.of(context).size.width,
+    height: 75.h,
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 20.w,
+        ),
+        Flexible(
+          flex: 12,
+          child: SizedBox(
+            child: TextField(
+              readOnly: isSearch ? false : true,
+              onSubmitted: (v) {
+                if (isSearch) {
+                  onSubmitted!(v);
+                }
+              },
+              maxLines: 1,
+              onTap: () {
+                if (isSearch) {
+                  if (products == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    products = controller.homeModel.value.product;
+                  }
+
+                  if (categories == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    categories = controller.homeModel.value.categories;
+                  }
+
+                  Get.to(SearchView(),
+                      arguments: [products, categories],
+                      transition: Transition.fadeIn,
+                      curve: Curves.easeInOut,
+                      duration: Duration(milliseconds: 800));
+                } else {
+                  if (products == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    products = controller.homeModel.value.product;
+                  }
+
+                  if (categories == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    categories = controller.homeModel.value.categories;
+                  }
+
+                  Get.to(SearchView(),
+                      arguments: [products, categories],
+                      transition: Transition.fadeIn,
+                      curve: Curves.easeInOut,
+                      duration: Duration(milliseconds: 800));
+                }
+
+                // Get.toNamed(
+                //   Routes.SEARCH,
+                //   arguments: [products, categories],
+                // );
+                // Get.toNamed(()=> Pages., arguments: controller.homeModel.value.product);
+              },
+              style: primaryTextStyle(
+                color: Colors.black,
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: 17.h),
+                //Imp Line
+
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 2)),
+
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 2)),
+                hintStyle: primaryTextStyle(
+                  color: Colors.black,
+                  size: 14.sp.round(),
+                  weight: FontWeight.w400,
+                  height: 1,
+                ),
+                errorStyle: primaryTextStyle(
+                  color: Colors.red,
+                  size: 14.sp.round(),
+                  weight: FontWeight.w400,
+                  height: 1,
+                ),
+                labelStyle: primaryTextStyle(
+                  color: Colors.grey[400],
+                  size: 14.sp.round(),
+                  weight: FontWeight.w400,
+                  height: 1,
+                ),
+                labelText: "Search Clothes...",
+                prefixIcon: IconButton(
+                  icon: Padding(
+                    padding: EdgeInsets.only(left: 10.w),
+                    child: SvgPicture.asset(
+                      'assets/icons/search.svg',
+                      width: 23.w,
+                      height: 23.h,
+                    ),
+                  ),
+                  onPressed: () {},
+                ),
+                suffixIcon: IconButton(
+                  icon: Padding(
+                    padding: EdgeInsets.only(right: 5.w),
+                    child: SvgPicture.asset(
+                      'assets/icons/camera.svg',
+                      width: 23.w,
+                      height: 23.h,
+                    ),
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 15.w,
+        ),
+        InkWell(
+          onTap: () {
+            showMaterialModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.transparent,
+              expand: false,
+              builder: (context) => BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: buildFilterBottomSheet(
+                      context: context, comingProducts: products)),
+            );
+          },
+          child: Container(
+            child: SvgPicture.asset(
+              "assets/images/home/Filter.svg",
+              height: 50.h,
+              width: 50.w,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 15.w,
+        )
+      ],
+    ),
+  );
+}
+
+class buildProductCard extends StatefulWidget {
+  buildProductCard(
+      {super.key, required this.product, this.isInWishlist = false});
+
+  final ViewProductData product;
+  bool isInWishlist;
+
+  @override
+  State<buildProductCard> createState() => _buildCardProductState();
+}
+
+class _buildCardProductState extends State<buildProductCard> {
+  HomeController homeController = Get.put<HomeController>(HomeController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 5),
+          ],
+        ),
+        child: widget.product.image != null
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed(
+                            Routes.PRODUCT,
+                            arguments: widget.product,
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: widget.product.image!,
+                          width: 175.w,
+                          height: 210.h,
+                          fit: BoxFit.cover,
+                          placeholder: (ctx, v) {
+                            return placeHolderWidget();
+                          },
+                        ),
+                      ),
+                      Obx(() {
+                        return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                homeController.wishlistProductIds
+                                        .contains(widget.product.id!)
+                                    ? homeController
+                                        .removeFromWishlist(widget.product.id!)
+                                    : homeController
+                                        .addToWishlist(widget.product.id!);
+                              },
+                              child: homeController.wishlistProductIds
+                                      .contains(widget.product.id!)
+                                  ? ShowUp(
+                                      delay: 500,
+                                      child: SvgPicture.asset(
+                                        "assets/images/home/wishlisted.svg",
+                                        width: 33.w,
+                                        height: 33.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : ShowUp(
+                                      delay: 500,
+                                      child: SvgPicture.asset(
+                                        "assets/images/home/add_to_wishlist.svg",
+                                        width: 33.w,
+                                        height: 33.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                            ));
+                      }),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 7.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        print(
+                            "the sent product model is ${widget.product.sizes}");
+                        Get.toNamed(
+                          Routes.PRODUCT,
+                          arguments: widget.product,
+                        );
+                      },
+                      child: Container(
+                        width: 150.w,
+                        child: Padding(
+                            padding: EdgeInsets.only(left: 5.w),
+                            child: Text(
+                              widget.product.name!,
+                              overflow: TextOverflow.ellipsis,
+                              style: primaryTextStyle(
+                                  weight: FontWeight.w700,
+                                  size: 16.sp.round(),
+                                  color: Colors.black),
+                            )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 7.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.PRODUCT,
+                          arguments: widget.product,
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(left: 5.w),
+                        width: 150.w,
+                        child: Text(
+                          widget.product.description!,
+                          overflow: TextOverflow.ellipsis,
+                          style: primaryTextStyle(
+                              weight: FontWeight.w300,
+                              size: 14.sp.round(),
+                              color: Color(0xff9B9B9B)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 7.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.PRODUCT,
+                          arguments: widget.product,
+                        );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5.w),
+                        child: Text(
+                          "\$ ${widget.product.price} ",
+                          style: primaryTextStyle(
+                              weight: FontWeight.w600,
+                              size: 15.sp.round(),
+                              color: const Color(0xff370269)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  widget.isInWishlist
+                      ? GestureDetector(
+                          onTap: () {
+                            //todo
+                            // take Product arguments from here
+                            ViewProductData product = widget.product;
+
+                            //todo
+                            //Nav To Cart Screen
+                            //Setted to Main Screen for now
+                            Get.toNamed(Routes.MAIN);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10.w),
+                            padding: EdgeInsets.only(left: 10.w),
+                            height: 30.h,
+                            width: 125.w,
+                            decoration: BoxDecoration(
+                                color: Color(0xff21034F),
+                                borderRadius: BorderRadius.circular(35.sp)),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.shopping_cart_outlined,
+                                  color: Colors.white,
+                                  size: 12.sp,
+                                ),
+                                SizedBox(
+                                  width: 4.w,
+                                ),
+                                Text(
+                                  "ADD TO CART",
+                                  style: primaryTextStyle(
+                                      weight: FontWeight.w700,
+                                      color: Colors.white,
+                                      size: 9.sp.round()),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              )
+            : placeHolderWidget(),
+      ),
+    );
+  }
+}
+
+buildProductShowAll(getProductsInSection) {
+  return GestureDetector(
+    onTap: () {
+      getProductsInSection();
+    },
+    child: Container(
+      margin: EdgeInsets.all(2),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black26, spreadRadius: -3, blurRadius: 3),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 175.w,
+            height: 210.h,
+            child: placeHolderWidget(),
+          ),
+          SizedBox(
+            height: 3.h,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 150.w,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 5.w),
+                    child: Text(
+                      "SHOW ALL",
+                      overflow: TextOverflow.ellipsis,
+                      style: primaryTextStyle(
+                          weight: FontWeight.w700,
+                          size: 16.sp.round(),
+                          color: Colors.grey[500]),
+                    ),
+                  ),
+                ),
+                Icon(Icons.arrow_forward, color: Colors.grey[500])
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 5.w),
+            width: 150.w,
+            child: Text(
+              "",
+              overflow: TextOverflow.ellipsis,
+              style: primaryTextStyle(
+                  weight: FontWeight.w300,
+                  size: 14.sp.round(),
+                  color: Color(0xff9B9B9B)),
+            ),
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 5.w),
+            child: Text(
+              " ",
+              style: primaryTextStyle(
+                  weight: FontWeight.w600,
+                  size: 15.sp.round(),
+                  color: Color(0xff370269)),
+            ),
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+enum FilterTypeEnum {
+  Colors,
+  Brands,
+  Style,
+  Season,
+  Materials,
+  Sizes,
+  Price,
+  Collection
+
+  // Add more animation states as needed
+}
+
+List<Widget> buildChildren(FilterTypeEnum filterName,
+    CustomSearchController my_search_controller, context) {
+  switch (filterName) {
+    case FilterTypeEnum.Sizes:
+      return [
+        Text(
+          "Size",
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Obx(() {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 15,
+                crossAxisSpacing: 10,
+                // width / height: fixed for *all* items
+                childAspectRatio: (1 / .8),
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    my_search_controller
+                        .addOrRemoveSize(my_search_controller.sizes[index]);
+                  },
+                  child: Obx(() {
+                    return Container(
+                      padding: EdgeInsets.all(2.w),
+                      width: 70.w,
+                      height: 40.h,
+                      decoration: BoxDecoration(
+                          color: my_search_controller.selectedSizes
+                                  .contains(my_search_controller.sizes[index])
+                              ? Color(0xffE7D3FF)
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10.sp)),
+                      child: Center(
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          my_search_controller.sizes[index],
+                          style: primaryTextStyle(
+                              size: 10.sp.round(), color: Colors.black),
+                        ),
+                      ),
+                    );
+                  }),
+                );
+              },
+              itemCount: my_search_controller.sizes.length,
+            );
+          }),
+          // Add more widgets as needed
+        ),
+      ];
+
+    case FilterTypeEnum.Colors:
+      return [
+        Text(
+          "Color",
+          style: primaryTextStyle(
+              size: 20.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Obx(() {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 40,
+                crossAxisSpacing: 24,
+                // width / height: fixed for *all* items
+                childAspectRatio: 0.75,
+              ),
+              itemBuilder: (context, index) {
+                final Color colorFromHex =
+                    HexColor.fromHex(my_search_controller.colors[index].hex!);
+
+                return index != 4
+                    ? GestureDetector(
+                        onTap: () {
+                          my_search_controller.addOrRemoveColor(
+                              my_search_controller.colors[index]);
+                        },
+                        child: Obx(() {
+                          return Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: my_search_controller.selectedColors
+                                            .contains(my_search_controller
+                                                .colors[index])
+                                        ? Colors.black
+                                        : Colors.grey[300]!,
+                                    width: 4.w),
+                                color: Colors.grey[200]),
+                            child: Container(
+                              height: 25.h,
+                              width: 25.w,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(colorFromHex.value)),
+                            ),
+                          );
+                        }),
+                      )
+                    : InkWell(
+                        onTap: () {
+                          my_search_controller.changeLength(
+                              my_search_controller.colorFullLength);
+                        },
+                        child: Icon(my_search_controller.colorFullLength.value
+                            ? Icons.keyboard_arrow_up_outlined
+                            : Icons.keyboard_arrow_down_outlined),
+                      );
+              },
+              itemCount: my_search_controller.colorFullLength.value
+                  ? my_search_controller.colors.length
+                  : 5,
+            );
+          }),
+          // Add more widgets as needed
+        )
+      ];
+    case FilterTypeEnum.Brands:
+      return [
+        Text(
+          "Brands :",
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Obx(() {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 40,
+                crossAxisSpacing: 24,
+                // width / height: fixed for *all* items
+                childAspectRatio: 1.05,
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    my_search_controller
+                        .addOrRemoveBrand(my_search_controller.brands[index]);
+                  },
+                  child: Obx(() {
+                    return Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            border: Border.all(
+                                width: 4.w,
+                                color: my_search_controller.selectedBrands
+                                        .contains(
+                                            my_search_controller.brands[index])
+                                    ? Colors.black
+                                    : Colors.grey[300]!)),
+                        child: CachedNetworkImage(
+                          imageUrl: my_search_controller.brands[index].image!,
+                          fit: BoxFit.cover,
+                        ));
+                  }),
+                );
+              },
+              itemCount: my_search_controller.brands.length,
+            );
+          }),
+          // Add more widgets as needed
+        )
+      ];
+
+    case FilterTypeEnum.Style:
+      return [
+        Text(
+          "Styles :",
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Obx(() {
+            return my_search_controller.styles.isEmpty
+                ? Center(
+                    child: Text(
+                      "No Styles Yet..",
+                      style: primaryTextStyle(
+                          size: 20.sp.round(), color: Colors.black),
+                    ),
+                  )
+                : GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 10,
+                      // width / height: fixed for *all* items
+                      childAspectRatio: (1 / .8),
+                    ),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          my_search_controller.addOrRemoveStyle(
+                              my_search_controller.styles[index]);
+                        },
+                        child: Obx(() {
+                          return Container(
+                            padding: EdgeInsets.all(2.w),
+                            width: 70.w,
+                            height: 40.h,
+                            decoration: BoxDecoration(
+                                color: my_search_controller.selectedStyles
+                                        .contains(
+                                            my_search_controller.styles[index])
+                                    ? Color(0xffE7D3FF)
+                                    : Colors.grey[200],
+                                borderRadius: BorderRadius.circular(10.sp)),
+                            child: Center(
+                              child: Text(
+                                overflow: TextOverflow.ellipsis,
+                                my_search_controller.styles[index].name!,
+                                style: primaryTextStyle(
+                                    size: 10.sp.round(), color: Colors.black),
+                              ),
+                            ),
+                          );
+                        }),
+                      );
+                    },
+                    itemCount: my_search_controller.styles.length,
+                  );
+          }),
+          // Add more widgets as needed
+        )
+      ];
+
+    case FilterTypeEnum.Season:
+      return [
+        Text(
+          "Season",
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Obx(() {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 15,
+                crossAxisSpacing: 10,
+                // width / height: fixed for *all* items
+                childAspectRatio: (1 / .8),
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    my_search_controller
+                        .addOrRemoveSeason(my_search_controller.seasons[index]);
+                  },
+                  child: Obx(() {
+                    return Container(
+                      padding: EdgeInsets.all(2.w),
+                      width: 70.w,
+                      height: 40.h,
+                      decoration: BoxDecoration(
+                          color: my_search_controller.selectedSeasons
+                                  .contains(my_search_controller.seasons[index])
+                              ? Color(0xffE7D3FF)
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10.sp)),
+                      child: Center(
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          my_search_controller.seasons[index],
+                          style: primaryTextStyle(
+                              size: 10.sp.round(), color: Colors.black),
+                        ),
+                      ),
+                    );
+                  }),
+                );
+              },
+              itemCount: my_search_controller.seasons.length,
+            );
+          }),
+          // Add more widgets as needed
+        ),
+      ];
+
+    case FilterTypeEnum.Materials:
+      return [
+        Text(
+          "Materials :",
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Obx(() {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 15,
+                crossAxisSpacing: 10,
+                // width / height: fixed for *all* items
+                childAspectRatio: (1 / .8),
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    my_search_controller.addOrRemoveMaterial(
+                        my_search_controller.materials[index]);
+                  },
+                  child: Obx(() {
+                    return Container(
+                      padding: EdgeInsets.all(2.w),
+                      width: 70.w,
+                      height: 40.h,
+                      decoration: BoxDecoration(
+                          color: my_search_controller.selectedMaterials
+                                  .contains(
+                                      my_search_controller.materials[index])
+                              ? Color(0xffE7D3FF)
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10.sp)),
+                      child: Center(
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          my_search_controller.materials[index].name!,
+                          style: primaryTextStyle(
+                              size: 10.sp.round(), color: Colors.black),
+                        ),
+                      ),
+                    );
+                  }),
+                );
+              },
+              itemCount: my_search_controller.materials.length,
+            );
+          }),
+          // Add more widgets as needed
+        ),
+      ];
+
+    case FilterTypeEnum.Price:
+      return [
+        Text(
+          "Price",
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+        ),
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Container(
+              height: 130.h,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Obx(() {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller:
+                                  my_search_controller.minPriceController.value,
+                              onChanged: (val) {
+                                String minPriceText = my_search_controller
+                                    .minPriceController.value.text;
+
+                                String maxPriceController = my_search_controller
+                                    .maxPriceController.value.text;
+
+                                double minDouble =
+                                    double.tryParse(minPriceText) == null
+                                        ? 0
+                                        : double.tryParse(minPriceText)!;
+
+                                my_search_controller.setNewValue(RangeValues(
+                                  minDouble,
+                                  maxPriceController.toDouble(),
+                                ));
+                              },
+                              maxLines: 1,
+                              style: primaryTextStyle(
+                                color: Colors.black,
+                                size: 14.sp.round(),
+                                weight: FontWeight.w400,
+                              ),
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 17.h),
+                                //Imp Line
+
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.grey[300]!, width: 2)),
+
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.grey[300]!, width: 2)),
+                                hintStyle: primaryTextStyle(
+                                  color: Colors.black,
+                                  size: 14.sp.round(),
+                                  weight: FontWeight.w400,
+                                  height: 1,
+                                ),
+                                errorStyle: primaryTextStyle(
+                                  color: Colors.red,
+                                  size: 14.sp.round(),
+                                  weight: FontWeight.w400,
+                                  height: 1,
+                                ),
+                                labelStyle: primaryTextStyle(
+                                  color: Colors.grey[400],
+                                  size: 14.sp.round(),
+                                  weight: FontWeight.w400,
+                                  height: 1,
+                                ),
+                                labelText: "Min Price..",
+
+                                prefixIcon: IconButton(
+                                  icon: Padding(
+                                      padding: EdgeInsets.only(left: 10.w),
+                                      child: Icon(Icons.price_change)),
+                                  onPressed: () {},
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller:
+                                  my_search_controller.maxPriceController.value,
+                              onChanged: (val) {
+                                String minPriceText = my_search_controller
+                                    .minPriceController.value.text;
+
+                                String maxPriceText = my_search_controller
+                                    .maxPriceController.value.text;
+
+                                double maxDouble =
+                                    double.tryParse(maxPriceText) == null
+                                        ? 0
+                                        : double.tryParse(maxPriceText)!;
+
+                                my_search_controller.setNewValue(RangeValues(
+                                    minPriceText.toDouble(), maxDouble));
+                              },
+                              maxLines: 1,
+                              style: primaryTextStyle(
+                                color: Colors.black,
+                                size: 14.sp.round(),
+                                weight: FontWeight.w400,
+                              ),
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 17.h),
+                                //Imp Line
+
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.grey[300]!, width: 2)),
+
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.grey[300]!, width: 2)),
+                                hintStyle: primaryTextStyle(
+                                  color: Colors.black,
+                                  size: 14.sp.round(),
+                                  weight: FontWeight.w400,
+                                  height: 1,
+                                ),
+                                errorStyle: primaryTextStyle(
+                                  color: Colors.red,
+                                  size: 14.sp.round(),
+                                  weight: FontWeight.w400,
+                                  height: 1,
+                                ),
+                                labelStyle: primaryTextStyle(
+                                  color: Colors.grey[400],
+                                  size: 14.sp.round(),
+                                  weight: FontWeight.w400,
+                                  height: 1,
+                                ),
+                                labelText: "Max Price..",
+                                prefixIcon: IconButton(
+                                  icon: Padding(
+                                      padding: EdgeInsets.only(left: 10.w),
+                                      child: Icon(Icons.price_change)),
+                                  onPressed: () {},
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                  Expanded(
+                    child: Obx(() {
+                      return Container(
+                        child: RangeSlider(
+                            inactiveColor: Colors.grey[300],
+                            activeColor: Colors.black,
+                            min: 1.0,
+                            max: 10000.0,
+                            values: my_search_controller.settedValue.value,
+                            onChanged: (value) {
+                              my_search_controller.setNewValue(value);
+
+                              print("new value is ${value}");
+                            }),
+                      );
+                    }),
+                  )
+                ],
+              ),
+            )
+            // Add more widgets as needed
+            ),
+      ];
+
+    case FilterTypeEnum.Collection:
+      return [
+        Text(
+          "Collections :",
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Obx(() {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 40,
+                crossAxisSpacing: 24,
+                // width / height: fixed for *all* items
+                childAspectRatio: 1.05,
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    my_search_controller.addOrRemoveCollection(
+                        my_search_controller.collections[index]);
+                  },
+                  child: Obx(() {
+                    return Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            border: Border.all(
+                                width: 4.w,
+                                color: my_search_controller.selectedCollections
+                                        .contains(my_search_controller
+                                            .collections[index])
+                                    ? Colors.black
+                                    : Colors.grey[300]!)),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              flex: 8,
+                              child: CachedNetworkImage(
+                                imageUrl: my_search_controller
+                                    .collections[index].image!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  my_search_controller.collections[index].name!,
+                                  style: primaryTextStyle(size: 4.sp.round()),
+                                ))
+                          ],
+                        ));
+                  }),
+                );
+              },
+              itemCount: my_search_controller.collections.length,
+            );
+          }),
+          // Add more widgets as needed
+        )
+      ];
+    // Handle other animation states similarly
+    default:
+      return []; // Return an empty list if no match
+  }
+}
+
+buildFilterBottomSheet(
+    {List<ViewProductData>? comingProducts, required BuildContext context}) {
+  List<ViewProductData> filteredProducts = [];
+  CustomSearchController my_search_controller =
+      CustomSearchController().initialized
+          ? Get.find<CustomSearchController>()
+          : Get.put(CustomSearchController());
+
+  final DraggableScrollableController sheetController =
+      DraggableScrollableController();
+
+  final ScrollController scrollController = ScrollController();
+
+  // print("before setting sized ${comingProduct.sizes}");
+
+  return Container(
+      height: MediaQuery.of(context).size.height - 50.h,
+      clipBehavior: Clip.hardEdge,
+      decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 1.0,
+          ),
+          BoxShadow(color: Colors.white70, offset: Offset(0, -1)),
+          BoxShadow(color: Colors.white70, offset: Offset(0, 1)),
+          BoxShadow(color: Colors.white70, offset: Offset(-1, -1)),
+        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white12,
+          automaticallyImplyLeading: false,
+          title: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              InkWell(
+                onTap: () {
+                  Get.back();
+                },
+                child: Container(
+                  height: 40.h,
+                  width: 40.w,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.4),
+                        spreadRadius: 3,
+                        blurRadius: 5,
+                        offset: Offset(0, 1), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: SvgPicture.asset(
+                      "assets/images/forgot_password/BackBTN.svg"),
+                ),
+              ),
+              Expanded(
+                flex: 8,
+                child: Center(
+                  child: Text("Filters",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontFamily: fontCormoantFont,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 22.sp)),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      my_search_controller.clearSelectedFilters();
+                    },
+                    child: Text("Reset",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontFamily: fontCormoantFont,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.orange,
+                            fontSize: 18.sp)),
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ),
+        body: CustomScrollView(controller: scrollController, slivers: [
+          SliverList.list(
+            children: [
+              Obx(() {
+                return Container(
+                  height: MediaQuery.of(context).size.height - 200.h,
+                  child: my_search_controller.isFilterLoading.value
+                      ? loadingIndicatorWidget()
+                      : SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+
+                                  ///////////////////Price//////////////////////////////
+                                  buildFilterItem(FilterTypeEnum.Price, context,
+                                      my_search_controller),
+
+                                  ///////////////////Color//////////////////////////////
+                                  buildFilterItem(FilterTypeEnum.Colors,
+                                      context, my_search_controller),
+                                  ///////////////////Brand//////////////////////////////
+
+                                  buildFilterItem(FilterTypeEnum.Brands,
+                                      context, my_search_controller),
+                                  ///////////////////Styles//////////////////////////////
+
+                                  buildFilterItem(FilterTypeEnum.Style, context,
+                                      my_search_controller),
+
+                                  ///////////////////Collections//////////////////////////////
+                                  buildFilterItem(FilterTypeEnum.Collection,
+                                      context, my_search_controller),
+
+                                  ///////////////////Season//////////////////////////////
+
+                                  buildFilterItem(FilterTypeEnum.Season,
+                                      context, my_search_controller),
+                                  ///////////////////Materials//////////////////////////////
+                                  buildFilterItem(FilterTypeEnum.Materials,
+                                      context, my_search_controller),
+
+                                  ///////////////////Sizes//////////////////////////////
+                                  buildFilterItem(FilterTypeEnum.Sizes, context,
+                                      my_search_controller),
+
+                                  // MaterialButton(
+                                  //   minWidth: MediaQuery.of(context).size.width,
+                                  //
+                                  //   height: 100.h,
+                                  //   child: Text("Show Moree"),
+                                  //   color: Color(0xff21034F),
+                                  //   shape: RoundedRectangleBorder(),
+                                  //   onPressed: () {},
+                                  // )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                );
+              }),
+            ],
+          ),
+        ]),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              minimumSize: WidgetStateProperty.all(
+                  Size(MediaQuery.of(context).size.width - 200.w, 50.h)),
+              backgroundColor: WidgetStateProperty.all(Color(0xff21034F)),
+            ),
+            onPressed: () {
+              // Handle button press
+              int _sizeIndex = 0;
+              int _materialIndex = 0;
+              int _styleIndex = 0;
+              int _colorIndex = 0;
+              int _seasonIndex = 0;
+              int _brandIndex = 0;
+              int _collectionIndex = 0;
+              var payload = {};
+
+              //handle price
+              payload['min_price'] =
+                  my_search_controller.minPriceController.value.text.toString();
+              payload['max_price'] =
+                  my_search_controller.maxPriceController.value.text.toString();
+
+              //handle size
+              for (var size in my_search_controller.selectedSizes) {
+                payload['sizes[${_sizeIndex}]'] = size.toString();
+                _sizeIndex++;
+              }
+
+              //handle material
+              for (var material in my_search_controller.selectedMaterials) {
+                payload['material_ids[${_materialIndex}]'] =
+                    material.id.toString();
+                _materialIndex++;
+              }
+
+              //handle styles
+              for (var style in my_search_controller.selectedStyles) {
+                payload['style_ids[${_styleIndex}]'] = style.id.toString();
+                _materialIndex++;
+              }
+
+              //handle colors
+              for (var color in my_search_controller.selectedColors) {
+                payload['colors[${_colorIndex}]'] = color.name.toString();
+                _colorIndex++;
+              }
+
+              //handle seasons
+              for (var season in my_search_controller.selectedSeasons) {
+                payload['seasons[${_seasonIndex}]'] = season.toString();
+                _seasonIndex++;
+              }
+
+              //handle brands
+              for (var brand in my_search_controller.selectedBrands) {
+                payload['brand_ids[${_brandIndex}]'] = brand.id.toString();
+                _brandIndex++;
+              }
+
+              //handle collections
+              for (var collection in my_search_controller.selectedCollections) {
+                payload['category_ids[${_collectionIndex}]'] =
+                    collection.id.toString();
+                _collectionIndex++;
+              }
+
+              my_search_controller.getProductsInSection(
+                  sectionName: "Filter", payload: payload);
+
+              _sizeIndex = 0;
+              _materialIndex = 0;
+              _styleIndex = 0;
+              _colorIndex = 0;
+              _seasonIndex = 0;
+              _brandIndex = 0;
+              _collectionIndex = 0;
+
+              payload = {};
+              my_search_controller.clearSelectedFilters();
+              Get.to(() => const ResultView(),
+                  transition: Transition.fadeIn,
+                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 800));
+            },
+            child: const Text(
+              'Show Items',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ));
+}
+
+buildFilterItem(FilterTypeEnum filterName, context,
+    CustomSearchController my_search_controller) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 15.w),
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 5.h,
+            ),
+            ...buildChildren(filterName, my_search_controller, context),
+          ],
+        ),
+      ),
+    ),
+  );
 }

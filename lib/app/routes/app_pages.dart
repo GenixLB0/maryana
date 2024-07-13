@@ -31,6 +31,7 @@ import '../modules/shop/bindings/shop_binding.dart';
 import '../modules/shop/views/shop_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import 'package:flutter/material.dart';
 
 part 'app_routes.dart';
 

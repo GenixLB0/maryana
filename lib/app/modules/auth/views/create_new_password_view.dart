@@ -25,7 +25,7 @@ class CreateNewPasswordView extends GetView<ForgotPasswordController> {
                   ? Center(
                       child: InkWell(
                         onTap: () {
-                          Get.off(() => const HomeView());
+                          Get.off(() => HomeView());
                         },
                         child: SvgPicture.asset(
                           "assets/images/forgot_password/BUTTON (5).svg",
@@ -406,8 +406,8 @@ class CreateNewPasswordView extends GetView<ForgotPasswordController> {
                                                     ),
                                                     InkWell(
                                                       onTap: () {
-                                                        Get.off(() =>
-                                                            const HomeView());
+                                                        Get.off(
+                                                            () => HomeView());
                                                       },
                                                       child: SvgPicture.asset(
                                                         "assets/images/forgot_password/BUTTON (5).svg",
