@@ -2,25 +2,29 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart';
+
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
 import 'package:dio/dio.dart' as dio;
 
 class CustomSearchController extends GetxController {
-  List<Product> products = [];
-  List<Product> resultSearchProducts = [];
+  List<ViewProductData> products = [];
+  List<ViewProductData> resultSearchProducts = [];
   RxList<Categories> categories = <Categories>[].obs;
   late SharedPreferences prefs;
-  final count = 0.obs;
+  final Rx<int> resultCount = 0.obs;
+
   List<String> searchKeywords = [];
   String titleResult = "";
-  List<int> activeCats = [0, 0, 0, 0];
+  List<int> activeCats = [];
   RxBool isSearchLoading = false.obs;
+  RxBool isFromSearch = false.obs;
   String selectedId = "";
   ApiService apiService = Get.find();
   ApiConsumer apiConsumer = sl();
@@ -32,13 +36,6 @@ class CustomSearchController extends GetxController {
 
   @override
   void onReady() async {
-    if (Get.arguments != [] || Get.arguments != null) {
-      print("the arguments are ${Get.arguments}");
-      products = Get.arguments[0] as List<Product>;
-      categories.value = Get.arguments[1] as List<Categories>;
-      mimicCatsForActiveCats(false, null);
-    }
-
     prefs = await SharedPreferences.getInstance();
     getSearchKeywords();
     update();
@@ -49,9 +46,8 @@ class CustomSearchController extends GetxController {
     super.onClose();
   }
 
-  void increment() => count.value++;
-
-  getSearchKeywords() {
+  getSearchKeywords() async {
+    prefs = await SharedPreferences.getInstance();
     List<String>? keyWords = prefs.getStringList("search_keywords");
     if (keyWords != null) {
       searchKeywords = keyWords;
@@ -60,9 +56,10 @@ class CustomSearchController extends GetxController {
     update();
   }
 
-  addSearchKeywords(searchValue) {
+  addSearchKeywords(searchValue) async {
     titleResult = searchValue;
     searchKeywords.add(searchValue);
+    prefs = await SharedPreferences.getInstance();
     prefs.setStringList("search_keywords", searchKeywords);
 
     getSearchKeywords();
@@ -92,7 +89,8 @@ class CustomSearchController extends GetxController {
           for (var product in apiResponse.data!.products!) {
             resultSearchProducts.add(product);
           }
-          print("searching 2 ${resultSearchProducts}");
+          print("searching 2 ${resultSearchProducts.length}");
+          resultCount.value = resultSearchProducts.length;
         } else {
           handleApiErrorUser(apiResponse.message);
           handleApiError(response.statusCode);
@@ -113,6 +111,65 @@ class CustomSearchController extends GetxController {
       }
     } else {
       print("Searching 6 ${titleResult}");
+    }
+  }
+
+  Future<List<dynamic>> getProductsInSection(
+      {required String sectionName, required payload}) async {
+    // if (categories.isEmpty) {
+    //   await getCategoriesList();
+    // }
+    // mimicCatsForActiveCats(false, 1);
+    isFromSearch.value = false;
+    titleResult = sectionName;
+    resultSearchProducts.clear();
+    isSearchLoading.value = true;
+
+    List _products = [];
+    print("getting started...");
+    var bodyFields = payload;
+
+    var headers = {
+      'Accept': 'application/json',
+      'x-from': 'app',
+      'x-lang': 'en',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    final response = await http.post(
+      Uri.parse('https://mariana.genixarea.pro/api/products'),
+      headers: headers,
+      body: bodyFields,
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+
+        for (var product in responseData['data']) {
+          resultSearchProducts.add(ViewProductData.fromJson(product));
+        }
+        resultCount.value = resultSearchProducts.length;
+        isSearchLoading.value = false;
+        print("your map ${payload}");
+
+        print("your result ${resultSearchProducts}");
+
+        return resultSearchProducts;
+      } else {
+        print(response.reasonPhrase);
+        isSearchLoading.value = false;
+        print('products fetch failed 1: ${response.reasonPhrase} ');
+
+        return [];
+      }
+    } catch (e, stackTrace) {
+      isSearchLoading.value = false;
+      print('products fetch failed 2:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+
+      return [];
     }
   }
 
@@ -228,7 +285,7 @@ class CustomSearchController extends GetxController {
         if (response.statusCode == 200) {
           var responseData = json.decode(response.body);
           for (var product in responseData['data']) {
-            resultSearchProducts.add(Product.fromJson(product));
+            resultSearchProducts.add(product);
           }
 
           print(resultSearchProducts.length);
@@ -259,7 +316,7 @@ class CustomSearchController extends GetxController {
           if (response.statusCode == 200) {
             var responseData = json.decode(response.body);
             for (var product in responseData['data']) {
-              resultSearchProducts.add(Product.fromJson(product));
+              resultSearchProducts.add(product);
             }
 
             print(resultSearchProducts.length);
@@ -284,7 +341,7 @@ class CustomSearchController extends GetxController {
           if (response.statusCode == 200) {
             var responseData = json.decode(response.body);
             for (var product in responseData['data']) {
-              resultSearchProducts.add(Product.fromJson(product));
+              resultSearchProducts.add(product);
             }
 
             print(resultSearchProducts.length);
@@ -335,6 +392,18 @@ class CustomSearchController extends GetxController {
       print(e.toString() + stackTrace.toString());
 
       update();
+    }
+  }
+
+  setArgs() {
+    getSearchKeywords();
+    if (Get.arguments == null) {
+    } else {
+      print("the arguments are ${Get.arguments}");
+      products = Get.arguments[0] as List<ViewProductData>;
+      categories.value = Get.arguments[1] as List<Categories>;
+      print("products from args ${products}");
+      mimicCatsForActiveCats(false, null);
     }
   }
 }

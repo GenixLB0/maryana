@@ -30,7 +30,7 @@ class TestData {
   List<Categories>? categories;
   List<Brands>? brands;
   List<Banners>? banners;
-  List<Product>? product;
+  List<ViewProductData>? product;
 
   TestData(
       {this.setting,
@@ -67,9 +67,9 @@ class TestData {
       });
     }
     if (json['product'] != null) {
-      product = <Product>[];
+      product = <ViewProductData>[];
       json['product'].forEach((v) {
-        product!.add(new Product.fromJson(v));
+        product!.add(ViewProductData.fromJson(v));
       });
     }
   }
@@ -195,59 +195,48 @@ class ViewProduct {
   }
 }
 
-class Data {
+class ViewProductData {
   int? id;
   String? name;
   String? description;
   String? image;
   String? price;
-  Null? discountedPrice;
+  List<String>? colors;
+  List<String>? sizes;
   Unit? unit;
   Category? category;
-  List<Attributes>? attributes;
+  Styles? style;
   List<Attachments>? attachments;
-  List<Bundles>? bundles;
 
-  Data(
+  ViewProductData(
       {this.id,
       this.name,
       this.description,
       this.image,
       this.price,
-      this.discountedPrice,
+      this.colors,
+      this.sizes,
       this.unit,
       this.category,
-      this.attributes,
-      this.attachments,
-      this.bundles});
+      this.style,
+      this.attachments});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ViewProductData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
     image = json['image'];
     price = json['price'];
-    discountedPrice = json['discounted_price'];
-    unit = json['unit'] != null ? new Unit.fromJson(json['unit']) : null;
-    category = json['category'] != null
-        ? new Category.fromJson(json['category'])
-        : null;
-    if (json['attributes'] != null) {
-      attributes = <Attributes>[];
-      json['attributes'].forEach((v) {
-        attributes!.add(new Attributes.fromJson(v));
-      });
-    }
+    colors != null ? json['colors'].cast<String>() : null;
+    sizes != null ? json['sizes'].cast<String>() : null;
+    unit = json['unit'] != null ? Unit.fromJson(json['unit']) : null;
+    category =
+        json['category'] != null ? Category.fromJson(json['category']) : null;
+    style = json['style'] != null ? Styles.fromJson(json['style']) : null;
     if (json['attachments'] != null) {
       attachments = <Attachments>[];
       json['attachments'].forEach((v) {
-        attachments!.add(new Attachments.fromJson(v));
-      });
-    }
-    if (json['bundles'] != null) {
-      bundles = <Bundles>[];
-      json['bundles'].forEach((v) {
-        bundles!.add(new Bundles.fromJson(v));
+        attachments!.add(Attachments.fromJson(v));
       });
     }
   }
@@ -259,21 +248,17 @@ class Data {
     data['description'] = this.description;
     data['image'] = this.image;
     data['price'] = this.price;
-    data['discounted_price'] = this.discountedPrice;
+    data['colors'] = this.colors;
+    data['sizes'] = this.sizes;
     if (this.unit != null) {
       data['unit'] = this.unit!.toJson();
     }
     if (this.category != null) {
       data['category'] = this.category!.toJson();
     }
-    if (this.attributes != null) {
-      data['attributes'] = this.attributes!.map((v) => v.toJson()).toList();
-    }
+    data['style'] = this.style;
     if (this.attachments != null) {
       data['attachments'] = this.attachments!.map((v) => v.toJson()).toList();
-    }
-    if (this.bundles != null) {
-      data['bundles'] = this.bundles!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -323,25 +308,6 @@ class Category {
   }
 }
 
-class Attributes {
-  int? stock;
-  String? size;
-
-  Attributes({this.stock, this.size});
-
-  Attributes.fromJson(Map<String, dynamic> json) {
-    stock = json['stock'];
-    size = json['size'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['stock'] = this.stock;
-    data['size'] = this.size;
-    return data;
-  }
-}
-
 class Attachments {
   String? type;
   String? name;
@@ -360,41 +326,6 @@ class Attachments {
     data['type'] = this.type;
     data['name'] = this.name;
     data['path'] = this.path;
-    return data;
-  }
-}
-
-class Bundles {
-  int? id;
-  String? name;
-  String? type;
-  String? image;
-  List<Product>? products;
-
-  Bundles({this.id, this.name, this.type, this.image, this.products});
-
-  Bundles.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    type = json['type'];
-    image = json['image'];
-    if (json['products'] != null) {
-      products = <Product>[];
-      json['products'].forEach((v) {
-        products!.add(new Product.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['type'] = this.type;
-    data['image'] = this.image;
-    if (this.products != null) {
-      data['products'] = this.products!.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }

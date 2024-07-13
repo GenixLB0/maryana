@@ -1,4 +1,6 @@
 import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:flutter/material.dart';
@@ -9,10 +11,17 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maryana/app/modules/global/model/model_response.dart';
+import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
+import 'package:maryana/app/modules/product/views/product_view.dart';
+import 'package:maryana/app/modules/search/views/search_view.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../routes/app_pages.dart';
 
 Widget gridSocialIcon() {
   return Row(
@@ -725,7 +734,7 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 95.h,
-      decoration: ShapeDecoration(
+      decoration: const ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -845,4 +854,459 @@ Widget loadingIndicatorWidget() {
 
 Widget placeHolderWidget() {
   return Lottie.asset("assets/images/placeholder.json");
+}
+
+buildSearchAndFilter(
+    {required BuildContext context,
+    List<ViewProductData>? products,
+    List<Categories>? categories,
+    required bool isSearch,
+    final Function(String)? onSubmitted // Add this parameter
+    }) {
+  return Container(
+    width: MediaQuery.of(context).size.width,
+    height: 75.h,
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 20.w,
+        ),
+        Flexible(
+          flex: 12,
+          child: SizedBox(
+            child: TextField(
+              readOnly: isSearch ? false : true,
+              onSubmitted: (v) {
+                if (isSearch) {
+                  onSubmitted!(v);
+                }
+              },
+              maxLines: 1,
+              onTap: () {
+                if (isSearch) {
+                  if (products == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    products = controller.homeModel.value.product;
+                  }
+
+                  if (categories == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    categories = controller.homeModel.value.categories;
+                  }
+
+                  Get.to(SearchView(),
+                      arguments: [products, categories],
+                      transition: Transition.fadeIn,
+                      curve: Curves.easeInOut,
+                      duration: Duration(milliseconds: 800));
+                } else {
+                  if (products == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    products = controller.homeModel.value.product;
+                  }
+
+                  if (categories == null) {
+                    HomeController controller = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put<HomeController>(HomeController());
+                    categories = controller.homeModel.value.categories;
+                  }
+
+                  Get.to(SearchView(),
+                      arguments: [products, categories],
+                      transition: Transition.fadeIn,
+                      curve: Curves.easeInOut,
+                      duration: Duration(milliseconds: 800));
+                }
+
+                // Get.toNamed(
+                //   Routes.SEARCH,
+                //   arguments: [products, categories],
+                // );
+                // Get.toNamed(()=> Pages., arguments: controller.homeModel.value.product);
+              },
+              style: primaryTextStyle(
+                color: Colors.black,
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: 17.h),
+                //Imp Line
+
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 2)),
+
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 2)),
+                hintStyle: primaryTextStyle(
+                  color: Colors.black,
+                  size: 14.sp.round(),
+                  weight: FontWeight.w400,
+                  height: 1,
+                ),
+                errorStyle: primaryTextStyle(
+                  color: Colors.red,
+                  size: 14.sp.round(),
+                  weight: FontWeight.w400,
+                  height: 1,
+                ),
+                labelStyle: primaryTextStyle(
+                  color: Colors.grey[400],
+                  size: 14.sp.round(),
+                  weight: FontWeight.w400,
+                  height: 1,
+                ),
+                labelText: "Search Clothes...",
+                prefixIcon: IconButton(
+                  icon: Padding(
+                    padding: EdgeInsets.only(left: 10.w),
+                    child: SvgPicture.asset(
+                      'assets/icons/search.svg',
+                      width: 23.w,
+                      height: 23.h,
+                    ),
+                  ),
+                  onPressed: () {},
+                ),
+                suffixIcon: IconButton(
+                  icon: Padding(
+                    padding: EdgeInsets.only(right: 5.w),
+                    child: SvgPicture.asset(
+                      'assets/icons/camera.svg',
+                      width: 23.w,
+                      height: 23.h,
+                    ),
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 15.w,
+        ),
+        Container(
+          child: SvgPicture.asset(
+            "assets/images/home/Filter.svg",
+            height: 50.h,
+            width: 50.w,
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(
+          width: 15.w,
+        )
+      ],
+    ),
+  );
+}
+
+class buildProductCard extends StatefulWidget {
+  buildProductCard(
+      {super.key, required this.product, this.isInWishlist = false});
+
+  final ViewProductData product;
+  bool isInWishlist;
+
+  @override
+  State<buildProductCard> createState() => _buildCardProductState();
+}
+
+class _buildCardProductState extends State<buildProductCard> {
+  HomeController homeController = Get.put<HomeController>(HomeController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 5),
+          ],
+        ),
+        child: widget.product.image != null
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed(
+                            Routes.PRODUCT,
+                            arguments: widget.product,
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: widget.product.image!,
+                          width: 175.w,
+                          height: 210.h,
+                          fit: BoxFit.cover,
+                          placeholder: (ctx, v) {
+                            return placeHolderWidget();
+                          },
+                        ),
+                      ),
+                      Obx(() {
+                        return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                homeController.wishlistProductIds
+                                        .contains(widget.product.id!)
+                                    ? homeController
+                                        .removeFromWishlist(widget.product.id!)
+                                    : homeController
+                                        .addToWishlist(widget.product.id!);
+                              },
+                              child: homeController.wishlistProductIds
+                                      .contains(widget.product.id!)
+                                  ? ShowUp(
+                                      delay: 500,
+                                      child: SvgPicture.asset(
+                                        "assets/images/home/wishlisted.svg",
+                                        width: 33.w,
+                                        height: 33.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : ShowUp(
+                                      delay: 500,
+                                      child: SvgPicture.asset(
+                                        "assets/images/home/add_to_wishlist.svg",
+                                        width: 33.w,
+                                        height: 33.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                            ));
+                      }),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 7.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.PRODUCT,
+                          arguments: widget.product,
+                        );
+                      },
+                      child: Container(
+                        width: 150.w,
+                        child: Padding(
+                            padding: EdgeInsets.only(left: 5.w),
+                            child: Text(
+                              widget.product.name!,
+                              overflow: TextOverflow.ellipsis,
+                              style: primaryTextStyle(
+                                  weight: FontWeight.w700,
+                                  size: 16.sp.round(),
+                                  color: Colors.black),
+                            )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 7.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.PRODUCT,
+                          arguments: widget.product,
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(left: 5.w),
+                        width: 150.w,
+                        child: Text(
+                          widget.product.description!,
+                          overflow: TextOverflow.ellipsis,
+                          style: primaryTextStyle(
+                              weight: FontWeight.w300,
+                              size: 14.sp.round(),
+                              color: Color(0xff9B9B9B)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 7.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.PRODUCT,
+                          arguments: widget.product,
+                        );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5.w),
+                        child: Text(
+                          "\$ ${widget.product.price} ",
+                          style: primaryTextStyle(
+                              weight: FontWeight.w600,
+                              size: 15.sp.round(),
+                              color: const Color(0xff370269)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  widget.isInWishlist
+                      ? GestureDetector(
+                          onTap: () {
+                            //todo
+                            // take Product arguments from here
+                            ViewProductData product = widget.product;
+
+                            //todo
+                            //Nav To Cart Screen
+                            //Setted to Main Screen for now
+                            Get.toNamed(Routes.MAIN);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10.w),
+                            padding: EdgeInsets.only(left: 10.w),
+                            height: 30.h,
+                            width: 125.w,
+                            decoration: BoxDecoration(
+                                color: Color(0xff21034F),
+                                borderRadius: BorderRadius.circular(35.sp)),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.shopping_cart_outlined,
+                                  color: Colors.white,
+                                  size: 12.sp,
+                                ),
+                                SizedBox(
+                                  width: 4.w,
+                                ),
+                                Text(
+                                  "ADD TO CART",
+                                  style: primaryTextStyle(
+                                      weight: FontWeight.w700,
+                                      color: Colors.white,
+                                      size: 9.sp.round()),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              )
+            : placeHolderWidget(),
+      ),
+    );
+  }
+}
+
+buildProductShowAll(getProductsInSection) {
+  return GestureDetector(
+    onTap: () {
+      getProductsInSection();
+    },
+    child: Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 15),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 175.w,
+            height: 210.h,
+            child: placeHolderWidget(),
+          ),
+          SizedBox(
+            height: 3.h,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 150.w,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 5.w),
+                    child: Text(
+                      "SHOW ALL",
+                      overflow: TextOverflow.ellipsis,
+                      style: primaryTextStyle(
+                          weight: FontWeight.w700,
+                          size: 16.sp.round(),
+                          color: Colors.grey[500]),
+                    ),
+                  ),
+                ),
+                Icon(Icons.arrow_forward, color: Colors.grey[500])
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 5.w),
+            width: 150.w,
+            child: Text(
+              "",
+              overflow: TextOverflow.ellipsis,
+              style: primaryTextStyle(
+                  weight: FontWeight.w300,
+                  size: 14.sp.round(),
+                  color: Color(0xff9B9B9B)),
+            ),
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 5.w),
+            child: Text(
+              " ",
+              style: primaryTextStyle(
+                  weight: FontWeight.w600,
+                  size: 15.sp.round(),
+                  color: Color(0xff370269)),
+            ),
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
+        ],
+      ),
+    ),
+  );
 }

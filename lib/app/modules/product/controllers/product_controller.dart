@@ -12,16 +12,16 @@ class ProductController extends GetxController {
   RxBool isProductLoading = false.obs;
   RxBool isAddToCartActive = false.obs;
   List<Attachments> productImages = [];
-  List<Attributes> attributes = [];
-  Rx<int> currentStock = 0.obs;
-  List<Bundles> bundles = [];
+
+  // Rx<int> currentStock = 0.obs;
+  List<String> colorsList = [];
   Rx<int> imageIndex = 0.obs;
-  ViewProduct? product;
+  ViewProductData? product;
   ApiConsumer apiConsumer = sl();
   final count = 0.obs;
   final isShowDescription = true.obs;
   final isShowReviews = true.obs;
-  List<String> sizeList = ['S', 'M', 'L', 'Xl', '2XL'];
+  List<String> sizeList = [];
   Rx<String> selectedSize = "S".obs;
 
   Rx<String> selectedColor = "0xffcc00cc".obs;
@@ -58,57 +58,60 @@ class ProductController extends GetxController {
 
   setSize(customSize) {
     selectedSize.value = customSize;
-    for (var attribute in attributes) {
-      if (attribute.size == selectedSize.value) {
-        currentStock.value = attribute.stock!;
-      }
+    for (var size in sizeList) {
+      if (size == selectedSize.value) {}
     }
     update();
   }
 
   setColor(customColor) {
     selectedColor.value = customColor;
+    for (var color in colorsList) {
+      if (color == selectedColor.value) {}
+    }
+    update();
+    selectedColor.value = customColor;
   }
 
   getProduct(id) async {
     productImages.clear();
-    bundles.clear();
-    attributes.clear();
+    colorsList.clear();
+    sizeList.clear();
     isProductLoading.value = true;
 
     await apiConsumer.post("products/${id}").then((value) {
       try {
-        product = ViewProduct.fromJson(value);
+        product = ViewProductData.fromJson(value);
 
         print("the value is ${value.runtimeType}");
-        print("the product is ${product!.data!.name}");
+        print("the product is ${product!.name}");
 
         //adding attachments
-        for (var attachment in product!.data!.attachments!) {
+        for (var attachment in product!.attachments!) {
           if (attachment.name == "app_show") {
             productImages.addNonNull(attachment);
           }
         }
 
         //adding attributes
-        for (var attribute in product!.data!.attributes!) {
-          attributes.addNonNull(attribute);
+        for (var size in product!.sizes!) {
+          sizeList.addNonNull(size);
         }
 
-        //get Current Stock
-        for (var attribute in attributes) {
-          if (attribute.size == selectedSize.value) {
-            currentStock.value = attribute.stock!;
-          }
-        }
+        // //get Current Stock
+        // for (var attribute in attributes) {
+        //   if (attribute.size == selectedSize.value) {
+        //     currentStock.value = attribute.stock!;
+        //   }
+        // }
 
-        //adding bundles
-        for (var bundle in product!.data!.bundles!) {
-          bundles.addNonNull(bundle);
+        //adding colors
+        for (var color in product!.colors!) {
+          colorsList.addNonNull(color);
         }
         update();
         print("attachments are  ${productImages}");
-        print("bundles are  ${bundles}");
+        print("color are  ${colorsList}");
 
         isProductLoading.value = false;
       } catch (e) {
