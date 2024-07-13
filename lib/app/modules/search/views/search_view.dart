@@ -19,6 +19,9 @@ class SearchView extends GetView<CustomSearchController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => CustomSearchController());
+    controller.setArgs();
+    print("switching to search ${controller.products.length}");
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
@@ -70,7 +73,18 @@ class SearchView extends GetView<CustomSearchController> {
               SizedBox(
                 height: 15.h,
               ),
-              buildSearchAndFilter(context),
+              buildSearchAndFilter(
+                  context: context,
+                  isSearch: true,
+                  onSubmitted: (v) {
+                    controller.addSearchKeywords(v);
+                    controller.getSearchResultsFromApi();
+
+                    Get.to(() => const ResultView(),
+                        transition: Transition.fadeIn,
+                        curve: Curves.easeInOut,
+                        duration: const Duration(milliseconds: 800));
+                  }),
               SizedBox(
                 height: 10.h,
               ),
@@ -111,241 +125,85 @@ class SearchView extends GetView<CustomSearchController> {
         ));
   }
 
-  buildSearchAndFilter(context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 65.h,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: smallSpacing,
-          ),
-          Flexible(
-            flex: 12,
-            child: Container(
-              child: TextField(
-                onSubmitted: (v) {
-                  controller.addSearchKeywords(v);
-                  controller.getSearchResultsFromApi();
-
-                  Get.to(() => ResultView());
-                },
-                autofocus: true,
-                style: primaryTextStyle(
-                  color: Colors.black,
-                  size: 14.sp.round(),
-                  weight: FontWeight.w400,
-                ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey, width: 2)),
-                  hintStyle: primaryTextStyle(
-                    color: Colors.black,
-                    size: 14.sp.round(),
-                    weight: FontWeight.w400,
-                    height: 1,
-                  ),
-                  errorStyle: primaryTextStyle(
-                    color: Colors.red,
-                    size: 14.sp.round(),
-                    weight: FontWeight.w400,
-                    height: 1,
-                  ),
-                  labelStyle: primaryTextStyle(
-                    color: Colors.grey,
-                    size: 14.sp.round(),
-                    weight: FontWeight.w400,
-                    height: 1,
-                  ),
-                  labelText: "Search Clothes ...",
-                  prefixIcon: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/search.svg',
-                      width: 25.w,
-                      height: 25.h,
-                    ),
-                    onPressed: () {},
-                  ),
-                  suffixIcon: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/camera.svg',
-                      width: 25.w,
-                      height: 25.h,
-                    ),
-                    onPressed: () {},
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Spacer(),
-          Container(
-            child: SvgPicture.asset(
-              "assets/images/home/Filter.svg",
-              height: 50.h,
-              width: 50.w,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(
-            width: smallSpacing,
-          )
-        ],
-      ),
-    );
-  }
-
   buildProductsScroll(context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: smallSpacing),
-                child: Text(
-                  "POPULAR THIS WEEK",
-                  style: boldTextStyle(
-                      weight: FontWeight.w400,
-                      size: 20.sp.round(),
-                      color: Colors.black),
+    return controller.products.isNotEmpty
+        ? Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: smallSpacing),
+                      child: Text(
+                        "POPULAR THIS WEEK",
+                        style: boldTextStyle(
+                            weight: FontWeight.w400,
+                            size: 20.sp.round(),
+                            color: Colors.black),
+                      ),
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        if (CustomSearchController().initialized) {
+                          CustomSearchController controller =
+                              Get.find<CustomSearchController>();
+                          controller.getProductsInSection(
+                              sectionName: "RECOMMENDED", payload: {});
+
+                          Get.to(() => const ResultView(),
+                              transition: Transition.fadeIn,
+                              curve: Curves.easeInOut,
+                              duration: const Duration(milliseconds: 800));
+                        } else {
+                          CustomSearchController controller =
+                              Get.put<CustomSearchController>(
+                                  CustomSearchController());
+                          controller.getProductsInSection(
+                              sectionName: "RECOMMENDED", payload: {});
+
+                          Get.to(() => const ResultView(),
+                              transition: Transition.fadeIn,
+                              curve: Curves.easeInOut,
+                              duration: const Duration(milliseconds: 800));
+                        }
+                      },
+                      child: Text(
+                        "SHOW ALL",
+                        style: boldTextStyle(
+                            weight: FontWeight.w400,
+                            size: 20.sp.round(),
+                            color: Color(0xff9B9B9B)),
+                      ),
+                    ),
+                    SizedBox(
+                      width: smallSpacing,
+                    )
+                  ],
                 ),
-              ),
-              Spacer(),
-              Text(
-                "SHOW ALL",
-                style: boldTextStyle(
-                    weight: FontWeight.w400,
-                    size: 20.sp.round(),
-                    color: Color(0xff9B9B9B)),
-              ),
-              SizedBox(
-                width: smallSpacing,
-              )
-            ],
-          ),
-          SizedBox(
-            height: 5.h,
-          ),
-          Container(
-            padding: EdgeInsets.all(smallSpacing),
-            height: 330.h,
-            width: MediaQuery.of(context).size.width,
-            child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (ctx, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15.sp),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 0,
-                            blurRadius: 15),
-                      ],
-                    ),
-                    child: controller.products[index].image != null
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              controller.products[index].image!.isEmpty
-                                  ? Image.asset(
-                                      "assets/images/placeholder.png",
-                                      width: 160.w,
-                                      height: 210.h,
-                                    )
-                                  : Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        CachedNetworkImage(
-                                          imageUrl:
-                                              controller.products[index].image!,
-                                          width: 165.w,
-                                          height: 210.h,
-                                          fit: BoxFit.cover,
-                                          placeholder: (ctx, v) {
-                                            return Image.asset(
-                                              "assets/images/placeholder.png",
-                                              width: 100.w,
-                                              height: 200.h,
-                                            );
-                                          },
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SvgPicture.asset(
-                                            "assets/images/home/add_to_wishlist.svg",
-                                            width: 33.w,
-                                            height: 33.h,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                              SizedBox(
-                                height: 3.h,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 5.w),
-                                child: Text(
-                                  controller.products[index].name!,
-                                  style: primaryTextStyle(
-                                      weight: FontWeight.w700,
-                                      size: 16.sp.round(),
-                                      color: Colors.black),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 5.w),
-                                width: 150.w,
-                                child: Text(
-                                  controller.products[index].description!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: primaryTextStyle(
-                                      weight: FontWeight.w300,
-                                      size: 14.sp.round(),
-                                      color: Color(0xff9B9B9B)),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 5.w),
-                                child: Text(
-                                  "\$ ${controller.products[index].price!} ",
-                                  style: primaryTextStyle(
-                                      weight: FontWeight.w600,
-                                      size: 15.sp.round(),
-                                      color: Color(0xff370269)),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Image.asset(
-                            "assets/images/placeholder.png",
-                            width: 200.w,
-                            height: 200.h,
+                SizedBox(
+                  height: 5.h,
+                ),
+                Container(
+                  padding: EdgeInsets.all(smallSpacing),
+                  height: 330.h,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (ctx, index) {
+                        return buildProductCard(
+                            product: controller.products[index]);
+                      },
+                      separatorBuilder: (ctx, index) => SizedBox(
+                            width: 10.w,
                           ),
-                  );
-                },
-                separatorBuilder: (ctx, index) => SizedBox(
-                      width: 10.w,
-                    ),
-                itemCount: controller.products.length),
-          ),
-        ],
-      ),
-    );
+                      itemCount: 5),
+                ),
+              ],
+            ),
+          )
+        : SizedBox();
   }
 
   buildSearchKeywords(context) {

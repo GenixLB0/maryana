@@ -3,14 +3,14 @@ import 'model_response.dart';
 class CustomHomeModel {
   String? status;
   String? message;
-  TestData? data;
+  HomeData? data;
 
   CustomHomeModel({this.status, this.message, this.data});
 
   CustomHomeModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new TestData.fromJson(json['data']) : null;
+    data = json['data'] != null ? new HomeData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -24,15 +24,15 @@ class CustomHomeModel {
   }
 }
 
-class TestData {
-  List<Null>? setting;
+class HomeData {
+  List<String>? setting;
   int? totalPoints;
   List<Categories>? categories;
   List<Brands>? brands;
   List<Banners>? banners;
-  List<Product>? product;
+  List<ViewProductData>? product;
 
-  TestData(
+  HomeData(
       {this.setting,
       this.totalPoints,
       this.categories,
@@ -40,9 +40,9 @@ class TestData {
       this.banners,
       this.product});
 
-  TestData.fromJson(Map<String, dynamic> json) {
+  HomeData.fromJson(Map<String, dynamic> json) {
     if (json['setting'] != null) {
-      setting = <Null>[];
+      setting = <String>[];
       json['setting'].forEach((v) {
         // setting!.add(new Null.fromJson(v));
       });
@@ -67,9 +67,9 @@ class TestData {
       });
     }
     if (json['product'] != null) {
-      product = <Product>[];
+      product = <ViewProductData>[];
       json['product'].forEach((v) {
-        product!.add(new Product.fromJson(v));
+        product!.add(ViewProductData.fromJson(v));
       });
     }
   }
@@ -96,28 +96,6 @@ class TestData {
   }
 }
 
-class Brands {
-  int? id;
-  String? name;
-  String? image;
-
-  Brands({this.id, this.name, this.image});
-
-  Brands.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    image = json['image'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['image'] = this.image;
-    return data;
-  }
-}
-
 class Banners {
   String? image;
 
@@ -134,122 +112,62 @@ class Banners {
   }
 }
 
-class Product {
+class ViewProductData {
   int? id;
   String? name;
   String? description;
   String? image;
   String? price;
-  String? discountedPrice;
-
-  Product(
-      {this.id,
-      this.name,
-      this.description,
-      this.image,
-      this.price,
-      this.discountedPrice});
-
-  Product.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    description = json['description'];
-    image = json['image'];
-    price = json['price'];
-    discountedPrice = json['discounted_price'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['image'] = this.image;
-    data['price'] = this.price;
-    data['discounted_price'] = this.discountedPrice;
-    return data;
-  }
-}
-
-class ViewProduct {
-  String? status;
-  String? message;
-  Data? data;
-
-  ViewProduct({this.status, this.message, this.data});
-
-  ViewProduct.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
-}
-
-class Data {
-  int? id;
-  String? name;
-  String? description;
-  String? image;
-  String? price;
-  Null? discountedPrice;
+  List<ProductColor>? colors;
+  List<dynamic>? sizes;
   Unit? unit;
-  Category? category;
-  List<Attributes>? attributes;
+  Categories? category;
+  Styles? style;
+  Material? material;
   List<Attachments>? attachments;
-  List<Bundles>? bundles;
 
-  Data(
+  ViewProductData(
       {this.id,
       this.name,
       this.description,
       this.image,
       this.price,
-      this.discountedPrice,
+      this.colors,
+      this.sizes,
       this.unit,
       this.category,
-      this.attributes,
-      this.attachments,
-      this.bundles});
+      this.style,
+      this.material,
+      this.attachments});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ViewProductData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
     image = json['image'];
     price = json['price'];
-    discountedPrice = json['discounted_price'];
-    unit = json['unit'] != null ? new Unit.fromJson(json['unit']) : null;
-    category = json['category'] != null
-        ? new Category.fromJson(json['category'])
-        : null;
-    if (json['attributes'] != null) {
-      attributes = <Attributes>[];
-      json['attributes'].forEach((v) {
-        attributes!.add(new Attributes.fromJson(v));
+    if (json['colors'] != null) {
+      colors = <ProductColor>[];
+      json['colors'].forEach((v) {
+        colors!.add(ProductColor.fromJson(v));
       });
     }
+
+    sizes = json['sizes'];
+    unit = json['unit'] != null ? Unit.fromJson(json['unit']) : null;
+    category =
+        json['category'] != null ? Categories.fromJson(json['category']) : null;
+    style = json['style'] != null ? Styles.fromJson(json['style']) : null;
+    material =
+        json['material'] != null ? Material.fromJson(json['material']) : null;
+
     if (json['attachments'] != null) {
       attachments = <Attachments>[];
       json['attachments'].forEach((v) {
-        attachments!.add(new Attachments.fromJson(v));
+        attachments!.add(Attachments.fromJson(v));
       });
     }
-    if (json['bundles'] != null) {
-      bundles = <Bundles>[];
-      json['bundles'].forEach((v) {
-        bundles!.add(new Bundles.fromJson(v));
-      });
-    }
+    print("testing the data ${sizes}");
   }
 
   Map<String, dynamic> toJson() {
@@ -259,21 +177,20 @@ class Data {
     data['description'] = this.description;
     data['image'] = this.image;
     data['price'] = this.price;
-    data['discounted_price'] = this.discountedPrice;
+    data['colors'] = this.colors;
+    data['sizes'] = this.sizes;
     if (this.unit != null) {
       data['unit'] = this.unit!.toJson();
     }
     if (this.category != null) {
       data['category'] = this.category!.toJson();
     }
-    if (this.attributes != null) {
-      data['attributes'] = this.attributes!.map((v) => v.toJson()).toList();
+    if (this.style != null) {
+      data['style'] = this.style!.toJson();
     }
-    if (this.attachments != null) {
-      data['attachments'] = this.attachments!.map((v) => v.toJson()).toList();
-    }
-    if (this.bundles != null) {
-      data['bundles'] = this.bundles!.map((v) => v.toJson()).toList();
+
+    if (this.material != null) {
+      data['material'] = this.material!.toJson();
     }
     return data;
   }
@@ -298,46 +215,24 @@ class Unit {
   }
 }
 
-class Category {
+class ProductColor {
   int? id;
   String? name;
-  String? slug;
-  String? image;
+  String? hex;
 
-  Category({this.id, this.name, this.slug, this.image});
+  ProductColor({this.id, this.name, this.hex});
 
-  Category.fromJson(Map<String, dynamic> json) {
+  ProductColor.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    slug = json['slug'];
-    image = json['image'];
+    hex = json['hex'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
-    data['slug'] = this.slug;
-    data['image'] = this.image;
-    return data;
-  }
-}
-
-class Attributes {
-  int? stock;
-  String? size;
-
-  Attributes({this.stock, this.size});
-
-  Attributes.fromJson(Map<String, dynamic> json) {
-    stock = json['stock'];
-    size = json['size'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['stock'] = this.stock;
-    data['size'] = this.size;
+    data['hex'] = this.hex;
     return data;
   }
 }
@@ -360,41 +255,6 @@ class Attachments {
     data['type'] = this.type;
     data['name'] = this.name;
     data['path'] = this.path;
-    return data;
-  }
-}
-
-class Bundles {
-  int? id;
-  String? name;
-  String? type;
-  String? image;
-  List<Product>? products;
-
-  Bundles({this.id, this.name, this.type, this.image, this.products});
-
-  Bundles.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    type = json['type'];
-    image = json['image'];
-    if (json['products'] != null) {
-      products = <Product>[];
-      json['products'].forEach((v) {
-        products!.add(new Product.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['type'] = this.type;
-    data['image'] = this.image;
-    if (this.products != null) {
-      data['products'] = this.products!.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }
