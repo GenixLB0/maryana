@@ -33,15 +33,24 @@ dependencies:
   loading_animation_widget: ^1.2.1
   get_it:
 
+
   flutter_spinkit:
   percent_indicator:
   pinput:
+  fadingpageview:
   mobx: ^2.2.1
   flutter_mobx: ^2.2.0
   google_fonts: ^6.2.1
+  video_player:
+  typewritertext:
+
+
   modal_bottom_sheet: ^3.0.0
 
+
   image_picker: ^1.1.2
+
+
   geocoding: ^3.0.0
   geolocator: ^12.0.0
   google_api_headers: 4.0.3

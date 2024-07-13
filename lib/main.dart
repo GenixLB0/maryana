@@ -19,6 +19,8 @@ import 'package:maryana/app/modules/splash/bindings/splash_binding.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import 'app/modules/onboarding/controllers/onboarding_controller.dart';
+
 final sl = GetIt.instance;
 ApiConsumer apiConsumer = sl();
 
@@ -46,6 +48,7 @@ Future<void> init() async {
 }
 
 void navigateToOnboarding() {
+  Get.lazyPut(() => OnboardingController());
   Get.off(() => OnboardingView());
 }
 
@@ -59,7 +62,7 @@ void main() async {
   fontFamilyBoldGlobal = GoogleFonts.bebasNeue().fontFamily;
   fontFamilyPrimaryGlobal = GoogleFonts.lato().fontFamily;
   fontFamilySecondaryGlobal = GoogleFonts.nunito().fontFamily;
-  // fontCormoantFont = GoogleFonts.cormorant().fontFamily;
+  fontCormoantFont = GoogleFonts.cormorant().fontFamily;
 
   // GoogleFonts.cormorant
   Get.put(ApiService());

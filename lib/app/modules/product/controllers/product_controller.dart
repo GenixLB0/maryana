@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -11,20 +13,23 @@ class ProductController extends GetxController {
 // Rx<Product>? product = Product().obs;
   RxBool isProductLoading = false.obs;
   RxBool isAddToCartActive = false.obs;
-  List<Attachments> productImages = [];
-  List<Attributes> attributes = [];
-  Rx<int> currentStock = 0.obs;
-  List<Bundles> bundles = [];
+  RxList<Attachments> productImages = <Attachments>[].obs;
+
+  // Rx<int> currentStock = 0.obs;
+
   Rx<int> imageIndex = 0.obs;
-  ViewProduct? product;
+  ViewProductData? product;
   ApiConsumer apiConsumer = sl();
   final count = 0.obs;
   final isShowDescription = true.obs;
   final isShowReviews = true.obs;
-  List<String> sizeList = ['S', 'M', 'L', 'Xl', '2XL'];
+
+  List<String> sizeList = <String>[].obs;
+  RxList<ProductColor> colorList = <ProductColor>[].obs;
+
   Rx<String> selectedSize = "S".obs;
 
-  Rx<String> selectedColor = "0xffcc00cc".obs;
+  Rx<ProductColor> selectedColor = ProductColor(name: "", id: 0, hex: "").obs;
 
   @override
   void onInit() {
@@ -57,62 +62,62 @@ class ProductController extends GetxController {
   }
 
   setSize(customSize) {
+    print("setting...");
     selectedSize.value = customSize;
-    for (var attribute in attributes) {
-      if (attribute.size == selectedSize.value) {
-        currentStock.value = attribute.stock!;
-      }
-    }
-    update();
   }
 
   setColor(customColor) {
     selectedColor.value = customColor;
   }
 
-  getProduct(id) async {
+  getProductSizesAndColors(id) async {
+    colorList.clear();
+    sizeList.clear();
     productImages.clear();
-    bundles.clear();
-    attributes.clear();
     isProductLoading.value = true;
 
-    await apiConsumer.post("products/${id}").then((value) {
+    var result = await apiConsumer.post("products/${id}").then((value) {
       try {
-        product = ViewProduct.fromJson(value);
-
+        print("the real value is ${value}");
+        var _resultProduct = ViewProductData.fromJson(value['data']);
+        product = _resultProduct;
         print("the value is ${value.runtimeType}");
-        print("the product is ${product!.data!.name}");
+        print("the product is ${_resultProduct.sizes}");
 
+        print("stop 00");
         //adding attachments
-        for (var attachment in product!.data!.attachments!) {
+        for (var attachment in _resultProduct.attachments!) {
           if (attachment.name == "app_show") {
             productImages.addNonNull(attachment);
           }
         }
-
+        print("stop 1");
         //adding attributes
-        for (var attribute in product!.data!.attributes!) {
-          attributes.addNonNull(attribute);
+        for (var size in _resultProduct.sizes!) {
+          print("stop 2");
+          sizeList.addNonNull(size);
+        }
+        print("stop 3");
+        // //get Current Stock
+        // for (var attribute in attributes) {
+        //   if (attribute.size == selectedSize.value) {
+        //     currentStock.value = attribute.stock!;
+        //   }
+        // }
+
+        //adding colors
+        for (var color in _resultProduct.colors!) {
+          colorList.addNonNull(color);
         }
 
-        //get Current Stock
-        for (var attribute in attributes) {
-          if (attribute.size == selectedSize.value) {
-            currentStock.value = attribute.stock!;
-          }
-        }
-
-        //adding bundles
-        for (var bundle in product!.data!.bundles!) {
-          bundles.addNonNull(bundle);
-        }
-        update();
-        print("attachments are  ${productImages}");
-        print("bundles are  ${bundles}");
+        print("sized are  ${sizeList}");
+        print("color are  ${colorList}");
+        selectedColor!.value = colorList[0];
 
         isProductLoading.value = false;
       } catch (e) {
         isProductLoading.value = false;
+        print("exception here ${e.toString()}");
       }
     });
   }
