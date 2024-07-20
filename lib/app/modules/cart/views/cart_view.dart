@@ -366,7 +366,8 @@ class _CartPageState extends State<CartPage>
                                       ),
                                     ),
                                     Text(
-                                      cartController.total.value.isNotEmpty
+                                      cartController.total.value.isNotEmpty &&
+                                              cartController.total.value != '0'
                                           ? '\$ ${cartController.total.value}'
                                           : '\$ ${cartController.cartItems.fold<double>(0, (sum, item) => sum + num.parse(item.product!.price!) * item.quantity).toStringAsFixed(2)}',
                                       style: primaryTextStyle(

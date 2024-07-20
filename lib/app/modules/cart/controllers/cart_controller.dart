@@ -59,6 +59,8 @@ class CartController extends GetxController {
         print(total.value.toString() + 'test total value');
         cartItems.assignAll(items.map((e) => CartItem.fromJson(e)).toList());
         saveCartItems();
+        cartItems.refresh(); // Ensure the UI is updated
+
         loading.value = false;
         update();
       } else {

@@ -234,151 +234,117 @@ Color getColorStatusOrder(status) {
 
 Widget orderCard(Order order) {
   return Container(
-    width: 336.w,
-    height: 220.h,
-    decoration: ShapeDecoration(
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+    decoration: BoxDecoration(
       color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(width: 1, color: Color(0xFFF9F9F9)),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      shadows: const [
+      borderRadius: BorderRadius.circular(10.r),
+      boxShadow: [
         BoxShadow(
-          color: Color(0x330E0E0E),
-          blurRadius: 16,
-          offset: Offset(0, 8),
-          spreadRadius: -8,
+          color: Colors.black12,
+          blurRadius: 8.r,
+          offset: Offset(0, 4),
         )
       ],
     ),
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.0.w, vertical: 20.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 109.w,
-                child: Text(
-                  'Order #${order.id}',
-                  style: secondaryTextStyle(
-                    color: Color(0xFF131416),
-                    size: 18.sp.round(),
-                    weight: FontWeight.w700,
-                  ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                'Order #${order.id}',
+                style: secondaryTextStyle(
+                  color: Color(0xFF131416),
+                  size: 18.sp.round(),
+                  weight: FontWeight.w700,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-              Text(
-                order.date,
+            ),
+            SizedBox(width: 19.w),
+            Text(
+              order.date,
+              style: primaryTextStyle(
+                color: Color(0xFF777E90),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Tracking number: ${order.trackingNumber}',
                 style: primaryTextStyle(
                   color: Color(0xFF777E90),
                   size: 14.sp.round(),
                   weight: FontWeight.w400,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
-          19.height,
-          SizedBox(
-              width: 336.w,
-              child: Row(children: [
-                Text(
-                  'Tracking number: ',
-                  style: primaryTextStyle(
-                    color: Color(0xFF777E90),
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  order.trackingNumber,
-                  style: primaryTextStyle(
-                    color: Colors.black,
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-              ])),
-          24.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(children: [
-                Text(
-                  'Quanlity: ',
-                  style: primaryTextStyle(
-                    color: Color(0xFF777E90),
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  order.quantity.toString(),
-                  style: primaryTextStyle(
-                    color: Colors.black,
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-              ]),
-              Row(children: [
-                Text(
-                  'Subtotal: ',
-                  style: primaryTextStyle(
-                    color: Color(0xFF777E90),
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  '\$${order.subtotal}',
+            ),
+          ],
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Quantity: ${order.quantity}',
+              style: primaryTextStyle(
+                color: Color(0xFF777E90),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+            Text(
+              'Subtotal: \$${order.subtotal}',
+              style: primaryTextStyle(
+                color: Color(0xFF777E90),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              order.status.toUpperCase(),
+              style: primaryTextStyle(
+                color: getColorStatusOrder(order.status.toUpperCase()),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(17.5.r),
+                border: Border.all(color: Color(0xFF777E90), width: 1.w),
+              ),
+              child: Center(
+                child: Text(
+                  'Details',
                   style: primaryTextStyle(
                     color: Colors.black,
-                    size: 14,
+                    size: 14.sp.round(),
                     weight: FontWeight.w400,
                   ),
-                ),
-              ]),
-            ],
-          ),
-          24.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                order.status.toUpperCase(),
-                style: primaryTextStyle(
-                  color: getColorStatusOrder(order.status.toUpperCase()),
-                  size: 14,
-                  weight: FontWeight.w400,
                 ),
               ),
-              Container(
-                  width: 100.w,
-                  height: 35.h,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Color(0xFF777E90)),
-                      borderRadius: BorderRadius.circular(17.50),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Details',
-                      style: primaryTextStyle(
-                        color: Colors.black,
-                        size: 14,
-                        weight: FontWeight.w400,
-                      ),
-                    ),
-                  )),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     ),
   );
 }
