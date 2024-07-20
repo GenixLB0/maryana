@@ -29,83 +29,87 @@ class WishlistView extends GetView<WishlistController> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
-          child: SingleChildScrollView(
-            key: const PageStorageKey<String>("pageThree"),
-            child: Container(
-              height: MediaQuery.of(context).size.height - 120.h,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 15.h,
+          child: controller.isAuth.value
+              ? SingleChildScrollView(
+                  key: const PageStorageKey<String>("pageThree"),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height - 120.h,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // InkWell(
+                                //   onTap: () {
+                                //     Get.back();
+                                //   },
+                                //   child: Container(
+                                //     height: 40.h,
+                                //     width: 40.w,
+                                //     decoration: BoxDecoration(
+                                //       color: Colors.white,
+                                //       borderRadius: BorderRadius.all(Radius.circular(30)),
+                                //       boxShadow: [
+                                //         BoxShadow(
+                                //           color: Colors.grey.withOpacity(0.4),
+                                //           spreadRadius: 5,
+                                //           blurRadius: 7,
+                                //           offset:
+                                //               Offset(0, 3), // changes position of shadow
+                                //         ),
+                                //       ],
+                                //     ),
+                                //     child: SvgPicture.asset(
+                                //         "assets/images/forgot_password/BackBTN.svg"),
+                                //   ),
+                                // ),
+                                Expanded(
+                                  child: Center(
+                                    child: Text("My Wishlist",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontFamily: fontCormoantFont,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 22.sp)),
+                                  ),
+                                ),
+                              ]),
+                        ),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        buildSearchAndFilter(
+                          context: context,
+                          isSearch: false,
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Obx(() {
+                          print(
+                              "loading value is ${controller.isWishlistLoading}");
+                          return controller.isWishlistLoading.value
+                              ? Expanded(child: loadingIndicatorWidget())
+                              : Expanded(
+                                  child: ShowUp(
+                                    child: buildProductGrid(context),
+                                    delay: 400,
+                                  ),
+                                );
+                        })
+                      ],
+                    ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // InkWell(
-                          //   onTap: () {
-                          //     Get.back();
-                          //   },
-                          //   child: Container(
-                          //     height: 40.h,
-                          //     width: 40.w,
-                          //     decoration: BoxDecoration(
-                          //       color: Colors.white,
-                          //       borderRadius: BorderRadius.all(Radius.circular(30)),
-                          //       boxShadow: [
-                          //         BoxShadow(
-                          //           color: Colors.grey.withOpacity(0.4),
-                          //           spreadRadius: 5,
-                          //           blurRadius: 7,
-                          //           offset:
-                          //               Offset(0, 3), // changes position of shadow
-                          //         ),
-                          //       ],
-                          //     ),
-                          //     child: SvgPicture.asset(
-                          //         "assets/images/forgot_password/BackBTN.svg"),
-                          //   ),
-                          // ),
-                          Expanded(
-                            child: Center(
-                              child: Text("My Wishlist",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontFamily: fontCormoantFont,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 22.sp)),
-                            ),
-                          ),
-                        ]),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  buildSearchAndFilter(
-                    context: context,
-                    isSearch: false,
-                  ),
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  Obx(() {
-                    print("loading value is ${controller.isWishlistLoading}");
-                    return controller.isWishlistLoading.value
-                        ? Expanded(child: loadingIndicatorWidget())
-                        : Expanded(
-                            child: ShowUp(
-                              child: buildProductGrid(context),
-                              delay: 400,
-                            ),
-                          );
-                  })
-                ],
-              ),
-            ),
-          ),
+                )
+              : Align(
+                  alignment: Alignment.center, child: socialMediaPlaceHolder()),
         ));
   }
 

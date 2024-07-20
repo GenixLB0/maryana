@@ -4,10 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/address/views/address_view.dart';
+import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/profile/views/update_profile.dart';
 import 'package:maryana/app/routes/app_pages.dart';
+import '../../auth/views/register_view.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends StatefulWidget {
@@ -18,65 +20,73 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView>
     with TickerProviderStateMixin {
   final ProfileController controller = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        return SizedBox(
-          width: 375.w,
-          height: 812.h,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 61.h),
-              controller.isLoading.value
-                  ? LoadingWidget(_buildProfileHeader(context))
-                  : _buildProfileHeader(context),
-              SizedBox(height: 58.h),
-              Container(
-                width: 327.w,
-                height: 502.h,
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 1, color: Color(0xFFF2F2F2)),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  shadows: const [
-                    BoxShadow(
-                      color: Color(0x330E0E0E),
-                      blurRadius: 16,
-                      offset: Offset(0, 8),
-                      spreadRadius: -8,
-                    )
-                  ],
-                ),
+        return controller.isAuth.value
+            ? SizedBox(
+                width: 375.w,
+                height: 812.h,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildMenuItem('address.svg', 'Address', () {
-                      Get.to(() => AddressListScreen());
-                    }, 21, 1),
-                    // _buildMenuItem(
-                    //     'payment.svg', 'Payment method', () {}, 21, 2),
-                    _buildMenuItem('coupon.svg', 'Coupons', () {}, 24, 2),
-                    // _buildMenuItem('gift.svg', 'Gift Card', () {}, 24, 4),
-                    _buildMenuItem('order.svg', 'Orders', () {
-                      Get.toNamed(Routes.ORDERS);
-                    }, 24, 3),
-                    _buildMenuItem('rate.svg', 'Rate this app', () {}, 24, 4),
-                    _buildMenuItem('terms.svg', 'Terms of Use', () {}, 24, 5),
-                    _buildMenuItem(
-                        'privacy.svg', 'Privacy Policy', () {}, 24, 6),
-                    _buildMenuItem('logout.svg', 'Log out', () {
-                      _showLogoutConfirmation(context, controller);
-                    }, 24, 7)
+                    SizedBox(height: 61.h),
+                    controller.isLoading.value
+                        ? LoadingWidget(_buildProfileHeader(context))
+                        : _buildProfileHeader(context),
+                    SizedBox(height: 58.h),
+                    Container(
+                      width: 327.w,
+                      height: 502.h,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                              width: 1, color: Color(0xFFF2F2F2)),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        shadows: const [
+                          BoxShadow(
+                            color: Color(0x330E0E0E),
+                            blurRadius: 16,
+                            offset: Offset(0, 8),
+                            spreadRadius: -8,
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildMenuItem('address.svg', 'Address', () {
+                            Get.to(() => AddressListScreen());
+                          }, 21, 1),
+                          // _buildMenuItem(
+                          //     'payment.svg', 'Payment method', () {}, 21, 2),
+                          _buildMenuItem('coupon.svg', 'Coupons', () {}, 24, 2),
+                          // _buildMenuItem('gift.svg', 'Gift Card', () {}, 24, 4),
+                          _buildMenuItem('order.svg', 'Orders', () {
+                            Get.toNamed(Routes.ORDERS);
+                          }, 24, 3),
+                          _buildMenuItem(
+                              'rate.svg', 'Rate this app', () {}, 24, 4),
+                          _buildMenuItem(
+                              'terms.svg', 'Terms of Use', () {}, 24, 5),
+                          _buildMenuItem(
+                              'privacy.svg', 'Privacy Policy', () {}, 24, 6),
+                          _buildMenuItem('logout.svg', 'Log out', () {
+                            _showLogoutConfirmation(context, controller);
+                          }, 24, 7)
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        );
+              )
+            : Center(
+                child: socialMediaPlaceHolder(),
+              );
       }),
     );
   }

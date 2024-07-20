@@ -22,8 +22,14 @@ class EditAddressScreen extends GetView<AddressController> {
     controller.latitude.value = address.latitude.toString();
     controller.longitude.value = address.longitude.toString();
 
-    controller.latLng.value = LatLng(double.parse(address.latitude.toString()),
-        double.parse(address.longitude.toString()));
+    controller.latLng.value = LatLng(
+      double.tryParse(address.latitude.toString()) != null
+          ? double.tryParse(address.latitude.toString())!
+          : 33.888630,
+      double.tryParse(address.longitude.toString()) != null
+          ? double.tryParse(address.longitude.toString())!
+          : 35.495480,
+    );
     controller.kGooglePlex.value = CameraPosition(
       target: controller.latLng.value,
       zoom: 14.4746,

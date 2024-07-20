@@ -288,140 +288,161 @@ class _CartPageState extends State<CartPage>
             ),
       backgroundColor: const Color(0xffFDFDFD),
       body: Obx(() {
-        if (cartController.loading.value) {
-          return Center(
-              child: Center(
-                  child: LoadingAnimationWidget.flickr(
-            leftDotColor: primaryColor,
-            rightDotColor: const Color(0xFFFF0084),
-            size: 50,
-          )));
-        } else if (cartController.cartItems.isEmpty) {
-          return Center(
-            child: Text(
-              'Your cart is empty ',
-              style: primaryTextStyle(),
-            ),
-          );
-        } else {
-          return Column(
-            children: [
-              30.height,
-              Expanded(
-                child: SizedBox(
-                  width: 310.w,
-                  child: ListView.builder(
-                    itemCount: cartController.cartItems.length,
-                    itemBuilder: (context, index) {
-                      final item = cartController.cartItems[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: itemCart(item.product, item),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Hero(
-                  tag: 'checkout',
-                  child: Material(
-                      color: Colors.transparent,
-                      child: FadeTransition(
-                        opacity: _animation,
-                        child: Container(
-                          width: 375.w,
-                          height: 145.h,
-                          decoration: const ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(18),
-                                topRight: Radius.circular(18),
-                              ),
-                            ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x3F000000),
-                                blurRadius: 10,
-                                offset: Offset(0, 0),
-                                spreadRadius: -2,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              16.height,
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 39),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Subtotal',
-                                      style: primaryTextStyle(
-                                        color: Colors.black,
-                                        size: 14,
-                                        weight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Text(
-                                      cartController.total.value.isNotEmpty
-                                          ? '\$ ${cartController.total.value}'
-                                          : '\$ ${cartController.cartItems.fold<double>(0, (sum, item) => sum + num.parse(item.product!.price!) * item.quantity).toStringAsFixed(2)}',
-                                      style: primaryTextStyle(
-                                        size: 20,
-                                        color: Colors.black,
-                                        weight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              16.height,
-                              InkWell(
-                                onTap: () {
-                                  cartController.step.value = '1';
-                                  Get.to(CheckoutPage());
-                                },
-                                child: Container(
-                                  width: 315.w,
-                                  height: 60.h,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFD4B0FF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Proceed to checkout',
-                                        textAlign: TextAlign.center,
-                                        style: primaryTextStyle(
-                                          color: Color(0xFF21034F),
-                                          size: 16,
-                                          weight: FontWeight.w700,
-                                          height: 0.09,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ))),
-            ],
-          );
-        }
+        return cartController.isAuth.value
+            ? buildCartWidgets()
+            : Align(
+                alignment: Alignment.center, child: socialMediaPlaceHolder());
       }),
     );
+  }
+
+  buildCartWidgets() {
+    if (cartController.loading.value) {
+      return Center(
+          child: Center(
+              child: LoadingAnimationWidget.flickr(
+        leftDotColor: primaryColor,
+        rightDotColor: const Color(0xFFFF0084),
+        size: 50,
+      )));
+    } else if (cartController.cartItems.isEmpty) {
+      return Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/images/cart/shopping-cart.png",
+              width: MediaQuery.of(context).size.width / 3,
+              height: MediaQuery.of(context).size.height / 4,
+              fit: BoxFit.fitWidth,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 15.w),
+              child: Text(
+                'Your cart is empty ',
+                style: primaryTextStyle(size: 20.sp.round()),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Column(
+        children: [
+          30.height,
+          Expanded(
+            child: SizedBox(
+              width: 310.w,
+              child: ListView.builder(
+                itemCount: cartController.cartItems.length,
+                itemBuilder: (context, index) {
+                  final item = cartController.cartItems[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: itemCart(item.product, item),
+                  );
+                },
+              ),
+            ),
+          ),
+          Hero(
+              tag: 'checkout',
+              child: Material(
+                  color: Colors.transparent,
+                  child: FadeTransition(
+                    opacity: _animation,
+                    child: Container(
+                      width: 375.w,
+                      height: 145.h,
+                      decoration: const ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(18),
+                            topRight: Radius.circular(18),
+                          ),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 10,
+                            offset: Offset(0, 0),
+                            spreadRadius: -2,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          16.height,
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 39),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Subtotal',
+                                  style: primaryTextStyle(
+                                    color: Colors.black,
+                                    size: 14,
+                                    weight: FontWeight.w700,
+                                  ),
+                                ),
+                                Text(
+                                  cartController.total.value.isNotEmpty &&
+                                          cartController.total.value != '0'
+                                      ? '\$ ${cartController.total.value}'
+                                      : '\$ ${cartController.cartItems.fold<double>(0, (sum, item) => sum + num.parse(item.product!.price!) * item.quantity).toStringAsFixed(2)}',
+                                  style: primaryTextStyle(
+                                    size: 20,
+                                    color: Colors.black,
+                                    weight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          16.height,
+                          InkWell(
+                            onTap: () {
+                              cartController.step.value = '1';
+                              Get.to(CheckoutPage());
+                            },
+                            child: Container(
+                              width: 315.w,
+                              height: 60.h,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: ShapeDecoration(
+                                color: const Color(0xFFD4B0FF),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Proceed to checkout',
+                                    textAlign: TextAlign.center,
+                                    style: primaryTextStyle(
+                                      color: Color(0xFF21034F),
+                                      size: 16,
+                                      weight: FontWeight.w700,
+                                      height: 0.09,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ))),
+        ],
+      );
+    }
   }
 }

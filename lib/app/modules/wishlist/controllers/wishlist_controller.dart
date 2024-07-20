@@ -6,6 +6,8 @@ import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import '../../home/controllers/home_controller.dart';
 import 'package:http/http.dart' as http;
 
+import '../../services/api_service.dart';
+
 class WishlistController extends GetxController {
   //TODO: Implement WishlistController
 
@@ -13,9 +15,14 @@ class WishlistController extends GetxController {
   final resultCount = 0.obs;
   final List<ViewProductData> resultSearchProducts = <ViewProductData>[].obs;
   RxBool isWishlistLoading = false.obs;
+  RxBool isAuth = false.obs;
 
   @override
   void onInit() {
+    if (userToken == null) {
+      isAuth.value = false;
+    }
+
     super.onInit();
   }
 

@@ -9,7 +9,28 @@ import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../../../routes/app_pages.dart';
+
 class ProfileController extends GetxController {
+  RxBool isAuth = false.obs;
+
+  @override
+  void onInit() {
+    if (userToken == null) {
+      isAuth.value = false;
+    } else {
+      isAuth.value = true;
+      super.onInit();
+      fetchProfile();
+    }
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
   var userModel = User(
     id: 0,
     firstName: '',
@@ -63,12 +84,6 @@ class ProfileController extends GetxController {
       confirmPasswordError.value = '';
       return true;
     }
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchProfile();
   }
 
   bool validateFirstName(String firstName) {

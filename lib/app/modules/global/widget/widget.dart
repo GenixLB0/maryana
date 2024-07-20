@@ -29,6 +29,8 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../../main.dart';
 import '../../../routes/app_pages.dart';
+import '../../auth/views/login_view.dart';
+import '../../auth/views/register_view.dart';
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
 
@@ -234,151 +236,117 @@ Color getColorStatusOrder(status) {
 
 Widget orderCard(Order order) {
   return Container(
-    width: 336.w,
-    height: 220.h,
-    decoration: ShapeDecoration(
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+    decoration: BoxDecoration(
       color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(width: 1, color: Color(0xFFF9F9F9)),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      shadows: const [
+      borderRadius: BorderRadius.circular(10.r),
+      boxShadow: [
         BoxShadow(
-          color: Color(0x330E0E0E),
-          blurRadius: 16,
-          offset: Offset(0, 8),
-          spreadRadius: -8,
+          color: Colors.black12,
+          blurRadius: 8.r,
+          offset: Offset(0, 4),
         )
       ],
     ),
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.0.w, vertical: 20.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 109.w,
-                child: Text(
-                  'Order #${order.id}',
-                  style: secondaryTextStyle(
-                    color: Color(0xFF131416),
-                    size: 18.sp.round(),
-                    weight: FontWeight.w700,
-                  ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                'Order #${order.id}',
+                style: secondaryTextStyle(
+                  color: Color(0xFF131416),
+                  size: 18.sp.round(),
+                  weight: FontWeight.w700,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-              Text(
-                order.date,
+            ),
+            SizedBox(width: 19.w),
+            Text(
+              order.date,
+              style: primaryTextStyle(
+                color: Color(0xFF777E90),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Tracking number: ${order.trackingNumber}',
                 style: primaryTextStyle(
                   color: Color(0xFF777E90),
                   size: 14.sp.round(),
                   weight: FontWeight.w400,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
-          19.height,
-          SizedBox(
-              width: 336.w,
-              child: Row(children: [
-                Text(
-                  'Tracking number: ',
-                  style: primaryTextStyle(
-                    color: Color(0xFF777E90),
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  order.trackingNumber,
-                  style: primaryTextStyle(
-                    color: Colors.black,
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-              ])),
-          24.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(children: [
-                Text(
-                  'Quanlity: ',
-                  style: primaryTextStyle(
-                    color: Color(0xFF777E90),
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  order.quantity.toString(),
-                  style: primaryTextStyle(
-                    color: Colors.black,
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-              ]),
-              Row(children: [
-                Text(
-                  'Subtotal: ',
-                  style: primaryTextStyle(
-                    color: Color(0xFF777E90),
-                    size: 14,
-                    weight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  '\$${order.subtotal}',
+            ),
+          ],
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Quantity: ${order.quantity}',
+              style: primaryTextStyle(
+                color: Color(0xFF777E90),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+            Text(
+              'Subtotal: \$${order.subtotal}',
+              style: primaryTextStyle(
+                color: Color(0xFF777E90),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 24.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              order.status.toUpperCase(),
+              style: primaryTextStyle(
+                color: getColorStatusOrder(order.status.toUpperCase()),
+                size: 14.sp.round(),
+                weight: FontWeight.w400,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(17.5.r),
+                border: Border.all(color: Color(0xFF777E90), width: 1.w),
+              ),
+              child: Center(
+                child: Text(
+                  'Details',
                   style: primaryTextStyle(
                     color: Colors.black,
-                    size: 14,
+                    size: 14.sp.round(),
                     weight: FontWeight.w400,
                   ),
-                ),
-              ]),
-            ],
-          ),
-          24.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                order.status.toUpperCase(),
-                style: primaryTextStyle(
-                  color: getColorStatusOrder(order.status.toUpperCase()),
-                  size: 14,
-                  weight: FontWeight.w400,
                 ),
               ),
-              Container(
-                  width: 100.w,
-                  height: 35.h,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Color(0xFF777E90)),
-                      borderRadius: BorderRadius.circular(17.50),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Details',
-                      style: primaryTextStyle(
-                        color: Colors.black,
-                        size: 14,
-                        weight: FontWeight.w400,
-                      ),
-                    ),
-                  )),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     ),
   );
 }
@@ -652,7 +620,12 @@ Widget buttonSocialMedia(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(icon),
+                    SvgPicture.asset(
+                      icon,
+                      width: 25.w,
+                      height: 25.h,
+                      fit: BoxFit.cover,
+                    ),
                     Text(
                       text,
                       style: primaryTextStyle(
@@ -2341,16 +2314,6 @@ buildFilterBottomSheet(
                                   ///////////////////Sizes//////////////////////////////
                                   buildFilterItem(FilterTypeEnum.Sizes, context,
                                       my_search_controller),
-
-                                  // MaterialButton(
-                                  //   minWidth: MediaQuery.of(context).size.width,
-                                  //
-                                  //   height: 100.h,
-                                  //   child: Text("Show Moree"),
-                                  //   color: Color(0xff21034F),
-                                  //   shape: RoundedRectangleBorder(),
-                                  //   onPressed: () {},
-                                  // )
                                 ],
                               ),
                             ],
@@ -2387,10 +2350,6 @@ buildFilterBottomSheet(
                   my_search_controller.maxPriceController.value.text.toString();
 
               //handle size
-              for (var size in my_search_controller.selectedSizes) {
-                payload['sizes[${_sizeIndex}]'] = size.toString();
-                _sizeIndex++;
-              }
 
               //handle material
               for (var material in my_search_controller.selectedMaterials) {
@@ -2402,7 +2361,7 @@ buildFilterBottomSheet(
               //handle styles
               for (var style in my_search_controller.selectedStyles) {
                 payload['style_ids[${_styleIndex}]'] = style.id.toString();
-                _materialIndex++;
+                _styleIndex++;
               }
 
               //handle colors
@@ -2476,5 +2435,113 @@ buildFilterItem(FilterTypeEnum filterName, context,
         ),
       ),
     ),
+  );
+}
+
+Widget socialMediaPlaceHolder() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Text(
+        'Please log in or sign up to continue shopping',
+        textAlign: TextAlign.center,
+        style: secondaryTextStyle(
+          color: const Color(0xFFCDCFD0),
+          size: 16.sp.round(),
+          weight: FontWeight.w400,
+        ),
+      ),
+      SizedBox(
+        height: 32.h,
+      ),
+      buttonSocialMedia(
+          icon: 'assets/icons/google.svg',
+          index: 0,
+          text: 'Continue with Google',
+          color: 0xffFFFFFF,
+          txtColor: 0xFF090A0A,
+          borderColor: 0xFFE3E4E5),
+      SizedBox(
+        height: 16.h,
+      ),
+      buttonSocialMedia(
+          icon: 'assets/icons/facebook.svg',
+          index: 1,
+          text: 'Continue with Facebook',
+          color: 0xFF0066DA,
+          txtColor: 0xffFFFFFF,
+          borderColor: 0xFF0066DA),
+      SizedBox(
+        height: 16.h,
+      ),
+      buttonSocialMedia(
+          icon: 'assets/icons/apple.svg',
+          index: 2,
+          text: 'Continue with Apple',
+          color: 0xFF090A0A,
+          txtColor: 0xffFFFFFF,
+          borderColor: 0xFFE3E4E5),
+      SizedBox(
+        height: 35.h,
+      ),
+      DividerSocial(),
+      SizedBox(
+        height: 34.h,
+      ),
+      InkWell(
+          onTap: () {
+            Get.off(LoginView());
+          },
+          child: buttonSocialMedia(
+              icon: 'assets/icons/login.svg',
+              index: 3,
+              text: 'Sign in with password',
+              color: 0xFFD4B0FF,
+              txtColor: 0xFF21034F,
+              borderColor: 0xFFD4B0FF)),
+      SizedBox(
+        height: 34.h,
+      ),
+      ShowUp(
+          delay: 500,
+          child: InkWell(
+            onTap: () {
+              Get.off(() => RegisterView());
+            },
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Don’t have an account?',
+                    style: primaryTextStyle(
+                      color: const Color(0xFFCDCFD0),
+                      size: 16.sp.round(),
+                      weight: FontWeight.w400,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' ',
+                    style: primaryTextStyle(
+                      color: const Color(0xFF979C9E),
+                      size: 16.sp.round(),
+                      weight: FontWeight.w400,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Sign up',
+                    style: primaryTextStyle(
+                      color: const Color(0xFFAA61FF),
+                      size: 16.sp.round(),
+                      weight: FontWeight.w400,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )),
+    ],
   );
 }

@@ -16,6 +16,8 @@ import 'dart:convert';
 
 import 'package:maryana/main.dart';
 
+import '../../services/api_service.dart';
+
 class CartController extends GetxController {
   var cartItems = <CartItem>[].obs;
   var step = ''.obs;
@@ -24,19 +26,24 @@ class CartController extends GetxController {
 
   var shippingID = ''.obs;
   final box = GetStorage();
+  RxBool isAuth = false.obs;
 
   @override
   void onInit() async {
-    super.onInit();
-
-    bool cachedCart = await loadCartItems();
-    if (!cachedCart) {
-      print('retrived cart from api');
-      fetchCartDetailsFromAPI();
+    if (userToken == null) {
+      isAuth.value = false;
     } else {
-      //  fetchCartDetailsFromAPI(); // Fetch updated data in the background
+      super.onInit();
+
+      bool cachedCart = await loadCartItems();
+      if (!cachedCart) {
+        print('retrived cart from api');
+        fetchCartDetailsFromAPI();
+      } else {
+        //  fetchCartDetailsFromAPI(); // Fetch updated data in the background
+      }
+      print('Initialized');
     }
-    print('Initialized');
   }
 
   @override
@@ -59,6 +66,8 @@ class CartController extends GetxController {
         print(total.value.toString() + 'test total value');
         cartItems.assignAll(items.map((e) => CartItem.fromJson(e)).toList());
         saveCartItems();
+        cartItems.refresh(); // Ensure the UI is updated
+
         loading.value = false;
         update();
       } else {
@@ -135,6 +144,7 @@ class CartController extends GetxController {
   }
 
   ProductController productController = ProductController();
+
   Future<void> addToCart(ViewProductData product, String size, String color,
       {int quantity = 1}) async {
     var existingItem =
@@ -232,6 +242,7 @@ class CartItem {
   int quantity;
   String? selectedSize;
   String? selectedColor;
+
   CartItem(
       {required this.product,
       this.quantity = 1,
