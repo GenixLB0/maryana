@@ -1,0 +1,74 @@
+name: maryana
+version: 2.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment:
+  sdk: '>=3.4.1 <4.0.0'
+
+
+
+
+dev_dependencies:
+  flutter_lints: 4.0.0
+  flutter_test:
+    sdk: flutter
+
+dependencies:
+  cupertino_icons: ^1.0.6
+  lottie:
+  get: 4.6.6
+  dio: ^4.0.6
+  nb_utils: 6.1.0
+  flutter_animate:
+  sliding_up_panel:
+  video_player:
+  typewritertext:
+  get_storage: ^2.0.3
+  carousel_slider:
+  delayed_widget:
+  page_transition:
+  flutter_svg:
+  awesome_snackbar_content:
+  flutter_screenutil: ^5.9.3
+  cached_network_image:
+  shimmer:
+  logger: ^1.1.0
+  loading_animation_widget: ^1.2.1
+  get_it:
+
+  flutter_spinkit:
+  percent_indicator:
+  pinput:
+  mobx: ^2.2.1
+  flutter_mobx: ^2.2.0
+  google_fonts: ^6.2.1
+  modal_bottom_sheet: ^3.0.0
+
+  image_picker: ^1.1.2
+  geocoding: ^3.0.0
+  geolocator: ^12.0.0
+  google_api_headers: 4.0.3
+  json_annotation:
+  google_maps_flutter: 2.5.3
+
+
+
+
+flutter:
+  uses-material-design: true
+
+
+
+
+
+
+  assets:
+    - assets/images/
+    - assets/images/cart/
+    - assets/icons/
+    - assets/images/splash/
+    - assets/images/onboarding/
+    - assets/images/forgot_password/
+    - assets/images/home/
+    - assets/images/product/
+    - assets/images/profile/
