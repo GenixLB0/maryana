@@ -21,6 +21,8 @@ class WishlistController extends GetxController {
   void onInit() {
     if (userToken == null) {
       isAuth.value = false;
+    } else {
+      isAuth.value = true;
     }
 
     super.onInit();

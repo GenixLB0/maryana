@@ -33,6 +33,7 @@ class CartController extends GetxController {
     if (userToken == null) {
       isAuth.value = false;
     } else {
+      isAuth.value = true;
       super.onInit();
 
       bool cachedCart = await loadCartItems();
