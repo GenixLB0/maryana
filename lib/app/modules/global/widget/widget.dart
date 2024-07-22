@@ -2384,7 +2384,7 @@ buildFilterBottomSheet(
 
               //handle collections
               for (var collection in my_search_controller.selectedCollections) {
-                payload['category_ids[${_collectionIndex}]'] =
+                payload['collection_ids[${_collectionIndex}]'] =
                     collection.id.toString();
                 _collectionIndex++;
               }

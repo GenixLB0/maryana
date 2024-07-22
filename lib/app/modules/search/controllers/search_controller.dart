@@ -55,8 +55,10 @@ class CustomSearchController extends GetxController {
   RxList<Brands> selectedBrands = <Brands>[].obs;
   RxList<Collections> selectedCollections = <Collections>[].obs;
   Rx<RangeValues> settedValue = RangeValues(1.0, 10000.0).obs;
-  Rx<TextEditingController> minPriceController = TextEditingController().obs;
-  Rx<TextEditingController> maxPriceController = TextEditingController().obs;
+  Rx<TextEditingController> minPriceController =
+      TextEditingController(text: "0").obs;
+  Rx<TextEditingController> maxPriceController =
+      TextEditingController(text: "10000").obs;
 
   ////////////////////////////////////////////////////////////
   @override
