@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/auth/views/register_view.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
+import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../../routes/app_pages.dart';
@@ -15,6 +16,7 @@ import '../controllers/auth_controller.dart';
 
 class LoginView extends StatelessWidget {
   final AuthController controller = Get.put(AuthController());
+
   Widget loginbyPasswordView(context) {
     return Column(
       children: [
@@ -214,6 +216,21 @@ class LoginView extends StatelessWidget {
                 txtColor: 0xFF21034F,
                 borderColor: 0xFFD4B0FF)),
         SizedBox(
+          height: 34.h,
+        ),
+        InkWell(
+            onTap: () {
+              Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
+              Get.to(MainView());
+            },
+            child: buttonSocialMedia(
+                icon: 'assets/images/onboarding/person.svg',
+                index: 3,
+                text: 'Sign in As a Guest',
+                color: 0xFFD4B0FF,
+                txtColor: 0xFF21034F,
+                borderColor: 0xFFD4B0FF)),
+        SizedBox(
           height: 26.h,
         ),
         ShowUp(
@@ -282,7 +299,7 @@ class LoginView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: controller.socialView.value ? 100.h : 0,
+                  height: controller.socialView.value ? 60.h : 0,
                 ),
                 ShowUp(
                     delay: 200,

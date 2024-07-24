@@ -19,8 +19,12 @@ import 'package:maryana/app/modules/splash/bindings/splash_binding.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import 'app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:flutter/services.dart';
+
 final sl = GetIt.instance;
 ApiConsumer apiConsumer = sl();
+
 Future<void> init() async {
   try {
     //Core injections
@@ -44,33 +48,22 @@ Future<void> init() async {
   }
 }
 
-void _checkUserToken() async {
-  if (userToken != null && userToken!.isNotEmpty) {
-    // Navigate to the main screen
-    print('test $userToken');
-    Get.off(() => MainView());
-  } else {
-    print('test2 $userToken');
-
-    navigateToOnboarding();
-  }
-}
-
 void navigateToOnboarding() {
+  Get.lazyPut(() => OnboardingController());
   Get.off(() => OnboardingView());
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await init();
 
   await AppConstants.loadUserFromCache();
-  Future.delayed(const Duration(milliseconds: 200))
-      .then((_) => _checkUserToken());
+
   fontFamilyBoldGlobal = GoogleFonts.bebasNeue().fontFamily;
   fontFamilyPrimaryGlobal = GoogleFonts.lato().fontFamily;
   fontFamilySecondaryGlobal = GoogleFonts.nunito().fontFamily;
-  // fontCormoantFont = GoogleFonts.cormorant().fontFamily;
+  fontCormoantFont = GoogleFonts.cormorant().fontFamily;
 
   // GoogleFonts.cormorant
   Get.put(ApiService());
@@ -94,6 +87,7 @@ class MyApp extends StatelessWidget {
                       builder: (_, child) {
                         return Observer(
                             builder: (_) => GetMaterialApp(
+                                  debugShowCheckedModeBanner: false,
                                   title: APP_NAME,
                                   theme: AppTheme.lightTheme(color: snap.data),
                                   initialRoute: Routes.SPLASH,
