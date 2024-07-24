@@ -1,4 +1,14 @@
 import 'package:get/get.dart';
+import 'package:maryana/app/modules/address/views/add_address_screen.dart';
+import 'package:maryana/app/modules/address/views/edit_address_screen.dart';
+import 'package:maryana/app/modules/cart/bindings/cart_binding.dart';
+import 'package:maryana/app/modules/cart/views/cart_view.dart';
+import 'package:maryana/app/modules/cart/views/checkout_view.dart';
+import 'package:maryana/app/modules/order/bindings/orders_binding.dart';
+import 'package:maryana/app/modules/order/views/orders_view.dart';
+
+import '../modules/address/bindings/address_binding.dart';
+import '../modules/address/views/address_view.dart';
 
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/bindings/forgot_password_binding.dart';
@@ -11,6 +21,13 @@ import '../modules/main/bindings/main_binding.dart';
 import '../modules/main/views/main_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
+import '../modules/profile/views/update_profile.dart';
+import '../modules/search/bindings/search_binding.dart';
+import '../modules/search/views/search_view.dart';
+import '../modules/product/bindings/product_binding.dart';
+import '../modules/product/views/product_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/search/bindings/search_binding.dart';
@@ -39,6 +56,16 @@ class AppPages {
       binding: AuthBinding(),
     ),
     GetPage(
+      name: _Paths.CART,
+      page: () => CartPage(),
+      binding: CartBinding(),
+    ),
+    GetPage(
+      name: _Paths.Checkout,
+      page: () => CheckoutPage(),
+      binding: CartBinding(),
+    ),
+    GetPage(
       name: _Paths.REGISTER,
       page: () => RegisterView(),
       binding: AuthBinding(),
@@ -65,7 +92,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PROFILE,
-      page: () => const ProfileView(),
+      page: () => ProfileView(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.ProfileUpdate,
+      page: () => ProfileUpdate(),
       binding: ProfileBinding(),
     ),
     GetPage(
@@ -74,9 +106,29 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
+      name: _Paths.ADDRESS,
+      page: () => AddressListScreen(),
+      binding: AddressBinding(),
+    ),
+    GetPage(
+      name: _Paths.AddADDRESS,
+      page: () => AddAddressScreen(),
+      binding: ShopBinding(),
+    ),
+    GetPage(
+      name: _Paths.PRODUCT,
+      page: () => ProductView(),
+      binding: ProductBinding(),
+    ),
+    GetPage(
       name: _Paths.SHOP,
       page: () => const ShopView(),
       binding: ShopBinding(),
     ),
+    GetPage(
+      name: _Paths.ORDERS,
+      page: () => OrdersView(),
+      binding: OrdersBinding(),
+    )
   ];
 }

@@ -151,7 +151,7 @@ class DioConsumer implements ApiConsumer {
           case StatusCode.notFound:
             throw const NotFoundException();
           case StatusCode.confilct:
-            throw const ConflictException();
+            throw UnauthorizedException(error.response?.toString());
           case StatusCode.unProcessableContent:
             throw DataInputException(error.response?.toString());
           case StatusCode.internalServerError:
