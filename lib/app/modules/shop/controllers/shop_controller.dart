@@ -3,15 +3,21 @@ import 'package:dio/dio.dart' as dio;
 
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:http/http.dart' as http;
 import '../../../../main.dart';
 import '../../global/model/test_model_response.dart' hide Brands;
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
+import 'package:flutter/material.dart';
 
 class ShopController extends GetxController {
   RxList<Categories> categories = <Categories>[].obs;
+
+  // Rx<Categories> currentCat = Categories().obs;
+
   RxList<ViewProductData> productsInCategories = <ViewProductData>[].obs;
   RxBool isCategoryLoading = false.obs;
   RxBool isProductLoading = false.obs;
@@ -22,6 +28,9 @@ class ShopController extends GetxController {
   RxBool isBrandsLoading = false.obs;
   RxList<Brands> brands = <Brands>[].obs;
   String choosenCatId = "";
+  ScrollController scrollController = ScrollController();
+  RxBool showText = false.obs;
+  RxBool showTextTop = false.obs;
 
   @override
   void onInit() {
@@ -32,6 +41,7 @@ class ShopController extends GetxController {
   void onReady() {
     getCategories();
     getProducts();
+
     super.onReady();
   }
 
@@ -62,12 +72,15 @@ class ShopController extends GetxController {
         for (var category in apiResponse.data!) {
           categories.add(category);
         }
-        ;
+        currentCatIndex.value = 1;
+        getBrandsInCategory(currentCatIndex.value + 1);
+        getProductsInCategory(currentCatIndex.value + 1, "");
       } else {
         handleApiErrorUser(apiResponse.message);
         handleApiError(response.statusCode);
       }
       isCategoryLoading.value = false;
+
       update();
     } catch (e, stackTrace) {
       print('search api failed:  ${e} $stackTrace');
@@ -75,6 +88,36 @@ class ShopController extends GetxController {
       print(e.toString() + stackTrace.toString());
       isCategoryLoading.value = false;
       update();
+    }
+  }
+
+  Rx<int> currentCatIndex = 0.obs;
+
+  changeClickCurrentCat(
+    int index,
+  ) {
+    currentCatIndex.value = index;
+  }
+
+  changeCurrentCat(bool swipeUp) {
+    if (swipeUp) {
+      print("yes swipe up");
+      if (categories.length > currentCatIndex.value + 1) {
+        currentCatIndex.value++;
+      }
+
+      changeClickCurrentCat(currentCatIndex.value);
+      getBrandsInCategory(currentCatIndex.value + 1);
+      getProductsInCategory(currentCatIndex.value + 1, "");
+    } else {
+      print("yes swipe down");
+      if (categories.length > currentCatIndex.value - 1) {
+        currentCatIndex.value = currentCatIndex.value - 1;
+      }
+      print("the real index = ${currentCatIndex.value}");
+      changeClickCurrentCat(currentCatIndex.value);
+      getBrandsInCategory(currentCatIndex.value + 1);
+      getProductsInCategory(currentCatIndex.value + 1, "");
     }
   }
 
@@ -133,7 +176,7 @@ class ShopController extends GetxController {
 
     var bodyFields = {
       "category_ids[0]": "${CatId.toString()}",
-      'orderBy': orderTag ?? "featured"
+      'orderBy': orderTag.isEmpty ? "featured" : orderTag
     };
 
     final response = await http.post(
@@ -152,6 +195,7 @@ class ShopController extends GetxController {
 
         print("your result ${productsInCategories.first.id}");
         isProductsInCategoryLoading.value = false;
+        handleScroll();
         return productsInCategories;
       } else {
         print(response.reasonPhrase);
@@ -219,4 +263,36 @@ class ShopController extends GetxController {
     choosenCatId = id;
     print("changed id with 2 ${choosenCatId}");
   }
+
+  handleScroll() {
+    scrollController.addListener(() {
+      print("start 11111");
+      if (scrollController.position.atEdge) {
+        final isTop = scrollController.position.pixels == 0;
+        if (isTop) {
+          print('At the top');
+          showTextTop.value = true;
+          showText.value = false;
+        } else {
+          print('At the bottom');
+          showText.value = true;
+          showTextTop.value = false;
+        }
+      }
+    });
+  }
+
+// changeCurrentCatOnSwipe() {
+//   print("swipped");
+//   changeCurrentCat(nextCat.value, currentCatIndex + 1, true);
+//   getBrandsInCategory(nextCat.value.id!);
+//   getProductsInCategory(nextCat.value.id!, "featured");
+// }
+//
+// changeCurrentCatOnSwipeDown() {
+//   print("swipped Down");
+//   changeCurrentCat(nextCat.value, currentCatIndex - 1, false);
+//   getBrandsInCategory(nextCat.value.id!);
+//   getProductsInCategory(nextCat.value.id!, "featured");
+// }
 }

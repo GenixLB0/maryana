@@ -23,106 +23,106 @@ class SearchView extends GetView<CustomSearchController> {
     controller.setArgs();
     print("switching to search ${controller.products.length}");
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 15.h,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.w),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Container(
-                        height: 40.h,
-                        width: 40.w,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.4),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset:
-                                  Offset(0, 3), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                            "assets/images/forgot_password/BackBTN.svg"),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 15.h,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.w),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Container(
+                      height: 40.h,
+                      width: 40.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.4),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
                       ),
+                      child: SvgPicture.asset(
+                          "assets/images/forgot_password/BackBTN.svg"),
                     ),
-                    Spacer(),
-                    Text(
-                      "Reset",
-                      style: primaryTextStyle(
-                          weight: FontWeight.w600,
-                          size: 14.sp.round(),
-                          color: Color(0xffFF5247)),
-                    )
-                  ],
-                ),
+                  ),
+                  Spacer(),
+                  Text(
+                    "Reset",
+                    style: primaryTextStyle(
+                        weight: FontWeight.w600,
+                        size: 14.sp.round(),
+                        color: Color(0xffFF5247)),
+                  )
+                ],
               ),
-              SizedBox(
-                height: 15.h,
-              ),
-              buildSearchAndFilter(
-                  context: context,
-                  isSearch: true,
-                  onSubmitted: (v) {
-                    controller.addSearchKeywords(v);
-                    controller.getSearchResultsFromApi();
+            ),
+            SizedBox(
+              height: 15.h,
+            ),
+            buildSearchAndFilter(
+                context: context,
+                isSearch: true,
+                onSubmitted: (v) {
+                  controller.addSearchKeywords(v);
+                  controller.getSearchResultsFromApi();
 
-                    Get.to(() => const ResultView(),
-                        transition: Transition.fadeIn,
-                        curve: Curves.easeInOut,
-                        duration: const Duration(milliseconds: 800));
-                  }),
-              SizedBox(
-                height: 10.h,
+                  Get.to(() => const ResultView(),
+                      transition: Transition.fadeIn,
+                      curve: Curves.easeInOut,
+                      duration: const Duration(milliseconds: 800));
+                }),
+            SizedBox(
+              height: 10.h,
+            ),
+            Container(
+              height: 2,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    spreadRadius: 1,
+                    blurRadius: 2,
+                    offset: Offset(0, 1), // changes position of shadow
+                  ),
+                ],
               ),
-              Container(
-                height: 2,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.black12,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 15.h,
-              ),
-              GetBuilder<CustomSearchController>(
-                  builder: (_) => ShowUp(
-                        child: buildSearchKeywords(context),
-                        delay: 400,
-                      )),
-              Spacer(),
-              GetBuilder<CustomSearchController>(
-                  builder: (cont) => ShowUp(
-                        child: buildProductsScroll(context),
-                        delay: 400,
-                      )),
-              SizedBox(
-                height: 40.h,
-              ),
-            ],
-          ),
-        ));
+            ),
+            SizedBox(
+              height: 15.h,
+            ),
+            GetBuilder<CustomSearchController>(
+                builder: (_) => ShowUp(
+                      child: buildSearchKeywords(context),
+                      delay: 400,
+                    )),
+            Spacer(),
+            GetBuilder<CustomSearchController>(
+                builder: (cont) => ShowUp(
+                      child: buildProductsScroll(context),
+                      delay: 400,
+                    )),
+            SizedBox(
+              height: 40.h,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   buildProductsScroll(context) {

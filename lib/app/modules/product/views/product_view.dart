@@ -204,6 +204,7 @@ class ProductView extends GetView<ProductController> {
           ),
         ),
       ),
+      // Back-to-top button
     );
   }
 

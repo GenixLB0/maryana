@@ -45,6 +45,8 @@ dependencies:
   flutter_mobx: ^2.2.0
   google_fonts: ^6.2.1
   video_player:
+  visibility_detector:
+
 
 
 

@@ -20,250 +20,254 @@ class ResultView extends GetView<CustomSearchController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.attachScroll();
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 15.h,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Container(
-                          height: 40.h,
-                          width: 40.w,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.4),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset:
-                                    Offset(0, 3), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: SvgPicture.asset(
-                              "assets/images/forgot_password/BackBTN.svg"),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 15.h,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                InkWell(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    height: 40.h,
+                    width: 40.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3), // changes position of shadow
                         ),
-                      ),
-                      GetBuilder<CustomSearchController>(
-                        builder: (_) => Expanded(
-                          child: Center(
-                            child: Text(controller.titleResult,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontFamily: fontCormoantFont,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20.sp)),
-                          ),
-                        ),
-                      ),
-                    ]),
-              ),
-              SizedBox(
-                height: 15.h,
-              ),
-              Obx(() {
-                print("categories value is ${controller.categories}");
-                return controller.isFromSearch.value
-                    ? controller.categories.isEmpty
-                        ? LoadingWidget(
-                            Padding(
-                              padding: EdgeInsets.only(left: 16.w),
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: ShowUp(
-                                  delay: 400,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: smallSpacing),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 15.h,
-                                        ),
-                                        Text(
-                                          "Categories",
-                                          style: GoogleFonts.lora(
-                                            fontSize: 23.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10.h,
-                                        ),
-                                        Container(
-                                          height: 100.h,
-                                          child: ListView.separated(
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-                                              itemBuilder: (ctx, index) =>
-                                                  GestureDetector(
-                                                    onTap: () {},
-                                                    child: Column(
-                                                      children: [
-                                                        Text(
-                                                          "",
-                                                          style:
-                                                              GoogleFonts.lora(
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  color: Colors
-                                                                      .grey),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 1,
-                                                        ),
-                                                        Container(
-                                                          width: 4,
-                                                          height: 4,
-                                                          decoration:
-                                                              const ShapeDecoration(
-                                                            color: Color(
-                                                                0xFF090A0A),
-                                                            shape: OvalBorder(),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                              separatorBuilder: (ctx, index) =>
-                                                  SizedBox(
-                                                    width: 10.w,
-                                                  ),
-                                              itemCount: 5),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : Padding(
+                      ],
+                    ),
+                    child: SvgPicture.asset(
+                        "assets/images/forgot_password/BackBTN.svg"),
+                  ),
+                ),
+                GetBuilder<CustomSearchController>(
+                  builder: (_) => Expanded(
+                    child: Center(
+                      child: Text(controller.titleResult,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontFamily: fontCormoantFont,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20.sp)),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+            SizedBox(
+              height: 15.h,
+            ),
+            Obx(() {
+              print("categories value is ${controller.categories}");
+              return controller.isFromSearch.value
+                  ? controller.categories.isEmpty
+                      ? LoadingWidget(
+                          Padding(
                             padding: EdgeInsets.only(left: 16.w),
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: ShowUp(
-                                child: buildCatScroll(context),
                                 delay: 400,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: smallSpacing),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      Text(
+                                        "Categories",
+                                        style: GoogleFonts.lora(
+                                          fontSize: 23.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10.h,
+                                      ),
+                                      Container(
+                                        height: 100.h,
+                                        child: ListView.separated(
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (ctx, index) =>
+                                                GestureDetector(
+                                                  onTap: () {},
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        "",
+                                                        style: GoogleFonts.lora(
+                                                            fontSize: 15.sp,
+                                                            color: Colors.grey),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 1,
+                                                      ),
+                                                      Container(
+                                                        width: 4,
+                                                        height: 4,
+                                                        decoration:
+                                                            const ShapeDecoration(
+                                                          color:
+                                                              Color(0xFF090A0A),
+                                                          shape: OvalBorder(),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                            separatorBuilder: (ctx, index) =>
+                                                SizedBox(
+                                                  width: 10.w,
+                                                ),
+                                            itemCount: 5),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                          )
-                    : const SizedBox();
-              }),
-              Row(
-                children: [
-                  Stack(
-                    alignment: Alignment.centerLeft,
-                    children: [
-                      SvgPicture.asset(
-                        "assets/images/home/star.svg",
-                        width: 90.w,
-                        height: 90.h,
-                        fit: BoxFit.cover,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.w, top: 25.h),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Found",
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(left: 16.w),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: ShowUp(
+                              child: buildCatScroll(context),
+                              delay: 400,
+                            ),
+                          ),
+                        )
+                  : const SizedBox();
+            }),
+            Row(
+              children: [
+                Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/images/home/star.svg",
+                      width: 90.w,
+                      height: 90.h,
+                      fit: BoxFit.cover,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.w, top: 25.h),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Found",
+                            style: primaryTextStyle(
+                                size: 20.sp.round(), weight: FontWeight.w700),
+                          ),
+                          Obx(() {
+                            return Text(
+                              "${controller.resultCount.value} Results",
                               style: primaryTextStyle(
                                   size: 20.sp.round(), weight: FontWeight.w700),
-                            ),
-                            Obx(() {
-                              return Text(
-                                "${controller.resultCount.value} Results",
-                                style: primaryTextStyle(
-                                    size: 20.sp.round(),
-                                    weight: FontWeight.w700),
-                              );
-                            }),
-                          ],
-                        ),
+                            );
+                          }),
+                        ],
                       ),
-                    ],
-                  ),
-                  Spacer(),
-                  // Container(
-                  //   width: 100.w,
-                  //   height: 40.h,
-                  //   decoration: BoxDecoration(
-                  //       border:
-                  //           Border.all(color: Colors.grey[400]!, width: 1.w),
-                  //       borderRadius: BorderRadius.circular(30.sp)),
-                  //   child: const Row(
-                  //     crossAxisAlignment: CrossAxisAlignment.center,
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     children: [Text("Filter"), Icon(Icons.arrow_drop_down)],
-                  //   ),
-                  // ),
-                  SizedBox(
-                    width: 16.w,
-                  )
-                ],
-              ),
-              Obx(() {
-                print("loading value is ${controller.isSearchLoading}");
-                return controller.isSearchLoading.value
-                    ? Expanded(child: loadingIndicatorWidget()
-                        // LoadingWidget(
-                        //   Container(
-                        //       padding: EdgeInsets.all(15),
-                        //       width: MediaQuery.of(context).size.width,
-                        //       child: GridView.builder(
-                        //         shrinkWrap: true,
-                        //         gridDelegate:
-                        //             SliverGridDelegateWithFixedCrossAxisCount(
-                        //                 childAspectRatio: MediaQuery.of(context)
-                        //                         .size
-                        //                         .width /
-                        //                     (MediaQuery.of(context)
-                        //                             .size
-                        //                             .height /
-                        //                         1.4),
-                        //                 crossAxisCount: 2,
-                        //                 crossAxisSpacing: 5.w),
-                        //         itemBuilder: (context, index) {
-                        //           return buildProductCard(product:
-                        //             image: "",
-                        //             name: "",
-                        //             description: "",
-                        //             price: "",
-                        //           );
-                        //         },
-                        //         itemCount: 8,
-                        //       )),
-                        // ),
-                        )
-                    : Expanded(
-                        child: ShowUp(
-                          child: buildProductGrid(context),
-                          delay: 400,
-                        ),
-                      );
-              })
-            ],
-          ),
-        ));
+                    ),
+                  ],
+                ),
+                Spacer(),
+                // Container(
+                //   width: 100.w,
+                //   height: 40.h,
+                //   decoration: BoxDecoration(
+                //       border:
+                //           Border.all(color: Colors.grey[400]!, width: 1.w),
+                //       borderRadius: BorderRadius.circular(30.sp)),
+                //   child: const Row(
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [Text("Filter"), Icon(Icons.arrow_drop_down)],
+                //   ),
+                // ),
+                SizedBox(
+                  width: 16.w,
+                )
+              ],
+            ),
+            Obx(() {
+              print("loading value is ${controller.isSearchLoading}");
+              return controller.isSearchLoading.value
+                  ? Expanded(child: loadingIndicatorWidget()
+                      // LoadingWidget(
+                      //   Container(
+                      //       padding: EdgeInsets.all(15),
+                      //       width: MediaQuery.of(context).size.width,
+                      //       child: GridView.builder(
+                      //         shrinkWrap: true,
+                      //         gridDelegate:
+                      //             SliverGridDelegateWithFixedCrossAxisCount(
+                      //                 childAspectRatio: MediaQuery.of(context)
+                      //                         .size
+                      //                         .width /
+                      //                     (MediaQuery.of(context)
+                      //                             .size
+                      //                             .height /
+                      //                         1.4),
+                      //                 crossAxisCount: 2,
+                      //                 crossAxisSpacing: 5.w),
+                      //         itemBuilder: (context, index) {
+                      //           return buildProductCard(product:
+                      //             image: "",
+                      //             name: "",
+                      //             description: "",
+                      //             price: "",
+                      //           );
+                      //         },
+                      //         itemCount: 8,
+                      //       )),
+                      // ),
+                      )
+                  : Expanded(
+                      child: ShowUp(
+                        child: buildProductGrid(context),
+                        delay: 400,
+                      ),
+                    );
+            })
+          ],
+        ),
+      ),
+      floatingActionButton: Obx(() {
+        return controller.showBackToTopButton.value == false
+            ? const SizedBox()
+            : FloatingActionButton(
+                onPressed: controller.scrollToTop,
+                child: const Icon(Icons.arrow_upward),
+              );
+      }),
+    );
   }
 
   buildCatScroll(context) {
