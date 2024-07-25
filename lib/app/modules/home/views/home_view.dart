@@ -781,152 +781,146 @@ class HomeView extends GetView<HomeController> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(left: 20.w),
-      child: Container(
-        height: 40.h,
-        child: controller.isHomeLoading.value
-            ? ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (ctx, index) {
-                  return LoadingWidget(
-                    SizedBox(
-                      width: 100.w,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.sp),
-                            border: Border.all(color: Colors.grey, width: 1)),
-                      ),
-
-
-
-                    ),
-                  ),
-                );
-
-            },
-            separatorBuilder: (ctx , index)=> SizedBox(width: 10.w,) ,
-            itemCount: 4
-        )
-            :
-
-        controller.homeModel.value.categories != null ?
-
-        ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (ctx , index){
-
-
-                        if (CustomSearchController().initialized) {
-                          CustomSearchController controller =
-                              Get.find<CustomSearchController>();
-                          controller.getProductsInSection(
-                              sectionName: myCatList[index].name!,
-                              payload: myCatList[index].id == 0
-                                  ? {}
-                                  : {
-                                      "category_ids[0]":
-                                          "${myCatList[index].id.toString()}"
-                                    });
-                          Get.to(() => const ResultView(),
-                              transition: Transition.fadeIn,
-                              curve: Curves.easeInOut,
-                              duration: const Duration(milliseconds: 800));
-                        } else {
-                          CustomSearchController controller =
-                              Get.put<CustomSearchController>(
-                                  CustomSearchController());
-                          controller.getProductsInSection(
-                              sectionName: myCatList[index].name!,
-                              payload: myCatList[index].id == 0
-                                  ? {}
-                                  : {
-                                      "category_ids[0]":
-                                          "${myCatList[index].id.toString()}"
-                                    });
-
-                          Get.to(() => const ResultView(),
-                              transition: Transition.fadeIn,
-                              curve: Curves.easeInOut,
-                              duration: const Duration(milliseconds: 800));
-                        }
-                      }, child: GetBuilder<HomeController>(builder: (cont) {
-                        print("active cats ${cont.activeCats}");
-                        return SizedBox(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6.w),
-                            decoration: BoxDecoration(
-                                color: controller.activeCats[index] == 1
-                                    ? Color(0xffE7D3FF)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(10.sp),
-                                border:
-                                    Border.all(color: Colors.grey, width: 1)),
-                            child: myCatList[index].image != null
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 3.w,
-                                      ),
-                                      myCatList[index].image!.isEmpty
-                                          ? SvgPicture.asset(
-                                              "assets/images/home/cat_icon.svg",
-                                              width: 20.w,
-                                              height: 20.h,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : CachedNetworkImage(
-                                              imageUrl: myCatList[index].image!,
-                                              width: 20.w,
-                                              height: 20.h,
-                                              fit: BoxFit.cover,
-                                              placeholder: (ctx, v) {
-                                                return placeHolderWidget();
-                                              },
-                                            ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        myCatList[index].name!,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                    ],
-                                  )
-                                : Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 3.w,
-                                      ),
-                                      SvgPicture.asset(
-                                        "assets/images/home/cat_icon.svg",
-                                        width: 20.w,
-                                        height: 20.h,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(myCatList[index].name!),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        );
-                      }));
-                    },
-                    separatorBuilder: (ctx, index) => SizedBox(
-                          width: 10.w,
+        padding: EdgeInsets.only(left: 20.w),
+        child: Container(
+          height: 40.h,
+          child: controller.isHomeLoading.value
+              ? ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (ctx, index) {
+                    return LoadingWidget(
+                      SizedBox(
+                        width: 100.w,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.sp),
+                              border: Border.all(color: Colors.grey, width: 1)),
                         ),
-                    itemCount: myCatList.length)
-                : SizedBox(),
-      ),
-    );
+                      ),
+                    );
+                  },
+                  separatorBuilder: (ctx, index) => SizedBox(
+                        width: 10.w,
+                      ),
+                  itemCount: 4)
+              : controller.homeModel.value.categories != null
+                  ? ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (ctx, index) {
+                        return GestureDetector(
+                            onTap: () {
+                              if (CustomSearchController().initialized) {
+                                CustomSearchController controller =
+                                    Get.find<CustomSearchController>();
+                                controller.getProductsInSection(
+                                    sectionName: myCatList[index].name!,
+                                    payload: myCatList[index].id == 0
+                                        ? {}
+                                        : {
+                                            "category_ids[0]":
+                                                "${myCatList[index].id.toString()}"
+                                          });
+                                Get.to(() => const ResultView(),
+                                    transition: Transition.fadeIn,
+                                    curve: Curves.easeInOut,
+                                    duration:
+                                        const Duration(milliseconds: 800));
+                              } else {
+                                CustomSearchController controller =
+                                    Get.put<CustomSearchController>(
+                                        CustomSearchController());
+                                controller.getProductsInSection(
+                                    sectionName: myCatList[index].name!,
+                                    payload: myCatList[index].id == 0
+                                        ? {}
+                                        : {
+                                            "category_ids[0]":
+                                                "${myCatList[index].id.toString()}"
+                                          });
+
+                                Get.to(() => const ResultView(),
+                                    transition: Transition.fadeIn,
+                                    curve: Curves.easeInOut,
+                                    duration:
+                                        const Duration(milliseconds: 800));
+                              }
+                            },
+                            child: SizedBox(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                decoration: BoxDecoration(
+                                    color: controller.activeCats[index] == 1
+                                        ? Color(0xffE7D3FF)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(10.sp),
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1)),
+                                child: myCatList[index].image != null
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: 3.w,
+                                          ),
+                                          myCatList[index].image!.isEmpty
+                                              ? SvgPicture.asset(
+                                                  "assets/images/home/cat_icon.svg",
+                                                  width: 20.w,
+                                                  height: 20.h,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : CachedNetworkImage(
+                                                  imageUrl:
+                                                      myCatList[index].image!,
+                                                  width: 20.w,
+                                                  height: 20.h,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (ctx, v) {
+                                                    return placeHolderWidget();
+                                                  },
+                                                ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            myCatList[index].name!,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                        ],
+                                      )
+                                    : Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 3.w,
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/images/home/cat_icon.svg",
+                                            width: 20.w,
+                                            height: 20.h,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(myCatList[index].name!),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ));
+                      },
+                      separatorBuilder: (ctx, index) => SizedBox(
+                            width: 10.w,
+                          ),
+                      itemCount: myCatList.length)
+                  : SizedBox(),
+        ));
   }
 
   buildUpperBar(context) {
