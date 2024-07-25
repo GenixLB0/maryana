@@ -797,19 +797,25 @@ class HomeView extends GetView<HomeController> {
                             borderRadius: BorderRadius.circular(15.sp),
                             border: Border.all(color: Colors.grey, width: 1)),
                       ),
+
+
+
                     ),
-                  );
-                },
-                separatorBuilder: (ctx, index) => SizedBox(
-                      width: 10.w,
-                    ),
-                itemCount: 4)
-            : controller.homeModel.value.categories != null
-                ? ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (ctx, index) {
-                      return GestureDetector(onTap: () {
-                        controller.changeActiveCats(index);
+                  ),
+                );
+
+            },
+            separatorBuilder: (ctx , index)=> SizedBox(width: 10.w,) ,
+            itemCount: 4
+        )
+            :
+
+        controller.homeModel.value.categories != null ?
+
+        ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (ctx , index){
+
 
                         if (CustomSearchController().initialized) {
                           CustomSearchController controller =

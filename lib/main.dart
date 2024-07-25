@@ -20,6 +20,8 @@ import 'package:maryana/app/routes/app_pages.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import 'app/modules/onboarding/controllers/onboarding_controller.dart';
+
+import 'app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:flutter/services.dart';
 
 final sl = GetIt.instance;
@@ -70,6 +72,7 @@ void main() async {
 
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   @override
