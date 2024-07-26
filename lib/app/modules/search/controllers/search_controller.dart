@@ -71,7 +71,8 @@ class CustomSearchController extends GetxController {
     prefs = await SharedPreferences.getInstance();
     await getFilterResults();
     getSearchKeywords();
-    update();
+    attachScroll();
+    // update();
   }
 
   @override
@@ -210,6 +211,27 @@ class CustomSearchController extends GetxController {
 
   filterResultSearchProducts(filteredProducts) {
     resultSearchProducts = filteredProducts;
+  }
+
+  ScrollController scrollController = ScrollController();
+  RxBool showBackToTopButton = false.obs;
+
+  attachScroll() {
+    print("attached...");
+    scrollController.addListener(() {
+      print("ttttttttttttttttttttt");
+      if (scrollController.offset >= 100) {
+        showBackToTopButton.value = true; // Show the back-to-top button
+      } else {
+        print("bbbbbbbbbbbbbbbbbbbbbbbbbb");
+        showBackToTopButton.value = false; // Hide the back-to-top button
+      }
+    });
+  }
+
+  void scrollToTop() {
+    scrollController.animateTo(0,
+        duration: const Duration(seconds: 3), curve: Curves.linear);
   }
 
   addActiveCats(List<int> incomingActiveCats) {

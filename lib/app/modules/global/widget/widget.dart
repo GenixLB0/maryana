@@ -296,14 +296,7 @@ Widget orderCard(Order order) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Quantity: ${order.quantity}',
-              style: primaryTextStyle(
-                color: Color(0xFF777E90),
-                size: 14.sp.round(),
-                weight: FontWeight.w400,
-              ),
-            ),
+           
             Text(
               'Subtotal: \$${order.subtotal}',
               style: primaryTextStyle(
@@ -886,7 +879,8 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsetsDirectional.all(1),
+      alignment: Alignment.center,
+      height: 75.h,
       decoration: const ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -899,36 +893,30 @@ class CustomNavBar extends StatelessWidget {
           BoxShadow(color: Colors.black38, spreadRadius: -5, blurRadius: 15),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
-        child: Obx(
-          () => BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            unselectedItemColor: const Color(0xFFB9B9B9),
-            selectedItemColor: const Color(0xFF53178C),
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            onTap: (index) {
-              _tabController.changeIndex(index);
-            },
-            currentIndex: _tabController.selectedIndex.value,
-            items: [
-              // Home
-              _buildBottomNavigationBarItem(0, "Home", "home"),
-              // Shop
-              _buildBottomNavigationBarItem(1, "Shop", "shop"),
-              // Bag
-              _buildBottomNavigationBarItem(2, "Bag", "bag"),
-              // Wishlist
-              _buildBottomNavigationBarItem(3, "Wishlist", "wishlist"),
-              // Profile
-              _buildBottomNavigationBarItem(4, "Profile", "profile"),
-            ],
-          ),
+      child: Obx(
+        () => BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          unselectedItemColor: const Color(0xFFB9B9B9),
+          selectedItemColor: const Color(0xFF53178C),
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          onTap: (index) {
+            _tabController.changeIndex(index);
+          },
+          currentIndex: _tabController.selectedIndex.value,
+          items: [
+            // Home
+            _buildBottomNavigationBarItem(0, "Home", "home"),
+            // Shop
+            _buildBottomNavigationBarItem(1, "Shop", "shop"),
+            // Bag
+            _buildBottomNavigationBarItem(2, "Bag", "bag"),
+            // Wishlist
+            _buildBottomNavigationBarItem(3, "Wishlist", "wishlist"),
+            // Profile
+            _buildBottomNavigationBarItem(4, "Profile", "profile"),
+          ],
         ),
       ),
     );
@@ -950,10 +938,10 @@ class CustomNavBar extends StatelessWidget {
   Widget _buildSelectedIcon(index, String iconName, String label) {
     return SizedBox(
         width: 60.w, // Use .w for width
-        height: 60.h, // Use .h for height
+        height: 40.h, // Use .h for height
         child: Stack(children: [
           Container(
-              height: 60.h, // Use .h for height
+              height: 40.h, // Use .h for height
               width: 60.w, // Use .w for width
               decoration: BoxDecoration(
                 color: const Color(0xffE8DEF8),
@@ -965,16 +953,17 @@ class CustomNavBar extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     "assets/icons/${iconName}_active.svg",
-                    height: 30.h, // Use .h for height
+                    height: 25.h, // Use .h for height
                   ),
-                  SizedBox(height: 3.h), // Use .h for height
+                  SizedBox(height: 2.h), // Use .h for height
                   Text(
                     label,
                     style: primaryTextStyle(
                       weight: FontWeight.w700,
-                      size: 8.sp.round(), // Use .sp for font size
+                      size: 6.sp.round(), // Use .sp for font size
                     ),
                   ),
+                  SizedBox(height: 2.h),
                 ],
               )),
           if (index == 2)
@@ -991,7 +980,7 @@ class CustomNavBar extends StatelessWidget {
                           child: Text(
                             cartController.cartItems.length.toString(),
                             style: primaryTextStyle(
-                                size: 12.sp.round(),
+                                size: 8.sp.round(),
                                 color: Colors.white), // Use .sp for font size
                           ),
                         ),
@@ -1008,12 +997,12 @@ class CustomNavBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-            width: 30.w, // Use .w for width
-            height: 30.h, // Use .h for height
+            width: 22.w, // Use .w for width
+            height: 22.h, // Use .h for height
             child: Stack(children: [
               SvgPicture.asset(
                 "assets/icons/$iconName.svg",
-                height: 30.h, // Use .h for height
+                height: 25.h,
               ),
               if (index == 2)
                 Obx(() {
@@ -1029,7 +1018,7 @@ class CustomNavBar extends StatelessWidget {
                                 child: Text(
                                   cartController.cartItems.length.toString(),
                                   style: primaryTextStyle(
-                                      size: 12.sp.round(),
+                                      size: 10.sp.round(),
                                       color: Colors
                                           .white), // Use .sp for font size
                                 ),
@@ -1038,13 +1027,20 @@ class CustomNavBar extends StatelessWidget {
                           : const Offstage());
                 }),
             ])),
-        SizedBox(height: 3.h), // Use .h for height
-        Text(
-          label,
-          style: primaryTextStyle(
-            weight: FontWeight.w700,
-            size: 8.sp.round(), // Use .sp for font size
-            color: Colors.grey,
+        // Use .h for height
+        SizedBox(
+          height: 3.h,
+        ),
+        Container(
+          height: 15.h,
+          child: Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: primaryTextStyle(
+              weight: FontWeight.w700,
+              size: 8.sp.round(), // Use .sp for font size
+              color: Colors.grey,
+            ),
           ),
         ),
       ],

@@ -6,6 +6,7 @@ import 'package:maryana/app/modules/global/model/test_model_response.dart';
 
 import '../../../../main.dart';
 import '../../services/api_consumer.dart';
+import 'package:flutter/material.dart';
 
 class ProductController extends GetxController {
 // Rx<Product>? product = Product().obs;
@@ -43,7 +44,6 @@ class ProductController extends GetxController {
 
   @override
   void onReady() {
-    super.onReady();
     print('tesadasw5');
     ViewProductData comingProduct = Get.arguments as ViewProductData;
     if (Get.arguments != null && Get.arguments is ViewProductData) {
@@ -58,6 +58,7 @@ class ProductController extends GetxController {
       Get.snackbar('Error', 'No product data available');
     }
 
+    super.onReady();
     // product?.value = Get.arguments as Product;
     // print("product module is ${product!.value.image!}");
   }

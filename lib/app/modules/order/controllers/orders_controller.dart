@@ -14,8 +14,8 @@ class OrdersController extends GetxController {
     super.onInit();
     loading.value = true;
 
-    // fetchOrders();
-    fetchOrdersTest('pending');
+    fetchOrders();
+    // fetchOrdersTest('pending');
   }
 
   void fetchOrders() async {
@@ -42,23 +42,23 @@ class OrdersController extends GetxController {
   void fetchOrdersTest(status) async {
     loading.value = true;
     await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    orders.assignAll([
-      Order(
-        id: 1524,
-        trackingNumber: 'IK287368838',
-        quantity: 2,
-        subtotal: 110.0,
-        status: status,
-        date: '15/05/2024',
-      ),
-      // Add more mock orders as needed
-    ]);
+    // orders.assignAll([
+    //   Order(
+    //     id: 1524,
+    //     trackingNumber: 'IK287368838',
+    //     quantity: 2,
+    //     subtotal: 110.0,
+    //     status: status,
+    //     date: '15/05/2024',
+    //   ),
+    //   // Add more mock orders as needed
+    // ]);
     loading.value = false;
   }
 
   void setStatus(String status) {
     selectedStatus.value = status;
-    fetchOrdersTest(status);
-    //fetchOrders();
+    // fetchOrdersTest(status);
+    fetchOrders();
   }
 }

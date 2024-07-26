@@ -26,9 +26,11 @@ import 'package:nb_utils/nb_utils.dart'
 import 'package:shimmer/shimmer.dart';
 import 'package:typewritertext/typewritertext.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../global/theme/colors.dart';
+import '../../search/views/search_view.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -53,22 +55,62 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             children: [
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               buildUpperBar(context),
-              buildSearchAndFilter(
-                products: controller.homeModel.value.product,
-                categories: controller.homeModel.value.categories,
-                context: context,
-                isSearch: false,
-              ),
+              Obx(() {
+                print(
+                    "the new value is ${controller.currentSectionName.value}");
+                return controller.currentSectionName.value.isEmpty
+                    ? SizedBox()
+                    : ShowUp(
+                        delay: 300,
+                        child: InkWell(
+                          onTap: () {
+                            controller.currentFun();
+                          },
+                          child: Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            color: Colors.yellow,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 15.w,
+                                ),
+                                Text(
+                                  "Check all the products in ${controller.currentSectionName}",
+                                  style: primaryTextStyle(
+                                      color: Colors.black,
+                                      weight: FontWeight.w400,
+                                      size: 12.sp.round()),
+                                ),
+                                SizedBox(
+                                  width: 3.w,
+                                ),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.black,
+                                  size: 15.sp,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+              }),
+              // buildSearchAndFilter(
+              //   products: controller.homeModel.value.product,
+              //   categories: controller.homeModel.value.categories,
+              //   context: context,
+              //   isSearch: false,
+              // ),
               SizedBox(
-                height: 10.h,
+                height: 5.h,
               ),
-              buildCatScroll(context),
 
               SizedBox(
-                height: 20.h,
+                height: 10.h,
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -79,16 +121,18 @@ class HomeView extends GetView<HomeController> {
                   child: Container(
                     child: Column(
                       children: [
+                        buildCatScroll(context),
+                        SizedBox(
+                          height: 5.h,
+                        ),
                         buildBannerScroll(context),
                         SizedBox(
                           height: 15.h,
                         ),
                         buildCustomCatScroll(context),
-
                         SizedBox(
                           height: 15.h,
                         ),
-
                         //here we need collections
                         GetBuilder<HomeController>(
                             id: 'collections',
@@ -141,7 +185,7 @@ class HomeView extends GetView<HomeController> {
                             }),
 
                         SizedBox(
-                          height: 30.h,
+                          height: 10.h,
                         ),
 
                         //here we need other Brands
@@ -160,7 +204,7 @@ class HomeView extends GetView<HomeController> {
 
                         // buildProductsScroll(context),
                         SizedBox(
-                          height: 55.h,
+                          height: 15.h,
                         ),
 
                         //here we need recommended section
@@ -326,11 +370,12 @@ class HomeView extends GetView<HomeController> {
                                                                 0
                                                             ? {}
                                                             : {
-                                                                "collection_ids[0]": controller
+                                                                "category_ids[0]": controller
                                                                     .homeModel
                                                                     .value
                                                                     .categories![
                                                                         index]
+                                                                    .id
                                                                     .toString()
                                                               });
                                                 Get.to(() => const ResultView(),
@@ -360,7 +405,7 @@ class HomeView extends GetView<HomeController> {
                                                                 0
                                                             ? {}
                                                             : {
-                                                                "collection_ids[0]": controller
+                                                                "category_ids[0]": controller
                                                                     .homeModel
                                                                     .value
                                                                     .categories![
@@ -497,7 +542,7 @@ class HomeView extends GetView<HomeController> {
                 : Container(
                     color: Colors.white,
                     child: Padding(
-                      padding: EdgeInsets.only(left: smallSpacing),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Column(
                         children: [
                           Row(
@@ -761,9 +806,6 @@ class HomeView extends GetView<HomeController> {
                                                 .product!.length)
                                     : SizedBox(),
                           ),
-                          SizedBox(
-                            height: 15.h,
-                          ),
                         ],
                       ),
                     ),
@@ -783,160 +825,160 @@ class HomeView extends GetView<HomeController> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(left: 20.w),
-      child: Container(
-        height: 40.h,
-        child: controller.isHomeLoading.value
-            ? ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (ctx, index) {
-                  return LoadingWidget(
-                    SizedBox(
-                      width: 100.w,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.sp),
-                            border: Border.all(color: Colors.grey, width: 1)),
-                      ),
-                    ),
-                  );
-                },
-                separatorBuilder: (ctx, index) => SizedBox(
-                      width: 10.w,
-                    ),
-                itemCount: 4)
-            : controller.homeModel.value.categories != null
-                ? ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (ctx, index) {
-                      return GestureDetector(onTap: () {
-                        controller.changeActiveCats(index);
-
-                        if (CustomSearchController().initialized) {
-                          CustomSearchController controller =
-                              Get.find<CustomSearchController>();
-                          controller.getProductsInSection(
-                              sectionName: myCatList[index].name!,
-                              payload: myCatList[index].id == 0
-                                  ? {}
-                                  : {
-                                      "collection_ids[0]":
-                                          myCatList[index].id.toString()
-                                    });
-                          Get.to(() => const ResultView(),
-                              transition: Transition.fadeIn,
-                              curve: Curves.easeInOut,
-                              duration: const Duration(milliseconds: 800));
-                        } else {
-                          CustomSearchController controller =
-                              Get.put<CustomSearchController>(
-                                  CustomSearchController());
-                          controller.getProductsInSection(
-                              sectionName: myCatList[index].name!,
-                              payload: myCatList[index].id == 0
-                                  ? {}
-                                  : {
-                                      "collection_ids[0]":
-                                          myCatList[index].id.toString()
-                                    });
-
-                          Get.to(() => const ResultView(),
-                              transition: Transition.fadeIn,
-                              curve: Curves.easeInOut,
-                              duration: const Duration(milliseconds: 800));
-                        }
-                      }, child: GetBuilder<HomeController>(builder: (cont) {
-                        print("active cats ${cont.activeCats}");
-                        return SizedBox(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6.w),
-                            decoration: BoxDecoration(
-                                color: controller.activeCats[index] == 1
-                                    ? Color(0xffE7D3FF)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(10.sp),
-                                border:
-                                    Border.all(color: Colors.grey, width: 1)),
-                            child: myCatList[index].image != null
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 3.w,
-                                      ),
-                                      myCatList[index].image!.isEmpty
-                                          ? SvgPicture.asset(
-                                              "assets/images/home/cat_icon.svg",
-                                              width: 20.w,
-                                              height: 20.h,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : CachedNetworkImage(
-                                              imageUrl: myCatList[index].image!,
-                                              width: 20.w,
-                                              height: 20.h,
-                                              fit: BoxFit.cover,
-                                              placeholder: (ctx, v) {
-                                                return placeHolderWidget();
-                                              },
-                                            ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        myCatList[index].name!,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                    ],
-                                  )
-                                : Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 3.w,
-                                      ),
-                                      SvgPicture.asset(
-                                        "assets/images/home/cat_icon.svg",
-                                        width: 20.w,
-                                        height: 20.h,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(myCatList[index].name!),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        );
-                      }));
-                    },
-                    separatorBuilder: (ctx, index) => SizedBox(
-                          width: 10.w,
+        padding: EdgeInsets.only(left: 20.w),
+        child: Container(
+          height: 40.h,
+          child: controller.isHomeLoading.value
+              ? ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (ctx, index) {
+                    return LoadingWidget(
+                      SizedBox(
+                        width: 100.w,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.sp),
+                              border: Border.all(color: Colors.grey, width: 1)),
                         ),
-                    itemCount: myCatList.length)
-                : SizedBox(),
-      ),
-    );
+                      ),
+                    );
+                  },
+                  separatorBuilder: (ctx, index) => SizedBox(
+                        width: 10.w,
+                      ),
+                  itemCount: 4)
+              : controller.homeModel.value.categories != null
+                  ? ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (ctx, index) {
+                        return GestureDetector(
+                            onTap: () {
+                              if (CustomSearchController().initialized) {
+                                CustomSearchController controller =
+                                    Get.find<CustomSearchController>();
+                                controller.getProductsInSection(
+                                    sectionName: myCatList[index].name!,
+                                    payload: myCatList[index].id == 0
+                                        ? {}
+                                        : {
+                                            "category_ids[0]":
+                                                "${myCatList[index].id.toString()}"
+                                          });
+                                Get.to(() => const ResultView(),
+                                    transition: Transition.fadeIn,
+                                    curve: Curves.easeInOut,
+                                    duration:
+                                        const Duration(milliseconds: 800));
+                              } else {
+                                CustomSearchController controller =
+                                    Get.put<CustomSearchController>(
+                                        CustomSearchController());
+                                controller.getProductsInSection(
+                                    sectionName: myCatList[index].name!,
+                                    payload: myCatList[index].id == 0
+                                        ? {}
+                                        : {
+                                            "category_ids[0]":
+                                                "${myCatList[index].id.toString()}"
+                                          });
+
+                                Get.to(() => const ResultView(),
+                                    transition: Transition.fadeIn,
+                                    curve: Curves.easeInOut,
+                                    duration:
+                                        const Duration(milliseconds: 800));
+                              }
+                            },
+                            child: SizedBox(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                                decoration: BoxDecoration(
+                                    color: controller.activeCats[index] == 1
+                                        ? Color(0xffE7D3FF)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(10.sp),
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1)),
+                                child: myCatList[index].image != null
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: 3.w,
+                                          ),
+                                          myCatList[index].image!.isEmpty
+                                              ? SvgPicture.asset(
+                                                  "assets/images/home/cat_icon.svg",
+                                                  width: 20.w,
+                                                  height: 20.h,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : CachedNetworkImage(
+                                                  imageUrl:
+                                                      myCatList[index].image!,
+                                                  width: 20.w,
+                                                  height: 20.h,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (ctx, v) {
+                                                    return placeHolderWidget();
+                                                  },
+                                                ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            myCatList[index].name!,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                        ],
+                                      )
+                                    : Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 3.w,
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/images/home/cat_icon.svg",
+                                            width: 20.w,
+                                            height: 20.h,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(myCatList[index].name!),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ));
+                      },
+                      separatorBuilder: (ctx, index) => SizedBox(
+                            width: 10.w,
+                          ),
+                      itemCount: myCatList.length)
+                  : SizedBox(),
+        ));
   }
 
   buildUpperBar(context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 65.h,
+      height: 50.h,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 140.w,
-            height: 190.h,
+            width: 115.w,
+            height: 165.h,
             child: SvgPicture.asset(
               "assets/images/logo.svg",
               width: 150.w,
@@ -945,46 +987,69 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           Spacer(),
-          Container(
-            height: 40.h,
-            width: 85.w,
-            padding: const EdgeInsets.all(8),
-            decoration: ShapeDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment(-0.53, -0.85),
-                end: Alignment(0.53, 0.85),
-                colors: [
-                  Color(0xFF7A59A5),
-                  Color(0xFFA962FF),
-                  Color(0xFFBA80FF)
-                ],
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(28.85),
+          IconButton(
+            icon: Padding(
+              padding: EdgeInsets.only(left: 10.w),
+              child: SvgPicture.asset(
+                'assets/icons/search.svg',
+                width: 26.w,
+                height: 26.h,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  "assets/images/home/medal.svg",
-                  height: 23.h,
-                  width: 23.w,
-                  fit: BoxFit.cover,
-                ),
-                const SizedBox(width: 4),
-                Text('85pts',
-                    textAlign: TextAlign.center,
-                    style: primaryTextStyle(
-                      color: Colors.white,
-                      size: 13.sp.round(),
-                      height: 0.08,
-                      weight: FontWeight.w700,
-                    )),
-              ],
-            ),
+            onPressed: () {
+              HomeController homeController = HomeController().initialized
+                  ? Get.find<HomeController>()
+                  : Get.put(HomeController());
+              var products = homeController.homeModel.value.product;
+              var categories = homeController.homeModel.value.categories;
+
+              Get.to(SearchView(),
+                  arguments: [products, categories],
+                  transition: Transition.fadeIn,
+                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 800));
+            },
           ),
+          // Container(
+          //   height: 40.h,
+          //   width: 85.w,
+          //   padding: const EdgeInsets.all(8),
+          //   decoration: ShapeDecoration(
+          //     gradient: const LinearGradient(
+          //       begin: Alignment(-0.53, -0.85),
+          //       end: Alignment(0.53, 0.85),
+          //       colors: [
+          //         Color(0xFF7A59A5),
+          //         Color(0xFFA962FF),
+          //         Color(0xFFBA80FF)
+          //       ],
+          //     ),
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(28.85),
+          //     ),
+          //   ),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     children: [
+          //       SvgPicture.asset(
+          //         "assets/images/home/medal.svg",
+          //         height: 23.h,
+          //         width: 23.w,
+          //         fit: BoxFit.cover,
+          //       ),
+          //       const SizedBox(width: 4),
+          //       Text('85pts',
+          //           textAlign: TextAlign.center,
+          //           style: primaryTextStyle(
+          //             color: Colors.white,
+          //             size: 13.sp.round(),
+          //             height: 0.08,
+          //             weight: FontWeight.w700,
+          //           )),
+          //     ],
+          //   ),
+          // ),
           SizedBox(
             width: 20.w,
           )
@@ -1013,260 +1078,281 @@ class HomeView extends GetView<HomeController> {
       repeat: true,
     );
 
-    return ShowUp(
-      delay: 300,
-      child: ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        children: <Widget>[
-          Stack(
-            alignment: Alignment.centerRight,
-            children: [
-              CachedNetworkImage(
-                width: MediaQuery.of(context).size.width,
-                height: 255.h,
-                imageUrl: collection.image!,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(
-                  width: 180.w,
-                  height: 150.h,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 30.w),
-                        child: Text(
-                          'SHOP OUR',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: const Color(0xFF9B9B9B),
-                            fontSize: 17.sp,
-                            fontFamily: fontCormoantFont,
-                            fontWeight: FontWeight.w700,
-                            height: 0,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      TypeWriter(
-                          controller: typeController,
-                          builder: (context, value) {
-                            return Text(
-                              overflow: TextOverflow.ellipsis,
-                              value.text,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 27.sp,
-                                fontFamily: fontCormoantFont,
-                                fontWeight: FontWeight.w600,
-                                height: 0,
-                              ),
-                              maxLines: 2,
-                            );
-                          }),
-                      Spacer(),
-                      Padding(
-                        padding: EdgeInsets.only(left: 50.w),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (CustomSearchController().initialized) {
-                              CustomSearchController controller =
-                                  Get.find<CustomSearchController>();
-                              controller.getProductsInSection(
-                                  sectionName: collection.name!,
-                                  payload: {
-                                    "collection_ids[0]":
-                                        collection.id.toString()
-                                  });
+    return VisibilityDetector(
+      key: Key('collection-key-${collection.id}'),
+      onVisibilityChanged: (visibilityInfo) {
+        var visiblePercentage = visibilityInfo.visibleFraction * 100;
+        debugPrint(
+            'Widget Collection ${visibilityInfo.key} is ${visiblePercentage}% visible');
+        if (visiblePercentage > 15) {
+          controller.changeNameAndFunParam("${collection.name}", {
+            'collection_ids[0]': "${collection.id}",
+          });
+        }
 
-                              Get.to(() => const ResultView(),
-                                  transition: Transition.fadeIn,
-                                  curve: Curves.easeInOut,
-                                  duration: Duration(milliseconds: 800));
-                            } else {
-                              CustomSearchController controller =
-                                  Get.put<CustomSearchController>(
-                                      CustomSearchController());
-                              controller.getProductsInSection(
-                                  sectionName: collection.name!,
-                                  payload: {
-                                    "collection_ids[0]":
-                                        collection.id.toString()
-                                  });
-                              Get.to(() => const ResultView(),
-                                  transition: Transition.fadeIn,
-                                  curve: Curves.easeInOut,
-                                  duration: Duration(milliseconds: 800));
-                            }
-                          },
-                          child: Text('SHOW ALL',
-                              overflow: TextOverflow.ellipsis,
-                              style: boldTextStyle(
-                                  decoration: TextDecoration.underline,
-                                  weight: FontWeight.w400,
-                                  color: const Color(0xff53178C),
-                                  size: 16.sp.round(),
-                                  letterSpacing: 0.3)),
-                        ),
-                      ),
-                    ],
-                  ))
-            ],
-          ),
-          FutureBuilder(
-              future: controller.getProductsInCollection(collection),
-              builder: (ctx, snapshot) {
-                // Checking if future is resolved
-                if (snapshot.connectionState == ConnectionState.done) {
-                  print("snap done !!!!!");
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: ListView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 50.h,
-                          child: Row(
-                            children: [
-                              Text(
-                                collection.name!,
-                                style: boldTextStyle(
-                                    weight: FontWeight.w400,
-                                    size: 18.sp.round(),
-                                    color: Colors.black),
-                              ),
-                              Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  if (CustomSearchController().initialized) {
-                                    CustomSearchController controller =
-                                        Get.find<CustomSearchController>();
-                                    controller.getProductsInSection(
-                                        sectionName: collection.name!,
-                                        payload: {
-                                          "collection_ids[0]":
-                                              collection.id.toString()
-                                        });
-
-                                    Get.to(() => const ResultView(),
-                                        transition: Transition.fadeIn,
-                                        curve: Curves.easeInOut,
-                                        duration: Duration(milliseconds: 800));
-                                  } else {
-                                    CustomSearchController controller =
-                                        Get.put<CustomSearchController>(
-                                            CustomSearchController());
-                                    controller.getProductsInSection(
-                                        sectionName: collection.name!,
-                                        payload: {
-                                          "collection_ids[0]":
-                                              collection.id.toString()
-                                        });
-                                    Get.to(() => const ResultView(),
-                                        transition: Transition.fadeIn,
-                                        curve: Curves.easeInOut,
-                                        duration: Duration(milliseconds: 800));
-                                  }
-                                },
-                                child: Text(
-                                  "SHOW ALL",
-                                  style: boldTextStyle(
-                                      weight: FontWeight.w400,
-                                      size: 16.sp.round(),
-                                      color: Color(0xff9B9B9B)),
-                                ),
-                              ),
-                              SizedBox(
-                                width: smallSpacing,
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 320.h,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.separated(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, index) {
-                              return index != snapshot.data!.length
-                                  ? buildProductCard(
-                                      product: ViewProductData.fromJson(
-                                          snapshot.data![index]),
-                                    )
-                                  : buildProductShowAll(() {
-                                      if (CustomSearchController()
-                                          .initialized) {
-                                        CustomSearchController controller =
-                                            Get.find<CustomSearchController>();
-                                        controller.getProductsInSection(
-                                            sectionName: collection.name!,
-                                            payload: {
-                                              "collection_ids[0]":
-                                                  collection.id.toString()
-                                            });
-
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration:
-                                                Duration(milliseconds: 800));
-                                      } else {
-                                        CustomSearchController controller =
-                                            Get.put<CustomSearchController>(
-                                                CustomSearchController());
-                                        controller.getProductsInSection(
-                                            sectionName: collection.name!,
-                                            payload: {
-                                              "collection_ids[0]":
-                                                  collection.id.toString()
-                                            });
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration:
-                                                Duration(milliseconds: 800));
-                                      }
-                                    });
-                            },
-                            separatorBuilder: (ctx, index) => SizedBox(
-                              width: 10.w,
+        if (visiblePercentage < 15) {
+          controller.changeNameAndFunParam("", {});
+        }
+      },
+      child: ShowUp(
+        delay: 300,
+        child: ListView(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.centerRight,
+              children: [
+                CachedNetworkImage(
+                  width: MediaQuery.of(context).size.width,
+                  height: 255.h,
+                  imageUrl: collection.image!,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(
+                    width: 180.w,
+                    height: 150.h,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 30.w),
+                          child: Text(
+                            'SHOP OUR',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: const Color(0xFF9B9B9B),
+                              fontSize: 17.sp,
+                              fontFamily: fontCormoantFont,
+                              fontWeight: FontWeight.w700,
+                              height: 0,
                             ),
-                            itemCount: snapshot.data!.length + 1,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        TypeWriter(
+                            controller: typeController,
+                            builder: (context, value) {
+                              return Text(
+                                overflow: TextOverflow.ellipsis,
+                                value.text,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 27.sp,
+                                  fontFamily: fontCormoantFont,
+                                  fontWeight: FontWeight.w600,
+                                  height: 0,
+                                ),
+                                maxLines: 2,
+                              );
+                            }),
+                        Spacer(),
+                        Padding(
+                          padding: EdgeInsets.only(left: 50.w),
+                          child: GestureDetector(
+                            onTap: () {
+                              if (CustomSearchController().initialized) {
+                                CustomSearchController controller =
+                                    Get.find<CustomSearchController>();
+                                controller.getProductsInSection(
+                                    sectionName: collection.name!,
+                                    payload: {
+                                      "collection_ids[0]":
+                                          collection.id.toString()
+                                    });
+
+                                Get.to(() => const ResultView(),
+                                    transition: Transition.fadeIn,
+                                    curve: Curves.easeInOut,
+                                    duration: Duration(milliseconds: 800));
+                              } else {
+                                CustomSearchController controller =
+                                    Get.put<CustomSearchController>(
+                                        CustomSearchController());
+                                controller.getProductsInSection(
+                                    sectionName: collection.name!,
+                                    payload: {
+                                      "collection_ids[0]":
+                                          collection.id.toString()
+                                    });
+                                Get.to(() => const ResultView(),
+                                    transition: Transition.fadeIn,
+                                    curve: Curves.easeInOut,
+                                    duration: Duration(milliseconds: 800));
+                              }
+                            },
+                            child: Text('SHOW ALL',
+                                overflow: TextOverflow.ellipsis,
+                                style: boldTextStyle(
+                                    decoration: TextDecoration.underline,
+                                    weight: FontWeight.w400,
+                                    color: const Color(0xff53178C),
+                                    size: 16.sp.round(),
+                                    letterSpacing: 0.3)),
                           ),
                         ),
                       ],
-                    ),
-                  );
-                }
+                    ))
+              ],
+            ),
+            FutureBuilder(
+                future: controller.getProductsInCollection(collection),
+                builder: (ctx, snapshot) {
+                  // Checking if future is resolved
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    print("snap done !!!!!");
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: ListView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 50.h,
+                            child: Row(
+                              children: [
+                                Text(
+                                  collection.name!,
+                                  style: boldTextStyle(
+                                      weight: FontWeight.w400,
+                                      size: 18.sp.round(),
+                                      color: Colors.black),
+                                ),
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (CustomSearchController().initialized) {
+                                      CustomSearchController controller =
+                                          Get.find<CustomSearchController>();
+                                      controller.getProductsInSection(
+                                          sectionName: collection.name!,
+                                          payload: {
+                                            "collection_ids[0]":
+                                                collection.id.toString()
+                                          });
 
-                if (snapshot.connectionState == ConnectionState.waiting ||
-                    snapshot.connectionState == ConnectionState.active) {
-                  return Container(
-                      height: 60.h, child: LoadingWidget(placeHolderWidget()));
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      '${snapshot.error} occurred',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  );
+                                      Get.to(() => const ResultView(),
+                                          transition: Transition.fadeIn,
+                                          curve: Curves.easeInOut,
+                                          duration:
+                                              Duration(milliseconds: 800));
+                                    } else {
+                                      CustomSearchController controller =
+                                          Get.put<CustomSearchController>(
+                                              CustomSearchController());
+                                      controller.getProductsInSection(
+                                          sectionName: collection.name!,
+                                          payload: {
+                                            "collection_ids[0]":
+                                                collection.id.toString()
+                                          });
+                                      Get.to(() => const ResultView(),
+                                          transition: Transition.fadeIn,
+                                          curve: Curves.easeInOut,
+                                          duration:
+                                              Duration(milliseconds: 800));
+                                    }
+                                  },
+                                  child: Text(
+                                    "SHOW ALL",
+                                    style: boldTextStyle(
+                                        weight: FontWeight.w400,
+                                        size: 16.sp.round(),
+                                        color: Color(0xff9B9B9B)),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: smallSpacing,
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: 320.h,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (ctx, index) {
+                                return index != snapshot.data!.length
+                                    ? buildProductCard(
+                                        product: ViewProductData.fromJson(
+                                            snapshot.data![index]),
+                                      )
+                                    : buildProductShowAll(() {
+                                        if (CustomSearchController()
+                                            .initialized) {
+                                          CustomSearchController controller =
+                                              Get.find<
+                                                  CustomSearchController>();
+                                          controller.getProductsInSection(
+                                              sectionName: collection.name!,
+                                              payload: {
+                                                "collection_ids[0]":
+                                                    collection.id.toString()
+                                              });
 
-                  // if we got our data
-                } else if (snapshot.hasData) {
-                  // Extracting data from snapshot object
+                                          Get.to(() => const ResultView(),
+                                              transition: Transition.fadeIn,
+                                              curve: Curves.easeInOut,
+                                              duration:
+                                                  Duration(milliseconds: 800));
+                                        } else {
+                                          CustomSearchController controller =
+                                              Get.put<CustomSearchController>(
+                                                  CustomSearchController());
+                                          controller.getProductsInSection(
+                                              sectionName: collection.name!,
+                                              payload: {
+                                                "collection_ids[0]":
+                                                    collection.id.toString()
+                                              });
+                                          Get.to(() => const ResultView(),
+                                              transition: Transition.fadeIn,
+                                              curve: Curves.easeInOut,
+                                              duration:
+                                                  Duration(milliseconds: 800));
+                                        }
+                                      });
+                              },
+                              separatorBuilder: (ctx, index) => SizedBox(
+                                width: 10.w,
+                              ),
+                              itemCount: snapshot.data!.length + 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
 
+                  if (snapshot.connectionState == ConnectionState.waiting ||
+                      snapshot.connectionState == ConnectionState.active) {
+                    return Container(
+                        height: 60.h,
+                        child: LoadingWidget(placeHolderWidget()));
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        '${snapshot.error} occurred',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    );
+
+                    // if we got our data
+                  } else if (snapshot.hasData) {
+                    // Extracting data from snapshot object
+
+                    return SizedBox();
+                  }
                   return SizedBox();
-                }
-                return SizedBox();
-              }),
-        ],
+                }),
+          ],
+        ),
       ),
     );
   }
@@ -1296,191 +1382,211 @@ class HomeView extends GetView<HomeController> {
       repeat: true,
     );
 
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 10.h,
-          ),
-          Center(
-            child: Text(
-              "new",
-              style: TextStyle(
-                  fontFamily: fontCormoantFont,
-                  fontSize: 14.sp,
-                  color: Colors.grey[300],
-                  fontWeight: FontWeight.w400),
-            ),
-          ),
-          SizedBox(
-            height: 4.h,
-          ),
-          Center(
-            child: Text(
-              "${brand.name} BRAND",
-              style: TextStyle(
-                  fontFamily: fontCormoantFont,
-                  fontSize: 28.sp,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400),
-            ),
-          ),
-          SizedBox(
-            height: 4.h,
-          ),
-          CachedNetworkImage(
-            width: MediaQuery.of(context).size.width,
-            height: 255.h,
-            imageUrl: brand.image!,
-            fit: BoxFit.cover,
-          ),
-          FutureBuilder(
-              future: controller.getProductsInBrand(brand),
-              builder: (ctx, snapshot) {
-                // Checking if future is resolved
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: ListView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 50.h,
-                          child: Row(
-                            children: [
-                              Text(
-                                "${brand.name!} BEST SELLING",
-                                style: boldTextStyle(
-                                    weight: FontWeight.w400,
-                                    size: 18.sp.round(),
-                                    color: Colors.black),
-                              ),
-                              Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  if (CustomSearchController().initialized) {
-                                    CustomSearchController controller =
-                                        Get.find<CustomSearchController>();
-                                    controller.getProductsInSection(
-                                        sectionName: brand.name!,
-                                        payload: {
-                                          "brand_ids[0]": brand.id.toString()
-                                        });
+    return VisibilityDetector(
+      key: Key('brand-key-${brand.id}'),
+      onVisibilityChanged: (visibilityInfo) {
+        var visiblePercentage = visibilityInfo.visibleFraction * 100;
+        debugPrint(
+            'Widget brand ${visibilityInfo.key} is ${visiblePercentage}% visible');
+        if (visiblePercentage > 15) {
+          controller.changeNameAndFunParam("${brand.name}", {
+            'brand_ids[0]': "${brand.id}",
+          });
+        }
 
-                                    Get.to(() => const ResultView(),
-                                        transition: Transition.fadeIn,
-                                        curve: Curves.easeInOut,
-                                        duration: Duration(milliseconds: 800));
-                                  } else {
-                                    CustomSearchController controller =
-                                        Get.put<CustomSearchController>(
-                                            CustomSearchController());
-                                    controller.getProductsInSection(
-                                        sectionName: brand.name!,
-                                        payload: {
-                                          "brand_ids[0]": brand.id.toString()
-                                        });
-                                    Get.to(() => const ResultView(),
-                                        transition: Transition.fadeIn,
-                                        curve: Curves.easeInOut,
-                                        duration: Duration(milliseconds: 800));
-                                  }
-                                },
-                                child: Text(
-                                  "SHOW ALL",
+        if (visiblePercentage < 15) {
+          controller.changeNameAndFunParam("", {});
+        }
+      },
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 10.h,
+            ),
+            Center(
+              child: Text(
+                "new",
+                style: TextStyle(
+                    fontFamily: fontCormoantFont,
+                    fontSize: 14.sp,
+                    color: Colors.grey[300],
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+            SizedBox(
+              height: 4.h,
+            ),
+            Center(
+              child: Text(
+                "${brand.name} BRAND",
+                style: TextStyle(
+                    fontFamily: fontCormoantFont,
+                    fontSize: 28.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+            SizedBox(
+              height: 4.h,
+            ),
+            CachedNetworkImage(
+              width: MediaQuery.of(context).size.width,
+              height: 255.h,
+              imageUrl: brand.image!,
+              fit: BoxFit.cover,
+            ),
+            FutureBuilder(
+                future: controller.getProductsInBrand(brand),
+                builder: (ctx, snapshot) {
+                  // Checking if future is resolved
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: ListView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 50.h,
+                            child: Row(
+                              children: [
+                                Text(
+                                  "${brand.name!} BEST SELLING",
                                   style: boldTextStyle(
                                       weight: FontWeight.w400,
-                                      size: 16.sp.round(),
-                                      color: Color(0xff9B9B9B)),
+                                      size: 18.sp.round(),
+                                      color: Colors.black),
                                 ),
-                              ),
-                              SizedBox(
-                                width: smallSpacing,
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 320.h,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.separated(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (ctx, index) {
-                                return index != snapshot.data!.length
-                                    ? buildProductCard(
-                                        product: ViewProductData.fromJson(
-                                            snapshot.data![index]))
-                                    : buildProductShowAll(() {
-                                        if (CustomSearchController()
-                                            .initialized) {
-                                          CustomSearchController controller =
-                                              Get.find<
-                                                  CustomSearchController>();
-                                          controller.getProductsInSection(
-                                              sectionName: brand.name!,
-                                              payload: {
-                                                "brand_ids[0]":
-                                                    brand.id.toString()
-                                              });
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (CustomSearchController().initialized) {
+                                      CustomSearchController controller =
+                                          Get.find<CustomSearchController>();
+                                      controller.getProductsInSection(
+                                          sectionName: brand.name!,
+                                          payload: {
+                                            "brand_ids[0]": brand.id.toString()
+                                          });
 
-                                          Get.to(() => const ResultView(),
-                                              transition: Transition.fadeIn,
-                                              curve: Curves.easeInOut,
-                                              duration:
-                                                  Duration(milliseconds: 800));
-                                        } else {
-                                          CustomSearchController controller =
-                                              Get.put<CustomSearchController>(
-                                                  CustomSearchController());
-                                          controller.getProductsInSection(
-                                              sectionName: brand.name!,
-                                              payload: {
-                                                "brand_ids[0]":
-                                                    brand.id.toString()
-                                              });
-                                          Get.to(() => const ResultView(),
-                                              transition: Transition.fadeIn,
-                                              curve: Curves.easeInOut,
-                                              duration:
-                                                  Duration(milliseconds: 800));
-                                        }
-                                      });
-                              },
-                              separatorBuilder: (ctx, index) => SizedBox(
-                                    width: 10.w,
+                                      Get.to(() => const ResultView(),
+                                          transition: Transition.fadeIn,
+                                          curve: Curves.easeInOut,
+                                          duration:
+                                              Duration(milliseconds: 800));
+                                    } else {
+                                      CustomSearchController controller =
+                                          Get.put<CustomSearchController>(
+                                              CustomSearchController());
+                                      controller.getProductsInSection(
+                                          sectionName: brand.name!,
+                                          payload: {
+                                            "brand_ids[0]": brand.id.toString()
+                                          });
+                                      Get.to(() => const ResultView(),
+                                          transition: Transition.fadeIn,
+                                          curve: Curves.easeInOut,
+                                          duration:
+                                              Duration(milliseconds: 800));
+                                    }
+                                  },
+                                  child: Text(
+                                    "SHOW ALL",
+                                    style: boldTextStyle(
+                                        weight: FontWeight.w400,
+                                        size: 16.sp.round(),
+                                        color: Color(0xff9B9B9B)),
                                   ),
-                              itemCount: snapshot.data!.length + 1),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                                ),
+                                SizedBox(
+                                  width: smallSpacing,
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: 320.h,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.separated(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (ctx, index) {
+                                  return index != snapshot.data!.length
+                                      ? buildProductCard(
+                                          product: ViewProductData.fromJson(
+                                              snapshot.data![index]))
+                                      : buildProductShowAll(() {
+                                          if (CustomSearchController()
+                                              .initialized) {
+                                            CustomSearchController controller =
+                                                Get.find<
+                                                    CustomSearchController>();
+                                            controller.getProductsInSection(
+                                                sectionName: brand.name!,
+                                                payload: {
+                                                  "brand_ids[0]":
+                                                      brand.id.toString()
+                                                });
 
-                if (snapshot.connectionState == ConnectionState.waiting ||
-                    snapshot.connectionState == ConnectionState.active) {
-                  return Container(
-                      height: 60.h, child: LoadingWidget(placeHolderWidget()));
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      '${snapshot.error} occurred',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  );
+                                            Get.to(() => const ResultView(),
+                                                transition: Transition.fadeIn,
+                                                curve: Curves.easeInOut,
+                                                duration: Duration(
+                                                    milliseconds: 800));
+                                          } else {
+                                            CustomSearchController controller =
+                                                Get.put<CustomSearchController>(
+                                                    CustomSearchController());
+                                            controller.getProductsInSection(
+                                                sectionName: brand.name!,
+                                                payload: {
+                                                  "brand_ids[0]":
+                                                      brand.id.toString()
+                                                });
+                                            Get.to(() => const ResultView(),
+                                                transition: Transition.fadeIn,
+                                                curve: Curves.easeInOut,
+                                                duration: Duration(
+                                                    milliseconds: 800));
+                                          }
+                                        });
+                                },
+                                separatorBuilder: (ctx, index) => SizedBox(
+                                      width: 10.w,
+                                    ),
+                                itemCount: snapshot.data!.length + 1),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
 
-                  // if we got our data
-                } else if (snapshot.hasData) {
-                  // Extracting data from snapshot object
+                  if (snapshot.connectionState == ConnectionState.waiting ||
+                      snapshot.connectionState == ConnectionState.active) {
+                    return Container(
+                        height: 60.h,
+                        child: LoadingWidget(placeHolderWidget()));
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        '${snapshot.error} occurred',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    );
 
+                    // if we got our data
+                  } else if (snapshot.hasData) {
+                    // Extracting data from snapshot object
+
+                    return const SizedBox();
+                  }
                   return const SizedBox();
-                }
-                return const SizedBox();
-              }),
-        ],
+                }),
+          ],
+        ),
       ),
     );
   }
@@ -1816,149 +1922,161 @@ class HomeView extends GetView<HomeController> {
   }
 
   buildOtherBrands(BuildContext context) {
-    return ShowUp(
-      delay: 300,
-      child: controller.isOtherBrandLoading
-          ? Container(height: 100.h, child: LoadingWidget(placeHolderWidget()))
-          : controller.otherBrands.isEmpty
-              ? SizedBox()
-              : Container(
-                  color: const Color(0xffF9F5FF),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      Text(
-                        "LUXURIAS  BRANDS ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.sp,
-                            fontFamily: fontCormoantFont,
-                            color: Colors.grey[400]),
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      Text(
-                        "Brands You'll Love !",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 28.sp,
-                            fontFamily: fontCormoantFont),
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.w),
-                        child: GridView.count(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 5,
-                            mainAxisSpacing: 5,
-                            childAspectRatio: 4 / 5,
-                            children: controller.otherBrands.map((brand) {
-                              return GestureDetector(
-                                onTap: () {
-                                  if (CustomSearchController().initialized) {
-                                    CustomSearchController controller =
-                                        Get.find<CustomSearchController>();
-                                    controller.getProductsInSection(
-                                        sectionName: brand.name!,
-                                        payload: {
-                                          "brand_ids[0]": brand.id.toString()
-                                        });
+    return VisibilityDetector(
+      key: Key('other-brands-key'),
+      onVisibilityChanged: (visibilityInfo) {
+        var visiblePercentage = visibilityInfo.visibleFraction * 100;
+        debugPrint(
+            'Hint second Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
+      },
+      child: ShowUp(
+        delay: 300,
+        child: controller.isOtherBrandLoading
+            ? Container(
+                height: 100.h, child: LoadingWidget(placeHolderWidget()))
+            : controller.otherBrands.isEmpty
+                ? SizedBox()
+                : Container(
+                    color: const Color(0xffF9F5FF),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        Text(
+                          "LUXURIAS  BRANDS ",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                              fontFamily: fontCormoantFont,
+                              color: Colors.grey[400]),
+                        ),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        Text(
+                          "Brands You'll Love !",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 28.sp,
+                              fontFamily: fontCormoantFont),
+                        ),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16.w),
+                          child: GridView.count(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 5,
+                              childAspectRatio: 4 / 5,
+                              children: controller.otherBrands.map((brand) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (CustomSearchController().initialized) {
+                                      CustomSearchController controller =
+                                          Get.find<CustomSearchController>();
+                                      controller.getProductsInSection(
+                                          sectionName: brand.name!,
+                                          payload: {
+                                            "brand_ids[0]": brand.id.toString()
+                                          });
 
-                                    Get.to(() => const ResultView(),
-                                        transition: Transition.fadeIn,
-                                        curve: Curves.easeInOut,
-                                        duration:
-                                            const Duration(milliseconds: 800));
-                                  } else {
-                                    CustomSearchController controller =
-                                        Get.put<CustomSearchController>(
-                                            CustomSearchController());
-                                    controller.getProductsInSection(
-                                        sectionName: brand.name!,
-                                        payload: {
-                                          "brand_ids[0]": brand.id.toString()
-                                        });
+                                      Get.to(() => const ResultView(),
+                                          transition: Transition.fadeIn,
+                                          curve: Curves.easeInOut,
+                                          duration: const Duration(
+                                              milliseconds: 800));
+                                    } else {
+                                      CustomSearchController controller =
+                                          Get.put<CustomSearchController>(
+                                              CustomSearchController());
+                                      controller.getProductsInSection(
+                                          sectionName: brand.name!,
+                                          payload: {
+                                            "brand_ids[0]": brand.id.toString()
+                                          });
 
-                                    Get.to(() => const ResultView(),
-                                        transition: Transition.fadeIn,
-                                        curve: Curves.easeInOut,
-                                        duration:
-                                            const Duration(milliseconds: 800));
-                                  }
-                                },
-                                child: ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                    child: Container(
-                                      padding: EdgeInsets.all(8),
-                                      width: 190.w,
-                                      height: 250.h,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius:
-                                            BorderRadius.circular(20.sp),
-                                      ),
-                                      child: Center(
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.sp),
-                                              child: ColorFiltered(
-                                                colorFilter:
-                                                    const ColorFilter.mode(
-                                                        Colors.black45,
-                                                        BlendMode.hardLight),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: brand.image!,
-                                                  width: 190.w,
-                                                  height: 250.h,
-                                                  fit: BoxFit.cover,
-                                                  placeholder: (ctx, v) {
-                                                    return placeHolderWidget();
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 55.h, left: 25.w),
-                                              child: SizedBox(
-                                                width: 90.w,
-                                                child: Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5.w),
-                                                  child: Text(
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    brand.name!,
-                                                    style: boldTextStyle(
-                                                        color: Colors.white,
-                                                        weight: FontWeight.w400,
-                                                        size: 34.sp.round()),
+                                      Get.to(() => const ResultView(),
+                                          transition: Transition.fadeIn,
+                                          curve: Curves.easeInOut,
+                                          duration: const Duration(
+                                              milliseconds: 800));
+                                    }
+                                  },
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0)),
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        width: 190.w,
+                                        height: 250.h,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(20.sp),
+                                        ),
+                                        child: Center(
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        12.sp),
+                                                child: ColorFiltered(
+                                                  colorFilter:
+                                                      const ColorFilter.mode(
+                                                          Colors.black45,
+                                                          BlendMode.hardLight),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: brand.image!,
+                                                    width: 190.w,
+                                                    height: 250.h,
+                                                    fit: BoxFit.cover,
+                                                    placeholder: (ctx, v) {
+                                                      return placeHolderWidget();
+                                                    },
                                                   ),
                                                 ),
                                               ),
-                                            )
-                                          ],
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 55.h, left: 25.w),
+                                                child: SizedBox(
+                                                  width: 90.w,
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 5.w),
+                                                    child: Text(
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      brand.name!,
+                                                      style: boldTextStyle(
+                                                          color: Colors.white,
+                                                          weight:
+                                                              FontWeight.w400,
+                                                          size: 34.sp.round()),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    )),
-                              );
-                            }).toList()),
-                      ),
-                    ],
+                                      )),
+                                );
+                              }).toList()),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+      ),
     );
 
     //   GridView.builder(

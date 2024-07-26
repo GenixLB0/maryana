@@ -7,7 +7,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
+import 'package:maryana/app/modules/cart/views/cart_view.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
+import 'package:maryana/app/modules/home/controllers/home_controller.dart';
+import 'package:maryana/app/modules/main/views/main_view.dart';
+import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -20,6 +24,7 @@ import 'package:nb_utils/nb_utils.dart'
     hide secondaryTextStyle;
 
 import '../../global/theme/app_theme.dart';
+import '../../search/views/search_view.dart';
 import '../controllers/product_controller.dart';
 
 final globalKey = GlobalKey<ScaffoldState>();
@@ -27,12 +32,13 @@ final CartController cartController = Get.put(CartController());
 
 class ProductView extends GetView<ProductController> {
   const ProductView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     ProductController().initialized ? null : Get.put(ProductController());
     controller.setIndex();
     ViewProductData? comingProduct = controller.product;
-
+    HomeController homeController = Get.put(HomeController());
     print("incoming pro is ${comingProduct}");
 
     return Scaffold(
@@ -98,22 +104,87 @@ class ProductView extends GetView<ProductController> {
                     SizedBox(
                       width: 15.w,
                     ),
-                    Container(
-                      width: 35.w,
-                      height: 35.h,
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 9,
-                          offset: Offset(0, 2), // changes position of shadow
-                        ),
-                      ], borderRadius: BorderRadius.circular(55)),
-                      child: SvgPicture.asset(
-                        "assets/images/home/add_to_wishlist.svg",
-                        fit: BoxFit.contain,
-                        width: 30.w,
-                        height: 30.h,
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        width: 35.w,
+                        height: 35.h,
+                        decoration: BoxDecoration(boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 9,
+                            offset: Offset(0, 2), // changes position of shadow
+                          ),
+                        ], borderRadius: BorderRadius.circular(55)),
+                        child: userToken == null
+                            ? InkWell(
+                                onTap: () {
+                                  if (HomeController().initialized) {
+                                    HomeController homeController =
+                                        Get.find<HomeController>();
+                                    homeController
+                                        .addToWishlist(comingProduct.id);
+                                  } else {
+                                    HomeController homeController =
+                                        Get.put(HomeController());
+                                    homeController
+                                        .addToWishlist(comingProduct.id);
+                                  }
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/images/home/add_to_wishlist.svg",
+                                  fit: BoxFit.contain,
+                                  width: 30.w,
+                                  height: 30.h,
+                                ),
+                              )
+                            : Obx(() {
+                                return homeController.wishlistProductIds
+                                        .contains(comingProduct.id)
+                                    ? InkWell(
+                                        onTap: () {
+                                          if (HomeController().initialized) {
+                                            HomeController homeController =
+                                                Get.find<HomeController>();
+                                            homeController.removeFromWishlist(
+                                                comingProduct.id);
+                                          } else {
+                                            HomeController homeController =
+                                                Get.put(HomeController());
+                                            homeController.removeFromWishlist(
+                                                comingProduct.id);
+                                          }
+                                        },
+                                        child: SvgPicture.asset(
+                                          "assets/images/home/wishlisted.svg",
+                                          fit: BoxFit.contain,
+                                          width: 30.w,
+                                          height: 30.h,
+                                        ),
+                                      )
+                                    : InkWell(
+                                        onTap: () {
+                                          if (HomeController().initialized) {
+                                            HomeController homeController =
+                                                Get.find<HomeController>();
+                                            homeController.addToWishlist(
+                                                comingProduct.id);
+                                          } else {
+                                            HomeController homeController =
+                                                Get.put(HomeController());
+                                            homeController.addToWishlist(
+                                                comingProduct.id);
+                                          }
+                                        },
+                                        child: SvgPicture.asset(
+                                          "assets/images/home/add_to_wishlist.svg",
+                                          fit: BoxFit.contain,
+                                          width: 30.w,
+                                          height: 30.h,
+                                        ),
+                                      );
+                              }),
                       ),
                     ),
                     SizedBox(
@@ -133,6 +204,7 @@ class ProductView extends GetView<ProductController> {
           ),
         ),
       ),
+      // Back-to-top button
     );
   }
 
@@ -532,38 +604,45 @@ class ProductView extends GetView<ProductController> {
                         child: GestureDetector(
                           onTap: () {
                             // Handle Add to Cart action
-                            print('teasdsadsa');
-                            bool isProductInCart = cartController.cartItems.any(
-                              (element) =>
-                                  element.product != null &&
-                                  controller.product != null &&
-                                  element!.selectedSize ==
-                                      controller.selectedSize.value &&
-                                  element.product!.id == controller.product!.id,
-                            );
-                            print('teasdsadsa2');
+                            if (userToken != null) {
+                              print('teasdsadsa');
+                              bool isProductInCart =
+                                  cartController.cartItems.any(
+                                (element) =>
+                                    element.product != null &&
+                                    controller.product != null &&
+                                    element!.selectedSize ==
+                                        controller.selectedSize.value &&
+                                    element.product!.id ==
+                                        controller.product!.id,
+                              );
+                              print('teasdsadsa2');
 
-                            if (isProductInCart) {
-                              cartController.removeItem(cartController.cartItems
-                                  .firstWhere((element) =>
-                                      element.product!.id ==
-                                      controller.product!.id));
+                              if (isProductInCart) {
+                                cartController.removeItem(cartController
+                                    .cartItems
+                                    .firstWhere((element) =>
+                                        element.product!.id ==
+                                        controller.product!.id));
+                              }
+                              print('teasdsadsa3');
+                              cartController.loading.value = true;
+                              controller.product!.selectedSize =
+                                  controller.selectedSize.value;
+                              controller.product!.selectedColor =
+                                  controller.selectedColor.value;
+                              cartController.addToCart(
+                                controller.product!,
+                                controller.selectedSize.value,
+                                controller.selectedColor.value,
+                                quantity: 1,
+                              );
+
+                              Get.toNamed(Routes.CART);
+                              cartController.loading.value = false;
+                            } else {
+                              Get.to(() => CartPage());
                             }
-                            print('teasdsadsa3');
-                            cartController.loading.value = true;
-                            controller.product!.selectedSize =
-                                controller.selectedSize.value;
-                            controller.product!.selectedColor =
-                                controller.selectedColor.value;
-                            cartController.addToCart(
-                              controller.product!,
-                              controller.selectedSize.value,
-                              controller.selectedColor.value,
-                              quantity: 1,
-                            );
-
-                            Get.toNamed(Routes.CART);
-                            cartController.loading.value = false;
                           },
                           child: SvgPicture.asset(
                             "assets/images/product/add_to_cart.svg",
@@ -703,56 +782,79 @@ class ProductView extends GetView<ProductController> {
                   ),
                 ),
                 Spacer(),
-                Flexible(
-                  flex: 20,
-                  child: TextField(
-                    onSubmitted: (v) {
-                      // controller.addSearchKeywords(v);
-                      // controller.getSearchResultsFromApi();
-                      //
-                      //
-                      //
-                      // Get.to(()=> ResultView());
-                    },
-                    autofocus: false,
-                    style: primaryTextStyle(
-                      color: Colors.black,
-                      size: 14.sp.round(),
-                      weight: FontWeight.w400,
-                    ),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey, width: 2)),
-                      hintStyle: primaryTextStyle(
-                        color: Colors.black,
-                        size: 14.sp.round(),
-                        weight: FontWeight.w400,
-                        height: 1,
-                      ),
-                      errorStyle: primaryTextStyle(
-                        color: Colors.red,
-                        size: 14.sp.round(),
-                        weight: FontWeight.w400,
-                        height: 1,
-                      ),
-                      labelStyle: primaryTextStyle(
-                        color: Colors.grey,
-                        size: 14.sp.round(),
-                        weight: FontWeight.w400,
-                        height: 1,
-                      ),
-                      labelText: "Search Clothes ...",
-                      prefixIcon: IconButton(
-                        icon: SvgPicture.asset(
-                          'assets/icons/search.svg',
-                          width: 25.w,
-                          height: 25.h,
-                        ),
-                        onPressed: () {},
-                      ),
+                // Flexible(
+                //   flex: 20,
+                //   child: TextField(
+                //     onSubmitted: (v) {
+                //       // controller.addSearchKeywords(v);
+                //       // controller.getSearchResultsFromApi();
+                //       //
+                //       //
+                //       //
+                //       // Get.to(()=> ResultView());
+                //     },
+                //     autofocus: false,
+                //     style: primaryTextStyle(
+                //       color: Colors.black,
+                //       size: 14.sp.round(),
+                //       weight: FontWeight.w400,
+                //     ),
+                //     decoration: InputDecoration(
+                //       border: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(12),
+                //           borderSide: BorderSide(color: Colors.grey, width: 2)),
+                //       hintStyle: primaryTextStyle(
+                //         color: Colors.black,
+                //         size: 14.sp.round(),
+                //         weight: FontWeight.w400,
+                //         height: 1,
+                //       ),
+                //       errorStyle: primaryTextStyle(
+                //         color: Colors.red,
+                //         size: 14.sp.round(),
+                //         weight: FontWeight.w400,
+                //         height: 1,
+                //       ),
+                //       labelStyle: primaryTextStyle(
+                //         color: Colors.grey,
+                //         size: 14.sp.round(),
+                //         weight: FontWeight.w400,
+                //         height: 1,
+                //       ),
+                //       labelText: "Search Clothes ...",
+                //       prefixIcon: IconButton(
+                //         icon: SvgPicture.asset(
+                //           'assets/icons/search.svg',
+                //           width: 25.w,
+                //           height: 25.h,
+                //         ),
+                //         onPressed: () {},
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                IconButton(
+                  icon: Padding(
+                    padding: EdgeInsets.only(left: 10.w),
+                    child: SvgPicture.asset(
+                      'assets/icons/search.svg',
+                      width: 26.w,
+                      height: 26.h,
                     ),
                   ),
+                  onPressed: () {
+                    HomeController homeController = HomeController().initialized
+                        ? Get.find<HomeController>()
+                        : Get.put(HomeController());
+                    var products = homeController.homeModel.value.product;
+                    var categories = homeController.homeModel.value.categories;
+
+                    Get.to(SearchView(),
+                        arguments: [products, categories],
+                        transition: Transition.fadeIn,
+                        curve: Curves.easeInOut,
+                        duration: const Duration(milliseconds: 800));
+                  },
                 ),
               ],
             ),
@@ -973,16 +1075,7 @@ class ProductView extends GetView<ProductController> {
               child: buildBottomSheet(comingProduct, myContext)),
         );
       },
-      child:
-          // controller.isAddToCartActive.value
-          //     ? Lottie.asset(
-          //         "assets/images/product/added_to_cart.json",
-          //         width: 200.w,
-          //         height: 70.h,
-          //         fit: BoxFit.contain,
-          //       )
-          //     :
-          SvgPicture.asset(
+      child: SvgPicture.asset(
         "assets/images/product/add_to_cart.svg",
         fit: BoxFit.contain,
         width: 300.w,

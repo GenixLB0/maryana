@@ -6,6 +6,8 @@ abstract class Routes {
 
   static const MAIN = _Paths.MAIN;
   static const ORDERS = _Paths.ORDERS;
+  static const HISTORY = _Paths.HISTORY;
+  static const COUPON = _Paths.COUPON;
 
   static const LOGIN = _Paths.LOGIN;
   static const REGISTER = _Paths.REGISTER;
@@ -29,9 +31,11 @@ abstract class _Paths {
   _Paths._();
 
   static const MAIN = '/main';
+  static const COUPON = '/coupon';
 
   static const LOGIN = '/login';
   static const ORDERS = '/order';
+  static const HISTORY = '/history';
   static const REGISTER = '/register';
   static const SPLASH = '/splash';
   static const ONBOARDING = '/onboarding';

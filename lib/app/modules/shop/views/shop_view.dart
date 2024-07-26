@@ -8,7 +8,9 @@ import 'package:get/get.dart';
 
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
+import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
+import 'package:maryana/app/modules/product/views/product_view.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:nb_utils/nb_utils.dart'
     hide primaryTextStyle
@@ -18,6 +20,7 @@ import '../../../routes/app_pages.dart';
 import '../../global/config/configs.dart';
 import '../../global/theme/app_theme.dart';
 import '../../search/views/result_view.dart';
+import '../../search/views/search_view.dart';
 import '../controllers/shop_controller.dart';
 
 class ShopView extends GetView<ShopController> {
@@ -29,53 +32,83 @@ class ShopView extends GetView<ShopController> {
 
     return Scaffold(
         body: SafeArea(
-      child: SingleChildScrollView(
-        key: const PageStorageKey<String>("pageTwo"),
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 15.h,
-              ),
-              ShowUp(
-                delay: 200,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 15.h,
+          ),
+          ShowUp(
+            delay: 200,
+            child: Align(
+              alignment: Alignment.center,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 16.w,
+                  ),
+                  Text(
                     "Discover",
                     style: primaryTextStyle(
                         size: 22.sp.round(), weight: FontWeight.w600),
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 15.h,
-              ),
-              buildSearchAndFilter(
-                  context: context,
-                  isSearch: false,
-                  categories: controller.categories,
-                  products: controller.products),
-              Container(
-                height: 2,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.black12,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: Offset(-5, 0), // changes position of shadow
+                  Spacer(),
+                  IconButton(
+                    icon: Padding(
+                      padding: EdgeInsets.only(left: 10.w),
+                      child: SvgPicture.asset(
+                        'assets/icons/search.svg',
+                        width: 26.w,
+                        height: 26.h,
+                      ),
                     ),
-                  ],
-                ),
+                    onPressed: () {
+                      HomeController homeController =
+                          HomeController().initialized
+                              ? Get.find<HomeController>()
+                              : Get.put(HomeController());
+                      var products = homeController.homeModel.value.product;
+                      var categories =
+                          homeController.homeModel.value.categories;
+
+                      Get.to(SearchView(),
+                          arguments: [products, categories],
+                          transition: Transition.fadeIn,
+                          curve: Curves.easeInOut,
+                          duration: const Duration(milliseconds: 800));
+                    },
+                  ),
+                  SizedBox(
+                    width: 16.w,
+                  ),
+                ],
               ),
-              _buildCategories(context),
-            ],
+            ),
           ),
-        ),
+          SizedBox(
+            height: 10.h,
+          ),
+          // buildSearchAndFilter(
+          //     context: context,
+          //     isSearch: false,
+          //     categories: controller.categories,
+          //     products: controller.products),
+          Container(
+            height: 2,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: Offset(-5, 0), // changes position of shadow
+                ),
+              ],
+            ),
+          ),
+          _buildCategories(context),
+        ],
       ),
     ));
   }
@@ -347,88 +380,128 @@ class ShopView extends GetView<ShopController> {
                                       itemCount: 5),
                                 )),
                               )
-                            : Padding(
-                                padding: EdgeInsets.only(left: 16.w),
-                                child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.8,
-                                  child: ListView.separated(
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return index !=
-                                                controller.categories.length
-                                            ? AnimatedOpacity(
-                                                opacity: 1,
-                                                duration:
-                                                    const Duration(seconds: 1),
-                                                curve: Curves.easeInOut,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    controller
-                                                        .changeChoosenCatId(
-                                                            controller
-                                                                .categories[
-                                                                    index]
-                                                                .id!
-                                                                .toString());
+                            : Obx(() {
+                                return Padding(
+                                  padding: EdgeInsets.only(left: 16.w),
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.8,
+                                    child: ListView.separated(
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return index !=
+                                                  controller.categories.length
+                                              ? AnimatedOpacity(
+                                                  opacity: 1,
+                                                  duration: const Duration(
+                                                      seconds: 1),
+                                                  curve: Curves.easeInOut,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      controller
+                                                          .changeClickCurrentCat(
+                                                              index);
+                                                      // controller
+                                                      //     .changeClickCurrentCat(
+                                                      //         controller
+                                                      //                 .categories[
+                                                      //             index],
+                                                      //         index);
+                                                      controller
+                                                          .changeChoosenCatId(
+                                                              controller
+                                                                  .categories[
+                                                                      index]
+                                                                  .id!
+                                                                  .toString());
 
-                                                    controller
-                                                        .getSubCategoriesInCategory(
-                                                            controller
-                                                                .categories[
-                                                                    index]
-                                                                .id!);
+                                                      controller
+                                                          .getProductsInCategory(
+                                                              controller
+                                                                  .categories[
+                                                                      index]
+                                                                  .id!,
+                                                              "featured");
 
-                                                    controller
-                                                        .getBrandsInCategory(
-                                                            controller
-                                                                .categories[
-                                                                    index]
-                                                                .id!);
-                                                  },
-                                                  child: SizedBox(
-                                                    height: 45.h,
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Text(
-                                                        controller
-                                                            .categories[index]
-                                                            .name!,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: primaryTextStyle(
-                                                            size: 13.sp.round(),
-                                                            color: Colors.black,
-                                                            weight: FontWeight
-                                                                .w400),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ))
-                                            : Container(
-                                                height: 0.1.h,
-                                                width: 50.w,
-                                                color: const Color(0xffE6E6E6),
-                                              );
-                                      },
-                                      separatorBuilder: (context, index) =>
-                                          Container(
-                                            height: 1,
-                                            width: 50.w,
-                                            color: const Color(0xffE6E6E6),
-                                          ),
-                                      itemCount:
-                                          controller.categories.length + 1),
-                                ),
-                              ),
+                                                      controller
+                                                          .getBrandsInCategory(
+                                                              controller
+                                                                  .categories[
+                                                                      index]
+                                                                  .id!);
+                                                    },
+                                                    child: Obx(() {
+                                                      return Container(
+                                                        color: controller
+                                                                    .currentCatIndex
+                                                                    .value ==
+                                                                index
+                                                            ? primaryColor
+                                                            : Colors
+                                                                .transparent,
+                                                        child: SizedBox(
+                                                          height: 45.h,
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          3.w),
+                                                              child: Text(
+                                                                controller
+                                                                    .categories[
+                                                                        index]
+                                                                    .name!,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: primaryTextStyle(
+                                                                    size: 13
+                                                                        .sp
+                                                                        .round(),
+                                                                    color: controller.currentCatIndex.value ==
+                                                                            index
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black,
+                                                                    weight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }),
+                                                  ))
+                                              : Container(
+                                                  height: 0.1.h,
+                                                  width: 50.w,
+                                                  color:
+                                                      const Color(0xffE6E6E6),
+                                                );
+                                        },
+                                        separatorBuilder: (context, index) =>
+                                            Container(
+                                              height: 1,
+                                              width: 50.w,
+                                              color: const Color(0xffE6E6E6),
+                                            ),
+                                        itemCount:
+                                            controller.categories.length + 1),
+                                  ),
+                                );
+                              }),
                       ],
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 8.h),
                       child: Container(
                         width: 1.w,
-                        height: MediaQuery.of(context).size.height - 300.h,
+                        height: MediaQuery.of(context).size.height - 200.h,
                         color: const Color(0xffE6E6E6),
                       ),
                     )
@@ -444,31 +517,195 @@ class ShopView extends GetView<ShopController> {
   }
 
   _buildBrandsAndSubCategories(context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 20.h,
+    return SingleChildScrollView(
+      controller: controller.scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Container(
+        height: MediaQuery.of(context).size.height - 100.h,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Obx(() {
+              if (controller.showTextTop.value &&
+                  controller.currentCatIndex.value != 0) {
+                return ShowUp(
+                  delay: 150,
+                  child: GestureDetector(
+                    onTap: () {
+                      controller.changeCurrentCat(false);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20.w, bottom: 5.h),
+                      child: Container(
+                        width: 170.w,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_circle_up_outlined),
+                            Text(
+                              "Click To see ",
+                              style: primaryTextStyle(
+                                  size: 12.sp.round(), color: Colors.grey[300]),
+                            ),
+                            Text(
+                              "Products in ",
+                              style: primaryTextStyle(
+                                  size: 12.sp.round(), color: Colors.grey[300]),
+                            ),
+                            Text(
+                              "${controller.categories[controller.currentCatIndex.value - 1].name}",
+                              style: primaryTextStyle(
+                                  size: 12.sp.round(), color: Colors.grey[300]),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            }),
+            SizedBox(
+              height: 20.h,
+            ),
+            Text(
+              "TOP BRANDS",
+              style:
+                  boldTextStyle(size: 16.sp.round(), weight: FontWeight.w400),
+            ),
+            _buildTopBrands(context),
+            Row(
+              children: [
+                Text("SHOP BY PRODUCTS",
+                    style: boldTextStyle(
+                        size: 16.sp.round(), weight: FontWeight.w400)),
+                SizedBox(
+                  width: 5.w,
+                ),
+                GetBuilder<ShopController>(
+                    id: "products_in_categories",
+                    builder: (logic) {
+                      return Container(
+                          width: 90.w,
+                          height: 45.h,
+                          padding: EdgeInsets.all(5.0.w),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 2, color: Colors.grey[200]!),
+                              borderRadius: BorderRadius.circular(35.sp)),
+                          child: Center(
+                            child: PopupMenuButton<String>(
+                              color: Colors.white,
+                              elevation: 5,
+                              initialValue: "Filter",
+                              itemBuilder: (context) {
+                                return <String>[
+                                  "featured",
+                                  "best_selling",
+                                  "latest",
+                                  "oldest",
+                                  "low-high",
+                                  "high-low",
+                                  "a-z",
+                                  "z-a"
+                                ].map((str) {
+                                  return PopupMenuItem(
+                                    value: str,
+                                    child: Text(str),
+                                  );
+                                }).toList();
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Container(
+                                    width: 50.w,
+                                    child: Text(
+                                      controller.selectedOption,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:
+                                          primaryTextStyle(size: 10.sp.round()),
+                                    ),
+                                  ),
+                                  const Icon(Icons.arrow_drop_down),
+                                ],
+                              ),
+                              onSelected: (v) {
+                                controller.changeDropDownValue(
+                                    controller.selectedCatId, v);
+                              },
+                            ),
+                          ));
+                    }),
+                SizedBox(
+                  width: 6.w,
+                )
+              ],
+            ),
+            SizedBox(
+              height: 5.h,
+            ),
+            _buildProductsInCategories(context),
+            Obx(() {
+              if (controller.showText.value &&
+                  controller.currentCatIndex.value !=
+                      (controller.categories.length - 1)) {
+                return ShowUp(
+                  delay: 150,
+                  child: GestureDetector(
+                    onTap: () {
+                      controller.changeCurrentCat(true);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20.w, bottom: 5.h),
+                      child: Container(
+                        width: 170.w,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_circle_down_rounded),
+                            Text(
+                              "Click To see ",
+                              style: primaryTextStyle(
+                                  size: 12.sp.round(), color: Colors.grey[300]),
+                            ),
+                            Text(
+                              "Products in ",
+                              style: primaryTextStyle(
+                                  size: 12.sp.round(), color: Colors.grey[300]),
+                            ),
+                            Text(
+                              "${controller.categories[controller.currentCatIndex.value + 1].name}",
+                              style: primaryTextStyle(
+                                  size: 12.sp.round(), color: Colors.grey[300]),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            })
+          ],
         ),
-        Text(
-          "TOP BRANDS",
-          style: boldTextStyle(size: 16.sp.round(), weight: FontWeight.w400),
-        ),
-        _buildTopBrands(context),
-        Text("SHOP BY SUBCATEGORIES",
-            style: boldTextStyle(size: 16.sp.round(), weight: FontWeight.w400)),
-        _buildSubCategories(context),
-      ],
+      ),
     );
   }
 
   _buildTopBrands(context) {
     return Obx(() {
       return controller.isBrandsLoading.value
-          ? Expanded(
-              child: LoadingWidget(Container(
-                  height: MediaQuery.of(context).size.height / 4,
+          ? LoadingWidget(
+              Container(
+                  height: 120.h,
                   child: GridView.count(
                     crossAxisCount: 4,
                     padding: EdgeInsets.all(8.w),
@@ -477,103 +714,105 @@ class ShopView extends GetView<ShopController> {
                     childAspectRatio: 6 / 7,
                     shrinkWrap: true,
                     children: <Widget>[
-                      for (int i = 0; i < 12; ++i)
+                      for (int i = 0; i < 4; ++i)
                         Container(
                             width: 100.w,
                             color: Color.fromARGB(255, 10 * i, 1 * i, 50))
                     ],
-                  ))),
+                  )),
             )
           : controller.brands.isEmpty
-              ? Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width / 9,
-                      top: MediaQuery.of(context).size.height / 9,
-                    ),
-                    child: Text(
-                      "No Brands Yet ..",
-                      style: primaryTextStyle(
-                          size: 12.sp.round(),
-                          color: Colors.black,
-                          weight: FontWeight.w400),
-                    ),
+              ? Center(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 15.h,
+                      ),
+                      Text(
+                        "No Brands Yet ..",
+                        style: primaryTextStyle(
+                            size: 12.sp.round(),
+                            color: Colors.black,
+                            weight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        height: 35.h,
+                      )
+                    ],
                   ),
                 )
-              : Expanded(
-                  child: Container(
-                      height: MediaQuery.of(context).size.height / 3,
-                      child: GridView.count(
-                          crossAxisCount: 4,
-                          padding: EdgeInsets.all(8.w),
-                          crossAxisSpacing: 10.h,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 6 / 7,
-                          shrinkWrap: true,
-                          children: controller.brands
-                              .map((brand) => GestureDetector(
-                                    onTap: () {
-                                      if (CustomSearchController()
-                                          .initialized) {
-                                        CustomSearchController mycontroller =
-                                            Get.find<CustomSearchController>();
-                                        mycontroller.getProductsInSection(
-                                            sectionName: brand.name!,
-                                            payload: {
-                                              "brand_ids[0]":
-                                                  brand.id.toString(),
-                                              "category_ids[0]": controller
-                                                  .choosenCatId
-                                                  .toString(),
-                                            });
+              : Container(
+                  height: 120.h,
+                  child: GridView.count(
+                      physics: NeverScrollableScrollPhysics(),
+                      crossAxisCount: 4,
+                      padding: EdgeInsets.all(8.w),
+                      crossAxisSpacing: 10.h,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 6 / 7,
+                      shrinkWrap: true,
+                      children: controller.brands
+                          .map((brand) => GestureDetector(
+                                onTap: () {
+                                  if (CustomSearchController().initialized) {
+                                    CustomSearchController mycontroller =
+                                        Get.find<CustomSearchController>();
+                                    mycontroller.getProductsInSection(
+                                        sectionName: brand.name!,
+                                        payload: {
+                                          "brand_ids[0]": brand.id.toString(),
+                                          "category_ids[0]": controller
+                                              .choosenCatId
+                                              .toString(),
+                                        });
 
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration: const Duration(
-                                                milliseconds: 800));
-                                      } else {
-                                        CustomSearchController mycontroller =
-                                            Get.put<CustomSearchController>(
-                                                CustomSearchController());
-                                        mycontroller.getProductsInSection(
-                                            sectionName: brand.name!,
-                                            payload: {
-                                              "brand_ids[0]":
-                                                  brand.id.toString(),
-                                              "category_ids[0]": controller
-                                                  .choosenCatId
-                                                  .toString(),
-                                            });
+                                    Get.to(() => const ResultView(),
+                                        transition: Transition.fadeIn,
+                                        curve: Curves.easeInOut,
+                                        duration:
+                                            const Duration(milliseconds: 800));
+                                  } else {
+                                    CustomSearchController mycontroller =
+                                        Get.put<CustomSearchController>(
+                                            CustomSearchController());
+                                    mycontroller.getProductsInSection(
+                                        sectionName: brand.name!,
+                                        payload: {
+                                          "brand_ids[0]": brand.id.toString(),
+                                          "category_ids[0]": controller
+                                              .choosenCatId
+                                              .toString(),
+                                        });
 
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration: const Duration(
-                                                milliseconds: 800));
-                                      }
-                                    },
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: CachedNetworkImage(
-                                        imageUrl: brand.image!,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ))
-                              .toList())),
-                );
+                                    Get.to(() => const ResultView(),
+                                        transition: Transition.fadeIn,
+                                        curve: Curves.easeInOut,
+                                        duration:
+                                            const Duration(milliseconds: 800));
+                                  }
+                                },
+                                child: Container(
+                                  color: Colors.white,
+                                  child: CachedNetworkImage(
+                                    imageUrl: brand.image!,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, val) =>
+                                        placeHolderWidget(),
+                                  ),
+                                ),
+                              ))
+                          .toList()));
     });
   }
 
-  _buildSubCategories(context) {
+  _buildProductsInCategories(context) {
     return Obx(() {
-      return controller.isSubCategoriesLoading.value
+      return controller.isProductsInCategoryLoading.value
           ? Expanded(
               child: LoadingWidget(Container(
-                  height: MediaQuery.of(context).size.height / 4,
+                  height: MediaQuery.of(context).size.height / 3,
                   child: GridView.count(
-                    crossAxisCount: 4,
+                    crossAxisCount: 3,
                     padding: EdgeInsets.all(8.w),
                     crossAxisSpacing: 10.h,
                     mainAxisSpacing: 10,
@@ -587,7 +826,7 @@ class ShopView extends GetView<ShopController> {
                     ],
                   ))),
             )
-          : controller.subCategories.isEmpty
+          : controller.productsInCategories.isEmpty
               ? Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -595,7 +834,7 @@ class ShopView extends GetView<ShopController> {
                       top: MediaQuery.of(context).size.height / 9,
                     ),
                     child: Text(
-                      "No SubCategories Yet ..",
+                      "No Products Yet ..",
                       style: primaryTextStyle(
                           size: 12.sp.round(),
                           color: Colors.black,
@@ -605,60 +844,36 @@ class ShopView extends GetView<ShopController> {
                 )
               : Expanded(
                   child: Container(
-                      height: MediaQuery.of(context).size.height / 3,
+                    height: MediaQuery.of(context).size.height / 3,
+                    child: Expanded(
+                      flex: 4,
                       child: GridView.count(
-                          crossAxisCount: 4,
+                          physics: NeverScrollableScrollPhysics(),
+                          crossAxisCount: 3,
                           padding: EdgeInsets.all(8.w),
                           crossAxisSpacing: 10.h,
                           mainAxisSpacing: 10,
                           childAspectRatio: 6 / 7,
                           shrinkWrap: true,
-                          children: controller.subCategories
-                              .map((subCat) => GestureDetector(
+                          children: controller.productsInCategories
+                              .map((product) => GestureDetector(
                                     onTap: () {
-                                      if (CustomSearchController()
-                                          .initialized) {
-                                        CustomSearchController controller =
-                                            Get.find<CustomSearchController>();
-                                        controller.getProductsInSection(
-                                            sectionName: subCat.name!,
-                                            payload: {
-                                              "collection_ids[0]":
-                                                  subCat.id.toString()
-                                            });
-
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration: const Duration(
-                                                milliseconds: 800));
-                                      } else {
-                                        CustomSearchController controller =
-                                            Get.put<CustomSearchController>(
-                                                CustomSearchController());
-                                        controller.getProductsInSection(
-                                            sectionName: subCat.name!,
-                                            payload: {
-                                              "collection_ids[0]":
-                                                  subCat.id.toString()
-                                            });
-
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration: const Duration(
-                                                milliseconds: 800));
-                                      }
+                                      Get.to(() => ProductView(),
+                                          arguments: product);
                                     },
                                     child: Container(
                                       color: Colors.white,
                                       child: CachedNetworkImage(
-                                        imageUrl: subCat.image!,
+                                        imageUrl: product.image!,
                                         fit: BoxFit.cover,
+                                        placeholder: (context, val) =>
+                                            placeHolderWidget(),
                                       ),
                                     ),
                                   ))
-                              .toList())),
+                              .toList()),
+                    ),
+                  ),
                 );
     });
   }

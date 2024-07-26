@@ -25,8 +25,8 @@ class AuthController extends GetxController {
   var user = Rxn<User>();
   var firstNameError = ''.obs;
   var lastNameError = ''.obs;
-  static const String emptyFirstNameError = 'First name cannot be empty';
-  static const String emptyLastNameError = 'Last name cannot be empty';
+  static const String emptyFirstNameError = 'First name required!';
+  static const String emptyLastNameError = 'Last name required!';
   static const String invalidEmailError = 'Enter a valid email';
   static const String shortPasswordError =
       'Password must be at least 6 characters';

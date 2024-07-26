@@ -6,7 +6,6 @@ import 'package:maryana/app/modules/global/model/test_model_response.dart';
 class Order {
   final int id;
   final String trackingNumber;
-  final int quantity;
   final double subtotal;
   final String status;
   final String date;
@@ -14,7 +13,6 @@ class Order {
   Order({
     required this.id,
     required this.trackingNumber,
-    required this.quantity,
     required this.subtotal,
     required this.status,
     required this.date,
@@ -23,11 +21,10 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'],
-      trackingNumber: json['tracking_number'],
-      quantity: json['quantity'],
-      subtotal: json['subtotal'],
+      trackingNumber: json['code'],
+      subtotal: double.parse(json['sub_total']),
       status: json['status'],
-      date: json['date'],
+      date: 'Today',
     );
   }
 }
@@ -733,7 +730,6 @@ class WishlistData {
   }
 }
 
-
 class Material {
   int? id;
   String? name;
@@ -755,9 +751,7 @@ class Material {
     return data;
   }
 }
- 
 
- 
 class WishData {
   List<int>? wishlist;
 

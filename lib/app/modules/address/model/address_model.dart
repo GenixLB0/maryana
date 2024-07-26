@@ -1,3 +1,19 @@
+class Country {
+  final String name;
+  final String code;
+  final String phoneCode;
+
+  Country({required this.name, required this.code, required this.phoneCode});
+
+  factory Country.fromJson(Map<String, dynamic> json) {
+    return Country(
+      name: json['name'],
+      code: json['code'],
+      phoneCode: json['phone_code'],
+    );
+  }
+}
+
 class Address {
   int id;
   String label;
@@ -7,6 +23,7 @@ class Address {
   String address;
   String phone;
   String city;
+  String country;
   String state;
   dynamic latitude;
   dynamic longitude;
@@ -21,6 +38,7 @@ class Address {
     required this.address,
     required this.phone,
     required this.city,
+    required this.country,
     required this.state,
     required this.latitude,
     required this.longitude,
@@ -37,6 +55,7 @@ class Address {
       address: json['address'],
       phone: json['phone'],
       city: json['city'],
+      country: json['country'],
       state: json['state'],
       latitude: json['latitude'],
       longitude: json['longitude'],
@@ -54,9 +73,11 @@ class Address {
       'address': address,
       'phone': phone,
       'city': city,
+      'country': country,
       'state': state,
-      'latitude': latitude,
-      'longitude': longitude,
+      'latitude': latitude == '' || latitude == null ? '33.888630' : latitude,
+      'longitude':
+          longitude == '' || longitude == null ? '35.495480' : longitude,
       'is_default': isDefault,
     };
   }

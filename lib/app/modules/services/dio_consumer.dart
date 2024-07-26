@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart' as gets;
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/log_utils.dart';
+import 'package:maryana/app/modules/profile/controllers/profile_controller.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/modules/services/error/exceptions.dart';
 import 'package:maryana/main.dart';
@@ -13,6 +15,8 @@ import 'package:maryana/main.dart';
 import 'api_consumer.dart';
 import 'app_interceptors.dart';
 import 'status_code.dart';
+
+final ProfileController controller = gets.Get.put(ProfileController());
 
 class DioConsumer implements ApiConsumer {
   final Dio client;
@@ -144,7 +148,7 @@ class DioConsumer implements ApiConsumer {
           case StatusCode.badRequest:
             throw const BadRequestException();
           case StatusCode.unauthorized:
-            throw UnauthorizedException(error.response?.toString());
+            return controller.reset();
           case StatusCode.forbidden:
             throw UnauthorizedException(error.response?.toString());
 

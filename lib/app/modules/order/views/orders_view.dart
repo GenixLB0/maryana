@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
@@ -77,7 +78,29 @@ class OrdersView extends GetView<OrdersController> {
               if (controller.orders.isEmpty && !controller.loading.value)
                 SizedBox(
                     height: 650.h,
-                    child: Center(child: Text('No orders found'))),
+                    child: Center(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Hero(
+                            tag: 'gift',
+                            child: SvgPicture.asset(
+                              "assets/images/profile/order.svg",
+                              width: MediaQuery.of(context).size.width / 3,
+                              height: MediaQuery.of(context).size.height / 4,
+                              fit: BoxFit.fitWidth,
+                              color: primaryColor,
+                            )),
+                        Padding(
+                          padding: EdgeInsets.only(left: 15.w),
+                          child: Text(
+                            'No Orders available',
+                            style: primaryTextStyle(size: 20.sp.round()),
+                          ),
+                        ),
+                      ],
+                    ))),
               if (controller.orders.isNotEmpty && !controller.loading.value)
                 Expanded(
                     child: SizedBox(

@@ -22,9 +22,11 @@ dependencies:
   flutter_animate:
   sliding_up_panel:
   video_player:
+  visibility_detector:
   typewritertext:
   get_storage: ^2.0.3
   carousel_slider:
+  url_launcher: ^6.3.0
   delayed_widget:
   page_transition:
   flutter_svg:
