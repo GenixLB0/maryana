@@ -1026,3 +1026,70 @@ class GiftCards {
     return data;
   }
 }
+
+class SizeGuide {
+  String? name;
+  String? fitType;
+  String? stretch;
+  String? description;
+  List<Attr>? attr;
+
+  SizeGuide(
+      {this.name, this.fitType, this.stretch, this.description, this.attr});
+
+  SizeGuide.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    fitType = json['fit_type'];
+    stretch = json['stretch'];
+    description = json['description'];
+    if (json['attr'] != null) {
+      attr = <Attr>[];
+      json['attr'].forEach((v) {
+        attr!.add(new Attr.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['fit_type'] = this.fitType;
+    data['stretch'] = this.stretch;
+    data['description'] = this.description;
+    if (this.attr != null) {
+      data['attr'] = this.attr!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Attr {
+  String? size;
+  String? type;
+  String? length;
+  String? waist;
+  String? hip;
+  String? bust;
+
+  Attr({this.size, this.type, this.length, this.waist, this.hip, this.bust});
+
+  Attr.fromJson(Map<String, dynamic> json) {
+    size = json['size'];
+    type = json['type'];
+    length = json['length'];
+    waist = json['waist'];
+    hip = json['hip'];
+    bust = json['bust'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['size'] = this.size;
+    data['type'] = this.type;
+    data['length'] = this.length;
+    data['waist'] = this.waist;
+    data['hip'] = this.hip;
+    data['bust'] = this.bust;
+    return data;
+  }
+}

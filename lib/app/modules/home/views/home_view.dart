@@ -49,41 +49,61 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
-      body: Obx(
-        () => SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              buildUpperBar(context),
-              Obx(() {
-                print(
-                    "the new value is ${controller.currentSectionName.value}");
-                return controller.currentSectionName.value.isEmpty
-                    ? SizedBox()
-                    : ShowUp(
-                        delay: 300,
-                        child: InkWell(
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 10.h,
+            ),
+            buildUpperBar(context),
+            Obx(() {
+              print("the new value is ${controller.currentSectionName.value}");
+              return controller.currentSectionName.value.isEmpty
+                  ? SizedBox(
+                      height: 5.h,
+                    )
+                  : Container(
+                      color: const Color(0xffF7D454),
+                      child: SlideToast(
+                        InkWell(
                           onTap: () {
                             controller.currentFun();
                           },
-                          child: Container(
+                          child: AnimatedContainer(
                             height: 50,
                             width: MediaQuery.of(context).size.width,
-                            color: Colors.yellow,
+                            color: const Color(0xffF7D454),
+                            duration: Duration(seconds: 1),
+                            curve: Curves.fastOutSlowIn,
                             child: Row(
                               children: [
                                 SizedBox(
                                   width: 15.w,
                                 ),
-                                Text(
-                                  "Check all the products in ${controller.currentSectionName}",
-                                  style: primaryTextStyle(
-                                      color: Colors.black,
-                                      weight: FontWeight.w400,
-                                      size: 12.sp.round()),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Check all the products in",
+                                      style: primaryTextStyle(
+                                          color: Colors.black,
+                                          weight: FontWeight.w400,
+                                          size: 12.sp.round()),
+                                    ),
+                                    SizedBox(
+                                      width: 3.w,
+                                    ),
+                                    Shimmer.fromColors(
+                                        baseColor: Colors.purple,
+                                        highlightColor: primaryColor,
+                                        child: Text(
+                                          "${controller.currentSectionName.value}",
+                                          style: primaryTextStyle(
+                                              color: Colors.black,
+                                              weight: FontWeight.w400,
+                                              size: 12.sp.round()),
+                                        ))
+                                  ],
                                 ),
                                 SizedBox(
                                   width: 3.w,
@@ -97,130 +117,131 @@ class HomeView extends GetView<HomeController> {
                             ),
                           ),
                         ),
-                      );
-              }),
-              // buildSearchAndFilter(
-              //   products: controller.homeModel.value.product,
-              //   categories: controller.homeModel.value.categories,
-              //   context: context,
-              //   isSearch: false,
-              // ),
-              SizedBox(
-                height: 5.h,
-              ),
+                      ),
+                    );
+            }),
+            // buildSearchAndFilter(
+            //   products: controller.homeModel.value.product,
+            //   categories: controller.homeModel.value.categories,
+            //   context: context,
+            //   isSearch: false,
+            // ),
 
-              SizedBox(
-                height: 10.h,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const RangeMaintainingScrollPhysics(),
-                  controller: controller.scrollController,
-                  restorationId: "set",
-                  scrollDirection: Axis.vertical,
-                  child: Container(
-                    child: Column(
-                      children: [
-                        buildCatScroll(context),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        buildBannerScroll(context),
-                        SizedBox(
-                          height: 15.h,
-                        ),
-                        buildCustomCatScroll(context),
-                        SizedBox(
-                          height: 15.h,
-                        ),
-                        //here we need collections
-                        GetBuilder<HomeController>(
-                            id: 'collections',
-                            builder: (logic) {
-                              return controller.isCollectionsReached
-                                  ? buildCollectionItems(context)
-                                  : Container(
-                                      height: 100.h,
-                                      child:
-                                          LoadingWidget(placeHolderWidget()));
-                            }),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                controller: controller.scrollController.value,
+                restorationId: "set",
+                scrollDirection: Axis.vertical,
+                child: Container(
+                  child: Column(
+                    children: [
+                      Obx(() {
+                        return buildCatScroll(context);
+                      }),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      buildBannerScroll(context),
+                      SizedBox(
+                        height: 15.h,
+                      ),
+                      Obx(() {
+                        return buildCustomCatScroll(context);
+                      }),
+                      SizedBox(
+                        height: 15.h,
+                      ),
+                      //here we need collections
+                      GetBuilder<HomeController>(
+                          id: 'collections',
+                          builder: (logic) {
+                            return controller.isCollectionsReached
+                                ? buildCollectionItems(context)
+                                : Container(
+                                    height: 100.h,
+                                    child: LoadingWidget(placeHolderWidget()));
+                          }),
 
-                        SizedBox(
-                          height: 15.h,
-                        ),
+                      SizedBox(
+                        height: 15.h,
+                      ),
 
-                        // here we need brands
-                        GetBuilder<HomeController>(
-                            id: 'brands',
-                            builder: (logic) {
-                              return buildBrandItems(context);
-                            }),
+                      // here we need brands
+                      GetBuilder<HomeController>(
+                          id: 'brands',
+                          builder: (logic) {
+                            return buildBrandItems(context);
+                          }),
 
-                        SizedBox(
-                          height: 15.h,
-                        ),
+                      SizedBox(
+                        height: 15.h,
+                      ),
 
-                        //here we need coupons
+                      //here we need coupons
 
-                        GetBuilder<HomeController>(
-                            id: 'coupons',
-                            builder: (logic) {
-                              return buildCoupon(context);
-                            }),
+                      GetBuilder<HomeController>(
+                          id: 'coupons',
+                          builder: (logic) {
+                            return buildCoupon(context);
+                          }),
 
-                        // here we need Gift Cards
+                      // here we need Gift Cards
 
-                        GetBuilder<HomeController>(
-                            id: 'gift-cards',
-                            builder: (logic) {
-                              return buildGiftCards(context);
-                            }),
+                      GetBuilder<HomeController>(
+                          id: 'gift-cards',
+                          builder: (logic) {
+                            return buildGiftCards(context);
+                          }),
 
-                        // here we need styles
+                      // here we need styles
 
-                        GetBuilder<HomeController>(
-                            id: 'styles',
-                            builder: (logic) {
-                              return buildStyles(context);
-                            }),
+                      GetBuilder<HomeController>(
+                          id: 'styles',
+                          builder: (logic) {
+                            return buildStyles(context);
+                          }),
 
-                        SizedBox(
-                          height: 10.h,
-                        ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
 
-                        //here we need other Brands
-                        GetBuilder<HomeController>(
-                            id: 'other-brands',
-                            builder: (logic) {
-                              return buildOtherBrands(context);
-                            }),
+                      //here we need other Brands
+                      GetBuilder<HomeController>(
+                          id: 'other-brands',
+                          builder: (logic) {
+                            return buildOtherBrands(context);
+                          }),
 
-                        //here we need other brands Products
-                        GetBuilder<HomeController>(
-                            id: 'products-in-other-brands',
-                            builder: (logic) {
-                              return buildProductsInBrands(context);
-                            }),
+                      //here we need other brands Products
+                      GetBuilder<HomeController>(
+                          id: 'products-in-other-brands',
+                          builder: (logic) {
+                            return buildProductsInBrands(context);
+                          }),
 
-                        // buildProductsScroll(context),
-                        SizedBox(
-                          height: 15.h,
-                        ),
+                      // buildProductsScroll(context),
+                      SizedBox(
+                        height: 15.h,
+                      ),
 
-                        //here we need recommended section
+                      //here we need recommended section
 
-                        GetBuilder<HomeController>(builder: (logic) {
-                          return buildRecommendedScroll(context);
-                        }),
-                      ],
-                    ),
+                      Obx(() {
+                        return buildRecommendedScroll(context);
+                      }),
+
+                      SizedBox(
+                        height: 15.h,
+                      ),
+                    ],
                   ),
                 ),
-              )
+              ),
+            )
 
-              // buildBannerScroll(context),
-            ],
-          ),
+            // buildBannerScroll(context),
+          ],
         ),
       ),
     );
@@ -234,42 +255,56 @@ class HomeView extends GetView<HomeController> {
         id: 'home-video',
         builder: (logic) {
           return logic.isVideoInit
-              ? ShowUp(
-                  delay: 300,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 9 / 16,
-                        child: VideoPlayer(logic.videoController),
-                      ),
-                      Transform.translate(
-                        offset: Offset(0, -50.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("SUMMER ",
-                                style: boldTextStyle(
-                                  color: Colors.white,
-                                  size: 50.sp.round(),
-                                  weight: FontWeight.w400,
-                                )),
-                            Text("COLLECTION",
-                                style: boldTextStyle(
-                                  color: Colors.white,
-                                  size: 50.sp.round(),
-                                  weight: FontWeight.w400,
-                                )),
-                            Text("2024",
-                                style: boldTextStyle(
-                                  color: Colors.white,
-                                  size: 50.sp.round(),
-                                  weight: FontWeight.w400,
-                                )),
-                          ],
+              ? VisibilityDetector(
+                  onVisibilityChanged: (visibilityInfo) {
+                    var visiblePercentage =
+                        visibilityInfo.visibleFraction * 100;
+                    debugPrint(
+                        'Widget Collection ${visibilityInfo.key} is ${visiblePercentage}% visible');
+
+                    if (visiblePercentage >= 30) {
+                      print("its 0 !!!!");
+                      controller.changeNameAndFunParam("", {});
+                    }
+                  },
+                  key: Key("video"),
+                  child: ShowUp(
+                    delay: 300,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 9 / 16,
+                          child: VideoPlayer(logic.videoController),
                         ),
-                      ),
-                    ],
+                        Transform.translate(
+                          offset: Offset(0, -50.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("SUMMER ",
+                                  style: boldTextStyle(
+                                    color: Colors.white,
+                                    size: 50.sp.round(),
+                                    weight: FontWeight.w400,
+                                  )),
+                              Text("COLLECTION",
+                                  style: boldTextStyle(
+                                    color: Colors.white,
+                                    size: 50.sp.round(),
+                                    weight: FontWeight.w400,
+                                  )),
+                              Text("2024",
+                                  style: boldTextStyle(
+                                    color: Colors.white,
+                                    size: 50.sp.round(),
+                                    weight: FontWeight.w400,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               : SizedBox();
@@ -568,7 +603,7 @@ class HomeView extends GetView<HomeController> {
                                         transition: Transition.fadeIn,
                                         curve: Curves.easeInOut,
                                         duration:
-                                            const Duration(milliseconds: 800));
+                                            const Duration(milliseconds: 400));
                                   } else {
                                     CustomSearchController controller =
                                         Get.put<CustomSearchController>(
@@ -581,7 +616,7 @@ class HomeView extends GetView<HomeController> {
                                         transition: Transition.fadeIn,
                                         curve: Curves.easeInOut,
                                         duration:
-                                            const Duration(milliseconds: 800));
+                                            const Duration(milliseconds: 400));
                                   }
                                 },
                                 child: Text(
@@ -869,7 +904,7 @@ class HomeView extends GetView<HomeController> {
                                     transition: Transition.fadeIn,
                                     curve: Curves.easeInOut,
                                     duration:
-                                        const Duration(milliseconds: 800));
+                                        const Duration(milliseconds: 400));
                               } else {
                                 CustomSearchController controller =
                                     Get.put<CustomSearchController>(
@@ -887,7 +922,7 @@ class HomeView extends GetView<HomeController> {
                                     transition: Transition.fadeIn,
                                     curve: Curves.easeInOut,
                                     duration:
-                                        const Duration(milliseconds: 800));
+                                        const Duration(milliseconds: 400));
                               }
                             },
                             child: SizedBox(
@@ -1007,7 +1042,7 @@ class HomeView extends GetView<HomeController> {
                   arguments: [products, categories],
                   transition: Transition.fadeIn,
                   curve: Curves.easeInOut,
-                  duration: const Duration(milliseconds: 800));
+                  duration: const Duration(milliseconds: 400));
             },
           ),
           // Container(
@@ -1084,15 +1119,17 @@ class HomeView extends GetView<HomeController> {
         var visiblePercentage = visibilityInfo.visibleFraction * 100;
         debugPrint(
             'Widget Collection ${visibilityInfo.key} is ${visiblePercentage}% visible');
-        if (visiblePercentage > 15) {
+
+        if (visiblePercentage >= 25) {
           controller.changeNameAndFunParam("${collection.name}", {
             'collection_ids[0]': "${collection.id}",
           });
         }
 
-        if (visiblePercentage < 15) {
-          controller.changeNameAndFunParam("", {});
-        }
+        // if (visiblePercentage < 1) {
+        //   print("its 0 !!!!");
+        //   controller.changeNameAndFunParam("", {});
+        // }
       },
       child: ShowUp(
         delay: 300,
@@ -1167,7 +1204,7 @@ class HomeView extends GetView<HomeController> {
                                 Get.to(() => const ResultView(),
                                     transition: Transition.fadeIn,
                                     curve: Curves.easeInOut,
-                                    duration: Duration(milliseconds: 800));
+                                    duration: Duration(milliseconds: 400));
                               } else {
                                 CustomSearchController controller =
                                     Get.put<CustomSearchController>(
@@ -1181,7 +1218,7 @@ class HomeView extends GetView<HomeController> {
                                 Get.to(() => const ResultView(),
                                     transition: Transition.fadeIn,
                                     curve: Curves.easeInOut,
-                                    duration: Duration(milliseconds: 800));
+                                    duration: Duration(milliseconds: 400));
                               }
                             },
                             child: Text('SHOW ALL',
@@ -1238,7 +1275,7 @@ class HomeView extends GetView<HomeController> {
                                           transition: Transition.fadeIn,
                                           curve: Curves.easeInOut,
                                           duration:
-                                              Duration(milliseconds: 800));
+                                              Duration(milliseconds: 400));
                                     } else {
                                       CustomSearchController controller =
                                           Get.put<CustomSearchController>(
@@ -1253,7 +1290,7 @@ class HomeView extends GetView<HomeController> {
                                           transition: Transition.fadeIn,
                                           curve: Curves.easeInOut,
                                           duration:
-                                              Duration(milliseconds: 800));
+                                              Duration(milliseconds: 400));
                                     }
                                   },
                                   child: Text(
@@ -1299,7 +1336,7 @@ class HomeView extends GetView<HomeController> {
                                               transition: Transition.fadeIn,
                                               curve: Curves.easeInOut,
                                               duration:
-                                                  Duration(milliseconds: 800));
+                                                  Duration(milliseconds: 400));
                                         } else {
                                           CustomSearchController controller =
                                               Get.put<CustomSearchController>(
@@ -1314,7 +1351,7 @@ class HomeView extends GetView<HomeController> {
                                               transition: Transition.fadeIn,
                                               curve: Curves.easeInOut,
                                               duration:
-                                                  Duration(milliseconds: 800));
+                                                  Duration(milliseconds: 400));
                                         }
                                       });
                               },
@@ -1388,14 +1425,10 @@ class HomeView extends GetView<HomeController> {
         var visiblePercentage = visibilityInfo.visibleFraction * 100;
         debugPrint(
             'Widget brand ${visibilityInfo.key} is ${visiblePercentage}% visible');
-        if (visiblePercentage > 15) {
+        if (visiblePercentage >= 25) {
           controller.changeNameAndFunParam("${brand.name}", {
             'brand_ids[0]': "${brand.id}",
           });
-        }
-
-        if (visiblePercentage < 15) {
-          controller.changeNameAndFunParam("", {});
         }
       },
       child: SingleChildScrollView(
@@ -1475,7 +1508,7 @@ class HomeView extends GetView<HomeController> {
                                           transition: Transition.fadeIn,
                                           curve: Curves.easeInOut,
                                           duration:
-                                              Duration(milliseconds: 800));
+                                              Duration(milliseconds: 400));
                                     } else {
                                       CustomSearchController controller =
                                           Get.put<CustomSearchController>(
@@ -1489,7 +1522,7 @@ class HomeView extends GetView<HomeController> {
                                           transition: Transition.fadeIn,
                                           curve: Curves.easeInOut,
                                           duration:
-                                              Duration(milliseconds: 800));
+                                              Duration(milliseconds: 400));
                                     }
                                   },
                                   child: Text(
@@ -1597,17 +1630,28 @@ class HomeView extends GetView<HomeController> {
   buildCoupon(context) {
     return controller.isCouponLoading
         ? Container(height: 100.h, child: LoadingWidget(placeHolderWidget()))
-        : ShowUp(
-            delay: 300,
-            child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: controller.coupons.isEmpty
-                    ? SizedBox()
-                    : CouponsSliderWithIndicators(
-                        couponsList: controller.coupons,
-                      )),
+        : VisibilityDetector(
+            onVisibilityChanged: (visibilityInfo) {
+              var visiblePercentage = visibilityInfo.visibleFraction * 100;
+              debugPrint(
+                  'Coupons Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
+              if (visiblePercentage >= 50) {
+                controller.changeNameAndFunParam("", {});
+              }
+            },
+            key: Key("coupons"),
+            child: ShowUp(
+              delay: 300,
+              child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: controller.coupons.isEmpty
+                      ? SizedBox()
+                      : CouponsSliderWithIndicators(
+                          couponsList: controller.coupons,
+                        )),
+            ),
           );
   }
 
@@ -1755,166 +1799,180 @@ class HomeView extends GetView<HomeController> {
           ? Container(height: 100.h, child: LoadingWidget(placeHolderWidget()))
           : controller.giftCards.isEmpty
               ? SizedBox()
-              : Container(
-                  color: Color(0xffF9F5FF),
-                  height: 300.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Row(
-                          children: [
-                            Text("Buy Your E-Gift Card",
-                                style: boldTextStyle(
-                                    size: 28.sp.round(),
-                                    color: Colors.black,
-                                    weight: FontWeight.w400)),
-                            Spacer(),
-                            InkWell(
-                              onTap: () {
-                                Get.to(() => GiftCardView());
-                              },
-                              child: Icon(
-                                Icons.arrow_forward_outlined,
-                                color: Colors.black,
-                                size: 15.sp,
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Expanded(
-                          child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) => GestureDetector(
-                                    onTap: () {},
-                                    child: Stack(
-                                      alignment: Alignment.topLeft,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(20.sp),
-                                          child: ColorFiltered(
-                                            colorFilter: const ColorFilter.mode(
-                                                Colors.black45,
-                                                BlendMode.hardLight),
-                                            child: CachedNetworkImage(
-                                              imageUrl: controller
-                                                  .giftCards[index].image!,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width -
-                                                  30.w,
-                                              height: 210.h,
-                                              fit: BoxFit.cover,
-                                              placeholder: (ctx, v) {
-                                                return placeHolderWidget();
-                                              },
+              : VisibilityDetector(
+                  onVisibilityChanged: (visibilityInfo) {
+                    var visiblePercentage =
+                        visibilityInfo.visibleFraction * 100;
+                    debugPrint(
+                        'Gift Cards  Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
+                    if (visiblePercentage >= 50) {
+                      controller.changeNameAndFunParam("", {});
+                    }
+                  },
+                  key: Key("gift-cards"),
+                  child: Container(
+                    color: Color(0xffF9F5FF),
+                    height: 300.h,
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Row(
+                            children: [
+                              Text("Buy Your E-Gift Card",
+                                  style: boldTextStyle(
+                                      size: 28.sp.round(),
+                                      color: Colors.black,
+                                      weight: FontWeight.w400)),
+                              Spacer(),
+                              InkWell(
+                                onTap: () {
+                                  Get.to(() => GiftCardView());
+                                },
+                                child: Icon(
+                                  Icons.arrow_forward_outlined,
+                                  color: Colors.black,
+                                  size: 15.sp,
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Expanded(
+                            child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) =>
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: Stack(
+                                        alignment: Alignment.topLeft,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20.sp),
+                                            child: ColorFiltered(
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                      Colors.black45,
+                                                      BlendMode.hardLight),
+                                              child: CachedNetworkImage(
+                                                imageUrl: controller
+                                                    .giftCards[index].image!,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    30.w,
+                                                height: 210.h,
+                                                fit: BoxFit.cover,
+                                                placeholder: (ctx, v) {
+                                                  return placeHolderWidget();
+                                                },
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        // Container(
-                                        //   height: 400.h,
-                                        //   child: Column(
-                                        //     crossAxisAlignment:
-                                        //         CrossAxisAlignment.start,
-                                        //     mainAxisAlignment:
-                                        //         MainAxisAlignment.start,
-                                        //     children: [
-                                        //       Padding(
-                                        //         padding:
-                                        //             EdgeInsets.only(top: 55.h),
-                                        //         child: SizedBox(
-                                        //           child: Padding(
-                                        //             padding:
-                                        //                 EdgeInsets.symmetric(
-                                        //                     horizontal: 5.w),
-                                        //             child: Text(
-                                        //               maxLines: 1,
-                                        //               overflow:
-                                        //                   TextOverflow.ellipsis,
-                                        //               "Gift Card".toString(),
-                                        //               style: boldTextStyle(
-                                        //                   color: Colors.white,
-                                        //                   weight:
-                                        //                       FontWeight.w400,
-                                        //                   size: 34.sp.round()),
-                                        //             ),
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //       SizedBox(
-                                        //         height: 50.h,
-                                        //       ),
-                                        //       Padding(
-                                        //         padding:
-                                        //             EdgeInsets.only(top: 55.h),
-                                        //         child: SizedBox(
-                                        //           child: Padding(
-                                        //             padding:
-                                        //                 EdgeInsets.symmetric(
-                                        //                     horizontal: 5.w),
-                                        //             child: Text(
-                                        //               maxLines: 1,
-                                        //               overflow:
-                                        //                   TextOverflow.ellipsis,
-                                        //               controller
-                                        //                   .giftCards[index]
-                                        //                   .amount
-                                        //                   .toString(),
-                                        //               style: boldTextStyle(
-                                        //                   color: Colors.white,
-                                        //                   weight:
-                                        //                       FontWeight.w400,
-                                        //                   size: 34.sp.round()),
-                                        //             ),
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //       SizedBox(
-                                        //         height: 10.h,
-                                        //       )
-                                        //     ],
-                                        //   ),
-                                        // )
-                                      ],
-                                    ),
-                                  ),
-                              separatorBuilder: (context, index) => SizedBox(
-                                    width: 8.w,
-                                  ),
-                              itemCount: controller.giftCards.length),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: controller.giftCards
-                                .map((card) => Padding(
-                                      padding: EdgeInsets.only(bottom: 4.h),
-                                      child: Container(
-                                        margin: EdgeInsets.all(3.w),
-                                        height: 5,
-                                        width: 5,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border.all(
-                                                color: Colors.black12),
-                                            shape: BoxShape.circle),
+                                          // Container(
+                                          //   height: 400.h,
+                                          //   child: Column(
+                                          //     crossAxisAlignment:
+                                          //         CrossAxisAlignment.start,
+                                          //     mainAxisAlignment:
+                                          //         MainAxisAlignment.start,
+                                          //     children: [
+                                          //       Padding(
+                                          //         padding:
+                                          //             EdgeInsets.only(top: 55.h),
+                                          //         child: SizedBox(
+                                          //           child: Padding(
+                                          //             padding:
+                                          //                 EdgeInsets.symmetric(
+                                          //                     horizontal: 5.w),
+                                          //             child: Text(
+                                          //               maxLines: 1,
+                                          //               overflow:
+                                          //                   TextOverflow.ellipsis,
+                                          //               "Gift Card".toString(),
+                                          //               style: boldTextStyle(
+                                          //                   color: Colors.white,
+                                          //                   weight:
+                                          //                       FontWeight.w400,
+                                          //                   size: 34.sp.round()),
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //       SizedBox(
+                                          //         height: 50.h,
+                                          //       ),
+                                          //       Padding(
+                                          //         padding:
+                                          //             EdgeInsets.only(top: 55.h),
+                                          //         child: SizedBox(
+                                          //           child: Padding(
+                                          //             padding:
+                                          //                 EdgeInsets.symmetric(
+                                          //                     horizontal: 5.w),
+                                          //             child: Text(
+                                          //               maxLines: 1,
+                                          //               overflow:
+                                          //                   TextOverflow.ellipsis,
+                                          //               controller
+                                          //                   .giftCards[index]
+                                          //                   .amount
+                                          //                   .toString(),
+                                          //               style: boldTextStyle(
+                                          //                   color: Colors.white,
+                                          //                   weight:
+                                          //                       FontWeight.w400,
+                                          //                   size: 34.sp.round()),
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //       SizedBox(
+                                          //         height: 10.h,
+                                          //       )
+                                          //     ],
+                                          //   ),
+                                          // )
+                                        ],
                                       ),
-                                    ))
-                                .toList())
-                      ],
+                                    ),
+                                separatorBuilder: (context, index) => SizedBox(
+                                      width: 8.w,
+                                    ),
+                                itemCount: controller.giftCards.length),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: controller.giftCards
+                                  .map((card) => Padding(
+                                        padding: EdgeInsets.only(bottom: 4.h),
+                                        child: Container(
+                                          margin: EdgeInsets.all(3.w),
+                                          height: 5,
+                                          width: 5,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                  color: Colors.black12),
+                                              shape: BoxShape.circle),
+                                        ),
+                                      ))
+                                  .toList())
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1928,6 +1986,9 @@ class HomeView extends GetView<HomeController> {
         var visiblePercentage = visibilityInfo.visibleFraction * 100;
         debugPrint(
             'Hint second Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
+        if (visiblePercentage >= 50) {
+          controller.changeNameAndFunParam("", {});
+        }
       },
       child: ShowUp(
         delay: 300,
@@ -2144,7 +2205,7 @@ class HomeView extends GetView<HomeController> {
                                     transition: Transition.fadeIn,
                                     curve: Curves.easeInOut,
                                     duration:
-                                        const Duration(milliseconds: 800));
+                                        const Duration(milliseconds: 400));
                               } else {
                                 CustomSearchController controller =
                                     Get.put<CustomSearchController>(
@@ -2157,7 +2218,7 @@ class HomeView extends GetView<HomeController> {
                                     transition: Transition.fadeIn,
                                     curve: Curves.easeInOut,
                                     duration:
-                                        const Duration(milliseconds: 800));
+                                        const Duration(milliseconds: 400));
                               }
                             },
                             child: Text(

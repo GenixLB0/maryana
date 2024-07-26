@@ -31,6 +31,7 @@ class ShopController extends GetxController {
   ScrollController scrollController = ScrollController();
   RxBool showText = false.obs;
   RxBool showTextTop = false.obs;
+  Rx<Categories> selectedCat = Categories().obs;
 
   @override
   void onInit() {
@@ -73,8 +74,10 @@ class ShopController extends GetxController {
           categories.add(category);
         }
         currentCatIndex.value = 1;
+        selectedCat.value = categories.first;
         getBrandsInCategory(currentCatIndex.value + 1);
         getProductsInCategory(currentCatIndex.value + 1, "");
+        update(["drawer_cats"]);
       } else {
         handleApiErrorUser(apiResponse.message);
         handleApiError(response.statusCode);
@@ -257,10 +260,11 @@ class ShopController extends GetxController {
     }
   }
 
-  changeChoosenCatId(id) {
+  changeChoosenCat(Categories cat) {
+    selectedCat.value = cat;
     print("changed id with 1 ${choosenCatId}");
 
-    choosenCatId = id;
+    choosenCatId = cat.id.toString();
     print("changed id with 2 ${choosenCatId}");
   }
 

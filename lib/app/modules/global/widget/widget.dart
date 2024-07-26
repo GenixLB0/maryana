@@ -296,7 +296,6 @@ Widget orderCard(Order order) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-           
             Text(
               'Subtotal: \$${order.subtotal}',
               style: primaryTextStyle(
@@ -795,6 +794,52 @@ class _ShowUpState extends State<ShowUp> with TickerProviderStateMixin {
   }
 }
 
+class SlideToast extends StatefulWidget {
+  final Widget toast;
+
+  SlideToast(this.toast);
+
+  @override
+  _SlideToastState createState() => _SlideToastState();
+}
+
+class _SlideToastState extends State<SlideToast> with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetFloat;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+
+    _offsetFloat = Tween(begin: Offset(0.0, -0.04), end: Offset.zero).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: _offsetFloat,
+      child: widget.toast,
+    );
+  }
+}
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final List<Widget>? actions;
@@ -875,50 +920,57 @@ String GetMaxChar(String value, int max) {
 
 class CustomNavBar extends StatelessWidget {
   final NavigationsBarController _tabController = Get.find();
+  HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: 75.h,
-      decoration: const ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-        ),
-        shadows: [
-          BoxShadow(color: Colors.black38, spreadRadius: -5, blurRadius: 15),
-        ],
-      ),
-      child: Obx(
-        () => BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          unselectedItemColor: const Color(0xFFB9B9B9),
-          selectedItemColor: const Color(0xFF53178C),
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          onTap: (index) {
-            _tabController.changeIndex(index);
-          },
-          currentIndex: _tabController.selectedIndex.value,
-          items: [
-            // Home
-            _buildBottomNavigationBarItem(0, "Home", "home"),
-            // Shop
-            _buildBottomNavigationBarItem(1, "Shop", "shop"),
-            // Bag
-            _buildBottomNavigationBarItem(2, "Bag", "bag"),
-            // Wishlist
-            _buildBottomNavigationBarItem(3, "Wishlist", "wishlist"),
-            // Profile
-            _buildBottomNavigationBarItem(4, "Profile", "profile"),
-          ],
-        ),
-      ),
+    return Obx(
+      () {
+        return AnimatedBuilder(
+            animation: homeController.scrollController.value,
+            builder: (BuildContext context, Widget? child) {
+              return AnimatedContainer(
+                color: Colors.blueGrey,
+                duration: const Duration(milliseconds: 400),
+                height: homeController.scrollController.value.hasClients
+                    ? homeController.scrollController.value.position
+                                .userScrollDirection ==
+                            ScrollDirection.reverse
+                        ? 0
+                        : 95.h
+                    : 95.h,
+                child: child,
+              );
+            },
+            child: SingleChildScrollView(
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: Colors.white,
+                unselectedItemColor: const Color(0xFFB9B9B9),
+                selectedItemColor: const Color(0xFF53178C),
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                onTap: (index) {
+                  print(
+                      " it have clients ${homeController.scrollController.value.hasClients}");
+                  _tabController.changeIndex(index);
+                },
+                currentIndex: _tabController.selectedIndex.value,
+                items: [
+                  // Home
+                  _buildBottomNavigationBarItem(0, "Home", "home"),
+                  // Shop
+                  _buildBottomNavigationBarItem(1, "Shop", "shop"),
+                  // Bag
+                  _buildBottomNavigationBarItem(2, "Bag", "bag"),
+                  // Wishlist
+                  _buildBottomNavigationBarItem(3, "Wishlist", "wishlist"),
+                  // Profile
+                  _buildBottomNavigationBarItem(4, "Profile", "profile"),
+                ],
+              ),
+            ));
+      },
     );
   }
 
@@ -938,10 +990,10 @@ class CustomNavBar extends StatelessWidget {
   Widget _buildSelectedIcon(index, String iconName, String label) {
     return SizedBox(
         width: 60.w, // Use .w for width
-        height: 40.h, // Use .h for height
+        height: 60.h, // Use .h for height
         child: Stack(children: [
           Container(
-              height: 40.h, // Use .h for height
+              height: 60.h, // Use .h for height
               width: 60.w, // Use .w for width
               decoration: BoxDecoration(
                 color: const Color(0xffE8DEF8),
@@ -953,14 +1005,14 @@ class CustomNavBar extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     "assets/icons/${iconName}_active.svg",
-                    height: 25.h, // Use .h for height
+                    height: 30.h, // Use .h for height
                   ),
                   SizedBox(height: 2.h), // Use .h for height
                   Text(
                     label,
                     style: primaryTextStyle(
                       weight: FontWeight.w700,
-                      size: 6.sp.round(), // Use .sp for font size
+                      size: 9.sp.round(), // Use .sp for font size
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -997,12 +1049,12 @@ class CustomNavBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-            width: 22.w, // Use .w for width
-            height: 22.h, // Use .h for height
+            width: 30.w, // Use .w for width
+            height: 30.h, // Use .h for height
             child: Stack(children: [
               SvgPicture.asset(
                 "assets/icons/$iconName.svg",
-                height: 25.h,
+                height: 30.h,
               ),
               if (index == 2)
                 Obx(() {
@@ -1018,7 +1070,7 @@ class CustomNavBar extends StatelessWidget {
                                 child: Text(
                                   cartController.cartItems.length.toString(),
                                   style: primaryTextStyle(
-                                      size: 10.sp.round(),
+                                      size: 8.sp.round(),
                                       color: Colors
                                           .white), // Use .sp for font size
                                 ),
@@ -1110,7 +1162,7 @@ buildSearchAndFilter(
                       arguments: [products, categories],
                       transition: Transition.fadeIn,
                       curve: Curves.easeInOut,
-                      duration: Duration(milliseconds: 800));
+                      duration: Duration(milliseconds: 400));
                 } else {
                   if (products == null) {
                     HomeController controller = HomeController().initialized
@@ -1130,7 +1182,7 @@ buildSearchAndFilter(
                       arguments: [products, categories],
                       transition: Transition.fadeIn,
                       curve: Curves.easeInOut,
-                      duration: Duration(milliseconds: 800));
+                      duration: Duration(milliseconds: 400));
                 }
 
                 // Get.toNamed(
@@ -2401,7 +2453,7 @@ buildFilterBottomSheet(
               Get.to(() => const ResultView(),
                   transition: Transition.fadeIn,
                   curve: Curves.easeInOut,
-                  duration: const Duration(milliseconds: 800));
+                  duration: const Duration(milliseconds: 400));
             },
             child: const Text(
               'Show Items',

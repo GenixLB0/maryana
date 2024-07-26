@@ -11,6 +11,7 @@ import 'package:maryana/app/modules/cart/views/cart_view.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
+import 'package:maryana/app/modules/product/views/size_guide.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -36,145 +37,296 @@ class ProductView extends GetView<ProductController> {
   @override
   Widget build(BuildContext context) {
     ProductController().initialized ? null : Get.put(ProductController());
-    controller.setIndex();
-    ViewProductData? comingProduct = controller.product;
     HomeController homeController = Get.put(HomeController());
-    print("incoming pro is ${comingProduct}");
+    controller.setIndex();
 
     return Scaffold(
       backgroundColor: Colors.white,
       key: globalKey,
       body: SafeArea(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                //Search Bar
-                _buildSearchWidget(context),
-                //Carousel Images
-                _buildProductImagesCarousel(context, comingProduct!),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //Product Name and Rating
-                      _buildProductNameAndStartRating(context, comingProduct),
-                      //Product Price
-                      _buildProductPrice(context, comingProduct),
-                      //Product Details
-                      _buildProductDetails(context, comingProduct),
-                      //Product Reviews
-                      _buildProductReviews(context, comingProduct),
-                    ]),
-              ],
-            ),
-          ),
-        ),
+        child: Obx(() {
+          return controller.product.value.image == null
+              ? LoadingWidget(SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        //Search Bar
+                        _buildSearchWidget(context),
+                        //Carousel Images
+                        Image.asset(
+                          "assets/images/placeholder.png",
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 2,
+                          fit: BoxFit.cover,
+                        ),
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              //Product Name and Rating
+                              _buildProductNameAndStartRating(
+                                  context, controller.product.value),
+                              //Product Price
+                              _buildProductPrice(
+                                  context, controller.product.value),
+                              //Product Details
+                              _buildProductDetails(
+                                  context, controller.product.value),
+                              //Product Size Guide
+
+                              Obx(() {
+                                print(
+                                    "guido is ${controller.productSizeGuide.value.fitType}");
+                                return controller
+                                            .productSizeGuide.value.fitType !=
+                                        null
+                                    ? _buildSizeGuide(
+                                        context, controller.product.value)
+                                    : SizedBox();
+                              }),
+
+                              //Product Reviews
+                              _buildProductReviews(
+                                  context, controller.product.value),
+                            ]),
+                      ],
+                    ),
+                  ),
+                ))
+              : SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        //Search Bar
+                        _buildSearchWidget(context),
+                        //Carousel Images
+                        GetBuilder<ProductController>(builder: (logic) {
+                          print(
+                              "the prodicts attaches are ${logic.product.value.attachments!}");
+                          return _buildProductImagesCarousel(
+                              context, logic.productImages);
+                        }),
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              //Product Name and Rating
+                              _buildProductNameAndStartRating(
+                                  context, controller.product.value),
+                              //Product Price
+                              _buildProductPrice(
+                                  context, controller.product.value),
+                              //Product Details
+                              _buildProductDetails(
+                                  context, controller.product.value),
+                              //Product Size Guide
+
+                              Obx(() {
+                                print(
+                                    "guido is ${controller.productSizeGuide.value.fitType}");
+                                return controller
+                                            .productSizeGuide.value.fitType !=
+                                        null
+                                    ? _buildSizeGuide(
+                                        context, controller.product.value)
+                                    : SizedBox();
+                              }),
+
+                              //Product Reviews
+                              _buildProductReviews(
+                                  context, controller.product.value),
+                            ]),
+                      ],
+                    ),
+                  ),
+                );
+        }),
       ),
       //Product Add To Cart Button
-      bottomNavigationBar: ShowUp(
-        delay: 200,
-        child: Container(
-          height: 100.h,
-          child: Align(
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                Container(
-                  height: 2,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset: Offset(0, -1), // changes position of shadow
+      bottomNavigationBar: Obx(() {
+        return controller.product.value.image == null
+            ? LoadingWidget(
+                ShowUp(
+                  delay: 200,
+                  child: Container(
+                    height: 100.h,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 2,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.black12,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.4),
+                                  spreadRadius: 1,
+                                  blurRadius: 2,
+                                  offset: Offset(
+                                      0, -1), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 15.w,
+                              ),
+                              InkWell(
+                                onTap: () {},
+                                child: Container(
+                                  width: 35.w,
+                                  height: 35.h,
+                                  decoration: BoxDecoration(boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      spreadRadius: 2,
+                                      blurRadius: 9,
+                                      offset: Offset(
+                                          0, 2), // changes position of shadow
+                                    ),
+                                  ], borderRadius: BorderRadius.circular(55)),
+                                  child: userToken == null
+                                      ? InkWell(
+                                          child: SvgPicture.asset(
+                                            "assets/images/home/add_to_wishlist.svg",
+                                            fit: BoxFit.contain,
+                                            width: 30.w,
+                                            height: 30.h,
+                                          ),
+                                        )
+                                      : Obx(() {
+                                          return homeController
+                                                  .wishlistProductIds
+                                                  .contains(controller
+                                                      .product.value.id)
+                                              ? InkWell(
+                                                  child: SvgPicture.asset(
+                                                    "assets/images/home/wishlisted.svg",
+                                                    fit: BoxFit.contain,
+                                                    width: 30.w,
+                                                    height: 30.h,
+                                                  ),
+                                                )
+                                              : InkWell(
+                                                  onTap: () {
+                                                    if (HomeController()
+                                                        .initialized) {
+                                                      HomeController
+                                                          homeController =
+                                                          Get.find<
+                                                              HomeController>();
+                                                      homeController
+                                                          .addToWishlist(
+                                                              controller.product
+                                                                  .value.id);
+                                                    } else {
+                                                      HomeController
+                                                          homeController =
+                                                          Get.put(
+                                                              HomeController());
+                                                      homeController
+                                                          .addToWishlist(
+                                                              controller.product
+                                                                  .value.id);
+                                                    }
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                    "assets/images/home/add_to_wishlist.svg",
+                                                    fit: BoxFit.contain,
+                                                    width: 30.w,
+                                                    height: 30.h,
+                                                  ),
+                                                );
+                                        }),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              Expanded(
+                                child: _buildAddToCartButton(
+                                    context, controller.product.value),
+                                flex: 15,
+                              ),
+                              SizedBox(
+                                width: 15.w,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 15.w,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        width: 35.w,
-                        height: 35.h,
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 9,
-                            offset: Offset(0, 2), // changes position of shadow
+              )
+            : ShowUp(
+                delay: 200,
+                child: Container(
+                  height: 100.h,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 2,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.4),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset:
+                                    Offset(0, -1), // changes position of shadow
+                              ),
+                            ],
                           ),
-                        ], borderRadius: BorderRadius.circular(55)),
-                        child: userToken == null
-                            ? InkWell(
-                                onTap: () {
-                                  if (HomeController().initialized) {
-                                    HomeController homeController =
-                                        Get.find<HomeController>();
-                                    homeController
-                                        .addToWishlist(comingProduct.id);
-                                  } else {
-                                    HomeController homeController =
-                                        Get.put(HomeController());
-                                    homeController
-                                        .addToWishlist(comingProduct.id);
-                                  }
-                                },
-                                child: SvgPicture.asset(
-                                  "assets/images/home/add_to_wishlist.svg",
-                                  fit: BoxFit.contain,
-                                  width: 30.w,
-                                  height: 30.h,
-                                ),
-                              )
-                            : Obx(() {
-                                return homeController.wishlistProductIds
-                                        .contains(comingProduct.id)
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 15.w,
+                            ),
+                            InkWell(
+                              onTap: () {},
+                              child: Container(
+                                width: 35.w,
+                                height: 35.h,
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 9,
+                                    offset: Offset(
+                                        0, 2), // changes position of shadow
+                                  ),
+                                ], borderRadius: BorderRadius.circular(55)),
+                                child: userToken == null
                                     ? InkWell(
                                         onTap: () {
                                           if (HomeController().initialized) {
                                             HomeController homeController =
                                                 Get.find<HomeController>();
-                                            homeController.removeFromWishlist(
-                                                comingProduct.id);
-                                          } else {
-                                            HomeController homeController =
-                                                Get.put(HomeController());
-                                            homeController.removeFromWishlist(
-                                                comingProduct.id);
-                                          }
-                                        },
-                                        child: SvgPicture.asset(
-                                          "assets/images/home/wishlisted.svg",
-                                          fit: BoxFit.contain,
-                                          width: 30.w,
-                                          height: 30.h,
-                                        ),
-                                      )
-                                    : InkWell(
-                                        onTap: () {
-                                          if (HomeController().initialized) {
-                                            HomeController homeController =
-                                                Get.find<HomeController>();
                                             homeController.addToWishlist(
-                                                comingProduct.id);
+                                                controller.product.value.id);
                                           } else {
                                             HomeController homeController =
                                                 Get.put(HomeController());
                                             homeController.addToWishlist(
-                                                comingProduct.id);
+                                                controller.product.value.id);
                                           }
                                         },
                                         child: SvgPicture.asset(
@@ -183,27 +335,93 @@ class ProductView extends GetView<ProductController> {
                                           width: 30.w,
                                           height: 30.h,
                                         ),
-                                      );
-                              }),
-                      ),
+                                      )
+                                    : Obx(() {
+                                        return homeController.wishlistProductIds
+                                                .contains(
+                                                    controller.product.value.id)
+                                            ? InkWell(
+                                                onTap: () {
+                                                  if (HomeController()
+                                                      .initialized) {
+                                                    HomeController
+                                                        homeController =
+                                                        Get.find<
+                                                            HomeController>();
+                                                    homeController
+                                                        .removeFromWishlist(
+                                                            controller.product
+                                                                .value.id);
+                                                  } else {
+                                                    HomeController
+                                                        homeController =
+                                                        Get.put(
+                                                            HomeController());
+                                                    homeController
+                                                        .removeFromWishlist(
+                                                            controller.product
+                                                                .value.id);
+                                                  }
+                                                },
+                                                child: SvgPicture.asset(
+                                                  "assets/images/home/wishlisted.svg",
+                                                  fit: BoxFit.contain,
+                                                  width: 30.w,
+                                                  height: 30.h,
+                                                ),
+                                              )
+                                            : InkWell(
+                                                onTap: () {
+                                                  if (HomeController()
+                                                      .initialized) {
+                                                    HomeController
+                                                        homeController =
+                                                        Get.find<
+                                                            HomeController>();
+                                                    homeController
+                                                        .addToWishlist(
+                                                            controller.product
+                                                                .value.id);
+                                                  } else {
+                                                    HomeController
+                                                        homeController =
+                                                        Get.put(
+                                                            HomeController());
+                                                    homeController
+                                                        .addToWishlist(
+                                                            controller.product
+                                                                .value.id);
+                                                  }
+                                                },
+                                                child: SvgPicture.asset(
+                                                  "assets/images/home/add_to_wishlist.svg",
+                                                  fit: BoxFit.contain,
+                                                  width: 30.w,
+                                                  height: 30.h,
+                                                ),
+                                              );
+                                      }),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                            Expanded(
+                              child: _buildAddToCartButton(
+                                  context, controller.product.value),
+                              flex: 15,
+                            ),
+                            SizedBox(
+                              width: 15.w,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Expanded(
-                      child: _buildAddToCartButton(context, comingProduct),
-                      flex: 15,
-                    ),
-                    SizedBox(
-                      width: 15.w,
-                    ),
-                  ],
+                  ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              );
+      }),
       // Back-to-top button
     );
   }
@@ -319,72 +537,122 @@ class ProductView extends GetView<ProductController> {
               children: [
                 SizedBox(height: 20.h),
                 ///////////////////Size//////////////////////////////
-                Padding(
-                  padding: EdgeInsets.only(left: 15.w),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Size",
-                      style: boldTextStyle(
-                        size: 18.sp.round(),
-                        letterSpacing: 0.8.w,
-                        color: Colors.grey,
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.w),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Size",
+                          style: boldTextStyle(
+                            size: 18.sp.round(),
+                            letterSpacing: 0.8.w,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(
+                            () => SizeGuide(
+                                  selectedFitType: controller
+                                      .productSizeGuide.value.fitType!,
+                                  selectedStretch: controller
+                                      .productSizeGuide.value.stretch!,
+                                  selectedAttr:
+                                      controller.productSizeGuide.value.attr!,
+                                ),
+                            transition: Transition.fadeIn,
+                            curve: Curves.easeInOut,
+                            duration: const Duration(milliseconds: 400));
+                      },
+                      child: LoadingWidget(
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15.w),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Size Guide",
+                                style:
+                                    primaryTextStyle(color: Colors.grey[300]),
+                              ),
+                              SizedBox(
+                                width: 3.w,
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Colors.grey[300],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 SizedBox(height: 10.h),
 
-                ShowUp(
-                  delay: 300,
-                  child: Obx(() {
-                    return controller.isProductLoading.value
-                        ? loadingIndicatorWidget()
-                        : GetBuilder<ProductController>(
-                            builder: (logic) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 15.w),
-                                height: 50.h,
-                                width: MediaQuery.of(context).size.width,
-                                child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (ctx, index) => GestureDetector(
-                                    onTap: () {
-                                      controller
-                                          .setSize(controller.sizeList[index]);
-                                    },
-                                    child: Container(
-                                      width: 45.w,
-                                      height: 45.h,
-                                      decoration: ShapeDecoration(
-                                        color: controller.sizeList[index] ==
-                                                controller.selectedSize.value
-                                            ? Color(0xFF515151)
-                                            : Color(0xFFFAFAFA),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16.50),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          controller.sizeList[index],
-                                          style: primaryTextStyle(
-                                            color: Color(0xffCCCCCC),
-                                            size: 15.sp.round(),
+                Column(
+                  children: [
+                    ShowUp(
+                      delay: 300,
+                      child: Obx(() {
+                        return controller.isProductLoading.value
+                            ? loadingIndicatorWidget()
+                            : GetBuilder<ProductController>(
+                                builder: (logic) {
+                                  return Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 15.w),
+                                    height: 50.h,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (ctx, index) =>
+                                          GestureDetector(
+                                        onTap: () {
+                                          controller.setSize(
+                                              controller.sizeList[index]);
+                                        },
+                                        child: Container(
+                                          width: 45.w,
+                                          height: 45.h,
+                                          decoration: ShapeDecoration(
+                                            color: controller.sizeList[index] ==
+                                                    controller
+                                                        .selectedSize.value
+                                                ? Color(0xFF515151)
+                                                : Color(0xFFFAFAFA),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.50),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              controller.sizeList[index],
+                                              style: primaryTextStyle(
+                                                color: Color(0xffCCCCCC),
+                                                size: 15.sp.round(),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
+                                      separatorBuilder: (ctx, index) =>
+                                          SizedBox(width: 5.w),
+                                      itemCount: controller.sizeList.length,
                                     ),
-                                  ),
-                                  separatorBuilder: (ctx, index) =>
-                                      SizedBox(width: 5.w),
-                                  itemCount: controller.sizeList.length,
-                                ),
+                                  );
+                                },
                               );
-                            },
-                          );
-                  }),
+                      }),
+                    ),
+                  ],
                 ),
                 ////////////////////////////////////////////////////
                 SizedBox(height: 20.h),
@@ -611,10 +879,10 @@ class ProductView extends GetView<ProductController> {
                                 (element) =>
                                     element.product != null &&
                                     controller.product != null &&
-                                    element!.selectedSize ==
+                                    element.selectedSize ==
                                         controller.selectedSize.value &&
-                                    element.product!.id ==
-                                        controller.product!.id,
+                                    element.product.id ==
+                                        controller.product.value.id,
                               );
                               print('teasdsadsa2');
 
@@ -622,17 +890,17 @@ class ProductView extends GetView<ProductController> {
                                 cartController.removeItem(cartController
                                     .cartItems
                                     .firstWhere((element) =>
-                                        element.product!.id ==
-                                        controller.product!.id));
+                                        element.product.id ==
+                                        controller.product.value.id));
                               }
                               print('teasdsadsa3');
                               cartController.loading.value = true;
-                              controller.product!.selectedSize =
+                              controller.product.value.selectedSize =
                                   controller.selectedSize.value;
-                              controller.product!.selectedColor =
+                              controller.product.value.selectedColor =
                                   controller.selectedColor.value;
                               cartController.addToCart(
-                                controller.product!,
+                                controller.product.value,
                                 controller.selectedSize.value,
                                 controller.selectedColor.value,
                                 quantity: 1,
@@ -853,7 +1121,7 @@ class ProductView extends GetView<ProductController> {
                         arguments: [products, categories],
                         transition: Transition.fadeIn,
                         curve: Curves.easeInOut,
-                        duration: const Duration(milliseconds: 800));
+                        duration: const Duration(milliseconds: 400));
                   },
                 ),
               ],
@@ -885,17 +1153,15 @@ class ProductView extends GetView<ProductController> {
     );
   }
 
-  _buildProductImagesCarousel(
-      BuildContext context, ViewProductData comingProduct) {
-    List<Attachments> imgList = [];
+  _buildProductImagesCarousel(BuildContext context, List<Attachments> imgList) {
     //adding attachments
-    if (comingProduct.attachments != null) {
-      for (var img in comingProduct.attachments!) {
-        if (img.name == "app_show") {
-          imgList.addNonNull(img);
-        }
-      }
-    }
+    // if (comingProduct.attachments != null) {
+    //   for (var img in comingProduct.attachments!) {
+    //     if (img.name == "app_show") {
+    //       imgList.addNonNull(img);
+    //     }
+    //   }
+    // }
 
     return ShowUp(
       delay: 200,
@@ -912,6 +1178,29 @@ class ProductView extends GetView<ProductController> {
     );
   }
 
+  _buildLoadingProductImagesCarousel(
+      BuildContext context, List<Attachments> imgList) {
+    //adding attachments
+    // if (comingProduct.attachments != null) {
+    //   for (var img in comingProduct.attachments!) {
+    //     if (img.name == "app_show") {
+    //       imgList.addNonNull(img);
+    //     }
+    //   }
+    // }
+
+    return Container(
+      child: Container(
+          height: MediaQuery.of(context).size.height / 2.2,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+          ),
+          child: ImageSliderWithIndicators(
+            imgList: imgList,
+          )),
+    );
+  }
+
   _buildProductNameAndStartRating(
       BuildContext context, ViewProductData comingProduct) {
     return Column(
@@ -923,11 +1212,10 @@ class ProductView extends GetView<ProductController> {
         Padding(
             padding: EdgeInsets.only(left: 15.w),
             child: Align(
-              alignment: Alignment.topLeft,
-              child: Text(comingProduct.name!,
-                  style:
-                      boldTextStyle(size: 25.sp.round(), letterSpacing: 1.5.w)),
-            )),
+                alignment: Alignment.topLeft,
+                child: Text(comingProduct.name ?? "",
+                    style: boldTextStyle(
+                        size: 25.sp.round(), letterSpacing: 1.5.w)))),
 
         //Star Rating
         Padding(
@@ -962,7 +1250,7 @@ class ProductView extends GetView<ProductController> {
         //Price
         Padding(
           padding: EdgeInsets.only(left: 10.w),
-          child: Text("\$ ${comingProduct.price!}",
+          child: Text("\$ ${comingProduct.price ?? ""}",
               style: primaryTextStyle(
                   size: 27.sp.round(),
                   letterSpacing: 1.7.w,
@@ -995,6 +1283,57 @@ class ProductView extends GetView<ProductController> {
                         : Icons.keyboard_arrow_up_outlined,
                     size: 25.w,
                   )))
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 7.w),
+          height: 1.h,
+          color: Colors.grey[300],
+        ),
+        SizedBox(
+          height: 5.h,
+        ),
+        Obx(() => controller.isShowDescription.value
+            ? DescriptionTextWidget(
+                text: comingProduct.description ?? "",
+              )
+            : SizedBox()),
+      ],
+    );
+  }
+
+  _buildSizeGuide(BuildContext context, ViewProductData comingProduct) {
+    return Column(
+      children: [
+        //Details
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          child: Row(
+            children: [
+              Text("Size Guide", style: boldTextStyle(size: 22.sp.round())),
+              Spacer(),
+              IconButton(
+                  onPressed: () {
+                    Get.to(
+                        () => SizeGuide(
+                              selectedFitType:
+                                  controller.productSizeGuide.value.fitType ??
+                                      "",
+                              selectedStretch:
+                                  controller.productSizeGuide.value.stretch ??
+                                      "",
+                              selectedAttr:
+                                  controller.productSizeGuide.value.attr ?? [],
+                            ),
+                        transition: Transition.fadeIn,
+                        curve: Curves.easeInOut,
+                        duration: const Duration(milliseconds: 400));
+                  },
+                  icon: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 25.w,
+                  ))
             ],
           ),
         ),
@@ -1287,7 +1626,7 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
   Widget build(BuildContext context) {
     final List<Widget> child = widget.imgList.isEmpty
         ? List.generate(
-            1, (int index) => Image.asset("assets/images/placeholder.png"))
+            3, (int index) => Image.asset("assets/images/placeholder.png"))
         : widget.imgList.map((image) {
             return Container(
               margin: EdgeInsets.all(5.0),

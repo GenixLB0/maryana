@@ -82,7 +82,7 @@ class SearchView extends GetView<CustomSearchController> {
                   Get.to(() => const ResultView(),
                       transition: Transition.fadeIn,
                       curve: Curves.easeInOut,
-                      duration: const Duration(milliseconds: 800));
+                      duration: const Duration(milliseconds: 400));
                 }),
             SizedBox(
               height: 10.h,
@@ -155,7 +155,7 @@ class SearchView extends GetView<CustomSearchController> {
                           Get.to(() => const ResultView(),
                               transition: Transition.fadeIn,
                               curve: Curves.easeInOut,
-                              duration: const Duration(milliseconds: 800));
+                              duration: const Duration(milliseconds: 400));
                         } else {
                           CustomSearchController controller =
                               Get.put<CustomSearchController>(
@@ -166,7 +166,7 @@ class SearchView extends GetView<CustomSearchController> {
                           Get.to(() => const ResultView(),
                               transition: Transition.fadeIn,
                               curve: Curves.easeInOut,
-                              duration: const Duration(milliseconds: 800));
+                              duration: const Duration(milliseconds: 400));
                         }
                       },
                       child: Text(

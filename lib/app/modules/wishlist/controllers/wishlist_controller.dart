@@ -42,7 +42,6 @@ class WishlistController extends GetxController {
 
   setInitData(List<int> wishlistProductIds) async {
     List<String> _product_ids = [];
-    HomeController homeController = Get.put<HomeController>(HomeController());
     resultCount.value = wishlistProductIds.length;
     for (var id in wishlistProductIds) {
       _product_ids.addNonNull(id.toString());

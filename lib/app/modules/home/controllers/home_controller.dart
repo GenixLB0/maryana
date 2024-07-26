@@ -27,7 +27,7 @@ import '../../main/views/main_view.dart';
 import '../../services/api_consumer.dart';
 
 class HomeController extends GetxController {
-  final ScrollController scrollController = ScrollController();
+  Rx<ScrollController> scrollController = ScrollController().obs;
 
   ApiService apiService = Get.find();
   ApiConsumer apiConsumer = sl();
@@ -50,7 +50,7 @@ class HomeController extends GetxController {
       Get.to(() => const ResultView(),
           transition: Transition.fadeIn,
           curve: Curves.easeInOut,
-          duration: const Duration(milliseconds: 800));
+          duration: const Duration(milliseconds: 400));
     } else {
       CustomSearchController myController =
           Get.put<CustomSearchController>(CustomSearchController());
@@ -60,7 +60,7 @@ class HomeController extends GetxController {
       Get.to(() => const ResultView(),
           transition: Transition.fadeIn,
           curve: Curves.easeInOut,
-          duration: const Duration(milliseconds: 800));
+          duration: const Duration(milliseconds: 400));
     }
   }
 
@@ -765,20 +765,31 @@ class HomeController extends GetxController {
   }
 
   removeFromWishlist(product_id) async {
-    Get.snackbar('Removing ...', 'Removing From Wishlist',
-        showProgressIndicator: true,
-        progressIndicatorBackgroundColor: Colors.white,
-        backgroundColor: primaryColor,
-        duration: const Duration(milliseconds: 1200),
-        icon: Center(
-            child: LoadingAnimationWidget.flickr(
-          leftDotColor: Colors.purpleAccent,
-          rightDotColor: Colors.white,
-          size: 40.sp,
-        )),
-        isDismissible: true);
-    print('removing from Wishlist api loading ...');
+    // Get.snackbar('Removing ...', 'Removing From Wishlist',
+    //     showProgressIndicator: true,
+    //     progressIndicatorBackgroundColor: Colors.white,
+    //     backgroundColor: primaryColor,
+    //     duration: const Duration(milliseconds: 1200),
+    //     icon: Center(
+    //         child: LoadingAnimationWidget.flickr(
+    //       leftDotColor: Colors.purpleAccent,
+    //       rightDotColor: Colors.white,
+    //       size: 40.sp,
+    //     )),
+    //     isDismissible: true);
+
     if (userToken != null) {
+      Get.snackbar('Removed', 'Removed from Wishlist',
+          backgroundColor: primaryColor,
+          icon: SvgPicture.asset(
+            "assets/images/home/add_to_wishlist.svg",
+            width: 43.w,
+            height: 43.h,
+            fit: BoxFit.cover,
+          ),
+          isDismissible: true);
+
+      print('removing from Wishlist api loading ...');
       var formData = dio.FormData.fromMap({
         'product_id': product_id,
       });
@@ -794,15 +805,6 @@ class HomeController extends GetxController {
           WishlistController wishlistController =
               Get.put<WishlistController>(WishlistController());
           wishlistController.removeFromGrid(product_id);
-          Get.snackbar('Removed', 'Removed from Wishlist',
-              backgroundColor: primaryColor,
-              icon: SvgPicture.asset(
-                "assets/images/home/add_to_wishlist.svg",
-                width: 43.w,
-                height: 43.h,
-                fit: BoxFit.cover,
-              ),
-              isDismissible: true);
         } else {
           handleApiErrorUser(apiResponse.message);
           handleApiError(response.statusCode);
@@ -817,20 +819,32 @@ class HomeController extends GetxController {
   }
 
   addToWishlist(product_id) async {
-    Get.snackbar('Adding ...', 'Adding To Wishlist',
-        showProgressIndicator: true,
-        duration: const Duration(milliseconds: 1200),
-        progressIndicatorBackgroundColor: Colors.white,
-        backgroundColor: primaryColor,
-        icon: Center(
-            child: LoadingAnimationWidget.flickr(
-          leftDotColor: Colors.purpleAccent,
-          rightDotColor: Colors.white,
-          size: 40.sp,
-        )),
-        isDismissible: true);
-    print('removing from Wishlist api loading ...');
+    // Get.snackbar('Adding ...', 'Adding To Wishlist',
+    //     showProgressIndicator: true,
+    //     duration: const Duration(milliseconds: 1200),
+    //     progressIndicatorBackgroundColor: Colors.white,
+    //     backgroundColor: primaryColor,
+    //     icon: Center(
+    //         child: LoadingAnimationWidget.flickr(
+    //       leftDotColor: Colors.purpleAccent,
+    //       rightDotColor: Colors.white,
+    //       size: 40.sp,
+    //     )),
+    //     isDismissible: true);
+
     if (userToken != null) {
+      Get.snackbar('Added', 'Added To Wishlist',
+          backgroundColor: primaryColor,
+          icon: SvgPicture.asset(
+            "assets/images/home/wishlisted.svg",
+            width: 43.w,
+            height: 43.h,
+            fit: BoxFit.cover,
+          ),
+          isDismissible: true);
+
+      print('removing from Wishlist api loading ...');
+
       var formData = dio.FormData.fromMap({
         'product_id': product_id,
       });
@@ -843,15 +857,7 @@ class HomeController extends GetxController {
           print('Wishlist data successful');
 
           wishlistProductIds.add(product_id);
-          Get.snackbar('Added', 'Added To Wishlist',
-              backgroundColor: primaryColor,
-              icon: SvgPicture.asset(
-                "assets/images/home/wishlisted.svg",
-                width: 43.w,
-                height: 43.h,
-                fit: BoxFit.cover,
-              ),
-              isDismissible: true);
+
           WishlistController wishlistController =
               Get.put<WishlistController>(WishlistController());
           wishlistController.addToGrid(product_id);
@@ -879,9 +885,9 @@ class HomeController extends GetxController {
   ////////////////////////////////////////////////////////////////
 
   listenForFirstScroll() {
-    scrollController.addListener(() async {
-      if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent - 350.h) {
+    scrollController.value.addListener(() async {
+      if (scrollController.value.position.pixels >=
+          scrollController.value.position.maxScrollExtent - 350.h) {
         print('Reached before max scroll by 850 pixels');
 
         await getHomeScreenCollections();

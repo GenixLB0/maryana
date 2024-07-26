@@ -1,4 +1,5 @@
 import 'model_response.dart';
+
 class ProductColor {
   int? id;
   String? name;
@@ -117,8 +118,6 @@ class TestData {
   }
 }
 
- 
-
 class Banners {
   String? image;
 
@@ -210,6 +209,7 @@ class ColorData {
       hex: json['hex'],
     );
   }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
@@ -234,6 +234,7 @@ class ViewProductData {
   Category? category;
   Styles? style;
   List<Attachments>? attachments;
+  SizeGuide? sizeGuide;
 
   ViewProductData({
     this.id,
@@ -250,6 +251,7 @@ class ViewProductData {
     this.category,
     this.style,
     this.attachments,
+    this.sizeGuide,
   });
 
   factory ViewProductData.fromJson(Map<String, dynamic> json) {
@@ -272,6 +274,9 @@ class ViewProductData {
       attachments: (json['attachments'] as List<dynamic>?)
           ?.map((item) => Attachments.fromJson(item))
           .toList(),
+      sizeGuide: json['sizeGuide'] != null
+          ? SizeGuide.fromJson(json['sizeGuide'])
+          : null,
     );
   }
 
@@ -295,6 +300,9 @@ class ViewProductData {
     data['style'] = this.style;
     if (this.attachments != null) {
       data['attachments'] = this.attachments!.map((v) => v.toJson()).toList();
+    }
+    if (this.sizeGuide != null) {
+      data['sizeGuide'] = this.sizeGuide!.toJson();
     }
     return data;
   }
