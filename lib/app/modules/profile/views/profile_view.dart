@@ -5,12 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/address/views/address_view.dart';
 import 'package:maryana/app/modules/auth/views/login_view.dart';
+import 'package:maryana/app/modules/gift_card/views/history.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/profile/views/update_profile.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import '../../auth/views/register_view.dart';
 import '../controllers/profile_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -20,6 +22,13 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView>
     with TickerProviderStateMixin {
   final ProfileController controller = Get.put(ProfileController());
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,61 +38,73 @@ class _ProfileViewState extends State<ProfileView>
             ? SizedBox(
                 width: 375.w,
                 height: 812.h,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 61.h),
-                    controller.isLoading.value
-                        ? LoadingWidget(_buildProfileHeader(context))
-                        : _buildProfileHeader(context),
-                    SizedBox(height: 58.h),
-                    Container(
-                      width: 327.w,
-                      height: 502.h,
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              width: 1, color: Color(0xFFF2F2F2)),
-                          borderRadius: BorderRadius.circular(15),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 61.h),
+                      controller.isLoading.value
+                          ? LoadingWidget(_buildProfileHeader(context))
+                          : _buildProfileHeader(context),
+                      SizedBox(height: 45.h),
+                      Container(
+                        width: 327.w,
+                        height: 570.h,
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                width: 1, color: Color(0xFFF2F2F2)),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          shadows: const [
+                            BoxShadow(
+                              color: Color(0x330E0E0E),
+                              blurRadius: 16,
+                              offset: Offset(0, 8),
+                              spreadRadius: -8,
+                            )
+                          ],
                         ),
-                        shadows: const [
-                          BoxShadow(
-                            color: Color(0x330E0E0E),
-                            blurRadius: 16,
-                            offset: Offset(0, 8),
-                            spreadRadius: -8,
-                          )
-                        ],
+                        child: Column(
+                          children: [
+                            _buildMenuItem('address.svg', 'Address', () {
+                              Get.to(() => AddressListScreen());
+                            }, 21, 1),
+                            // _buildMenuItem(
+                            //     'payment.svg', 'Payment method', () {}, 21, 2),
+                            _buildMenuItem('coupon.svg', 'Coupons', () {
+                              Get.toNamed(Routes.COUPON);
+                            }, 24, 2),
+                            _buildMenuItem('gift.svg', 'Gift Card', () {
+                              Get.to(() => TransactionHistoryScreen());
+                            }, 24, 4),
+                            _buildMenuItem('order.svg', 'Orders', () {
+                              Get.toNamed(Routes.ORDERS);
+                            }, 24, 3),
+                            _buildMenuItem(
+                                'rate.svg', 'Rate this app', () {}, 24, 4),
+                            _buildMenuItem('terms.svg', 'Terms of Use', () {
+                              _launchURL(
+                                  'https://mariannella.genixarea.pro/terms.html');
+                            }, 24, 5),
+                            _buildMenuItem('privacy.svg', 'Privacy Policy', () {
+                              _launchURL(
+                                  'https://mariannella.genixarea.pro/privacy.html');
+                            }, 24, 6),
+                            _buildMenuItem('logout.svg', 'Log out', () {
+                              _showLogoutConfirmation(context, controller);
+                            }, 24, 7)
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        children: [
-                          _buildMenuItem('address.svg', 'Address', () {
-                            Get.to(() => AddressListScreen());
-                          }, 21, 1),
-                          // _buildMenuItem(
-                          //     'payment.svg', 'Payment method', () {}, 21, 2),
-                          _buildMenuItem('coupon.svg', 'Coupons', () {}, 24, 2),
-                          // _buildMenuItem('gift.svg', 'Gift Card', () {}, 24, 4),
-                          _buildMenuItem('order.svg', 'Orders', () {
-                            Get.toNamed(Routes.ORDERS);
-                          }, 24, 3),
-                          _buildMenuItem(
-                              'rate.svg', 'Rate this app', () {}, 24, 4),
-                          _buildMenuItem(
-                              'terms.svg', 'Terms of Use', () {}, 24, 5),
-                          _buildMenuItem(
-                              'privacy.svg', 'Privacy Policy', () {}, 24, 6),
-                          _buildMenuItem('logout.svg', 'Log out', () {
-                            _showLogoutConfirmation(context, controller);
-                          }, 24, 7)
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
+                      SizedBox(
+                        height: 20.h,
+                      )
+                    ],
+                  ),
+                ))
             : Center(
                 child: socialMediaPlaceHolder(),
               );
@@ -174,96 +195,141 @@ class _ProfileViewState extends State<ProfileView>
 
   Widget _buildProfileHeader(BuildContext context) {
     return AnimatedOpacity(
-      duration: Duration(milliseconds: 500),
-      opacity: controller.isLoading.value ? 0 : 1,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: Offset(0, -1),
-          end: Offset(0, 0),
-        ).animate(CurvedAnimation(
-          parent: AnimationController(
-            duration: Duration(milliseconds: 500),
-            vsync: this,
-          )..forward(),
-          curve: Curves.easeOut,
-        )),
-        child: SizedBox(
-          width: 297.w,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 34.r,
-                backgroundImage: controller.userModel.value.photo == null ||
-                        controller.userModel.value.photo!.isEmpty
-                    ? const AssetImage(
-                        'assets/images/profile/profile_placeholder.png')
-                    : null,
-                child: controller.userModel.value.photo == null ||
-                        controller.userModel.value.photo!.isEmpty
-                    ? null
-                    : CachedNetworkImage(
-                        imageUrl: controller.userModel.value.photo!,
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => CircleAvatar(
-                          radius: 34.r,
-                          backgroundImage: const AssetImage(
-                              'assets/images/profile/profile_placeholder.png'),
-                          child: Align(
-                            alignment: Alignment.bottomRight,
-                            child: Icon(
-                              Icons.error,
-                              color: Colors.red,
-                              size: 16.r,
+        duration: Duration(milliseconds: 500),
+        opacity: controller.isLoading.value ? 0 : 1,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(0, -1),
+            end: Offset(0, 0),
+          ).animate(CurvedAnimation(
+            parent: AnimationController(
+              duration: Duration(milliseconds: 500),
+              vsync: this,
+            )..forward(),
+            curve: Curves.easeOut,
+          )),
+          child: SizedBox(
+            width: 297.w,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 34.r,
+                  backgroundImage: controller.userModel.value.photo == null ||
+                          controller.userModel.value.photo!.isEmpty
+                      ? const AssetImage(
+                          'assets/images/profile/profile_placeholder.png')
+                      : null,
+                  child: controller.userModel.value.photo == null ||
+                          controller.userModel.value.photo!.isEmpty
+                      ? null
+                      : CachedNetworkImage(
+                          imageUrl: controller.userModel.value.photo!,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          errorWidget: (context, url, error) => CircleAvatar(
+                            radius: 34.r,
+                            backgroundImage: const AssetImage(
+                                'assets/images/profile/profile_placeholder.png'),
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 16.r,
+                              ),
                             ),
                           ),
+                          imageBuilder: (context, imageProvider) =>
+                              CircleAvatar(
+                            radius: 34.r,
+                            backgroundImage: imageProvider,
+                          ),
                         ),
-                        imageBuilder: (context, imageProvider) => CircleAvatar(
-                          radius: 34.r,
-                          backgroundImage: imageProvider,
-                        ),
-                      ),
-              ),
-              SizedBox(width: 16.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Obx(() => Text(
-                        '${controller.userModel.value.firstName} ${controller.userModel.value.lastName}',
-                        style: primaryTextStyle(
-                            color: Colors.black,
-                            size: 16.sp.round(),
-                            weight: FontWeight.bold),
-                      )),
-                  SizedBox(height: 6.h),
-                  Obx(() => Text(
-                        controller.userModel.value.email,
-                        style: primaryTextStyle(
-                            weight: FontWeight.w400,
-                            color: Colors.black,
-                            size: 12.sp.round()),
-                      )),
-                ],
-              ),
-              Spacer(),
-              InkWell(
-                onTap: () => {
-                  // add there action
-                  Get.to(() => ProfileUpdate())
-                },
-                child: SvgPicture.asset(
-                  'assets/images/profile/setting.svg',
-                  width: 24.w,
-                  height: 24.h,
                 ),
-              ),
-            ],
+                SizedBox(width: 16.w),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx(() => Text(
+                          '${controller.userModel.value.firstName} ${controller.userModel.value.lastName}',
+                          style: primaryTextStyle(
+                              color: Colors.black,
+                              size: 16.sp.round(),
+                              weight: FontWeight.bold),
+                        )),
+                    SizedBox(height: 6.h),
+                    Obx(() => Text(
+                          controller.userModel.value.email,
+                          style: primaryTextStyle(
+                              weight: FontWeight.w400,
+                              color: Colors.black,
+                              size: 12.sp.round()),
+                        )),
+                  ],
+                ),
+                Spacer(),
+                Column(children: [
+                  Container(
+                    height: 40.h,
+                    width: 60.w,
+                    padding: const EdgeInsets.all(8),
+                    decoration: ShapeDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment(-0.53, -0.85),
+                        end: Alignment(0.53, 0.85),
+                        colors: [
+                          Color(0xFF7A59A5),
+                          Color(0xFFA962FF),
+                          Color(0xFFBA80FF)
+                        ],
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28.85),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/images/home/medal.svg",
+                          height: 23.h,
+                          width: 23.w,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(width: 4),
+                        Text('85',
+                            textAlign: TextAlign.center,
+                            style: primaryTextStyle(
+                              color: Colors.white,
+                              size: 13.sp.round(),
+                              height: 0.08,
+                              weight: FontWeight.w700,
+                            )),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  InkWell(
+                    onTap: () => {
+                      // add there action
+                      Get.to(() => ProfileUpdate())
+                    },
+                    child: SvgPicture.asset(
+                      'assets/images/profile/setting.svg',
+                      width: 24.w,
+                      height: 24.h,
+                    ),
+                  ),
+                ]),
+              ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildMenuItem(

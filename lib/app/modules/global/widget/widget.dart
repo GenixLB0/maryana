@@ -296,14 +296,7 @@ Widget orderCard(Order order) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Quantity: ${order.quantity}',
-              style: primaryTextStyle(
-                color: Color(0xFF777E90),
-                size: 14.sp.round(),
-                weight: FontWeight.w400,
-              ),
-            ),
+           
             Text(
               'Subtotal: \$${order.subtotal}',
               style: primaryTextStyle(

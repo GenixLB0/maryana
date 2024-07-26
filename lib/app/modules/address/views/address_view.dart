@@ -140,7 +140,10 @@ class AddressListScreen extends StatelessWidget {
                           return ShowUp(
                             delay: 200 * index,
                             child: Padding(
-                              padding: EdgeInsetsDirectional.only(top: 28.h),
+                              padding: EdgeInsetsDirectional.only(
+                                  top: viewOnly != null && viewOnly != false
+                                      ? 5
+                                      : 28.h),
                               child: Container(
                                   width: 315.w,
                                   height: 110.h,

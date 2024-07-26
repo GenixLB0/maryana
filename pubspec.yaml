@@ -21,9 +21,12 @@ dependencies:
   nb_utils: 6.1.0
   flutter_animate:
   sliding_up_panel:
+  video_player:
+  visibility_detector:
   typewritertext:
   get_storage: ^2.0.3
   carousel_slider:
+  url_launcher: ^6.3.0
   delayed_widget:
   page_transition:
   flutter_svg:
@@ -34,28 +37,16 @@ dependencies:
   logger: ^1.1.0
   loading_animation_widget: ^1.2.1
   get_it:
-  flutter_native_splash:
-
 
   flutter_spinkit:
   percent_indicator:
   pinput:
-  fadingpageview:
   mobx: ^2.2.1
   flutter_mobx: ^2.2.0
   google_fonts: ^6.2.1
-  video_player:
-  visibility_detector:
-
-
-
-
   modal_bottom_sheet: ^3.0.0
 
-
   image_picker: ^1.1.2
-
-
   geocoding: ^3.0.0
   geolocator: ^12.0.0
   google_api_headers: 4.0.3
@@ -63,12 +54,7 @@ dependencies:
   google_maps_flutter: 2.5.3
 
 
-flutter_native_splash:
-  android: true
-  ios: true
-  web: false
-  color: "#FFFFFF"
-  image: "assets/images/logo.png"
+
 
 flutter:
   uses-material-design: true

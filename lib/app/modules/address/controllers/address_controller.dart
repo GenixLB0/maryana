@@ -43,6 +43,27 @@ class AddressController extends GetxController {
   var latitudeError = ''.obs;
   var longitudeError = ''.obs;
   GoogleMapController? mapController;
+  var countriesList = <Country>[].obs;
+  var selectedCountry = ''.obs;
+  var selectedAddress = ''.obs;
+
+  void fetchCountries() async {
+    try {
+      isLoading(true);
+      final response = await apiConsumer.post('countries');
+      countriesList.value = (response['data']['countries'] as List)
+          .map((country) => Country.fromJson(country))
+          .toList();
+      selectedCountry.value =
+          countriesList.isNotEmpty ? countriesList[0].name : '';
+    } catch (e) {
+      print('Failed to fetch countries: $e');
+      Get.snackbar('Error', 'Failed to fetch countries');
+    } finally {
+      isLoading(false);
+    }
+  }
+
   void getCurrentLocation(context) async {
     AppConstants.showLoading(context);
     Position location = await Geolocator.getCurrentPosition();
@@ -62,7 +83,9 @@ class AddressController extends GetxController {
   void onInit() {
     super.onInit();
     fetchAddresses();
-
+    fetchCountries();
+    label.value = 'Home';
+    selectedCountry.value = "Lebanon";
     fetchCurrentLocation();
 
     getPermission();
@@ -104,11 +127,14 @@ class AddressController extends GetxController {
       print(e.toString() + " stackTrace" + stackTrace.toString());
       Get.snackbar('Error', 'Failed to fetch addresses');
     } finally {
+      clearFieldsAndErrors();
+
       isLoading(false);
     }
   }
 
   void addAddress() async {
+    print('tsadsad');
     final newAddress = Address(
       id: 0,
       label: label.value,
@@ -118,6 +144,7 @@ class AddressController extends GetxController {
       address: address.value,
       phone: phone.value,
       city: city.value,
+      country: selectedCountry.value,
       state: state.value,
       latitude: latitude.value,
       longitude: longitude.value,
@@ -130,8 +157,9 @@ class AddressController extends GetxController {
         'profile/address-store',
         body: newAddress.toJson(),
       );
+      print('tsadsad2');
+
       fetchAddresses();
-      clearFieldsAndErrors();
 
       //addressList.add(Address.fromJson(response.data));
       Get.snackbar('Success', 'Address added successfully');
@@ -145,28 +173,30 @@ class AddressController extends GetxController {
   void actionSaveAddress(context, {Address? addresses}) {
     bool isEdit = addresses == null ? false : true;
     if (!validateField(label.value, labelError) ||
-        !validateField(apartment.value, apartmentError) ||
-        !validateField(floor.value, floorError) ||
-        !validateField(building.value, buildingError) ||
         !validateField(address.value, addressError) ||
         !validateField(phone.value, phoneError) ||
-        !validateField(city.value, cityError) ||
         !validateField(state.value, stateError)) {
+      print('testasda');
       // for map view marker
-      if (!validateField(latitude.value, latitudeError) ||
-          !validateField(longitude.value, longitudeError)) {
-        showLocationPrompt(context);
-      }
+      // if (!validateField(latitude.value, latitudeError) ||
+      //     !validateField(longitude.value, longitudeError)) {
+      //   showLocationPrompt(context);
+      // }
       return;
     }
+
     if (isEdit) {
+      print('testasda');
+
       updateAddress(addresses!);
     } else {
+      print('testasdawww');
+
       addAddress();
     }
 
     Get.back();
-    clearFieldsAndErrors();
+    //clearFieldsAndErrors();
   }
 
   void showLocationPrompt(BuildContext context) {
@@ -279,14 +309,8 @@ class AddressController extends GetxController {
   void updateAddress(Address addressToUpdate) async {
     if (!validateField(label.value, labelError) ||
         !validateField(apartment.value, apartmentError) ||
-        !validateField(floor.value, floorError) ||
-        !validateField(building.value, buildingError) ||
-        !validateField(address.value, addressError) ||
         !validateField(phone.value, phoneError) ||
-        !validateField(city.value, cityError) ||
-        !validateField(state.value, stateError) ||
-        !validateField(latitude.value, latitudeError) ||
-        !validateField(longitude.value, longitudeError)) {
+        !validateField(state.value, stateError)) {
       return;
     }
 
@@ -299,9 +323,14 @@ class AddressController extends GetxController {
       address: address.value,
       phone: phone.value,
       city: city.value,
+      country: selectedCountry.value,
       state: state.value,
-      latitude: latitude.value,
-      longitude: longitude.value,
+      latitude: latitude.value.isEmpty || latitude.value == null
+          ? '33.888630'
+          : latitude.value,
+      longitude: longitude.value.isEmpty || longitude.value == null
+          ? '35.495480'
+          : longitude.value,
       isDefault: addressToUpdate.isDefault,
     );
 
@@ -337,7 +366,7 @@ class AddressController extends GetxController {
   }
 
   void clearFieldsAndErrors() {
-    label.value = '';
+    label.value = 'Home';
     apartment.value = '';
     floor.value = '';
     building.value = '';
@@ -345,8 +374,6 @@ class AddressController extends GetxController {
     phone.value = '';
     city.value = '';
     state.value = '';
-    latitude.value = '';
-    longitude.value = '';
 
     labelError.value = '';
     apartmentError.value = '';

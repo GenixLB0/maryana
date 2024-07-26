@@ -317,7 +317,7 @@ class _CheckoutPageState extends State<CheckoutPage>
         title = 'Payment';
         break;
       case '3':
-        title = 'Order Completed';
+        title = 'Order Placed';
         break;
     }
 
@@ -358,13 +358,11 @@ class _CheckoutPageState extends State<CheckoutPage>
               TextSpan(
                 children: [
                   TextSpan(
-                    text: '100',
-                    style: TextStyle(
+                    text: 'Thank you',
+                    style: primaryTextStyle(
                       color: Colors.black,
-                      fontSize: 42,
-                      fontFamily: 'Lato',
-                      fontWeight: FontWeight.w700,
-                      height: 0.03,
+                      size: 42.round(),
+                      weight: FontWeight.w700,
                     ),
                   ),
                   TextSpan(
@@ -373,16 +371,6 @@ class _CheckoutPageState extends State<CheckoutPage>
                       color: Colors.black,
                       size: 26,
                       weight: FontWeight.w700,
-                      height: 0.05,
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'Pts',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: GoogleFonts.sora().fontFamily,
-                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -516,6 +504,7 @@ class _CheckoutPageState extends State<CheckoutPage>
               height: 20.h,
             ),
             if (cartController.selectedMethod.value == "Cash") orderSummary(),
+            if (cartController.selectedMethod.value != "Cash") orderSummary(),
             SizedBox(height: 10.h),
           ],
         )));
@@ -550,8 +539,23 @@ class _CheckoutPageState extends State<CheckoutPage>
             _buildSummaryRow("Total", cartController.total.value,
                 isTotal: true),
             SizedBox(height: 10.h),
-            _buildCouponInput(),
-            _buildGiftCardInput(),
+            if (cartController.selectedMethod.value == "Cash")
+              _buildCouponInput(),
+            if (cartController.selectedMethod.value == "Cash")
+              _buildGiftCardInput(),
+            SizedBox(height: 10.h),
+            if (cartController.selectedMethod.value != "Cash")
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'You will pay after the order is confirmed',
+                  style: primaryTextStyle(
+                    size: 16,
+                    color: Colors.red, // You can adjust the style as needed
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
           ],
         ),
       ),
@@ -868,7 +872,8 @@ class _CheckoutPageState extends State<CheckoutPage>
                                     if (cartController
                                         .shippingID.value.isNotEmpty) {
                                       cartController.step.value = '3';
-                                      // cartController.checkoutApi();
+                                      cartController.confirmCheckout(
+                                          cartController.selectedMethod.value);
                                     } else {
                                       Get.snackbar('Sorry',
                                           'You should choose the default shipping address.',

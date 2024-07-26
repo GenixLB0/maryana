@@ -16,19 +16,22 @@ class ProfileController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
+    print(userToken.toString() + 'test token');
     if (userToken == null) {
+      print('tesadsadsa');
       isAuth.value = false;
     } else {
       isAuth.value = true;
-      super.onInit();
+
       fetchProfile();
     }
-    super.onInit();
   }
 
   @override
   void onReady() {
     super.onReady();
+    print(userToken.toString() + 'test token');
   }
 
   var userModel = User(
@@ -139,6 +142,8 @@ class ProfileController extends GetxController {
       );
 
       fetchProfile();
+      isLoading(false);
+      update();
       Get.snackbar('Success', 'Information updated successfully');
     } finally {
       isLoading(false);
@@ -236,8 +241,11 @@ class ProfileController extends GetxController {
       final response = await apiConsumer.get(
         'user',
       );
+      print('teasdsada');
       userModel.value = User.fromJson(response['data']);
-    } finally {
+      isLoading(false);
+    } catch (e) {
+      print('test $e');
       isLoading(false);
     }
   }

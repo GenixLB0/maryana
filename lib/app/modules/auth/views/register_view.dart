@@ -32,27 +32,40 @@ class RegisterView extends StatelessWidget {
           ),
         ),
         SizedBox(height: 41.h),
-        ShowUp(
-          delay: 400,
-          child: CustomTextField(
-            labelText: 'First Name',
-            onChanged: (value) => controller.firstName.value = value,
-            errorText: controller.firstNameError.value.isEmpty
-                ? null
-                : controller.firstNameError.value,
-          ),
-        ),
-        SizedBox(height: 20.h),
-        ShowUp(
-          delay: 400,
-          child: CustomTextField(
-            labelText: 'Last Name',
-            onChanged: (value) => controller.lastName.value = value,
-            errorText: controller.lastNameError.value.isEmpty
-                ? null
-                : controller.lastNameError.value,
-          ),
-        ),
+        SizedBox(
+            width: 310.w,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                      flex: 2,
+                      child: ShowUp(
+                        delay: 400,
+                        child: CustomTextField(
+                          labelText: 'First Name',
+                          onChanged: (value) =>
+                              controller.firstName.value = value,
+                          errorText: controller.firstNameError.value.isEmpty
+                              ? null
+                              : controller.firstNameError.value,
+                        ),
+                      )),
+                  SizedBox(width: 20.w),
+                  Flexible(
+                      flex: 2,
+                      child: ShowUp(
+                        delay: 400,
+                        child: CustomTextField(
+                          labelText: 'Last Name',
+                          onChanged: (value) =>
+                              controller.lastName.value = value,
+                          errorText: controller.lastNameError.value.isEmpty
+                              ? null
+                              : controller.lastNameError.value,
+                        ),
+                      ))
+                ])),
         SizedBox(height: 20.h),
         ShowUp(
           delay: 600,

@@ -4,6 +4,10 @@ import 'package:maryana/app/modules/address/views/edit_address_screen.dart';
 import 'package:maryana/app/modules/cart/bindings/cart_binding.dart';
 import 'package:maryana/app/modules/cart/views/cart_view.dart';
 import 'package:maryana/app/modules/cart/views/checkout_view.dart';
+import 'package:maryana/app/modules/coupon/bindings/coupon_binding.dart';
+import 'package:maryana/app/modules/coupon/views/coupon.dart';
+import 'package:maryana/app/modules/gift_card/bindings/gift_card_binding.dart';
+import 'package:maryana/app/modules/gift_card/views/history.dart';
 import 'package:maryana/app/modules/order/bindings/orders_binding.dart';
 import 'package:maryana/app/modules/order/views/orders_view.dart';
 
@@ -130,6 +134,16 @@ class AppPages {
       name: _Paths.ORDERS,
       page: () => OrdersView(),
       binding: OrdersBinding(),
+    ),
+    GetPage(
+      name: _Paths.ORDERS,
+      page: () => TransactionHistoryScreen(),
+      binding: GiftCardBinding(),
+    ),
+    GetPage(
+      name: _Paths.COUPON,
+      page: () => CouponViwe(),
+      binding: CouponBinding(),
     )
   ];
 }

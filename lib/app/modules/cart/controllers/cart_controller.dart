@@ -32,6 +32,11 @@ class CartController extends GetxController {
   var shippingID = ''.obs;
   final box = GetStorage();
   RxBool isAuth = false.obs;
+  void toggleDismissible(int index) {
+    print('tesdsadsad');
+    cartItems[index].isDismissible = !cartItems[index].isDismissible;
+    cartItems.refresh();
+  }
 
   @override
   void onInit() async {
@@ -40,7 +45,7 @@ class CartController extends GetxController {
     } else {
       isAuth.value = true;
       super.onInit();
-
+      selectedMethod.value = "Cash";
       bool cachedCart = await loadCartItems();
       if (!cachedCart) {
         print('retrived cart from api');
@@ -61,6 +66,37 @@ class CartController extends GetxController {
     print('Ready');
   }
 
+  Future<void> confirmCheckout(String paymentMethodId) async {
+    loading.value = true;
+    try {
+      final response = await apiConsumer.post(
+        'checkout/confirm',
+        body: {
+          'address_id': cartController.shippingID.value,
+          'shipping_id': '1',
+          'payment_method_id': paymentMethodId == "Cash" ? "1" : '2',
+        },
+      );
+
+      if (response['status'] == 'success') {
+        // Handle success response
+        print('Checkout confirmed successfully');
+        clearCart();
+        Get.snackbar('Success', 'Checkout confirmed successfully');
+      } else {
+        // Handle error response
+        print('Failed to confirm checkout: ${response['message']}');
+        Get.snackbar(
+            'Error', 'Failed to confirm checkout: ${response['message']}');
+      }
+    } catch (e) {
+      print('Error confirming checkout: $e');
+      Get.snackbar('Error', 'Failed to confirm checkout');
+    } finally {
+      loading.value = false;
+    }
+  }
+
   Future<void> fetchCartDetailsFromAPI() async {
     loading.value = true;
     try {
@@ -70,6 +106,7 @@ class CartController extends GetxController {
         List<dynamic> items = response['data']['items'];
         total.value = response['data']['total'];
         print(total.value.toString() + 'test total value');
+
         cartItems.assignAll(items.map((e) => CartItem.fromJson(e)).toList());
         saveCartItems();
         cartItems.refresh(); // Ensure the UI is updated
@@ -190,8 +227,8 @@ class CartController extends GetxController {
   // ignore: non_constant_identifier_names
   Future<void> fetchCheckoutDetails({int shipping_id = 1}) async {
     try {
-      final response =
-          await apiConsumer.post('checkout', body: {'shipping_id': shipping_id});
+      final response = await apiConsumer
+          .post('checkout', body: {'shipping_id': shipping_id});
 
       if (response['status'] == 'success') {
         subTotal.value = response['data']['subtotal'];
@@ -344,10 +381,12 @@ class CartItem {
   int quantity;
   String? selectedSize;
   String? selectedColor;
+  bool isDismissible;
 
   CartItem(
       {required this.product,
       this.quantity = 1,
+      this.isDismissible = false,
       required this.selectedSize,
       required this.selectedColor});
 
