@@ -808,72 +808,63 @@ class ShopView extends GetView<ShopController> {
   _buildProductsInCategories(context) {
     return Obx(() {
       return controller.isProductsInCategoryLoading.value
-          ? Expanded(
-              child: LoadingWidget(Container(
-                  height: MediaQuery.of(context).size.height / 3,
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    padding: EdgeInsets.all(8.w),
-                    crossAxisSpacing: 10.h,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 6 / 7,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      for (int i = 0; i < 12; ++i)
-                        Container(
-                            width: 100.w,
-                            color: Color.fromARGB(255, 10 * i, 1 * i, 50))
-                    ],
-                  ))),
-            )
+          ? LoadingWidget(Container(
+              height: MediaQuery.of(context).size.height / 3,
+              child: GridView.count(
+                crossAxisCount: 3,
+                padding: EdgeInsets.all(8.w),
+                crossAxisSpacing: 10.h,
+                mainAxisSpacing: 10,
+                childAspectRatio: 6 / 7,
+                shrinkWrap: true,
+                children: <Widget>[
+                  for (int i = 0; i < 12; ++i)
+                    Container(
+                        width: 100.w,
+                        color: Color.fromARGB(255, 10 * i, 1 * i, 50))
+                ],
+              )))
           : controller.productsInCategories.isEmpty
-              ? Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width / 9,
-                      top: MediaQuery.of(context).size.height / 9,
-                    ),
-                    child: Text(
-                      "No Products Yet ..",
-                      style: primaryTextStyle(
-                          size: 12.sp.round(),
-                          color: Colors.black,
-                          weight: FontWeight.w400),
-                    ),
+              ? Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 9,
+                    top: MediaQuery.of(context).size.height / 9,
+                  ),
+                  child: Text(
+                    "No Products Yet ..",
+                    style: primaryTextStyle(
+                        size: 12.sp.round(),
+                        color: Colors.black,
+                        weight: FontWeight.w400),
                   ),
                 )
-              : Expanded(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: Expanded(
-                      flex: 4,
-                      child: GridView.count(
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 3,
-                          padding: EdgeInsets.all(8.w),
-                          crossAxisSpacing: 10.h,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 6 / 7,
-                          shrinkWrap: true,
-                          children: controller.productsInCategories
-                              .map((product) => GestureDetector(
-                                    onTap: () {
-                                      Get.to(() => ProductView(),
-                                          arguments: product);
-                                    },
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: CachedNetworkImage(
-                                        imageUrl: product.image!,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, val) =>
-                                            placeHolderWidget(),
-                                      ),
-                                    ),
-                                  ))
-                              .toList()),
-                    ),
-                  ),
+              : Container(
+                  height: MediaQuery.of(context).size.height / 2,
+                  child: GridView.count(
+                      physics: NeverScrollableScrollPhysics(),
+                      crossAxisCount: 3,
+                      padding: EdgeInsets.all(8.w),
+                      crossAxisSpacing: 10.h,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 6 / 7,
+                      shrinkWrap: true,
+                      children: controller.productsInCategories
+                          .map((product) => GestureDetector(
+                                onTap: () {
+                                  Get.to(() => ProductView(),
+                                      arguments: product);
+                                },
+                                child: Container(
+                                  color: Colors.white,
+                                  child: CachedNetworkImage(
+                                    imageUrl: product.image!,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, val) =>
+                                        placeHolderWidget(),
+                                  ),
+                                ),
+                              ))
+                          .toList()),
                 );
     });
   }
