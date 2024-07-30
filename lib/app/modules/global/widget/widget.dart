@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maryana/app/modules/auth/controllers/auth_controller.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
@@ -2487,6 +2488,8 @@ buildFilterItem(FilterTypeEnum filterName, context,
   );
 }
 
+final AuthController Authcontroller = Get.put(AuthController());
+
 Widget socialMediaPlaceHolder() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -2540,6 +2543,7 @@ Widget socialMediaPlaceHolder() {
       ),
       InkWell(
           onTap: () {
+            Authcontroller.socialView.value = false;
             Get.off(LoginView());
           },
           child: buttonSocialMedia(

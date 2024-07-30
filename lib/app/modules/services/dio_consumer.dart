@@ -151,9 +151,7 @@ class DioConsumer implements ApiConsumer {
           case StatusCode.badRequest:
             throw const BadRequestException();
           case StatusCode.unauthorized:
-            return authController.isGuest.value == false
-                ? controller.reset()
-                : const BadRequestException();
+            return const BadRequestException();
           case StatusCode.forbidden:
             throw UnauthorizedException(error.response?.toString());
 

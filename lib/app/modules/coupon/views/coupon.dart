@@ -203,7 +203,7 @@ class CouponCard extends StatelessWidget {
                                         'Code: ${coupon.code}',
                                         style: primaryTextStyle(
                                           color: Color(0xFF42474A),
-                                          size: 14.round(),
+                                          size: 10.round(),
                                           weight: FontWeight.w700,
                                         ),
                                       ),
@@ -266,69 +266,66 @@ class CouponCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (coupon.expireAt == null)
-                PositionedDirectional(
-                  end: 30.w,
-                  top: 26,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Exp.',
-                              style: primaryTextStyle(
-                                color: Color(0xFF777E90),
-                                size: 12.round(),
-                                weight: FontWeight.w400,
-                                letterSpacing: -0.12,
-                              ),
+              PositionedDirectional(
+                end: 30.w,
+                top: 26,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'Exp.',
+                            style: primaryTextStyle(
+                              color: Color(0xFF777E90),
+                              size: 12.round(),
+                              weight: FontWeight.w400,
+                              letterSpacing: -0.12,
                             ),
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                            if (coupon.expireAt == null &&
-                                coupon.expireAt!.month != null)
-                              Column(
-                                children: [
-                                  Text(
-                                    coupon.expireAt == null ||
-                                            coupon.expireAt!.month == null
-                                        ? 'N/A'
-                                        : '${_monthName(coupon.expireAt!.month!)}',
-                                    textAlign: TextAlign.center,
-                                    style: primaryTextStyle(
-                                      color: Color(0xFF131416),
-                                      size: 12.round(),
-                                      weight: FontWeight.w400,
-                                      height: 0,
-                                      letterSpacing: -0.12,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 4.h,
-                                  ),
-                                  Text(
-                                    coupon.expireAt == null ||
-                                            coupon.expireAt!.day == null
-                                        ? 'N/A'
-                                        : '${coupon.expireAt!.day!}',
-                                    textAlign: TextAlign.center,
-                                    style: primaryTextStyle(
-                                      color: Color(0xFF131416),
-                                      weight: FontWeight.w400,
-                                      size: 12.round(),
-                                      height: 0,
-                                      letterSpacing: -0.12,
-                                    ),
-                                  ),
-                                ],
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                coupon.expireAt == null ||
+                                        coupon.expireAt!.month == null
+                                    ? 'N/A'
+                                    : '${_monthName(coupon.expireAt!.month!)}',
+                                textAlign: TextAlign.center,
+                                style: primaryTextStyle(
+                                  color: Color(0xFF131416),
+                                  size: 12.round(),
+                                  weight: FontWeight.w400,
+                                  height: 0,
+                                  letterSpacing: -0.12,
+                                ),
                               ),
-                          ],
-                        ),
-                      ]),
-                ),
+                              SizedBox(
+                                height: 4.h,
+                              ),
+                              Text(
+                                coupon.expireAt == null ||
+                                        coupon.expireAt!.day == null
+                                    ? 'N/A'
+                                    : '${coupon.expireAt!.day!}',
+                                textAlign: TextAlign.center,
+                                style: primaryTextStyle(
+                                  color: Color(0xFF131416),
+                                  weight: FontWeight.w400,
+                                  size: 12.round(),
+                                  height: 0,
+                                  letterSpacing: -0.12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ]),
+              ),
             ])));
   }
 

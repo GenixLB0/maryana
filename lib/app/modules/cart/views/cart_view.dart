@@ -184,7 +184,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                               GetMaxChar(product!.name ?? '', 16),
                               style: primaryTextStyle(
                                 color: const Color(0xFF1D1F22),
-                                size: 13,
+                                size: 13.sp.round(),
                                 weight: FontWeight.w700,
                               ),
                             ),
@@ -199,7 +199,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                   : '\$ ${product!.old_price}',
                               style: primaryTextStyle(
                                 color: const Color(0xFF1D1F22),
-                                size: 16,
+                                size: 16.sp.round(),
                                 weight: FontWeight.w700,
                                 height: 0.09,
                               ),
@@ -212,7 +212,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                 'Size: ${item!.selectedSize.toString()} |  Color: ${item!.selectedColor.toString()}',
                                 style: primaryTextStyle(
                                   color: const Color(0xFF8A8A8F),
-                                  size: 10,
+                                  size: 10.sp.round(),
                                   weight: FontWeight.w700,
                                 ),
                               )),
@@ -248,12 +248,14 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                 //   ),
                                 // ])
                               ])))),
-                  PositionedDirectional(
+                  AnimatedPositionedDirectional(
+                    duration: const Duration(milliseconds: 300),
                     bottom: 12.h,
                     end: !item.isDismissible ? 16.w : 56.w,
-                    child: Container(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
                       padding:
-                          EdgeInsets.symmetric(vertical: 5.h, horizontal: 8.w),
+                          EdgeInsets.symmetric(vertical: 2.h, horizontal: 10.w),
                       decoration: ShapeDecoration(
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
@@ -266,48 +268,56 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: 5.79.w,
-                            height: 2.h,
-                            color: Colors.black.withOpacity(0.5),
-                          ).onTap(() {
-                            if (item.quantity > 1) {
-                              cartController.updateQuantity(
-                                  item, item.quantity - 1);
-                            }
-                          }),
-                          12.width,
-                          SizedBox(
-                            height: 13.48.h,
+                          GestureDetector(
+                            onTap: () {
+                              if (item.quantity > 1) {
+                                cartController.updateQuantity(
+                                    item, item.quantity - 1);
+                              }
+                            },
+                            child: Container(
+                              width: 8.w,
+                              height: 4.h,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            transitionBuilder:
+                                (Widget child, Animation<double> animation) {
+                              return ScaleTransition(
+                                  child: child, scale: animation);
+                            },
                             child: Text(
                               item.quantity.toString(),
+                              key: ValueKey<int>(item.quantity),
                               style: primaryTextStyle(
                                 color: Colors.black.withOpacity(0.5),
-                                size: 12,
+                                size: 15.sp.round(),
                                 fontFamily: 'Roboto',
                                 weight: FontWeight.w700,
                                 height: 0,
                               ),
                             ),
                           ),
-                          12.width,
-                          SizedBox(
-                            width: 5.79.w,
-                            height: 13.48.h,
+                          SizedBox(width: 12.w),
+                          GestureDetector(
+                            onTap: () {
+                              cartController.updateQuantity(
+                                  item, item.quantity + 1);
+                            },
                             child: Text(
                               '+',
                               style: TextStyle(
                                 color: Colors.black.withOpacity(0.5),
-                                fontSize: 12,
+                                fontSize: 20.sp,
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w700,
                                 height: 0,
                               ),
                             ),
-                          ).onTap(() {
-                            cartController.updateQuantity(
-                                item, item.quantity + 1);
-                          }),
+                          ),
                         ],
                       ),
                     ),

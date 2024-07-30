@@ -663,7 +663,7 @@ class Coupons {
   String? name;
   String? code;
   int? amount;
-  String? expireAt;
+  ExpireAt? expireAt;
 
   Coupons({this.id, this.name, this.code, this.amount, this.expireAt});
 
@@ -672,7 +672,9 @@ class Coupons {
     name = json['name'];
     code = json['code'];
     amount = json['amount'];
-    expireAt = json['expire_at'];
+    expireAt = json['expire_at'] != null
+        ? new ExpireAt.fromJson(json['expire_at'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -681,7 +683,28 @@ class Coupons {
     data['name'] = this.name;
     data['code'] = this.code;
     data['amount'] = this.amount;
-    data['expire_at'] = this.expireAt;
+    if (this.expireAt != null) {
+      data['expire_at'] = this.expireAt!.toJson();
+    }
+    return data;
+  }
+}
+
+class ExpireAt {
+  String? day;
+  String? month;
+
+  ExpireAt({this.day, this.month});
+
+  ExpireAt.fromJson(Map<String, dynamic> json) {
+    day = json['day'];
+    month = json['month'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['day'] = this.day;
+    data['month'] = this.month;
     return data;
   }
 }
