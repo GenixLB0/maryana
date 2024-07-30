@@ -354,6 +354,10 @@ class AddressController extends GetxController {
     try {
       isLoading(true);
       await apiConsumer.delete('profile/address-delete/$id');
+      bool isDefualt = addressList.any(
+        (element) => element.isDefault == 1 && element.id == id,
+      );
+      if (isDefualt) cartController.shippingID.value = '';
       addressList.removeWhere((address) => address.id == id);
       Get.snackbar('Success', 'Address deleted successfully');
       Get.back();

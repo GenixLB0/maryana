@@ -281,7 +281,7 @@ Widget orderCard(Order order) {
           children: [
             Expanded(
               child: Text(
-                'Tracking number: ${order.trackingNumber}',
+                'Tracking number: ${order.code}',
                 style: primaryTextStyle(
                   color: Color(0xFF777E90),
                   size: 14.sp.round(),
@@ -297,7 +297,7 @@ Widget orderCard(Order order) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Subtotal: \$${order.subtotal}',
+              'Subtotal: \$${order.subTotal}',
               style: primaryTextStyle(
                 color: Color(0xFF777E90),
                 size: 14.sp.round(),

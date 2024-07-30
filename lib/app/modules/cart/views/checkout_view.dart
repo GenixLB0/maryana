@@ -7,11 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/address/controllers/address_controller.dart';
 import 'package:maryana/app/modules/address/views/address_view.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
+import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart' as model;
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:maryana/app/routes/app_pages.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -532,17 +535,25 @@ class _CheckoutPageState extends State<CheckoutPage>
               },
             ),
             SizedBox(height: 10.h),
-            _buildSummaryRow("Sub Total", cartController.subTotal.value),
-            _buildSummaryRow("Shipping", cartController.shipping.value),
-            _buildSummaryRow("Discount", -cartController.discount.value),
+            _buildSummaryRow("Subtotal",
+                double.parse(cartController.subTotal.value.toString())),
+            _buildSummaryRow("Shipping Fee",
+                double.parse(cartController.shipping.value.toString())),
+            _buildSummaryRow("Discount Applied",
+                -double.parse(cartController.discount.value.toString())),
+            _buildSummaryRow("Gift Card Discount",
+                -double.parse(cartController.giftCardValue.value.toString())),
+            _buildSummaryRow("Coupon Discount",
+                -double.parse(cartController.couponValue.value.toString())),
             Divider(),
-            _buildSummaryRow("Total", cartController.total.value,
+            _buildSummaryRow(
+                "Total", double.parse(cartController.total.value.toString()),
                 isTotal: true),
             SizedBox(height: 10.h),
-            if (cartController.selectedMethod.value == "Cash")
+            if (double.parse(cartController.giftCardValue.value.toString()) <
+                double.parse(cartController.total.value.toString()))
               _buildCouponInput(),
-            if (cartController.selectedMethod.value == "Cash")
-              _buildGiftCardInput(),
+            _buildGiftCardDropdown(),
             SizedBox(height: 10.h),
             if (cartController.selectedMethod.value != "Cash")
               Padding(
@@ -612,27 +623,37 @@ class _CheckoutPageState extends State<CheckoutPage>
     return Obx(
       () => cartController.couponCode.value.isEmpty
           ? Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
+              padding: EdgeInsets.symmetric(vertical: 2.h),
               child: TextField(
                 onSubmitted: (value) => cartController.applyCoupon(value),
+                onChanged: (value) {
+                  cartController.coupon.value = value;
+                },
                 decoration: InputDecoration(
                   hintText: "Enter Coupon Code",
                   border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.check),
+                  suffixIcon: InkWell(
+                      onTap: () {
+                        cartController.applyCoupon(cartController.coupon.value);
+                      },
+                      child: const Icon(Icons.check)),
                 ),
               ),
             )
           : Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
+              padding: EdgeInsets.symmetric(vertical: 2.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
+                      child: Row(children: [
+                    Icon(Icons.wallet_giftcard, color: primaryColor),
+                    SizedBox(width: 10.w),
+                    Text(
                       "Coupon Applied: ${cartController.couponCode.value}",
-                      style: TextStyle(fontSize: 14.sp),
+                      style: primaryTextStyle(size: 14.sp.round()),
                     ),
-                  ),
+                  ])),
                   IconButton(
                     icon: Icon(Icons.cancel),
                     onPressed: cartController.removeCoupon,
@@ -643,36 +664,76 @@ class _CheckoutPageState extends State<CheckoutPage>
     );
   }
 
-  Widget _buildGiftCardInput() {
+  GiftCardController giftCardController = Get.put(GiftCardController());
+
+  Widget _buildGiftCardDropdown() {
     return Obx(
-      () => cartController.giftCardCode.value.isEmpty
+      () => cartController.giftCardValue.value.toString().isEmpty ||
+              cartController.giftCardValue.value == 0.0
           ? Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: TextField(
-                onSubmitted: (value) => cartController.applyGiftCard(value),
-                decoration: InputDecoration(
-                  hintText: "Enter Gift Card Code",
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.check),
+              padding: EdgeInsets.symmetric(vertical: 2.h),
+              child: DropdownButton<Transaction>(
+                isExpanded: true,
+                items:
+                    giftCardController.receivedTransactions.map((transaction) {
+                  return DropdownMenuItem<Transaction>(
+                    value: transaction,
+                    child: Row(
+                      children: [
+                        Icon(Icons.card_giftcard, color: primaryColor),
+                        SizedBox(width: 10.w),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "From: ${transaction.from!.firstName} ${transaction.from!.lastName}",
+                              style: secondaryTextStyle(),
+                            ),
+                            Text(
+                              " Amount: ${transaction.amount} \$",
+                              style: secondaryTextStyle(),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (Transaction? selectedTransaction) {
+                  if (selectedTransaction != null) {
+                    cartController
+                        .applyGiftCard(selectedTransaction.id.toString());
+                  }
+                },
+                hint: Text(
+                  "Select Gift Card",
+                  style: primaryTextStyle(size: 14.sp.round()),
                 ),
+                borderRadius: BorderRadius.circular(8),
               ),
             )
           : Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Gift Card Applied: ${cartController.giftCardCode.value}",
-                      style: TextStyle(fontSize: 14.sp),
+              padding: EdgeInsets.symmetric(vertical: 2.h),
+              child: Animate(
+                effects: [FadeEffect(), ScaleEffect()],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: Row(children: [
+                      Icon(Icons.wallet_giftcard, color: primaryColor),
+                      SizedBox(width: 10.w),
+                      Text(
+                        "Gift Card Applied: ${cartController.giftCardValue.value.toString()} \$",
+                        style: primaryTextStyle(size: 14.sp.round()),
+                      ),
+                    ])),
+                    IconButton(
+                      icon: Icon(Icons.cancel),
+                      onPressed: cartController.removeGiftCard,
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.cancel),
-                    onPressed: cartController.removeGiftCard,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );
@@ -795,8 +856,8 @@ class _CheckoutPageState extends State<CheckoutPage>
                                 if (cartController.step.value != '3') 16.height,
                                 if (cartController.step.value != '3')
                                   Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 39),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 39),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -824,56 +885,76 @@ class _CheckoutPageState extends State<CheckoutPage>
                                 Container(
                                   width: 315.w,
                                   height: 60.h,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFD4B0FF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icons/cart_in_button.svg',
-                                        width: 20.w,
-                                        height: 20.h,
-                                      ),
-                                      SizedBox(
-                                        width: 16.w,
-                                      ),
-                                      Text(
-                                        ButtonTitleStep(),
-                                        textAlign: TextAlign.center,
-                                        style: primaryTextStyle(
-                                          color: Color(0xFF21034F),
-                                          size: 16,
-                                          weight: FontWeight.w700,
-                                          height: 0.09,
+                                  decoration: cartController.loading.value
+                                      ? null
+                                      : ShapeDecoration(
+                                          color: const Color(0xFFD4B0FF),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
+                                  child: cartController.loading.value
+                                      ? Center(
+                                          child: Center(
+                                              child:
+                                                  LoadingAnimationWidget.flickr(
+                                            leftDotColor: primaryColor,
+                                            rightDotColor:
+                                                const Color(0xFFFF0084),
+                                            size: 50,
+                                          )),
+                                        )
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                              'assets/icons/cart_in_button.svg',
+                                              width: 20.w,
+                                              height: 20.h,
+                                            ),
+                                            SizedBox(
+                                              width: 16.w,
+                                            ),
+                                            Text(
+                                              ButtonTitleStep(),
+                                              textAlign: TextAlign.center,
+                                              style: primaryTextStyle(
+                                                color: Color(0xFF21034F),
+                                                size: 16,
+                                                weight: FontWeight.w700,
+                                                height: 0.09,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                 ).onTap(() {
                                   if (cartController.step.value == '1') {
                                     if (cartController
                                         .shippingID.value.isNotEmpty) {
                                       cartController.step.value = '2';
+                                      cartController.fetchCheckoutDetails();
                                       //       cartController.checkoutApi();
                                     } else {
                                       Get.snackbar('Sorry',
-                                          'You should choose the default shipping address.',
-                                          backgroundColor: Colors.yellowAccent);
+                                          'You should choose the default shipping address.');
                                     }
                                   } else if (cartController.step.value == '2') {
                                     if (cartController
                                         .shippingID.value.isNotEmpty) {
-                                      cartController.step.value = '3';
-                                      cartController.confirmCheckout(
-                                          cartController.selectedMethod.value);
+                                      cartController
+                                          .confirmCheckout(cartController
+                                              .selectedMethod.value)
+                                          .then((value) => {
+                                                if (value == 'true')
+                                                  cartController.step.value =
+                                                      '3'
+                                              });
+                                      ;
                                     } else {
                                       Get.snackbar('Sorry',
                                           'You should choose the default shipping address.',

@@ -9,6 +9,7 @@ import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/order/controllers/orders_controller.dart';
+import 'package:maryana/app/modules/order/views/order_detalis.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class OrdersView extends GetView<OrdersController> {
@@ -110,11 +111,17 @@ class OrdersView extends GetView<OrdersController> {
                           itemBuilder: (context, index) {
                             final order = controller.orders[index];
                             return ShowUp(
-                                delay: 200 * index,
+                                delay: 100 * index,
                                 child: Padding(
                                     padding: EdgeInsetsDirectional.symmetric(
                                         vertical: 20.h),
-                                    child: orderCard(order)));
+                                    child: InkWell(
+                                        onTap: () {
+                                          Get.to(() => OrderDetailsScreen(
+                                                order: order,
+                                              ));
+                                        },
+                                        child: orderCard(order))));
                           },
                         )))
             ],

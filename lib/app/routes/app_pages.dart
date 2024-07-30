@@ -9,6 +9,7 @@ import 'package:maryana/app/modules/coupon/views/coupon.dart';
 import 'package:maryana/app/modules/gift_card/bindings/gift_card_binding.dart';
 import 'package:maryana/app/modules/gift_card/views/history.dart';
 import 'package:maryana/app/modules/order/bindings/orders_binding.dart';
+import 'package:maryana/app/modules/order/views/order_detalis.dart';
 import 'package:maryana/app/modules/order/views/orders_view.dart';
 
 import '../modules/address/bindings/address_binding.dart';
@@ -136,10 +137,11 @@ class AppPages {
       binding: OrdersBinding(),
     ),
     GetPage(
-      name: _Paths.ORDERS,
+      name: _Paths.GiftCard,
       page: () => TransactionHistoryScreen(),
       binding: GiftCardBinding(),
     ),
+ 
     GetPage(
       name: _Paths.COUPON,
       page: () => CouponViwe(),

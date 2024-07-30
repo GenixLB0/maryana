@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_api_headers/google_api_headers.dart';
- import 'package:http/http.dart';
+import 'package:http/http.dart';
 import 'package:maryana/app/builtInPackage/google_maps_webservice-master/lib/places.dart';
 import 'package:rxdart/rxdart.dart';
 

@@ -32,8 +32,8 @@ class OrdersController extends GetxController {
       } else {
         print('Failed to fetch orders: ${response['data']}');
       }
-    } catch (e) {
-      print('Error fetching orders: $e');
+    } catch (e, stackTrace) {
+      print('Error fetching orders: $e $stackTrace');
     } finally {
       loading.value = false;
     }

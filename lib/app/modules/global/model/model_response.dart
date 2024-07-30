@@ -1,30 +1,79 @@
 import 'dart:convert';
 
+import 'package:maryana/app/modules/address/model/address_model.dart';
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 // lib/app/modules/orders/models/order_model.dart
 
 class Order {
   final int id;
-  final String trackingNumber;
-  final double subtotal;
+  final String code;
+  final dynamic subTotal;
+  final dynamic tax;
+  final dynamic shipping;
+  final dynamic discount;
+  final dynamic total;
+  final bool readyToPay;
   final String status;
+  final Address? address;
+  final List<Item> items;
   final String date;
 
   Order({
     required this.id,
-    required this.trackingNumber,
-    required this.subtotal,
+    required this.code,
+    required this.subTotal,
+    required this.tax,
+    required this.shipping,
+    required this.discount,
+    required this.total,
+    required this.readyToPay,
     required this.status,
+    required this.address,
+    required this.items,
     required this.date,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'],
-      trackingNumber: json['code'],
-      subtotal: double.parse(json['sub_total']),
-      status: json['status'],
-      date: 'Today',
+      code: json['code'],
+      subTotal: json['sub_total'],
+      tax: json['tax'],
+      shipping: json['shipping'],
+      discount: json['discount'],
+      total: json['total'],
+      readyToPay: json['ready_to_pay'],
+      status: json['status'] ?? 'pending',
+      address:
+          json['address'] != null ? Address.fromJson(json['address']) : null,
+      items: (json['items'] as List).map((i) => Item.fromJson(i)).toList(),
+      date: json['date'] ?? 'Today',
+    );
+  }
+}
+
+class Item {
+  final int quantity;
+  final double price;
+  final double discount;
+  final double tax;
+  final double total;
+
+  Item({
+    required this.quantity,
+    required this.price,
+    required this.discount,
+    required this.tax,
+    required this.total,
+  });
+
+  factory Item.fromJson(Map<String, dynamic> json) {
+    return Item(
+      quantity: json['quantity'],
+      price: json['price'].toDouble(),
+      discount: json['discount'].toDouble(),
+      tax: json['tax'].toDouble(),
+      total: json['total'].toDouble(),
     );
   }
 }

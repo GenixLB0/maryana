@@ -8,7 +8,7 @@ class GiftCardController extends GetxController {
   var receivedTransactions = <Transaction>[].obs;
   var loading = false.obs;
   var sent = true.obs;
- 
+
   final count = 0.obs;
   @override
   void onInit() {
@@ -81,6 +81,7 @@ class From {
 }
 
 class Transaction {
+  final int? id;
   final String name;
   final String date;
   final double amount;
@@ -88,7 +89,8 @@ class Transaction {
   final From? from;
 
   Transaction(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.date,
       required this.amount,
       required this.isReceived,
@@ -96,6 +98,7 @@ class Transaction {
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
+      id: json['id'] ?? 0,
       name: json['name'] ?? '',
       date: json['created_at'] ?? '',
       amount: double.parse(json['amount'] ?? '0'),

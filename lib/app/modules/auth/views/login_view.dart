@@ -220,6 +220,7 @@ class LoginView extends StatelessWidget {
         ),
         InkWell(
             onTap: () {
+              controller.isGuest.value = true;
               Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
               Get.to(MainView());
             },
