@@ -76,306 +76,294 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Widget itemCart(ViewProductData product, CartItem item, index) {
+  Widget itemCart(ViewProductData product, CartItem item, int index) {
     return FadeTransition(
-        opacity: _animation,
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: Offset(1, 0),
-            end: Offset(0, 0),
-          ).animate(_animation),
-          child: InkWell(
-            onTap: () {
-              cartController.cartItems[index].isDismissible = false;
-              cartController.cartItems.refresh();
-            },
-            child: Container(
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 0.50, color: Color(0xFFFAFAFA)),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                shadows: const [
-                  BoxShadow(
-                    color: Color(0x0C000000),
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                    spreadRadius: 0,
-                  ),
-                ],
+      opacity: _animation,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: Offset(1, 0),
+          end: Offset(0, 0),
+        ).animate(_animation),
+        child: InkWell(
+          onTap: () {
+            cartController.cartItems[index].isDismissible = false;
+            cartController.cartItems.refresh();
+          },
+          child: Container(
+            decoration: ShapeDecoration(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(width: 0.50, color: Color(0xFFFAFAFA)),
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Stack(
-                children: [
-                  Row(
-                    children: [
-                      Hero(
-                          tag: product!.id.toString(),
-                          child: Container(
-                            width: 97.88058471679688.w,
-                            height: 117.71769714355469.h,
-                            decoration: const BoxDecoration(
-                              color: Color(0xffdcdcdf),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                bottomLeft: Radius.circular(20),
-                              ),
-                            ),
-                            child: (product!.image!.isEmpty)
-                                ? ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20),
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          'https://via.assets.so/shoe.png?id=1&q=95&w=360&h=360&fit=fill',
-                                      fit: BoxFit.cover,
-                                      width: 97.88058471679688,
-                                      height: 117.71769714355469,
-                                      placeholder: (context, url) =>
-                                          const Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                      errorWidget: (context, url, error) =>
-                                          Image.network(
-                                        'https://via.assets.so/shoe.png?id=1&q=95&w=360&h=360&fit=fill',
-                                        fit: BoxFit.cover,
-                                        width: 97.88058471679688,
-                                        height: 117.71769714355469,
-                                      ),
-                                    ),
-                                  )
-                                : ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      bottomLeft: Radius.circular(20),
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: product!.image != null &&
-                                              product!.image!.isNotEmpty
-                                          ? product!.image!
-                                          : '',
-                                      fit: BoxFit.cover,
-                                      width: 97.88058471679688,
-                                      height: 117.71769714355469,
-                                      placeholder: (context, url) =>
-                                          const Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                      errorWidget: (context, url, error) =>
-                                          Image.network(
-                                        'https://via.assets.so/shoe.png?id=1&q=95&w=360&h=360&fit=fill',
-                                        fit: BoxFit.cover,
-                                        width: 97.88058471679688,
-                                        height: 117.71769714355469,
-                                      ),
-                                    ),
-                                  ),
-                          )),
-                      13.width,
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 114.w,
-                            child: Text(
-                              GetMaxChar(product!.name ?? '', 16),
-                              style: primaryTextStyle(
-                                color: const Color(0xFF1D1F22),
-                                size: 13.sp.round(),
-                                weight: FontWeight.w700,
-                              ),
-                            ),
+              shadows: [
+                BoxShadow(
+                  color: Color(0x0C000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Row(
+                  children: [
+                    Hero(
+                      tag: product!.id.toString(),
+                      child: Container(
+                        width: 97.88.w,
+                        height: 117.72.h,
+                        decoration: BoxDecoration(
+                          color: Color(0xffdcdcdf),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomLeft: Radius.circular(20),
                           ),
-                          16.height,
-                          SizedBox(
-                            width: 58,
-                            height: 19,
-                            child: Text(
-                              product!.old_price == null
-                                  ? '\$ ${product!.price}'
-                                  : '\$ ${product!.old_price}',
-                              style: primaryTextStyle(
-                                color: const Color(0xFF1D1F22),
-                                size: 16.sp.round(),
-                                weight: FontWeight.w700,
-                                height: 0.09,
-                              ),
-                            ),
-                          ),
-                          8.height,
-                          SizedBox(
-                              width: 120.w,
-                              child: Text(
-                                'Size: ${item!.selectedSize.toString()} |  Color: ${item!.selectedColor.toString()}',
-                                style: primaryTextStyle(
-                                  color: const Color(0xFF8A8A8F),
-                                  size: 10.sp.round(),
-                                  weight: FontWeight.w700,
-                                ),
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
-                  PositionedDirectional(
-                      top: 20.h,
-                      end: 40.w,
-                      child: ScaleTransition(
-                          scale: _scaleAnimation,
-                          child: SlideTransition(
-                              position: _handAnimation,
-                              child: Row(children: [
-                                Icon(Icons.swipe,
-                                    size: 20.sp, color: Colors.grey),
-                                // SizedBox(width: 8.w),
-                                // Column(children: [
-                                //   Text(
-                                //     'Swip to',
-                                //     style: secondaryTextStyle(
-                                //         color: Colors.grey,
-                                //         size: 8,
-                                //         weight: FontWeight.bold),
-                                //   ),
-                                //   Text(
-                                //     'REMOVE',
-                                //     style: secondaryTextStyle(
-                                //         color: Colors.grey,
-                                //         size: 10,
-                                //         weight: FontWeight.bold),
-                                //   ),
-                                // ])
-                              ])))),
-                  AnimatedPositionedDirectional(
-                    duration: const Duration(milliseconds: 300),
-                    bottom: 12.h,
-                    end: !item.isDismissible ? 16.w : 56.w,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 2.h, horizontal: 10.w),
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 1,
-                            color: Colors.black.withOpacity(0.5),
-                          ),
-                          borderRadius: BorderRadius.circular(20),
                         ),
+                        child: product!.image!.isEmpty
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      'https://via.assets.so/shoe.png?id=1&q=95&w=360&h=360&fit=fill',
+                                  fit: BoxFit.cover,
+                                  width: 97.88.w,
+                                  height: 117.72.h,
+                                  placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      Image.network(
+                                    'https://via.assets.so/shoe.png?id=1&q=95&w=360&h=360&fit=fill',
+                                    fit: BoxFit.cover,
+                                    width: 97.88.w,
+                                    height: 117.72.h,
+                                  ),
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl: product!.image!,
+                                  fit: BoxFit.cover,
+                                  width: 97.88.w,
+                                  height: 117.72.h,
+                                  placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      Image.network(
+                                    'https://via.assets.so/shoe.png?id=1&q=95&w=360&h=360&fit=fill',
+                                    fit: BoxFit.cover,
+                                    width: 97.88.w,
+                                    height: 117.72.h,
+                                  ),
+                                ),
+                              ),
                       ),
+                    ),
+                    SizedBox(width: 13.w),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 114.w,
+                          child: Text(
+                            GetMaxChar(product!.name ?? '', 16),
+                            style: primaryTextStyle(
+                              color: Color(0xFF1D1F22),
+                              size: 13.sp.round(),
+                              weight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        SizedBox(
+                          height: 19.h,
+                          child: Text(
+                            product!.old_price == null
+                                ? '\$ ${product!.price}'
+                                : '\$ ${product!.old_price}',
+                            style: primaryTextStyle(
+                              color: Color(0xFF1D1F22),
+                              size: 16.sp.round(),
+                              weight: FontWeight.w700,
+                              height: 0.09,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        SizedBox(
+                          width: 110.w,
+                          child: Text(
+                            'Size: ${item!.selectedSize.toString()} |  Color: ${item!.selectedColor.toString()}',
+                            style: primaryTextStyle(
+                              color: Color(0xFF8A8A8F),
+                              size: 10.sp.round(),
+                              weight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                PositionedDirectional(
+                  top: 20.h,
+                  end: 40.w,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: SlideTransition(
+                      position: _handAnimation,
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (item.quantity > 1) {
-                                cartController.updateQuantity(
-                                    item, item.quantity - 1);
-                              }
-                            },
-                            child: Container(
-                              width: 8.w,
-                              height: 4.h,
-                              color: Colors.black.withOpacity(0.5),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            transitionBuilder:
-                                (Widget child, Animation<double> animation) {
-                              return ScaleTransition(
-                                  child: child, scale: animation);
-                            },
-                            child: Text(
-                              item.quantity.toString(),
-                              key: ValueKey<int>(item.quantity),
-                              style: primaryTextStyle(
-                                color: Colors.black.withOpacity(0.5),
-                                size: 15.sp.round(),
-                                fontFamily: 'Roboto',
-                                weight: FontWeight.w700,
-                                height: 0,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          GestureDetector(
-                            onTap: () {
-                              cartController.updateQuantity(
-                                  item, item.quantity + 1);
-                            },
-                            child: Text(
-                              '+',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.5),
-                                fontSize: 20.sp,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w700,
-                                height: 0,
-                              ),
-                            ),
-                          ),
+                          Icon(Icons.swipe, size: 20.sp, color: Colors.grey),
                         ],
                       ),
                     ),
                   ),
-                  PositionedDirectional(
-                      bottom: 0.h,
-                      end: 0.w,
-                      child: Observer(
-                          builder: (_) => Dismissible(
-                              key: Key(item.product.toString()),
-                              background: Container(
-                                color: Colors.transparent,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20.0),
-                                    child: Icon(Icons.check,
-                                        color: Colors.white, size: 30),
-                                  ),
-                                ),
-                              ),
-                              direction: DismissDirection.startToEnd,
-                              onUpdate: (details) {},
-                              confirmDismiss: (direction) async {
-                                // cartController.removeItem(item);
-                                print('test');
-                                cartController.cartItems[index].isDismissible =
-                                    false;
-                                cartController.cartItems.refresh();
-                                return false;
-                              },
-                              onDismissed: (direction) {
-                                //   cartController.removeItem(item);
-                              },
-                              child: InkWell(
-                                  onTap: () {
-                                    cartController.removeItem(item);
-                                  },
-                                  child: Container(
-                                    width: item.isDismissible ? 310.w : 0,
-                                    height: 120.h,
-                                    decoration: BoxDecoration(
-                                      color: item.isDismissible
-                                          ? Colors.red
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Center(
-                                      child: Icon(Icons.delete,
-                                          color: Colors.white, size: 24.w),
-                                    ),
-                                  ))))),
-                ],
-              ),
+                ),
+                AnimatedPositionedDirectional(
+                  duration: Duration(milliseconds: 300),
+                  bottom: 12.h,
+                  end: !item.isDismissible ? 16.w : 56.w,
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 2.h, horizontal: 10.w),
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (item.quantity > 1) {
+                              cartController.updateQuantity(
+                                  item, item.quantity - 1);
+                              item.quantity - 1;
+                            }
+                          },
+                          child: Text(
+                            '-',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                              fontSize: 20.sp,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w700,
+                              height: 0,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 300),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return ScaleTransition(
+                                child: child, scale: animation);
+                          },
+                          child: Text(
+                            item.quantity.toString(),
+                            key: ValueKey<int>(item.quantity),
+                            style: primaryTextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                              size: 15.sp.round(),
+                              fontFamily: 'Roboto',
+                              weight: FontWeight.w700,
+                              height: 0,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        GestureDetector(
+                          onTap: () {
+                            cartController.updateQuantity(
+                                item, item.quantity + 1);
+                          },
+                          child: Text(
+                            '+',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                              fontSize: 20.sp,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w700,
+                              height: 0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                PositionedDirectional(
+                  bottom: 0.h,
+                  end: 0.w,
+                  child: Observer(
+                    builder: (_) => Dismissible(
+                      key: Key(item.product.toString()),
+                      background: Container(
+                        color: Colors.transparent,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Icon(Icons.check,
+                                color: Colors.white, size: 30),
+                          ),
+                        ),
+                      ),
+                      direction: DismissDirection.startToEnd,
+                      onUpdate: (details) {},
+                      confirmDismiss: (direction) async {
+                        cartController.cartItems[index].isDismissible = false;
+                        cartController.cartItems.refresh();
+                        return false;
+                      },
+                      onDismissed: (direction) {
+                        //   cartController.removeItem(item);
+                      },
+                      child: InkWell(
+                        onTap: () {
+                          cartController.removeItem(item);
+                        },
+                        child: Container(
+                          width: item.isDismissible ? 310.w : 0,
+                          height: 120.h,
+                          decoration: BoxDecoration(
+                            color: item.isDismissible
+                                ? Colors.red
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Icon(Icons.delete,
+                                color: Colors.white, size: 24.w),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   @override
@@ -473,7 +461,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
           30.height,
           Expanded(
             child: AnimatedContainer(
-              width: 310.w,
+              width: 327.w,
               duration: const Duration(milliseconds: 10),
               curve: Curves.slowMiddle,
               child: ListView.builder(
