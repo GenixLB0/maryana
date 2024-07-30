@@ -133,15 +133,14 @@ class ProductController extends GetxController {
       for (var color in product.value.colors!) {
         colorsList.addNonNull(color);
       }
-      print("your size guide is ${product.value.sizeGuide}");
+
       //adding Size Guide
+
       if (product.value.sizeGuide!.fitType != null) {
         print("the value is not null and adding ");
         productSizeGuide.value = product.value.sizeGuide!;
       }
-      for (var color in product.value.colors!) {
-        colorsList.addNonNull(color);
-      }
+      print("your size guide is ${product.value.sizeGuide}");
 
       print("attachments are  ${productImages}");
       print("color are  ${colorsList}");
