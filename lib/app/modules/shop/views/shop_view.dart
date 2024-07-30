@@ -68,6 +68,7 @@ class ShopView extends GetView<ShopController> {
                                   Get.back();
                                   controller.getBrandsInCategory(cat.id!);
                                   controller.getProductsInCategory(cat.id!, "");
+                                  controller.changeChoosenCat(cat);
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.only(

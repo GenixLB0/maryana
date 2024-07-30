@@ -75,8 +75,8 @@ class ShopController extends GetxController {
         }
         currentCatIndex.value = 1;
         selectedCat.value = categories.first;
-        getBrandsInCategory(currentCatIndex.value + 1);
-        getProductsInCategory(currentCatIndex.value + 1, "");
+        getBrandsInCategory(selectedCat.value.id!);
+        getProductsInCategory(selectedCat.value.id!, "");
         update(["drawer_cats"]);
       } else {
         handleApiErrorUser(apiResponse.message);
