@@ -37,6 +37,7 @@ class CartController extends GetxController {
   var giftCardID = ''.obs;
   final box = GetStorage();
   RxBool isAuth = false.obs;
+
   void toggleDismissible(int index) {
     print('tesdsadsad');
     cartItems[index].isDismissible = !cartItems[index].isDismissible;
@@ -331,6 +332,7 @@ class CartController extends GetxController {
     List<String> items = cartItems.map((e) => json.encode(e.toJson())).toList();
     try {
       box.write('cartItems', items);
+      print("cart items 4 ${cartItems}");
     } catch (e, stackTrace) {
       print(e.toString() + ' test save items cached ' + stackTrace.toString());
       return;
@@ -353,6 +355,7 @@ class CartController extends GetxController {
           quantity: quantity));
     }
     cartItems.refresh(); // Ensure the UI is updated
+    print("cart items 2 ${cartItems}");
     saveCartItems();
     update();
     try {
@@ -367,6 +370,9 @@ class CartController extends GetxController {
       );
 
       if (response['status'] == 'success') {
+        print("product added sussefully");
+        print("cart items 3 ${cartItems}");
+        cartItems.refresh(); // Ensure the UI is updated
       } else {
         print('Failed to add to cart: ${response['data']}');
       }

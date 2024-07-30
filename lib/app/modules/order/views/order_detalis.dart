@@ -73,6 +73,7 @@ class OrderDetailsScreen extends GetView<OrdersController> {
   final Order order;
 
   const OrderDetailsScreen({super.key, required this.order});
+
   Widget orderSummary() {
     return Container(
       width: 0.9.sw,
@@ -255,7 +256,9 @@ class OrderDetailsScreen extends GetView<OrdersController> {
                             child: InkWell(
                                 onTap: () {
                                   _tabController.selectedIndex.value = 0;
-                                  Get.offAndToNamed(Routes.MAIN);
+                                  // Get.offAndToNamed(Routes.MAIN);
+                                  Get.offNamedUntil(
+                                      Routes.MAIN, (Route) => false);
                                 },
                                 child: Container(
                                     width: 168.w,

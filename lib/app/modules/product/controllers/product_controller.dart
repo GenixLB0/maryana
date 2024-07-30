@@ -136,7 +136,7 @@ class ProductController extends GetxController {
 
       //adding Size Guide
 
-      if (product.value.sizeGuide!.fitType != null) {
+      if (product.value.sizeGuide?.fitType != null) {
         print("the value is not null and adding ");
         productSizeGuide.value = product.value.sizeGuide!;
       }

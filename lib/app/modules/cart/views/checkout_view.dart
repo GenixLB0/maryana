@@ -741,6 +741,7 @@ class _CheckoutPageState extends State<CheckoutPage>
 
   final NavigationsBarController _tabController =
       Get.put(NavigationsBarController());
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -963,7 +964,9 @@ class _CheckoutPageState extends State<CheckoutPage>
                                   } else {
                                     // send to whatsapp data for number xxx
                                     _tabController.selectedIndex.value = 1;
-                                    Get.offAndToNamed(Routes.MAIN);
+                                    // Get.offAndToNamed(Routes.MAIN);
+                                    Get.offNamedUntil(
+                                        Routes.MAIN, (Route) => false);
                                   }
                                 }),
                               ],

@@ -906,7 +906,7 @@ class ProductView extends GetView<ProductController> {
                                 controller.selectedColor.value,
                                 quantity: 1,
                               );
-
+                              print('teasdsadsa4');
                               Get.toNamed(Routes.CART);
                               cartController.loading.value = false;
                             } else {

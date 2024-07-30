@@ -184,19 +184,36 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                           ),
                         ),
                         SizedBox(height: 16.h),
-                        SizedBox(
-                          height: 19.h,
-                          child: Text(
-                            product!.old_price == null
-                                ? '\$ ${product!.price}'
-                                : '\$ ${product!.old_price}',
-                            style: primaryTextStyle(
-                              color: Color(0xFF1D1F22),
-                              size: 16.sp.round(),
-                              weight: FontWeight.w700,
-                              height: 0.09,
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 19.h,
+                              child: Text(
+                                '\$ ${product!.price}',
+                                style: primaryTextStyle(
+                                  color: Color(0xFF1D1F22),
+                                  size: 16.sp.round(),
+                                  weight: FontWeight.w700,
+                                  height: 0.09,
+                                ),
+                              ),
                             ),
-                          ),
+                            SizedBox(width: 8.w),
+                            if (product!.old_price != null)
+                              SizedBox(
+                                height: 19.h,
+                                child: Text(
+                                  '\$ ${product!.old_price}',
+                                  style: primaryTextStyle(
+                                    color: Color(0xFF8A8A8F),
+                                    size: 15.sp.round(),
+                                    weight: FontWeight.w700,
+                                    height: 0.09,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                         SizedBox(height: 8.h),
                         SizedBox(
