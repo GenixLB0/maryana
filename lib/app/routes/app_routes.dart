@@ -35,6 +35,7 @@ abstract class _Paths {
 
   static const LOGIN = '/login';
   static const ORDERS = '/order';
+  static const GiftCard = '/giftcard';
   static const HISTORY = '/history';
   static const REGISTER = '/register';
   static const SPLASH = '/splash';

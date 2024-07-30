@@ -281,7 +281,7 @@ Widget orderCard(Order order) {
           children: [
             Expanded(
               child: Text(
-                'Tracking number: ${order.trackingNumber}',
+                'Tracking number: ${order.code}',
                 style: primaryTextStyle(
                   color: Color(0xFF777E90),
                   size: 14.sp.round(),
@@ -297,7 +297,7 @@ Widget orderCard(Order order) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Subtotal: \$${order.subtotal}',
+              'Subtotal: \$${order.subTotal}',
               style: primaryTextStyle(
                 color: Color(0xFF777E90),
                 size: 14.sp.round(),
@@ -920,10 +920,11 @@ String GetMaxChar(String value, int max) {
 
 class CustomNavBar extends StatelessWidget {
   final NavigationsBarController _tabController = Get.find();
-  HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
+    HomeController homeController =
+        HomeController().initialized ? Get.find() : Get.put(HomeController());
     return Obx(
       () {
         return AnimatedBuilder(
@@ -952,7 +953,7 @@ class CustomNavBar extends StatelessWidget {
                 showUnselectedLabels: false,
                 onTap: (index) {
                   print(
-                      " it have clients ${homeController.scrollController.value.hasClients}");
+                      " it have clients ${homeController.scrollController!.value.hasClients}");
                   _tabController.changeIndex(index);
                 },
                 currentIndex: _tabController.selectedIndex.value,

@@ -5,6 +5,8 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' as gets;
+import 'package:get/get_core/src/get_main.dart';
+import 'package:maryana/app/modules/auth/controllers/auth_controller.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/log_utils.dart';
 import 'package:maryana/app/modules/profile/controllers/profile_controller.dart';
@@ -66,6 +68,7 @@ class DioConsumer implements ApiConsumer {
     }
   }
 
+  AuthController authController = Get.put(AuthController());
   @override
   Future post(String path,
       {Map<String, dynamic>? body,
@@ -148,7 +151,9 @@ class DioConsumer implements ApiConsumer {
           case StatusCode.badRequest:
             throw const BadRequestException();
           case StatusCode.unauthorized:
-            return controller.reset();
+            return authController.isGuest.value == false
+                ? controller.reset()
+                : const BadRequestException();
           case StatusCode.forbidden:
             throw UnauthorizedException(error.response?.toString());
 
@@ -157,7 +162,7 @@ class DioConsumer implements ApiConsumer {
           case StatusCode.confilct:
             throw UnauthorizedException(error.response?.toString());
           case StatusCode.unProcessableContent:
-            throw DataInputException(error.response?.toString());
+            throw UnauthorizedException(error.response?.toString());
           case StatusCode.internalServerError:
             throw const InternalServerErrorException();
           default:

@@ -11,6 +11,8 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:dio/dio.dart' as dio;
 import 'dart:convert';
 
+import '../../../routes/app_pages.dart';
+
 class AuthController extends GetxController {
   var email = ''.obs;
   var password = ''.obs;
@@ -19,6 +21,7 @@ class AuthController extends GetxController {
   var lastName = ''.obs;
   var emailError = ''.obs;
   var passwordError = ''.obs;
+  var isGuest = false.obs;
   var confirmPasswordError = ''.obs;
   var isLoading = false.obs;
   var socialView = false.obs;
@@ -33,6 +36,7 @@ class AuthController extends GetxController {
   static const String passwordMismatchError = 'Passwords do not match';
 
   ApiService apiService = Get.find();
+
   @override
   void onInit() {
     super.onInit();
@@ -127,11 +131,14 @@ class AuthController extends GetxController {
         if (apiResponse.status == 'success') {
           print('Registration successful');
           // Handle successful registration
+          isGuest.value = false;
+
           await cacheUserData(apiResponse.data!);
           AppConstants.userData = apiResponse.data!;
           user.value = apiResponse.data!.user;
           userToken = AppConstants.userData!.token;
-          Get.off(() => MainView());
+          // Get.off(() => MainView());
+          Get.offNamedUntil(Routes.MAIN, (Route) => false);
         } else {
           handleApiErrorUser(apiResponse.message);
           handleApiError(response.statusCode);
@@ -139,6 +146,8 @@ class AuthController extends GetxController {
         }
         isLoading.value = false;
       } catch (e, stackTrace) {
+        isGuest.value = false;
+
         isLoading.value = false;
         print('Registration failed:  ${e} $stackTrace');
 
@@ -170,18 +179,25 @@ class AuthController extends GetxController {
         if (apiResponse.status == 'success') {
           print('Login successful');
           // Handle successful login
+          isGuest.value = false;
+
           await cacheUserData(apiResponse.data!);
           AppConstants.userData = apiResponse.data!;
           user.value = apiResponse.data!.user;
           userToken = AppConstants.userData!.token;
-          Get.off(() => MainView());
+          // Get.off(() => MainView());
+          Get.offNamedUntil(Routes.MAIN, (Route) => false);
         } else {
+          isGuest.value = false;
+
           handleApiErrorUser(apiResponse.message);
           handleApiError(response.statusCode);
         }
         // Handle successful login
       } catch (e, stackTrace) {
         isLoading.value = false;
+        isGuest.value = false;
+
         print('Login failed: ${e}');
         print(e.toString() + stackTrace.toString());
 

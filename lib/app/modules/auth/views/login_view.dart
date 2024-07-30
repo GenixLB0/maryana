@@ -220,8 +220,10 @@ class LoginView extends StatelessWidget {
         ),
         InkWell(
             onTap: () {
+              controller.isGuest.value = true;
               Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
-              Get.to(MainView());
+              // Get.to(MainView());
+              Get.offNamedUntil(Routes.MAIN, (Route) => false);
             },
             child: buttonSocialMedia(
                 icon: 'assets/images/onboarding/person.svg',

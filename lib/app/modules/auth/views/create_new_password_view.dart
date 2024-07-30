@@ -10,6 +10,7 @@ import 'package:maryana/app/modules/global/config/helpers.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../global/widget/widget.dart';
 import '../../home/views/home_view.dart';
 
@@ -382,7 +383,9 @@ class CreateNewPasswordView extends GetView<ForgotPasswordController> {
                                               ),
                                               InkWell(
                                                 onTap: () {
-                                                  Get.offAll(() => MainView());
+                                                  // Get.offAll(() => MainView());
+                                                  Get.offNamedUntil(Routes.MAIN,
+                                                      (Route) => false);
                                                 },
                                                 child: SvgPicture.asset(
                                                   "assets/images/forgot_password/BUTTON (5).svg",

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,11 +20,13 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import '../../../../main.dart';
+import '../../../routes/app_pages.dart';
 import '../../global/config/constant.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart' hide Brands;
 import '../../main/views/main_view.dart';
 import '../../services/api_consumer.dart';
+import 'package:flutter/material.dart';
 
 class HomeController extends GetxController {
   Rx<ScrollController> scrollController = ScrollController().obs;
@@ -37,6 +39,7 @@ class HomeController extends GetxController {
   RxBool isHomeLoading = false.obs;
   final wishlistProductIds = <int>[].obs;
   bool isVideoInit = false;
+  RxBool zeroNavBar = false.obs;
 
   //////////////Upper Bar Check//////////////
   RxString currentSectionName = "".obs;
@@ -53,7 +56,7 @@ class HomeController extends GetxController {
           duration: const Duration(milliseconds: 400));
     } else {
       CustomSearchController myController =
-          Get.put<CustomSearchController>(CustomSearchController());
+      Get.put<CustomSearchController>(CustomSearchController());
       myController.getProductsInSection(
           sectionName: currentSectionName.value, payload: ongoingPayload);
 
@@ -148,13 +151,14 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
+    listenForFirstScroll();
     super.onInit();
   }
 
   @override
   void onReady() {
     getHomeApi();
-    listenForFirstScroll();
+
     runVideo();
     // mimicCatsForActiveCats(false, null);
     super.onReady();
@@ -232,7 +236,7 @@ class HomeController extends GetxController {
     List<Categories> myCatList = [];
     activeCats = [];
     Categories allItemCategory =
-        Categories(name: "All", slug: "", image: "", id: 0);
+    Categories(name: "All", slug: "", image: "", id: 0);
 
     myCatList.add(allItemCategory);
 
@@ -749,7 +753,7 @@ class HomeController extends GetxController {
             wishlistProductIds.addNonNull(id);
           }
           WishlistController wishlistController =
-              Get.put<WishlistController>(WishlistController());
+          Get.put<WishlistController>(WishlistController());
           wishlistController.setInitData(wishlistProductIds);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -803,7 +807,7 @@ class HomeController extends GetxController {
 
           wishlistProductIds.removeWhere((item) => item == product_id);
           WishlistController wishlistController =
-              Get.put<WishlistController>(WishlistController());
+          Get.put<WishlistController>(WishlistController());
           wishlistController.removeFromGrid(product_id);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -859,7 +863,7 @@ class HomeController extends GetxController {
           wishlistProductIds.add(product_id);
 
           WishlistController wishlistController =
-              Get.put<WishlistController>(WishlistController());
+          Get.put<WishlistController>(WishlistController());
           wishlistController.addToGrid(product_id);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -949,7 +953,7 @@ class HomeController extends GetxController {
         body: {'email': selectedEmail, 'gift_card_type_id': selectedGiftCardId},
       );
       if (reponse['status'] == "success") {
-        Get.to(() => MainView());
+        Get.offNamedUntil(Routes.MAIN, (Route) => false);
       } else {
         Get.snackbar("System", "Please Check The Selected Email");
       }

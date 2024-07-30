@@ -120,12 +120,6 @@ class HomeView extends GetView<HomeController> {
                       ),
                     );
             }),
-            // buildSearchAndFilter(
-            //   products: controller.homeModel.value.product,
-            //   categories: controller.homeModel.value.categories,
-            //   context: context,
-            //   isSearch: false,
-            // ),
 
             Expanded(
               child: SingleChildScrollView(

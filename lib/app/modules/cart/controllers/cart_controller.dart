@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:get/get.dart';
+import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.dart';
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
@@ -25,11 +26,15 @@ class CartController extends GetxController {
   var loading = true.obs;
   var couponCode = ''.obs;
   var giftCardCode = ''.obs;
-  var discount = 0.0.obs;
-  var subTotal = 0.0.obs;
-  var shipping = 0.0.obs;
-  var total = 0.0.obs;
+  var discount = Rx<dynamic>(0);
+  var subTotal = Rx<dynamic>(0);
+  var shipping = Rx<dynamic>(0);
+  var total = Rx<dynamic>(0);
+  var giftCardValue = Rx<dynamic>(0);
+  var couponValue = Rx<dynamic>(0);
   var shippingID = ''.obs;
+  var coupon = ''.obs;
+  var giftCardID = ''.obs;
   final box = GetStorage();
   RxBool isAuth = false.obs;
   void toggleDismissible(int index) {
@@ -37,6 +42,8 @@ class CartController extends GetxController {
     cartItems[index].isDismissible = !cartItems[index].isDismissible;
     cartItems.refresh();
   }
+
+  GiftCardController giftCardController = Get.put(GiftCardController());
 
   @override
   void onInit() async {
@@ -46,6 +53,8 @@ class CartController extends GetxController {
       isAuth.value = true;
       super.onInit();
       selectedMethod.value = "Cash";
+      giftCardController.fetchTransactions();
+
       bool cachedCart = await loadCartItems();
       if (!cachedCart) {
         print('retrived cart from api');
@@ -66,7 +75,7 @@ class CartController extends GetxController {
     print('Ready');
   }
 
-  Future<void> confirmCheckout(String paymentMethodId) async {
+  Future<String> confirmCheckout(String paymentMethodId) async {
     loading.value = true;
     try {
       final response = await apiConsumer.post(
@@ -82,8 +91,14 @@ class CartController extends GetxController {
         // Handle success response
         print('Checkout confirmed successfully');
         clearCart();
+        couponCode.value = '';
+        loading.value = false;
+
         Get.snackbar('Success', 'Checkout confirmed successfully');
+        return 'true';
       } else {
+        loading.value = false;
+
         // Handle error response
         print('Failed to confirm checkout: ${response['message']}');
         Get.snackbar(
@@ -91,10 +106,12 @@ class CartController extends GetxController {
       }
     } catch (e) {
       print('Error confirming checkout: $e');
-      Get.snackbar('Error', 'Failed to confirm checkout');
-    } finally {
       loading.value = false;
+
+      Get.snackbar('Error', 'Failed to confirm checkout');
+      return 'false';
     }
+    return 'false';
   }
 
   Future<void> fetchCartDetailsFromAPI() async {
@@ -107,8 +124,21 @@ class CartController extends GetxController {
         total.value = response['data']['total'];
         print(total.value.toString() + 'test total value');
 
-        cartItems.assignAll(items.map((e) => CartItem.fromJson(e)).toList());
-        saveCartItems();
+        // Update current cart items from API data
+        List<CartItem> apiCartItems =
+            items.map((e) => CartItem.fromJson(e)).toList();
+        cartItems.assignAll(apiCartItems);
+
+        // Retrieve cached cart items
+        List<CartItem> cachedCartItems = getCacheCartDetails();
+
+        // Remove items from cache that are not present in API cart details
+        cachedCartItems.removeWhere((cachedItem) => !apiCartItems
+            .any((apiItem) => apiItem.product.id == cachedItem.product.id));
+
+        // Update the cache with the remaining items
+        saveCartItemsToCache(cachedCartItems);
+
         cartItems.refresh(); // Ensure the UI is updated
 
         loading.value = false;
@@ -123,6 +153,17 @@ class CartController extends GetxController {
       loading.value = false;
       update();
     }
+  }
+
+  List<CartItem> getCacheCartDetails() {
+    List<dynamic> storedItems = box.read<List<dynamic>>('cartItems') ?? [];
+    return storedItems.map((e) => CartItem.fromJson(json.decode(e))).toList();
+  }
+
+// Save cart items to cache
+  void saveCartItemsToCache(List<CartItem> items) {
+    List<String> itemsJson = items.map((e) => json.encode(e.toJson())).toList();
+    box.write('cartItems', itemsJson);
   }
 
   Future<void> checkoutApi() async {
@@ -152,16 +193,20 @@ class CartController extends GetxController {
     print(code + 'code valid');
     try {
       final response = await apiConsumer
-          .post('orders/apply-coupon/$code', body: {'code': 'PERCENT10'});
+          .post('orders/apply-coupon/$code', body: {'code': code});
 
       if (response['status'] == 'success') {
         couponCode.value = code;
         await fetchCheckoutDetails(); // استدعاء البيانات المحدّثة
       } else {
+        Get.snackbar('Error', '${response['message']}');
+
         print('Failed to apply coupon: ${response['data']}');
       }
     } catch (e) {
-      print('Error applying coupon: $e');
+      Get.snackbar('Error', 'Coupon Code is invalid');
+
+      print(' code is invalid: $e');
     } finally {
       loading.value = false;
     }
@@ -170,8 +215,9 @@ class CartController extends GetxController {
   Future<void> removeCoupon() async {
     loading.value = true;
     try {
-      final response = await apiConsumer
-          .post('orders/remove-coupon', body: {'code': couponCode.value});
+      final response = await apiConsumer.post(
+          'orders/remove-coupon/${couponCode.value}',
+          body: {'code': couponCode.value});
 
       if (response['status'] == 'success') {
         couponCode.value = '';
@@ -186,14 +232,16 @@ class CartController extends GetxController {
     }
   }
 
-  Future<void> applyGiftCard(String code) async {
+  Future<void> applyGiftCard(String id) async {
     loading.value = true;
     try {
-      final response = await apiConsumer.post('orders/apply-gift-card',
-          body: {'gift_card_id': '1', 'coupon': code});
+      final response =
+          await apiConsumer.post('checkout/apply-gift-card', body: {
+        'gift_card_id': id,
+      });
 
       if (response['status'] == 'success') {
-        giftCardCode.value = code;
+        giftCardCode.value = id;
         await fetchCheckoutDetails(); // Get summery updated
       } else {
         print('Failed to apply gift card: ${response['data']}');
@@ -208,8 +256,10 @@ class CartController extends GetxController {
   Future<void> removeGiftCard() async {
     loading.value = true;
     try {
-      final response = await apiConsumer.post('orders/remove-gift-card',
-          body: {'gift_card_id': '1', 'coupon': giftCardCode.value});
+      final response =
+          await apiConsumer.post('checkout/remove-gift-card', body: {
+        'gift_card_id': giftCardID.value,
+      });
 
       if (response['status'] == 'success') {
         giftCardCode.value = '';
@@ -231,10 +281,15 @@ class CartController extends GetxController {
           .post('checkout', body: {'shipping_id': shipping_id});
 
       if (response['status'] == 'success') {
-        subTotal.value = response['data']['subtotal'];
-        shipping.value = response['data']['shipping'];
-        discount.value = response['data']['discount'];
-        total.value = response['data']['total'];
+        subTotal.value = (response['data']['sub_total'] as num).toDouble();
+        shipping.value = (response['data']['shipping'] as num).toDouble();
+        discount.value = (response['data']['discount'] as num).toDouble();
+        couponValue.value =
+            (response['data']['coupon_value'] as num).toDouble();
+        giftCardValue.value = (response['data']['giftCard'] as num).toDouble();
+        total.value = (response['data']['total'] as num).toDouble();
+        couponCode.value = response['data']['coupon'] ?? '';
+        update();
       } else {
         print('Failed to fetch checkout details: ${response['data']}');
       }

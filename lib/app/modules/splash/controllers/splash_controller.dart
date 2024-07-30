@@ -5,6 +5,8 @@ import 'package:maryana/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 
+import '../../../routes/app_pages.dart';
+
 class SplashController extends GetxController {
   var isLoading = true.obs;
   final CartController cartController = Get.put(CartController());
@@ -29,7 +31,8 @@ class SplashController extends GetxController {
       // } else {
       //   //  fetchCartDetailsFromAPI(); // Fetch updated data in the background
       // }
-      Get.offAll(() => MainView());
+      // Get.offAll(() => MainView());
+      Get.offNamedUntil(Routes.MAIN, (Route) => false);
     }
 
     isLoading.value = false; // Set loading to false when done
