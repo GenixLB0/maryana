@@ -255,7 +255,8 @@ class OrderDetailsScreen extends GetView<OrdersController> {
                         Expanded(
                             child: InkWell(
                                 onTap: () {
-                                  _tabController.selectedIndex.value = 0;
+                                  _tabController.changeIndex(1);
+                                  // _tabController.selectedIndex.value = 1;
                                   // Get.offAndToNamed(Routes.MAIN);
                                   Get.offNamedUntil(
                                       Routes.MAIN, (Route) => false);

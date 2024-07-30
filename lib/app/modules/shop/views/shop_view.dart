@@ -1,10 +1,14 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
+import 'package:local_hero/local_hero.dart';
 
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
@@ -12,6 +16,7 @@ import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:maryana/app/modules/product/views/product_view.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nb_utils/nb_utils.dart'
     hide primaryTextStyle
     hide boldTextStyle;
@@ -104,130 +109,334 @@ class ShopView extends GetView<ShopController> {
           ),
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 14.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 5.h,
-                  ),
-
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Builder(
-                    builder: (BuildContext context) {
-                      return GestureDetector(
-                        onTap: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                        child: Row(
-                          children: [
-                            Shimmer.fromColors(
-                              baseColor: Colors.purple,
-                              highlightColor: primaryColor,
-                              child: Obx(() {
-                                return Text(
-                                  controller.selectedCat.value.name ?? "",
-                                  style: primaryTextStyle(
-                                      weight: FontWeight.w700,
-                                      size: 14.sp.round()),
-                                );
-                              }),
-                            ),
-                            Icon(Icons.keyboard_arrow_down_outlined)
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Text(
-                    "TOP BRANDS",
-                    style: boldTextStyle(
-                        size: 16.sp.round(), weight: FontWeight.w400),
-                  ),
-                  _buildTopBrands(context),
-                  Container(
-                    height: 50.h,
-                    child: Row(
+          child: LocalHeroScope(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("SHOP BY PRODUCTS",
-                            style: boldTextStyle(
-                                size: 16.sp.round(), weight: FontWeight.w400)),
-                        Spacer(),
-                        GetBuilder<ShopController>(
-                            id: "products_in_categories",
-                            builder: (logic) {
-                              return Container(
-                                  width: 90.w,
-                                  height: 45.h,
-                                  padding: EdgeInsets.all(5.0.w),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 2, color: Colors.grey[200]!),
-                                      borderRadius:
-                                          BorderRadius.circular(35.sp)),
-                                  child: Center(
-                                    child: PopupMenuButton<String>(
-                                      color: Colors.white,
-                                      elevation: 5,
-                                      initialValue: "Filter",
-                                      itemBuilder: (context) {
-                                        return <String>[
-                                          "featured",
-                                          "best_selling",
-                                          "latest",
-                                          "oldest",
-                                          "low-high",
-                                          "high-low",
-                                          "a-z",
-                                          "z-a"
-                                        ].map((str) {
-                                          return PopupMenuItem(
-                                            value: str,
-                                            child: Text(str),
-                                          );
-                                        }).toList();
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Container(
-                                            width: 50.w,
-                                            child: Text(
-                                              controller.selectedOption,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: primaryTextStyle(
-                                                  size: 10.sp.round()),
-                                            ),
-                                          ),
-                                          const Icon(Icons.arrow_drop_down),
-                                        ],
-                                      ),
-                                      onSelected: (v) {
-                                        controller.changeDropDownValue(
-                                            controller.selectedCatId, v);
-                                      },
-                                    ),
-                                  ));
-                            }),
                         SizedBox(
-                          width: 6.w,
-                        )
+                          height: 5.h,
+                        ),
+
+                        // Builder(
+                        //   builder: (BuildContext context) {
+                        //     return GestureDetector(
+                        //       onTap: () {
+                        //         Scaffold.of(context).openDrawer();
+                        //       },
+                        //       child: Row(
+                        //         children: [
+                        //           Shimmer.fromColors(
+                        //             baseColor: Colors.purple,
+                        //             highlightColor: primaryColor,
+                        //             child: Obx(() {
+                        //               return Text(
+                        //                 controller.selectedCat.value.name ?? "",
+                        //                 style: primaryTextStyle(
+                        //                     weight: FontWeight.w700,
+                        //                     size: 14.sp.round()),
+                        //               );
+                        //             }),
+                        //           ),
+                        //           Icon(Icons.keyboard_arrow_down_outlined)
+                        //         ],
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Text(
+                          "TOP BRANDS",
+                          style: boldTextStyle(
+                              size: 16.sp.round(), weight: FontWeight.w400),
+                        ),
+                        _buildTopBrands(context),
+                        Container(
+                          height: 50.h,
+                          child: Row(
+                            children: [
+                              Text("SHOP BY PRODUCTS",
+                                  style: boldTextStyle(
+                                      size: 16.sp.round(),
+                                      weight: FontWeight.w400)),
+                              Spacer(),
+                              GetBuilder<ShopController>(
+                                  id: "products_in_categories",
+                                  builder: (logic) {
+                                    return Container(
+                                      width: 120.w,
+                                      height: 45.h,
+                                      padding: EdgeInsets.all(5.0.w),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2,
+                                              color: Colors.grey[200]!),
+                                          borderRadius:
+                                              BorderRadius.circular(35.sp)),
+                                      child: PopupMenuButton<String>(
+                                        color: Colors.white,
+                                        elevation: 5,
+                                        initialValue: "Filter",
+                                        itemBuilder: (context) {
+                                          return <String>[
+                                            "featured",
+                                            "best_selling",
+                                            "latest",
+                                            "oldest",
+                                            "low-high",
+                                            "high-low",
+                                            "a-z",
+                                            "z-a"
+                                          ].map((str) {
+                                            return PopupMenuItem(
+                                              value: str,
+                                              child: Text(
+                                                  str.replaceAll("_", " ")),
+                                            );
+                                          }).toList();
+                                        },
+                                        child: Row(
+                                          children: <Widget>[
+                                            Container(
+                                              width: 70.w,
+                                              child: Text(
+                                                controller.selectedOption
+                                                    .replaceAll("_", " "),
+                                                overflow: TextOverflow.ellipsis,
+                                                style: primaryTextStyle(
+                                                    size: 10.sp.round()),
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            const Icon(Icons.arrow_drop_down),
+                                          ],
+                                        ),
+                                        onSelected: (v) {
+                                          controller.changeDropDownValue(
+                                              controller.selectedCatId, v);
+                                        },
+                                      ),
+                                    );
+                                  }),
+                              SizedBox(
+                                width: 6.w,
+                              )
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 6.h),
+                        // Add spacing if needed
+                        _buildProductsInCategories(context)
+                        // Your grid view
+                        // More widgets go here
                       ],
                     ),
                   ),
+                ),
+                // Obx(() {
+                //   return Stack(
+                //     children: [
+                //       Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: Container(
+                //             child: controller.isSideBarOpen.value
+                //                 ? Container(
+                //                     margin: EdgeInsets.only(
+                //                         top: MediaQuery.of(context).size.height /
+                //                             6),
+                //                     decoration: BoxDecoration(
+                //                         borderRadius:
+                //                             BorderRadius.circular(25.sp),
+                //                         color: Colors.white,
+                //                         boxShadow: const [
+                //                           BoxShadow(
+                //                               color: Colors.black12,
+                //                               spreadRadius: 0,
+                //                               blurRadius: 15),
+                //                         ]),
+                //                     child: BackdropFilter(
+                //                       filter: controller.isSideBarOpen.value
+                //                           ? ImageFilter.blur(
+                //                               sigmaX: 5.0, sigmaY: 5.0)
+                //                           : ImageFilter.blur(
+                //                               sigmaX: 0.0, sigmaY: 0.0),
+                //                       // Adjust blur intensity
+                //                       child: Center(
+                //                         child: Row(
+                //                           children: [
+                //                             buildShopByCategories(context),
+                //                             Hero(
+                //                               tag: "arrow_shop_key",
+                //                               child: IconButton(
+                //                                 icon: Icon(
+                //                                     Icons.arrow_back_ios_new),
+                //                                 onPressed: () {
+                //                                   print("tapped");
+                //                                   controller.openSideBar();
+                //                                 },
+                //                               ),
+                //                             ),
+                //                           ],
+                //                         ),
+                //                       ),
+                //                     ),
+                //                   )
+                //                 : Transform.scale(
+                //                     scale: 0.9, // Adjust the scale as needed
+                //                     origin: const Offset(-240, 10),
+                //                     alignment:
+                //                         Alignment.centerLeft, // Align to the left
+                //
+                //                     child: Container(
+                //                       margin: EdgeInsets.only(
+                //                           top:
+                //                               MediaQuery.of(context).size.height /
+                //                                   3),
+                //                       decoration: BoxDecoration(
+                //                         shape: BoxShape.rectangle,
+                //                         borderRadius: BorderRadius.circular(38),
+                //                         border: Border.all(
+                //                           color: Colors.white.withOpacity(0.5),
+                //                         ),
+                //                         boxShadow: const [
+                //                           BoxShadow(
+                //                             offset: Offset(0, 0),
+                //                             color: Colors.white,
+                //                             spreadRadius: 3,
+                //                             blurRadius: 8,
+                //                           ),
+                //                         ],
+                //                       ),
+                //                       child: Hero(
+                //                         tag: "arrow_shop_key",
+                //                         child: IconButton(
+                //                           icon: Icon(Icons.double_arrow_rounded),
+                //                           onPressed: () {
+                //                             print("tapped");
+                //                             controller.openSideBar();
+                //                           },
+                //                         ),
+                //                       ),
+                //                     ),
+                //                   ),
+                //           )),
+                //     ],
+                //   );
+                // }),
+                SizedBox(
+                  height: 1,
+                ),
+                Obx(() {
+                  return GestureDetector(
+                    onTap: () {
+                      controller.openSideBar();
+                    },
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      switchInCurve: Curves.fastOutSlowIn,
+                      switchOutCurve: Curves.fastOutSlowIn,
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(65.0, 1.0),
+                            end: const Offset(0.0, 0.0),
+                          ).animate(animation),
+                          child: child,
+                        );
+                      },
+                      child: controller.isSideBarOpen.value
+                          ? Container(
+                              margin: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.height / 6),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.sp),
+                                  color: Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 0,
+                                        blurRadius: 15),
+                                  ]),
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                                // Adjust blur intensity
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      buildShopByCategories(context),
+                                      Transform.scale(
+                                          scale: -1,
+                                          // Rotate by 180 degrees
 
-                  SizedBox(height: 6.h), // Add spacing if needed
-                  _buildProductsInCategories(context) // Your grid view
-                  // More widgets go here
-                ],
-              ),
+                                          child: LocalHero(
+                                            tag: "test",
+                                            child: IconButton(
+                                              icon: Icon(
+                                                  Icons.double_arrow_rounded),
+                                              onPressed: () {
+                                                print("tapped");
+                                                controller.openSideBar();
+                                              },
+                                            ),
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Transform.scale(
+                              scale: 0.9, // Adjust the scale as needed
+                              origin: const Offset(-160, 10),
+                              alignment:
+                                  Alignment.centerLeft, // Align to the left
+
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    top:
+                                        MediaQuery.of(context).size.height / 3),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(38),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.5),
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      offset: Offset(0, 0),
+                                      color: Colors.white,
+                                      spreadRadius: 3,
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                ),
+                                child: LocalHero(
+                                  tag: "test",
+                                  child: IconButton(
+                                    icon: Icon(Icons.double_arrow_rounded),
+                                    onPressed: () {
+                                      print("tapped");
+                                      controller.openSideBar();
+                                      // controller.openSideBar();
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
 
@@ -306,91 +515,108 @@ class ShopView extends GetView<ShopController> {
   }
 
   buildShopByCategories(BuildContext context) {
-    return Expanded(
-      flex: 5,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: smallSpacing),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Shop By Categories",
-                style:
-                    boldTextStyle(weight: FontWeight.w400, size: 23.sp.round()),
-              ),
-            ),
-            SizedBox(
-              height: 15.h,
-            ),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 1.3),
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 5.w),
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4.sp),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 0,
-                            blurRadius: 15),
-                      ],
+    return controller.isSideBarOpen.value
+        ? Expanded(
+            flex: 5,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: smallSpacing),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Shop By Categories",
+                      style: boldTextStyle(
+                          weight: FontWeight.w400, size: 23.sp.round()),
                     ),
-                    child: controller.categories[index].image != null
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              controller.categories[index].image!.isEmpty
-                                  ? placeHolderWidget()
-                                  : Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        CachedNetworkImage(
-                                          imageUrl: controller
-                                              .categories[index].image!,
-                                          width: 135.w,
-                                          height: 120.h,
-                                          fit: BoxFit.cover,
-                                          placeholder: (ctx, v) {
-                                            return placeHolderWidget();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                              SizedBox(
-                                height: 3.h,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 5.w),
-                                child: Text(
-                                  controller.categories[index].name!,
-                                  style: primaryTextStyle(
-                                      weight: FontWeight.w700,
-                                      size: 16.sp.round(),
-                                      color: Colors.black),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
+                  ),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 1.2),
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 5.w,
+                          mainAxisSpacing: 5),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(4.sp),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  spreadRadius: 0,
+                                  blurRadius: 15),
                             ],
-                          )
-                        : placeHolderWidget(),
-                  );
-                },
-                itemCount: controller.categories.length,
+                          ),
+                          child: controller.categories[index].image != null
+                              ? GestureDetector(
+                                  onTap: () {
+                                    controller.openSideBar();
+                                    controller.changeChoosenCat(
+                                        controller.categories[index]);
+                                    controller.getProductsInCategory(
+                                        controller.categories[index].id!, "");
+                                    controller.getBrandsInCategory(
+                                        controller.categories[index].id!);
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      controller
+                                              .categories[index].image!.isEmpty
+                                          ? placeHolderWidget()
+                                          : Stack(
+                                              alignment: Alignment.topRight,
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageUrl: controller
+                                                      .categories[index].image!,
+                                                  width: 135.w,
+                                                  height: 120.h,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (ctx, v) {
+                                                    return placeHolderWidget();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                      SizedBox(
+                                        height: 3.h,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 5.w),
+                                        child: Text(
+                                          controller.categories[index].name!,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: primaryTextStyle(
+                                              weight: FontWeight.w700,
+                                              size: 16.sp.round(),
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 1.h,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : placeHolderWidget(),
+                        );
+                      },
+                      itemCount: controller.categories.length,
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
-    );
+            ),
+          )
+        : const SizedBox();
   }
 
   buildShopByProducts(BuildContext context) {
@@ -718,13 +944,8 @@ class ShopView extends GetView<ShopController> {
           : controller.productsInCategories.isEmpty
               ? Align(
                   alignment: Alignment.center,
-                  child: Text(
-                    "Sorry , No Products Found",
-                    style: primaryTextStyle(
-                        size: 20.sp.round(),
-                        color: Colors.black,
-                        weight: FontWeight.w400),
-                  ),
+                  child: Image.asset(
+                      "assets/images/product/no-item-found-here.png"),
                 )
               : GridView.builder(
                   shrinkWrap: true,
@@ -757,11 +978,23 @@ class ShopView extends GetView<ShopController> {
                   SizedBox(
                     width: 16.w,
                   ),
-                  Text(
-                    "Discover",
-                    style: primaryTextStyle(
-                        size: 22.sp.round(), weight: FontWeight.w600),
+                  Shimmer.fromColors(
+                    baseColor: Colors.purple,
+                    highlightColor: primaryColor,
+                    child: Obx(() {
+                      return Text(
+                        controller.selectedCat.value.name ?? "",
+                        style: primaryTextStyle(
+                            weight: FontWeight.w600, size: 22.sp.round()),
+                      );
+                    }),
                   ),
+                  // Text(
+                  //   "Discover",
+                  //   style: primaryTextStyle(
+                  //       size: 22.sp.round(), weight: FontWeight.w600),
+                  // ),
+
                   Spacer(),
                   IconButton(
                     icon: Padding(
@@ -814,6 +1047,118 @@ class ShopView extends GetView<ShopController> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SideModalContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8, // Adjust width as needed
+      height: MediaQuery.of(context).size.height, // Full height
+      color: Colors.white,
+      child: Center(
+        child: Text('Your Custom Content'),
+      ),
+    );
+  }
+}
+
+class MyAnimatedSwitcher extends StatefulWidget {
+  @override
+  _MyAnimatedSwitcherState createState() => _MyAnimatedSwitcherState();
+}
+
+class _MyAnimatedSwitcherState extends State<MyAnimatedSwitcher> {
+  bool _showFirstWidget = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _showFirstWidget = !_showFirstWidget;
+        });
+      },
+      child: AnimatedSwitcher(
+        duration: const Duration(seconds: 1),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0),
+              end: const Offset(0.0, 0.0),
+            ).animate(animation),
+            child: child,
+          );
+        },
+        child: _showFirstWidget
+            ? Container(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 6),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25.sp),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black12,
+                          spreadRadius: 0,
+                          blurRadius: 15),
+                    ]),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                  // Adjust blur intensity
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Text("testser"),
+                        IconButton(
+                          icon: Icon(Icons.arrow_back_ios_new),
+                          onPressed: () {
+                            print("tapped");
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Transform.scale(
+                scale: 0.9, // Adjust the scale as needed
+                origin: const Offset(-160, 10),
+                alignment: Alignment.centerLeft, // Align to the left
+
+                child: Container(
+                  margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height / 3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(38),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.5),
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        offset: Offset(0, 0),
+                        color: Colors.white,
+                        spreadRadius: 3,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.double_arrow_rounded),
+                    onPressed: () {
+                      print("tapped");
+                      setState(() {
+                        _showFirstWidget = !_showFirstWidget;
+                      });
+                      // controller.openSideBar();
+                    },
+                  ),
+                ),
+              ),
       ),
     );
   }

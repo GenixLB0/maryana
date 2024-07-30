@@ -6,8 +6,8 @@ import 'package:nb_utils/nb_utils.dart' hide primaryTextStyle;
 
 double pixelCountInMm = 7.874015748031496;
 
-class SizeGuide extends StatefulWidget {
-  const SizeGuide(
+class SizeGuideView extends StatefulWidget {
+  const SizeGuideView(
       {super.key,
       required this.selectedFitType,
       required this.selectedStretch,
@@ -18,10 +18,11 @@ class SizeGuide extends StatefulWidget {
   final List<Attr> selectedAttr;
 
   @override
-  State<SizeGuide> createState() => _SizeGuideState();
+  State<SizeGuideView> createState() => _SizeGuideState();
 }
 
-class _SizeGuideState extends State<SizeGuide> with TickerProviderStateMixin {
+class _SizeGuideState extends State<SizeGuideView>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();

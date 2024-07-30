@@ -231,28 +231,33 @@ class ViewProductData {
   List<ColorData>? colors;
   List<String>? sizes;
   Unit? unit;
+  dynamic rating;
+  dynamic ratings_count;
+  List<dynamic>? rating_percentages;
   Category? category;
   Styles? style;
   List<Attachments>? attachments;
   SizeGuide? sizeGuide;
 
-  ViewProductData({
-    this.id,
-    this.name,
-    this.description,
-    this.image,
-    this.price,
-    this.old_price,
-    this.selectedSize,
-    this.selectedColor,
-    this.colors,
-    this.sizes,
-    this.unit,
-    this.category,
-    this.style,
-    this.attachments,
-    this.sizeGuide,
-  });
+  ViewProductData(
+      {this.id,
+      this.name,
+      this.description,
+      this.image,
+      this.price,
+      this.old_price,
+      this.selectedSize,
+      this.selectedColor,
+      this.colors,
+      this.sizes,
+      this.unit,
+      this.category,
+      this.style,
+      this.attachments,
+      this.sizeGuide,
+      this.rating,
+      this.rating_percentages,
+      this.ratings_count});
 
   factory ViewProductData.fromJson(Map<String, dynamic> json) {
     return ViewProductData(
@@ -260,6 +265,9 @@ class ViewProductData {
       name: json['name'],
       description: json['description'],
       image: json['image'],
+      rating: json['rating'],
+      ratings_count: json['ratings_count'],
+      rating_percentages: json['rating_percentages'] ?? [],
       price: json['price'],
       old_price: json['old_price'] ?? null,
       colors: (json['colors'] as List<dynamic>?)

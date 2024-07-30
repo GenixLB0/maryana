@@ -26,6 +26,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
   late Animation<Offset> _handAnimation;
   late AnimationController _scaleAnimationController;
   late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
     super.initState();
@@ -218,14 +219,17 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                         SizedBox(height: 8.h),
                         SizedBox(
                           width: 110.w,
-                          child: Text(
-                            'Size: ${item!.selectedSize.toString()} |  Color: ${item!.selectedColor.toString()}',
-                            style: primaryTextStyle(
-                              color: Color(0xFF8A8A8F),
-                              size: 10.sp.round(),
-                              weight: FontWeight.w700,
-                            ),
-                          ),
+                          child: item!.selectedSize!.isEmpty &&
+                                  item!.selectedColor!.isEmpty
+                              ? SizedBox()
+                              : Text(
+                                  'Size: ${item!.selectedSize.toString()} |  Color: ${item!.selectedColor.toString()}',
+                                  style: primaryTextStyle(
+                                    color: Color(0xFF8A8A8F),
+                                    size: 10.sp.round(),
+                                    weight: FontWeight.w700,
+                                  ),
+                                ),
                         ),
                       ],
                     ),

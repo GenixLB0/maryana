@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
@@ -8,23 +9,22 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maryana/app/modules/global/config/constant.dart';
+
 import 'package:maryana/app/modules/global/theme/colors.dart';
-import 'package:maryana/app/modules/global/widget/widget.dart';
-import 'package:maryana/app/modules/profile/views/profile_view.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/modules/wishlist/controllers/wishlist_controller.dart';
-import 'package:nb_utils/nb_utils.dart';
+
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import '../../../../main.dart';
 import '../../../routes/app_pages.dart';
-import '../../global/config/constant.dart';
+
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart' hide Brands;
-import '../../main/views/main_view.dart';
+
 import '../../services/api_consumer.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +56,7 @@ class HomeController extends GetxController {
           duration: const Duration(milliseconds: 400));
     } else {
       CustomSearchController myController =
-      Get.put<CustomSearchController>(CustomSearchController());
+          Get.put<CustomSearchController>(CustomSearchController());
       myController.getProductsInSection(
           sectionName: currentSectionName.value, payload: ongoingPayload);
 
@@ -156,6 +156,12 @@ class HomeController extends GetxController {
   }
 
   @override
+  void dispose() {
+    scrollController.value.dispose();
+    super.dispose();
+  }
+
+  @override
   void onReady() {
     getHomeApi();
 
@@ -236,7 +242,7 @@ class HomeController extends GetxController {
     List<Categories> myCatList = [];
     activeCats = [];
     Categories allItemCategory =
-    Categories(name: "All", slug: "", image: "", id: 0);
+        Categories(name: "All", slug: "", image: "", id: 0);
 
     myCatList.add(allItemCategory);
 
@@ -709,7 +715,7 @@ class HomeController extends GetxController {
           isGiftCardLoading = false;
           isGiftCardsAdded = true;
           isGiftCardReached = true;
-          selectedGiftCardId = giftCards.first.id.toString();
+          selectedGiftCard = giftCards.first;
           update(['gift-cards']);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -753,7 +759,7 @@ class HomeController extends GetxController {
             wishlistProductIds.addNonNull(id);
           }
           WishlistController wishlistController =
-          Get.put<WishlistController>(WishlistController());
+              Get.put<WishlistController>(WishlistController());
           wishlistController.setInitData(wishlistProductIds);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -783,8 +789,9 @@ class HomeController extends GetxController {
     //     isDismissible: true);
 
     if (userToken != null) {
+      Get.closeCurrentSnackbar();
       Get.snackbar('Removed', 'Removed from Wishlist',
-          backgroundColor: primaryColor,
+          // backgroundColor: primaryColor,
           icon: SvgPicture.asset(
             "assets/images/home/add_to_wishlist.svg",
             width: 43.w,
@@ -807,7 +814,7 @@ class HomeController extends GetxController {
 
           wishlistProductIds.removeWhere((item) => item == product_id);
           WishlistController wishlistController =
-          Get.put<WishlistController>(WishlistController());
+              Get.put<WishlistController>(WishlistController());
           wishlistController.removeFromGrid(product_id);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -837,8 +844,9 @@ class HomeController extends GetxController {
     //     isDismissible: true);
 
     if (userToken != null) {
+      Get.closeCurrentSnackbar();
       Get.snackbar('Added', 'Added To Wishlist',
-          backgroundColor: primaryColor,
+          // backgroundColor: primaryColor,
           icon: SvgPicture.asset(
             "assets/images/home/wishlisted.svg",
             width: 43.w,
@@ -863,7 +871,7 @@ class HomeController extends GetxController {
           wishlistProductIds.add(product_id);
 
           WishlistController wishlistController =
-          Get.put<WishlistController>(WishlistController());
+              Get.put<WishlistController>(WishlistController());
           wishlistController.addToGrid(product_id);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -876,11 +884,12 @@ class HomeController extends GetxController {
         print(e.toString() + stackTrace.toString());
       }
     } else {
+      Get.closeCurrentSnackbar();
       Get.snackbar('System', 'Please Log in First',
           showProgressIndicator: true,
           duration: const Duration(milliseconds: 1200),
           progressIndicatorBackgroundColor: Colors.white,
-          backgroundColor: primaryColor,
+          // backgroundColor: primaryColor,
           icon: Center(child: Icon(Icons.login)),
           isDismissible: true);
     }
@@ -935,26 +944,44 @@ class HomeController extends GetxController {
     });
   }
 
-  String selectedGiftCardId = "";
+  GiftCards selectedGiftCard = GiftCards(
+      id: 0, image: AppConstants.placeHolderImage, name: "Empty", amount: 0);
   String selectedEmail = "";
 
   changeSelectedEmail(email) {
     selectedEmail = email;
   }
 
-  changeSelectedGiftCardId(id) {
-    selectedGiftCardId = id.toString();
+  changeSelectedGiftCardId(String comingGiftCard) {
+    selectedGiftCard = giftCards
+        .firstWhere((card) => card.amount.toString() == comingGiftCard);
+    print("selected is ${selectedGiftCard}");
+    update(['gift-cards']);
   }
 
   sendGiftCard() async {
     if (userToken != null) {
       var reponse = await apiConsumer.post(
         "gift-cards/send",
-        body: {'email': selectedEmail, 'gift_card_type_id': selectedGiftCardId},
+        body: {
+          'email': selectedEmail,
+          'gift_card_type_id': selectedGiftCard.id
+        },
       );
-      if (reponse['status'] == "success") {
-        Get.offNamedUntil(Routes.MAIN, (Route) => false);
-      } else {
+
+      try {
+        if (reponse['status'] != "success") {
+          Get.closeCurrentSnackbar();
+          Get.snackbar("System", reponse['errors'].toString());
+        }
+
+        if (reponse['status'] == "success") {
+          Get.offNamedUntil(Routes.MAIN, (Route) => false);
+        }
+      } catch (e) {
+        print("error happended !");
+
+        Get.closeCurrentSnackbar();
         Get.snackbar("System", "Please Check The Selected Email");
       }
     }

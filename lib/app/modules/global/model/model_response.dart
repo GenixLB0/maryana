@@ -170,6 +170,7 @@ class User {
   String? phone;
   final String? langCode;
   String? dob;
+  int? total_points;
 
   User({
     required this.id,
@@ -181,6 +182,7 @@ class User {
     this.phone,
     this.langCode,
     this.dob,
+    this.total_points,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -194,6 +196,7 @@ class User {
       phone: json['phone'],
       langCode: json['lang_code'],
       dob: json['dob'],
+      total_points: json['total_points'],
     );
   }
 
@@ -208,6 +211,7 @@ class User {
       'phone': phone,
       'lang_code': langCode,
       'dob': dob,
+      'total_points': total_points,
     };
   }
 }
@@ -662,6 +666,7 @@ class Coupons {
   int? id;
   String? name;
   String? code;
+  String? type;
   int? amount;
   ExpireAt? expireAt;
 
@@ -671,6 +676,7 @@ class Coupons {
     id = json['id'];
     name = json['name'];
     code = json['code'];
+    type = json['type'];
     amount = json['amount'];
     expireAt = json['expire_at'] != null
         ? new ExpireAt.fromJson(json['expire_at'])
@@ -682,6 +688,7 @@ class Coupons {
     data['id'] = this.id;
     data['name'] = this.name;
     data['code'] = this.code;
+    data['type'] = this.type;
     data['amount'] = this.amount;
     if (this.expireAt != null) {
       data['expire_at'] = this.expireAt!.toJson();
@@ -1029,6 +1036,7 @@ class SizeData {
 class ApiGiftCardsResponse {
   String? status;
   String? message;
+  dynamic errors;
   GiftCardsData? data;
 
   ApiGiftCardsResponse({this.status, this.message, this.data});
@@ -1036,6 +1044,7 @@ class ApiGiftCardsResponse {
   ApiGiftCardsResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
+    errors = json['errors'];
     data =
         json['data'] != null ? new GiftCardsData.fromJson(json['data']) : null;
   }
@@ -1044,6 +1053,10 @@ class ApiGiftCardsResponse {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
+    if (data['errors'] != null) {
+      data['errors'] = this.errors!.toJson();
+    }
+    data['errors'] = this.errors;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -1162,6 +1175,162 @@ class Attr {
     data['waist'] = this.waist;
     data['hip'] = this.hip;
     data['bust'] = this.bust;
+    return data;
+  }
+}
+
+class ReviewsModel {
+  int? id;
+  String? title;
+  String? comment;
+  int? rating;
+  String? customer;
+
+  ReviewsModel({this.id, this.title, this.comment, this.rating, this.customer});
+
+  ReviewsModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    comment = json['comment'];
+    rating = json['rating'];
+    customer = json['customer'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['comment'] = this.comment;
+    data['rating'] = this.rating;
+    data['customer'] = this.customer;
+    return data;
+  }
+}
+
+class FilterOneModel {
+  String? status;
+  String? message;
+  OneFilterData? data;
+
+  FilterOneModel({this.status, this.message, this.data});
+
+  FilterOneModel.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    data =
+        json['data'] != null ? new OneFilterData.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
+}
+
+class OneFilterData {
+  String? minPrice;
+  String? maxPrice;
+  List<ProductColor>? colors;
+  List<Brands>? brands;
+  List<Styles>? styles;
+  List<Collections>? collections;
+  List<Materials>? materials;
+  List<String>? seasons;
+  List<String>? sizes;
+
+  OneFilterData(
+      {this.minPrice,
+      this.maxPrice,
+      this.colors,
+      this.brands,
+      this.styles,
+      this.collections,
+      this.materials,
+      this.seasons,
+      this.sizes});
+
+  OneFilterData.fromJson(Map<String, dynamic> json) {
+    minPrice = json['minPrice'];
+    maxPrice = json['maxPrice'];
+    if (json['colors'] != null) {
+      colors = <ProductColor>[];
+      json['colors'].forEach((v) {
+        colors!.add(new ProductColor.fromJson(v));
+      });
+    }
+    if (json['brands'] != null) {
+      brands = <Brands>[];
+      json['brands'].forEach((v) {
+        brands!.add(new Brands.fromJson(v));
+      });
+    }
+    if (json['styles'] != null) {
+      styles = <Styles>[];
+      json['styles'].forEach((v) {
+        styles!.add(new Styles.fromJson(v));
+      });
+    }
+    if (json['collections'] != null) {
+      collections = <Collections>[];
+      json['collections'].forEach((v) {
+        collections!.add(new Collections.fromJson(v));
+      });
+    }
+    if (json['materials'] != null) {
+      materials = <Materials>[];
+      json['materials'].forEach((v) {
+        materials!.add(new Materials.fromJson(v));
+      });
+    }
+    seasons = json['seasons'].cast<String>();
+    sizes = json['sizes'].cast<String>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['minPrice'] = this.minPrice;
+    data['maxPrice'] = this.maxPrice;
+    if (this.colors != null) {
+      data['colors'] = this.colors!.map((v) => v.toJson()).toList();
+    }
+    if (this.brands != null) {
+      data['brands'] = this.brands!.map((v) => v.toJson()).toList();
+    }
+    if (this.styles != null) {
+      data['styles'] = this.styles!.map((v) => v.toJson()).toList();
+    }
+    if (this.collections != null) {
+      data['collections'] = this.collections!.map((v) => v.toJson()).toList();
+    }
+    if (this.materials != null) {
+      data['materials'] = this.materials!.map((v) => v.toJson()).toList();
+    }
+    data['seasons'] = this.seasons;
+    data['sizes'] = this.sizes;
+    return data;
+  }
+}
+
+class Materials {
+  int? id;
+  String? name;
+
+  Materials({this.id, this.name});
+
+  Materials.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
     return data;
   }
 }

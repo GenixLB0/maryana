@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lottie/lottie.dart';
 
@@ -15,15 +16,18 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maryana/app/modules/auth/controllers/auth_controller.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
-import 'package:maryana/app/modules/global/model/model_response.dart';
+import 'package:maryana/app/modules/global/model/model_response.dart'
+    hide Colors;
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
+import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:maryana/app/modules/product/views/product_view.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:maryana/app/modules/search/views/search_view.dart';
+import 'package:maryana/app/modules/services/dio_consumer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
@@ -1320,10 +1324,14 @@ class _buildCardProductState extends State<buildProductCard> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.toNamed(
-                            Routes.PRODUCT,
-                            arguments: widget.product,
-                          );
+                          print("new product name 22 ${widget.product.name}");
+                          if (Get.isRegistered<ProductController>()) {
+                            print("yes it's registeded");
+                            Get.delete<ProductController>();
+                          }
+                          Get.toNamed(Routes.PRODUCT,
+                              arguments: widget.product,
+                              preventDuplicates: false);
                         },
                         child: CachedNetworkImage(
                           imageUrl: widget.product.image!,
@@ -1351,11 +1359,16 @@ class _buildCardProductState extends State<buildProductCard> {
                                       .contains(widget.product.id!)
                                   ? ShowUp(
                                       delay: 500,
-                                      child: SvgPicture.asset(
-                                        "assets/images/home/wishlisted.svg",
-                                        width: 33.w,
-                                        height: 33.h,
-                                        fit: BoxFit.cover,
+                                      child: AvatarGlow(
+                                        curve: Curves.fastOutSlowIn,
+                                        glowColor: Colors.purpleAccent,
+                                        repeat: false,
+                                        child: SvgPicture.asset(
+                                          "assets/images/home/wishlisted.svg",
+                                          width: 33.w,
+                                          height: 33.h,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     )
                                   : ShowUp(
@@ -2133,8 +2146,8 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                         child: RangeSlider(
                             inactiveColor: Colors.grey[300],
                             activeColor: Colors.black,
-                            min: 1.0,
-                            max: 10000.0,
+                            min: my_search_controller.minPriceApi.value,
+                            max: my_search_controller.maxPriceApi.value,
                             values: my_search_controller.settedValue.value,
                             onChanged: (value) {
                               my_search_controller.setNewValue(value);

@@ -36,7 +36,10 @@ dependencies:
   shimmer:
   logger: ^1.1.0
   loading_animation_widget: ^1.2.1
+  local_hero:
   get_it:
+  avatar_glow:
+
 
   flutter_spinkit:
   percent_indicator:
@@ -45,6 +48,7 @@ dependencies:
   flutter_mobx: ^2.2.0
   google_fonts: ^6.2.1
   modal_bottom_sheet: ^3.0.0
+
 
   image_picker: ^1.1.2
   geocoding: ^3.0.0

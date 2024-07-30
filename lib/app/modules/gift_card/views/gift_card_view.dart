@@ -145,7 +145,7 @@ class GiftCardView extends GetView<GiftCardController> {
                         Padding(
                           padding: EdgeInsets.only(left: 15.w),
                           child: Text(
-                            "Choose Gift Card ID",
+                            "Choose Gift Amount",
                             style: primaryTextStyle(),
                           ),
                         ),
@@ -159,21 +159,44 @@ class GiftCardView extends GetView<GiftCardController> {
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 child: Container(
                                   child: PopupMenuButton<String>(
+                                    constraints: BoxConstraints(
+                                      minWidth: MediaQuery.of(context)
+                                          .size
+                                          .width, // Minimum width
+                                      maxWidth: MediaQuery.of(context)
+                                          .size
+                                          .width, // Maximum width
+                                    ),
                                     color: Colors.white,
                                     elevation: 5,
-                                    initialValue: logic.selectedGiftCardId,
+                                    initialValue: logic.selectedGiftCard.amount
+                                        .toString(),
                                     itemBuilder: (context) {
                                       return logic.giftCards.map((giftCard) {
                                         return PopupMenuItem(
-                                          value: giftCard.id!.toString(),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                logic.selectedGiftCardId,
-                                                style: primaryTextStyle(),
-                                              ),
-                                              const Divider(color: Colors.grey),
-                                            ],
+                                          value: giftCard.amount!.toString(),
+                                          child: Container(
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.card_giftcard,
+                                                      color: primaryColor,
+                                                    ),
+                                                    Spacer(),
+                                                    Text(
+                                                      giftCard.amount
+                                                          .toString(),
+                                                      style: primaryTextStyle(),
+                                                    ),
+                                                    Spacer(),
+                                                  ],
+                                                ),
+                                                const Divider(
+                                                    color: Colors.grey),
+                                              ],
+                                            ),
                                           ),
                                         );
                                       }).toList();
@@ -184,10 +207,11 @@ class GiftCardView extends GetView<GiftCardController> {
                                         Container(
                                           width: 50.w,
                                           child: Text(
-                                            logic.giftCards.first.id.toString(),
+                                            logic.selectedGiftCard.amount
+                                                .toString(),
                                             overflow: TextOverflow.ellipsis,
                                             style: primaryTextStyle(
-                                                size: 10.sp.round()),
+                                                size: 12.sp.round()),
                                           ),
                                         ),
                                         Spacer(),

@@ -64,7 +64,7 @@ class HomeView extends GetView<HomeController> {
                       height: 5.h,
                     )
                   : Container(
-                      color: const Color(0xffF7D454),
+                      // color: const Color(0xffF7D454),
                       child: SlideToast(
                         InkWell(
                           onTap: () {
@@ -73,8 +73,18 @@ class HomeView extends GetView<HomeController> {
                           child: AnimatedContainer(
                             height: 50,
                             width: MediaQuery.of(context).size.width,
-                            color: const Color(0xffF7D454),
-                            duration: Duration(seconds: 1),
+                            // color: primaryColor.withOpacity(0.9),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.purple.shade200,
+                                  Colors.purple.shade50,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            duration: const Duration(seconds: 1),
                             curve: Curves.fastOutSlowIn,
                             child: Row(
                               children: [
@@ -86,7 +96,7 @@ class HomeView extends GetView<HomeController> {
                                     Text(
                                       "Check all the products in",
                                       style: primaryTextStyle(
-                                          color: Colors.black,
+                                          color: Colors.white,
                                           weight: FontWeight.w400,
                                           size: 12.sp.round()),
                                     ),
@@ -97,7 +107,7 @@ class HomeView extends GetView<HomeController> {
                                         baseColor: Colors.purple,
                                         highlightColor: primaryColor,
                                         child: Text(
-                                          "${controller.currentSectionName.value}",
+                                          controller.currentSectionName.value,
                                           style: primaryTextStyle(
                                               color: Colors.black,
                                               weight: FontWeight.w400,
@@ -110,7 +120,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 Icon(
                                   Icons.arrow_forward,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   size: 15.sp,
                                 )
                               ],
@@ -125,7 +135,7 @@ class HomeView extends GetView<HomeController> {
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
                 controller: controller.scrollController.value,
-                restorationId: "set",
+                restorationId: "home_scroll",
                 scrollDirection: Axis.vertical,
                 child: Container(
                   child: Column(
@@ -1737,16 +1747,25 @@ class HomeView extends GetView<HomeController> {
                                                   const ColorFilter.mode(
                                                       Colors.black45,
                                                       BlendMode.hardLight),
-                                              child: CachedNetworkImage(
-                                                imageUrl: controller
-                                                    .styles[index].image!,
-                                                width: 165.w,
-                                                height: 290.h,
-                                                fit: BoxFit.cover,
-                                                placeholder: (ctx, v) {
-                                                  return placeHolderWidget();
-                                                },
-                                              ),
+                                              child: controller.styles[index]
+                                                          .image !=
+                                                      null
+                                                  ? CachedNetworkImage(
+                                                      imageUrl: controller
+                                                          .styles[index].image!,
+                                                      width: 165.w,
+                                                      height: 290.h,
+                                                      fit: BoxFit.cover,
+                                                      placeholder: (ctx, v) {
+                                                        return placeHolderWidget();
+                                                      },
+                                                    )
+                                                  : Image.asset(
+                                                      "assets/images/placeholder.png",
+                                                      width: 165.w,
+                                                      height: 290.h,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                             ),
                                           ),
                                           Padding(
@@ -1958,7 +1977,7 @@ class HomeView extends GetView<HomeController> {
                                           height: 5,
                                           width: 5,
                                           decoration: BoxDecoration(
-                                              color: Colors.white,
+                                              color: Colors.black,
                                               border: Border.all(
                                                   color: Colors.black12),
                                               shape: BoxShape.circle),
@@ -2087,15 +2106,24 @@ class HomeView extends GetView<HomeController> {
                                                       const ColorFilter.mode(
                                                           Colors.black45,
                                                           BlendMode.hardLight),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: brand.image!,
-                                                    width: 190.w,
-                                                    height: 250.h,
-                                                    fit: BoxFit.cover,
-                                                    placeholder: (ctx, v) {
-                                                      return placeHolderWidget();
-                                                    },
-                                                  ),
+                                                  child: brand.image != null
+                                                      ? CachedNetworkImage(
+                                                          imageUrl:
+                                                              brand.image!,
+                                                          width: 190.w,
+                                                          height: 250.h,
+                                                          fit: BoxFit.cover,
+                                                          placeholder:
+                                                              (ctx, v) {
+                                                            return placeHolderWidget();
+                                                          },
+                                                        )
+                                                      : Image.asset(
+                                                          "assets/images/placeholder.png",
+                                                          width: 190.w,
+                                                          height: 250.h,
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                 ),
                                               ),
                                               Padding(
@@ -2418,8 +2446,8 @@ class _ImageSliderWithIndicatorsState
       return InkWell(
         onTap: () async {
           await Clipboard.setData(ClipboardData(text: coupon.code!));
+          Get.closeCurrentSnackbar();
           Get.snackbar('Copied !', 'Copied To Clipboard',
-              backgroundColor: primaryColor,
               icon: Icon(
                 Icons.content_paste_outlined,
                 color: Colors.white,
@@ -2467,12 +2495,19 @@ class _ImageSliderWithIndicatorsState
                                             color: Colors.white,
                                             weight: FontWeight.w900),
                                       )
-                                    : Text(
-                                        "${coupon.amount} % Off",
-                                        style: primaryTextStyle(
-                                            color: Colors.white,
-                                            size: 11.sp.round()),
-                                      )
+                                    : coupon.type == "value"
+                                        ? Text(
+                                            "${coupon.amount} % Off",
+                                            style: primaryTextStyle(
+                                                color: Colors.white,
+                                                size: 11.sp.round()),
+                                          )
+                                        : Text(
+                                            "\$${coupon.amount}  Discount",
+                                            style: primaryTextStyle(
+                                                color: Colors.white,
+                                                size: 11.sp.round()),
+                                          )
                               ],
                             ),
                             SizedBox(
@@ -2532,57 +2567,47 @@ class _ImageSliderWithIndicatorsState
                                   color: Colors.white,
                                 ),
                                 child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: coupon.amount == null
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Free',
-                                              style: primaryTextStyle(
-                                                  size: 15.sp.round(),
-                                                  color: Colors.black,
-                                                  weight: FontWeight.w900),
-                                            ),
-                                            Text(
-                                              'Delivery',
-                                              style: primaryTextStyle(
-                                                  size: 15.sp.round(),
-                                                  color: Colors.black,
-                                                  weight: FontWeight.w900),
-                                            ),
-                                          ],
-                                        )
-                                      : Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '${coupon.amount} %',
-                                              style: primaryTextStyle(
-                                                  size: 25.sp.round(),
-                                                  weight: FontWeight.w900),
-                                            ),
-                                            Text(
-                                              'Off',
-                                              style: primaryTextStyle(
-                                                  size: 12.sp.round(),
-                                                  weight: FontWeight.w900),
-                                            ),
-                                          ],
-                                        ),
-                                ),
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      coupon.code ?? "",
+                                      style: primaryTextStyle(
+                                          size: 15.sp.round(),
+                                          color: Colors.black,
+                                          weight: FontWeight.w900),
+                                    )),
                               ),
                             ),
                             Expanded(
-                              child: Text(
-                                'Code : ${coupon.code}',
-                                style: primaryTextStyle(
-                                    color: Colors.white,
-                                    weight: FontWeight.w500),
-                              ),
+                                child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Tap to Copy',
+                                  style: primaryTextStyle(
+                                      color: Colors.white,
+                                      weight: FontWeight.w500),
+                                ),
+                                Icon(
+                                  Icons.touch_app_rounded,
+                                  color: Colors.white,
+                                )
+                              ],
                             )
+                                // coupon.type == "free_delivery"
+                                //     ? Text(
+                                //         'Type : Free Delivery',
+                                //         style: primaryTextStyle(
+                                //             color: Colors.white,
+                                //             weight: FontWeight.w500),
+                                //       )
+                                //     : Text(
+                                //         'Type : ${coupon.type}',
+                                //         style: primaryTextStyle(
+                                //             color: Colors.white,
+                                //             weight: FontWeight.w500),
+                                //       ),
+                                )
                           ],
                         ),
                       ),

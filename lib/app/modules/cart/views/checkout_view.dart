@@ -963,7 +963,9 @@ class _CheckoutPageState extends State<CheckoutPage>
                                     }
                                   } else {
                                     // send to whatsapp data for number xxx
-                                    _tabController.selectedIndex.value = 1;
+                                    _tabController.changeIndex(1);
+
+                                    // _tabController.selectedIndex.value = 1;
                                     // Get.offAndToNamed(Routes.MAIN);
                                     Get.offNamedUntil(
                                         Routes.MAIN, (Route) => false);

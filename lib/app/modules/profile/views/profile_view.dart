@@ -22,6 +22,7 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView>
     with TickerProviderStateMixin {
   final ProfileController controller = Get.put(ProfileController());
+
   Future<void> _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -293,14 +294,8 @@ class _ProfileViewState extends State<ProfileView>
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(
-                          "assets/images/home/medal.svg",
-                          height: 23.h,
-                          width: 23.w,
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(width: 4),
-                        Text('85',
+                        Text(
+                            controller.userModel.value.total_points!.toString(),
                             textAlign: TextAlign.center,
                             style: primaryTextStyle(
                               color: Colors.white,
@@ -308,6 +303,13 @@ class _ProfileViewState extends State<ProfileView>
                               height: 0.08,
                               weight: FontWeight.w700,
                             )),
+                        const SizedBox(width: 4),
+                        SvgPicture.asset(
+                          "assets/images/home/medal.svg",
+                          height: 23.h,
+                          width: 23.w,
+                          fit: BoxFit.cover,
+                        ),
                       ],
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/cart/views/cart_view.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
+import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/product/views/size_guide.dart';
@@ -28,11 +30,12 @@ import '../../global/theme/app_theme.dart';
 import '../../search/views/search_view.dart';
 import '../controllers/product_controller.dart';
 
-final globalKey = GlobalKey<ScaffoldState>();
 final CartController cartController = Get.put(CartController());
 
 class ProductView extends GetView<ProductController> {
-  const ProductView({Key? key}) : super(key: key);
+  const ProductView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +45,11 @@ class ProductView extends GetView<ProductController> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      key: globalKey,
+
       body: SafeArea(
         child: Obx(() {
           return controller.product.value.image == null
-              ? LoadingWidget(SizedBox(
+              ? SizedBox(
                   height: MediaQuery.of(context).size.height,
                   child: SingleChildScrollView(
                     child: Column(
@@ -54,46 +57,54 @@ class ProductView extends GetView<ProductController> {
                         //Search Bar
                         _buildSearchWidget(context),
                         //Carousel Images
-                        Image.asset(
-                          "assets/images/placeholder.png",
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 2,
-                          fit: BoxFit.cover,
+                        Opacity(
+                          opacity: 0.3,
+                          child: controller.placeHolderImg.value.isEmpty
+                              ? SizedBox()
+                              : Image.network(
+                                  controller.placeHolderImg.value,
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height / 2,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //Product Name and Rating
-                              _buildProductNameAndStartRating(
-                                  context, controller.product.value),
-                              //Product Price
-                              _buildProductPrice(
-                                  context, controller.product.value),
-                              //Product Details
-                              _buildProductDetails(
-                                  context, controller.product.value),
-                              //Product Size Guide
+                        LoadingWidget(
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //Product Name and Rating
+                                _buildProductNameAndStartRating(
+                                    context, controller.product.value),
+                                //Product Price
+                                _buildProductPrice(
+                                    context, controller.product.value),
+                                //Product Details
+                                _buildProductDetails(
+                                    context, controller.product.value),
+                                //Product Size Guide
 
-                              Obx(() {
-                                print(
-                                    "guido is ${controller.productSizeGuide.value.fitType}");
-                                return controller
-                                            .productSizeGuide.value.fitType !=
-                                        null
-                                    ? _buildSizeGuide(
-                                        context, controller.product.value)
-                                    : SizedBox();
-                              }),
+                                Obx(() {
+                                  print(
+                                      "guido is ${controller.productSizeGuide.value.fitType}");
+                                  return controller
+                                              .productSizeGuide.value.fitType !=
+                                          null
+                                      ? _buildSizeGuide(
+                                          context, controller.product.value)
+                                      : SizedBox();
+                                }),
 
-                              //Product Reviews
-                              _buildProductReviews(
-                                  context, controller.product.value),
-                            ]),
+                                //Product Reviews
+                                _buildProductReviews(
+                                    context, controller.product.value),
+                              ]),
+                        )
                       ],
                     ),
                   ),
-                ))
+                )
               : SizedBox(
                   height: MediaQuery.of(context).size.height,
                   child: SingleChildScrollView(
@@ -105,8 +116,8 @@ class ProductView extends GetView<ProductController> {
                         GetBuilder<ProductController>(builder: (logic) {
                           print(
                               "the prodicts attaches are ${logic.product.value.attachments!}");
-                          return _buildProductImagesCarousel(
-                              context, logic.productImages);
+                          return _buildProductImagesCarousel(context,
+                              logic.productImages, logic.placeHolderImg.value);
                         }),
                         Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -136,6 +147,10 @@ class ProductView extends GetView<ProductController> {
 
                               //Product Reviews
                               _buildProductReviews(
+                                  context, controller.product.value),
+
+                              //See Also Products
+                              _buildSeeAlsoProduct(
                                   context, controller.product.value),
                             ]),
                       ],
@@ -363,11 +378,17 @@ class ProductView extends GetView<ProductController> {
                                                                 .value.id);
                                                   }
                                                 },
-                                                child: SvgPicture.asset(
-                                                  "assets/images/home/wishlisted.svg",
-                                                  fit: BoxFit.contain,
-                                                  width: 30.w,
-                                                  height: 30.h,
+                                                child: AvatarGlow(
+                                                  curve: Curves.fastOutSlowIn,
+                                                  glowColor:
+                                                      Colors.purpleAccent,
+                                                  repeat: false,
+                                                  child: SvgPicture.asset(
+                                                    "assets/images/home/wishlisted.svg",
+                                                    fit: BoxFit.contain,
+                                                    width: 30.w,
+                                                    height: 30.h,
+                                                  ),
                                                 ),
                                               )
                                             : InkWell(
@@ -554,45 +575,49 @@ class ProductView extends GetView<ProductController> {
                       ),
                     ),
                     Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(
-                            () => SizeGuide(
-                                  selectedFitType: controller
-                                          .productSizeGuide.value.fitType ??
-                                      "",
-                                  selectedStretch: controller
-                                      .productSizeGuide.value.stretch!,
-                                  selectedAttr:
-                                      controller.productSizeGuide.value.attr!,
+                    controller.product.value.sizeGuide?.fitType == null
+                        ? SizedBox()
+                        : GestureDetector(
+                            onTap: () {
+                              Get.to(
+                                  () => SizeGuideView(
+                                        selectedFitType: controller
+                                                .productSizeGuide
+                                                .value
+                                                .fitType ??
+                                            "",
+                                        selectedStretch: controller
+                                            .productSizeGuide.value.stretch!,
+                                        selectedAttr: controller
+                                            .productSizeGuide.value.attr!,
+                                      ),
+                                  transition: Transition.fadeIn,
+                                  curve: Curves.easeInOut,
+                                  duration: const Duration(milliseconds: 400));
+                            },
+                            child: LoadingWidget(
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Size Guide",
+                                      style: primaryTextStyle(
+                                          color: Colors.grey[300]),
+                                    ),
+                                    SizedBox(
+                                      width: 3.w,
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      color: Colors.grey[300],
+                                    )
+                                  ],
                                 ),
-                            transition: Transition.fadeIn,
-                            curve: Curves.easeInOut,
-                            duration: const Duration(milliseconds: 400));
-                      },
-                      child: LoadingWidget(
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15.w),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Size Guide",
-                                style:
-                                    primaryTextStyle(color: Colors.grey[300]),
                               ),
-                              SizedBox(
-                                width: 3.w,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                color: Colors.grey[300],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
+                            ),
+                          )
                   ],
                 ),
                 SizedBox(height: 10.h),
@@ -749,77 +774,7 @@ class ProductView extends GetView<ProductController> {
                           );
                   }),
                 ),
-                /////////////////////////////////////////////////////////////
-                //show the bundles
-                // ShowUp(
-                //   delay: 300,
-                //   child: Column(
-                //     children: [
-                //       //Color
-                //       Padding(
-                //         padding: EdgeInsets.only(left: 15.w),
-                //         child: Row(
-                //           children: [
-                //             Align(
-                //                 alignment: Alignment.topLeft,
-                //                 child: Text(
-                //                   "Bundles",
-                //                   style: boldTextStyle(
-                //                       size: 18.sp.round(),
-                //                       color: Colors.grey,
-                //                       letterSpacing: 0.8.w),
-                //                 )),
-                //             Spacer(),
-                //             // Obx(() {
-                //             //   return Align(
-                //             //       alignment: Alignment.topRight,
-                //             //       child: Text(
-                //             //         "Left in Stock : ${controller.currentStock.value.toString()}",
-                //             //         style: boldTextStyle(
-                //             //             size: 18.sp.round(),
-                //             //             color: Colors.grey,
-                //             //             letterSpacing: 0.8.w),
-                //             //       ));
-                //             // }),
-                //             SizedBox(
-                //               width: 15.w,
-                //             )
-                //           ],
-                //         ),
-                //       ),
-                //       // GetBuilder<ProductController>(
-                //       //   // assignId: true,
-                //       //   builder: (logic) {
-                //       //     return Container(
-                //       //         margin: EdgeInsets.symmetric(horizontal: 15.w),
-                //       //         height: 100.h,
-                //       //         width: MediaQuery.of(context).size.width,
-                //       //         child: ListView.separated(
-                //       //             scrollDirection: Axis.horizontal,
-                //       //             itemBuilder: (ctx, index) =>
-                //       //                 GestureDetector(
-                //       //                     onTap: () {
-                //       //                       print("tapped oustide !");
-                //       //                       // controller.setColor(color);
-                //       //                     },
-                //       //                     child:
-                //       //                     BuildBundle(
-                //       //                       image: controller
-                //       //                           .bundles[index].image!,
-                //       //                       name: controller
-                //       //                           .bundles[index].name!,
-                //       //                       type: controller
-                //       //                           .bundles[index].type!,
-                //       //                     )),
-                //       //             separatorBuilder: (ctx, index) => SizedBox(
-                //       //                   width: 5.w,
-                //       //                 ),
-                //       //             itemCount: controller.bundles.length));
-                //       //   },
-                //       // ),
-                //     ],
-                //   ),
-                // ),
+
                 const Spacer(),
                 SizedBox(height: 15.h),
                 Container(
@@ -885,6 +840,7 @@ class ProductView extends GetView<ProductController> {
                                     element.product.id ==
                                         controller.product.value.id,
                               );
+
                               print('teasdsadsa2');
 
                               if (isProductInCart) {
@@ -900,15 +856,22 @@ class ProductView extends GetView<ProductController> {
                                   controller.selectedSize.value;
                               controller.product.value.selectedColor =
                                   controller.selectedColor.value;
-                              cartController.addToCart(
-                                controller.product.value,
-                                controller.selectedSize.value,
-                                controller.selectedColor.value,
-                                quantity: 1,
-                              );
-                              print('teasdsadsa4');
-                              Get.toNamed(Routes.CART);
-                              cartController.loading.value = false;
+                              if (controller.selectedSize.value.isNotEmpty &&
+                                  controller.selectedColor.value.isNotEmpty) {
+                                cartController.addToCart(
+                                  controller.product.value,
+                                  controller.selectedSize.value,
+                                  controller.selectedColor.value,
+                                  quantity: 1,
+                                );
+                                print('teasdsadsa4');
+                                Get.toNamed(Routes.CART);
+                                cartController.loading.value = false;
+                              } else {
+                                Get.snackbar(
+                                    "Error", "Please Select From Options First",
+                                    backgroundColor: Colors.white);
+                              }
                             } else {
                               Get.to(() => CartPage());
                             }
@@ -932,7 +895,7 @@ class ProductView extends GetView<ProductController> {
     );
   }
 
-  buildRatingWidget() {
+  buildRatingWidget(context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Column(
@@ -943,7 +906,7 @@ class ProductView extends GetView<ProductController> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("4.2",
+              Text(controller.product.value.rating.toString(),
                   style: primaryTextStyle(
                       color: Color(0xFF231F20),
                       height: 0.03,
@@ -961,21 +924,51 @@ class ProductView extends GetView<ProductController> {
                       weight: FontWeight.w400,
                       size: 12.sp.round())),
               Spacer(),
-              StarRating(
-                  rating: 4, onRatingChanged: (v) {}, color: Color(0xffFFD600))
+              controller.product.value.rating == null
+                  ? StarRating(
+                      isCustomer: false,
+                      rating: 0,
+                      onRatingChanged: (v) {},
+                      color: Color(0xffFFD600))
+                  : StarRating(
+                      isCustomer: false,
+                      rating: controller.product.value.rating!.toDouble(),
+                      onRatingChanged: (v) {},
+                      color: Color(0xffFFD600))
             ],
           ),
           SizedBox(
             height: 10,
           ),
-          buildRatingBar("5", 0.3),
-          buildRatingBar("4", 0.7),
-          buildRatingBar("3", 0.2),
-          buildRatingBar("2", 0.1),
-          buildRatingBar("1", 0.0),
+          buildRatingBar(
+              "5",
+              controller.product.value.rating_percentages!.isEmpty
+                  ? 0
+                  : controller.product.value.rating_percentages![4].toDouble()),
+          buildRatingBar(
+              "4",
+              controller.product.value.rating_percentages!.isEmpty
+                  ? 0
+                  : controller.product.value.rating_percentages![3].toDouble()),
+          buildRatingBar(
+              "3",
+              controller.product.value.rating_percentages!.isEmpty
+                  ? 0
+                  : controller.product.value.rating_percentages![2].toDouble()),
+          buildRatingBar(
+              "2",
+              controller.product.value.rating_percentages!.isEmpty
+                  ? 0
+                  : controller.product.value.rating_percentages![1].toDouble()),
+          buildRatingBar(
+              "1",
+              controller.product.value.rating_percentages!.isEmpty
+                  ? 0
+                  : controller.product.value.rating_percentages![0].toDouble()),
           SizedBox(
             height: 50,
-          )
+          ),
+          _buildCustomersReviews(context)
         ],
       ),
     );
@@ -1001,13 +994,13 @@ class ProductView extends GetView<ProductController> {
             flex: 12,
             child: LinearPercentIndicator(
               backgroundColor: Colors.grey[300],
-              percent: percentage,
+              percent: percentage / 100,
               progressColor: Color(0xffFFD600),
               barRadius: Radius.circular(25.w),
             ),
           ),
           Spacer(),
-          Text("${(percentage * 100).toInt().toString()} %")
+          Text("${(percentage).toInt().toString()} %")
         ],
       ),
     );
@@ -1154,7 +1147,8 @@ class ProductView extends GetView<ProductController> {
     );
   }
 
-  _buildProductImagesCarousel(BuildContext context, List<Attachments> imgList) {
+  _buildProductImagesCarousel(
+      BuildContext context, List<Attachments> imgList, placeHolderImg) {
     //adding attachments
     // if (comingProduct.attachments != null) {
     //   for (var img in comingProduct.attachments!) {
@@ -1168,37 +1162,15 @@ class ProductView extends GetView<ProductController> {
       delay: 200,
       child: Container(
         child: Container(
-            height: MediaQuery.of(context).size.height / 2.2,
+            height: MediaQuery.of(context).size.height / 2.06,
             decoration: const BoxDecoration(
               color: Colors.white,
             ),
             child: ImageSliderWithIndicators(
               imgList: imgList,
+              placeHolderImg: placeHolderImg,
             )),
       ),
-    );
-  }
-
-  _buildLoadingProductImagesCarousel(
-      BuildContext context, List<Attachments> imgList) {
-    //adding attachments
-    // if (comingProduct.attachments != null) {
-    //   for (var img in comingProduct.attachments!) {
-    //     if (img.name == "app_show") {
-    //       imgList.addNonNull(img);
-    //     }
-    //   }
-    // }
-
-    return Container(
-      child: Container(
-          height: MediaQuery.of(context).size.height / 2.2,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
-          child: ImageSliderWithIndicators(
-            imgList: imgList,
-          )),
     );
   }
 
@@ -1226,14 +1198,22 @@ class ProductView extends GetView<ProductController> {
               StarRating(
                 onRatingChanged: (double rating) {},
                 color: Colors.green,
-                rating: 4,
+                rating: controller.product.value.rating == null
+                    ? 0
+                    : controller.product.value.rating.toDouble(),
+                isCustomer: false,
               ),
               Padding(
                 padding: EdgeInsets.only(top: 10.h),
-                child: Text(
-                  "(54)",
-                  style: primaryTextStyle(),
-                ),
+                child: comingProduct.rating == null
+                    ? Text(
+                        "(0)",
+                        style: primaryTextStyle(),
+                      )
+                    : Text(
+                        "(${comingProduct.rating.toString()})",
+                        style: primaryTextStyle(),
+                      ),
               )
             ],
           ),
@@ -1317,7 +1297,7 @@ class ProductView extends GetView<ProductController> {
               IconButton(
                   onPressed: () {
                     Get.to(
-                        () => SizeGuide(
+                        () => SizeGuideView(
                               selectedFitType:
                                   controller.productSizeGuide.value.fitType ??
                                       "",
@@ -1355,6 +1335,30 @@ class ProductView extends GetView<ProductController> {
     );
   }
 
+  _buildSeeAlsoProduct(BuildContext context, ViewProductData comingProduct) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //Reviews
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          child: Text("Related Products",
+              style: boldTextStyle(size: 22.sp.round())),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 7.w),
+          height: 1,
+          color: Colors.grey[300],
+        ),
+        SizedBox(
+          height: 15.h,
+        ),
+        _buildProductGrid(context)
+      ],
+    );
+  }
+
   _buildProductReviews(BuildContext context, ViewProductData comingProduct) {
     return Column(
       children: [
@@ -1386,8 +1390,9 @@ class ProductView extends GetView<ProductController> {
         SizedBox(
           height: 5.h,
         ),
-        Obx(() =>
-            controller.isShowReviews.value ? buildRatingWidget() : SizedBox())
+        Obx(() => controller.isShowReviews.value
+            ? buildRatingWidget(context)
+            : SizedBox())
       ],
     );
   }
@@ -1406,14 +1411,88 @@ class ProductView extends GetView<ProductController> {
         //         child: buildBottomSheet("", "", "", myContext)),
         //   );
         // });
-        showMaterialModalBottomSheet(
-          context: myContext,
-          backgroundColor: Colors.transparent,
-          expand: false,
-          builder: (context) => BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: buildBottomSheet(comingProduct, myContext)),
-        );
+        if (controller.colorsList.length == 1 &&
+            controller.sizeList.length == 1) {
+          if (userToken != null) {
+            print('teasdsadsa');
+            bool isProductInCart = cartController.cartItems.any(
+              (element) =>
+                  element.product != null &&
+                  controller.product != null &&
+                  element.selectedSize == controller.selectedSize.value &&
+                  element.product.id == controller.product.value.id,
+            );
+            print('teasdsadsa2');
+
+            if (isProductInCart) {
+              cartController.removeItem(cartController.cartItems.firstWhere(
+                  (element) =>
+                      element.product.id == controller.product.value.id));
+            }
+            print('teasdsadsa3');
+            cartController.loading.value = true;
+            controller.product.value.selectedSize =
+                controller.selectedSize.value;
+            controller.product.value.selectedColor =
+                controller.selectedColor.value;
+            cartController.addToCart(
+              controller.product.value,
+              controller.selectedSize.value,
+              controller.selectedColor.value,
+              quantity: 1,
+            );
+            print('teasdsadsa4');
+            Get.toNamed(Routes.CART);
+            cartController.loading.value = false;
+          } else {
+            Get.to(() => CartPage());
+          }
+        } else {
+          if (controller.colorsList.isEmpty && controller.sizeList.isEmpty) {
+            if (userToken != null) {
+              print('teasdsadsa');
+              bool isProductInCart = cartController.cartItems.any(
+                (element) =>
+                    element.product != null &&
+                    controller.product != null &&
+                    element.selectedSize == controller.selectedSize.value &&
+                    element.product.id == controller.product.value.id,
+              );
+              print('teasdsadsa2');
+
+              if (isProductInCart) {
+                cartController.removeItem(cartController.cartItems.firstWhere(
+                    (element) =>
+                        element.product.id == controller.product.value.id));
+              }
+              print('teasdsadsa3');
+              cartController.loading.value = true;
+              controller.product.value.selectedSize =
+                  controller.selectedSize.value;
+              controller.product.value.selectedColor =
+                  controller.selectedColor.value;
+              cartController.addToCart(
+                controller.product.value,
+                controller.selectedSize.value,
+                controller.selectedColor.value,
+                quantity: 1,
+              );
+              print('teasdsadsa4');
+              Get.toNamed(Routes.CART);
+              cartController.loading.value = false;
+            } else {
+              Get.to(() => CartPage());
+            }
+          }
+          showMaterialModalBottomSheet(
+            context: myContext,
+            backgroundColor: Colors.transparent,
+            expand: false,
+            builder: (context) => BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: buildBottomSheet(comingProduct, myContext)),
+          );
+        }
       },
       child: SvgPicture.asset(
         "assets/images/product/add_to_cart.svg",
@@ -1422,6 +1501,154 @@ class ProductView extends GetView<ProductController> {
         height: 50.h,
       ),
     );
+  }
+
+  _buildCustomersReviews(context) {
+    print("the review is  1 ${controller.reviews}");
+    return GetBuilder<ProductController>(
+        id: "reviews",
+        builder: (logic) {
+          return controller.isReviewsLoading
+              ? placeHolderWidget()
+              : controller.reviews.isEmpty
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "No Reviews Yet ..",
+                          style: primaryTextStyle(),
+                        ),
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width / 3.1),
+                          child: StarRating(
+                              rating: 0,
+                              onRatingChanged: (v) {},
+                              color: Color(0xffFFD600),
+                              isCustomer: true),
+                        ),
+                        SizedBox(
+                          height: 30.h,
+                        )
+                      ],
+                    )
+                  : ListView.separated(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) =>
+                          _buildOneCustomerReview(controller.reviews[index]),
+                      separatorBuilder: (context, index) => Divider(
+                            height: 2,
+                            color: Colors.grey[300],
+                          ),
+                      itemCount: controller.reviews.length);
+        });
+  }
+
+  _buildOneCustomerReview(ReviewsModel review) {
+    print("the review is ${review.title}");
+    return Container(
+      height: 150.h,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.white,
+                backgroundImage:
+                    AssetImage("assets/images/profile/profile_placeholder.png"),
+              ),
+              SizedBox(
+                width: 5.w,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    review.customer!,
+                    style: primaryTextStyle(),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Container(
+                    child: StarRating(
+                      rating: review.rating!.toDouble(),
+                      onRatingChanged: (v) {},
+                      color: Color(0xffFFD600),
+                      isCustomer: true,
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
+          Text(
+            overflow: TextOverflow.ellipsis,
+            review.title!,
+            style: primaryTextStyle(
+              weight: FontWeight.w600,
+              size: 18.sp.round(),
+            ),
+          ),
+          SizedBox(
+            height: 3.h,
+          ),
+          Text(
+            overflow: TextOverflow.ellipsis,
+            review.comment!,
+            style: primaryTextStyle(
+              size: 12.sp.round(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _buildProductGrid(context) {
+    return GetBuilder<ProductController>(
+        id: "related-products",
+        builder: (logic) {
+          return controller.isRelatedProductsLoading
+              ? placeHolderWidget()
+              : controller.finalRelatedProducts.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10.h, bottom: 15.h),
+                        child: Text(
+                          "No Related Products Yet",
+                          style: primaryTextStyle(),
+                        ),
+                      ),
+                    )
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 1.1),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 5.w),
+                      itemBuilder: (context, index) {
+                        return buildProductCard(
+                            product: controller.finalRelatedProducts[index]);
+                      },
+                      itemCount: controller.finalRelatedProducts.length,
+                    );
+        });
   }
 }
 
@@ -1432,31 +1659,34 @@ class StarRating extends StatelessWidget {
   final double rating;
   final RatingChangeCallback onRatingChanged;
   final Color color;
+  final bool isCustomer;
 
   StarRating(
       {this.starCount = 5,
       required this.rating,
       required this.onRatingChanged,
-      required this.color});
+      required this.color,
+      required this.isCustomer});
 
   Widget buildStar(BuildContext context, int index) {
     Icon icon;
     if (index >= rating) {
-      icon = const Icon(
+      icon = Icon(
         Icons.star_border,
         color: Colors.grey,
+        size: isCustomer ? 17 : 27,
       );
     } else if (index > rating - 1 && index < rating) {
       icon = Icon(
         Icons.star_half,
         color: color ?? Theme.of(context).primaryColor,
-        size: 27,
+        size: isCustomer ? 17 : 27,
       );
     } else {
       icon = Icon(
         Icons.star,
         color: color ?? Theme.of(context).primaryColor,
-        size: 27,
+        size: isCustomer ? 17 : 27,
       );
     }
     return InkResponse(
@@ -1611,9 +1841,11 @@ class _BuildBundleState extends State<BuildBundle> {
 }
 
 class ImageSliderWithIndicators extends StatefulWidget {
-  const ImageSliderWithIndicators({required this.imgList});
+  const ImageSliderWithIndicators(
+      {required this.imgList, required this.placeHolderImg});
 
   final List<Attachments> imgList;
+  final String placeHolderImg;
 
   @override
   _ImageSliderWithIndicatorsState createState() =>
@@ -1658,7 +1890,7 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                 autoPlay: true,
                 enlargeCenterPage: true,
                 aspectRatio: 1.1,
-                viewportFraction: 1,
+                viewportFraction: 1.0,
                 onPageChanged: (index, reason) {
                   _current = index;
                   setState(() {});

@@ -102,6 +102,13 @@ class ShopController extends GetxController {
     currentCatIndex.value = index;
   }
 
+  RxBool isSideBarOpen = false.obs;
+
+  openSideBar() {
+    isSideBarOpen.value = !isSideBarOpen.value;
+    print("result is the ${isSideBarOpen.value}");
+  }
+
   changeCurrentCat(bool swipeUp) {
     if (swipeUp) {
       print("yes swipe up");
@@ -224,6 +231,7 @@ class ShopController extends GetxController {
       getProductsInCategory(id!, option);
       update(['products_in_categories']);
     } else {
+      Get.closeCurrentSnackbar();
       Get.snackbar("Pick A Category",
           "please pick a category first from the left side bar");
     }

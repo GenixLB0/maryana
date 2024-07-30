@@ -8,6 +8,7 @@ import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../services/api_consumer.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart' as dio;
 
 class ProductController extends GetxController {
 // Rx<Product>? product = Product().obs;
@@ -22,11 +23,11 @@ class ProductController extends GetxController {
   ApiConsumer apiConsumer = sl();
   final count = 0.obs;
   final isShowDescription = true.obs;
-  final isShowReviews = true.obs;
+  final isShowReviews = false.obs;
   List<String> sizeList = [];
-  Rx<String> selectedSize = "S".obs;
+  Rx<String> selectedSize = "".obs;
 
-  Rx<String> selectedColor = "0xffcc00cc".obs;
+  Rx<String> selectedColor = "".obs;
   Rx<SizeGuide> productSizeGuide = SizeGuide().obs;
 
   @override
@@ -44,13 +45,19 @@ class ProductController extends GetxController {
     // }
   }
 
+  Rx<String> placeHolderImg = "".obs;
+
   @override
   void onReady() {
+    isFirstTimeGettingReviews = true;
     print('tesadasw5');
     ViewProductData comingProduct = Get.arguments as ViewProductData;
     if (Get.arguments != null && Get.arguments is ViewProductData) {
       var myProduct = Get.arguments as ViewProductData;
+      placeHolderImg.value = myProduct.image!;
+      print("new product name 2 ${myProduct.name} ");
       getProduct(myProduct.id);
+
       if (colorsList.isNotEmpty) {
         setColor(colorsList.first.name);
       }
@@ -58,6 +65,7 @@ class ProductController extends GetxController {
       // Handle the case where no valid arguments are passed
       // You can navigate back or show an error message
       Get.back();
+      Get.closeCurrentSnackbar();
       Get.snackbar('Error', 'No product data available');
     }
 
@@ -81,7 +89,40 @@ class ProductController extends GetxController {
 
   switchShowReviews() {
     isShowReviews.value = !isShowReviews.value;
-    print("desc is ${isShowReviews.value}");
+    if (isShowReviews.value) {
+      getProductReviews();
+    }
+  }
+
+  List<ReviewsModel> reviews = [];
+  bool isFirstTimeGettingReviews = false;
+  bool isReviewsLoading = false;
+
+  getProductReviews() async {
+    print("start getting review 11");
+
+    if (isFirstTimeGettingReviews == true) {
+      print("start getting review 2");
+      isReviewsLoading = false;
+      print("review value is 1 ${isReviewsLoading}");
+      update(['reviews']);
+      var result = await apiConsumer.post(
+        "products/ratings/${product.value.id!}",
+      );
+
+      if (result['status'] == "success") {
+        for (var review in result['data']) {
+          reviews.addNonNull(ReviewsModel.fromJson(review));
+        }
+        isFirstTimeGettingReviews = false;
+        isReviewsLoading = false;
+        update(['reviews']);
+      } else {
+        update(['reviews']);
+      }
+    } else {
+      print("start getting review 3");
+    }
   }
 
   setSize(customSize) {
@@ -147,8 +188,9 @@ class ProductController extends GetxController {
 
       isProductLoading.value = false;
       update();
+      getRelatedProducts(product.value.category!.id);
     } catch (e, stackTrace) {
-      print(stackTrace.toString() + ' test error');
+      print(stackTrace.toString() + ' product test error' + '${e.toString()}');
       isProductLoading.value = false;
     }
   }
@@ -180,5 +222,64 @@ class ProductController extends GetxController {
     Future.delayed(Duration(milliseconds: 1900), () {
       isAddToCartActive.value = false;
     });
+  }
+
+  List<ViewProductData> relatedProducts = <ViewProductData>[];
+  bool isRelatedProductsLoading = false;
+  List<ViewProductData> finalRelatedProducts = <ViewProductData>[];
+
+  void getRelatedProducts(int? id) async {
+    relatedProducts.clear();
+    isRelatedProductsLoading = true;
+    update(['related-products']);
+    print("should called once...");
+
+    print("your coming cat id is ${id}");
+    var formData = dio.FormData.fromMap(
+        {'per_page': '4', 'category_ids[0]': id.toString()});
+    var response = await apiConsumer.post("products",
+        formDataIsEnabled: true, formData: formData);
+
+    try {
+      if (response['data'] != null) {
+        for (var product in response['data']) {
+          print("rach pro is ${product}");
+          relatedProducts.add(ViewProductData.fromJson(product));
+        }
+
+        if (relatedProducts.isNotEmpty) {
+          for (var myProduct in relatedProducts) {
+            print("rounding....");
+            if (myProduct.id != product.value.id) {
+              print("firts id 1 ${myProduct.id}");
+              print("firts id 2 ${product.value.id}");
+              print("is it result ${myProduct.id == product.value.id}");
+              finalRelatedProducts.add(myProduct);
+            }
+          }
+
+          update(['related-products']);
+        } else {
+          print("sorry it's empty");
+        }
+
+        isRelatedProductsLoading = false;
+        print("should called once... 2 ${response['data']} ");
+        print("products related are ${relatedProducts}");
+        update(['related-products']);
+      } else {
+        print(response.reasonPhrase);
+        isRelatedProductsLoading = false;
+        print('products fetch failed 1: ${response.reasonPhrase} ');
+
+        update(['related-products']);
+      }
+    } catch (e, stackTrace) {
+      isRelatedProductsLoading = false;
+      print('products fetch failed 2:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+      update(['related-products']);
+    }
   }
 }

@@ -42,7 +42,7 @@ class CustomSearchController extends GetxController {
   RxList<Styles> styles = <Styles>[].obs;
   RxList<String> sizes = <String>[].obs;
 
-  RxList<Material> materials = <Material>[].obs;
+  RxList<Materials> materials = <Materials>[].obs;
   RxList<String> seasons = <String>[].obs;
   RxBool colorFullLength = false.obs;
 
@@ -59,6 +59,9 @@ class CustomSearchController extends GetxController {
       TextEditingController(text: "0").obs;
   Rx<TextEditingController> maxPriceController =
       TextEditingController(text: "10000").obs;
+
+  Rx<double> minPriceApi = 0.0.obs;
+  Rx<double> maxPriceApi = 0.0.obs;
 
   ////////////////////////////////////////////////////////////
   @override
@@ -470,14 +473,16 @@ class CustomSearchController extends GetxController {
 
   getFilterResults() async {
     isFilterLoading.value = true;
-    await getColors();
-    await getBrands();
-    await getCategories();
-    await getCollections();
-    await getStyles();
-    await getSeasons();
-    await getMaterials();
-    await getSizes();
+    // await getOneFilterModel();
+    // await getColors();
+    // await getBrands();
+    // await getCategories();
+    // await getCollections();
+    // await getStyles();
+    // await getSeasons();
+    // await getMaterials();
+    // await getSizes();
+    await getOneFilterModel();
 
     isFilterLoading.value = false;
   }
@@ -680,7 +685,7 @@ class CustomSearchController extends GetxController {
         print('Materials data successful');
 
         for (var material in apiResponse.data!.materials!) {
-          materials.add(material);
+          // materials.add(material);
         }
       } else {
         handleApiErrorUser(apiResponse.message);
@@ -829,13 +834,15 @@ class CustomSearchController extends GetxController {
     selectedSeasons.clear();
     selectedBrands.clear();
     selectedCollections.clear();
-    minPriceController.value.text = "";
-    maxPriceController.value.text = "";
+    minPriceController.value.text = minPriceApi.value.toString();
+    maxPriceController.value.text = maxPriceApi.value.toString();
     setNewValue(const RangeValues(1.0, 10000.0));
   }
 
   setNewValue(RangeValues value) {
-    if (value.end > value.start && value.end <= 10000.0 && value.start >= 1.0) {
+    if (value.end > value.start &&
+        value.end <= maxPriceApi.value &&
+        value.start >= minPriceApi.value) {
       settedValue.value = value;
       minPriceController.value.text = value.start.toInt().toString();
       maxPriceController.value.text = value.end.toInt().toString();
@@ -846,6 +853,74 @@ class CustomSearchController extends GetxController {
       print("the con 2 ${value.end <= 10000.0}");
       print("the con 3 ${value.start >= 1.0}");
       print("cannot be setted");
+    }
+  }
+
+  getOneFilterModel() async {
+    // await getOneFilterModel();
+    // await getColors();
+    // await getBrands();
+    await getCategories();
+    // await getCollections();
+    // await getStyles();
+    // await getSeasons();
+    // await getMaterials();
+    final response = await apiConsumer.get(
+      'filter',
+    );
+
+    try {
+      final apiResponse = FilterOneModel.fromJson(response);
+      if (apiResponse.status == "success") {
+        minPriceApi.value = apiResponse.data!.minPrice.toDouble();
+        maxPriceApi.value = apiResponse.data!.maxPrice.toDouble();
+        minPriceController.value =
+            TextEditingController(text: apiResponse.data!.minPrice!);
+        maxPriceController.value =
+            TextEditingController(text: apiResponse.data!.maxPrice!);
+
+        setNewValue(RangeValues(apiResponse.data!.minPrice.toDouble(),
+            apiResponse.data!.maxPrice.toDouble()));
+        if (apiResponse.data?.colors != null) {
+          for (var color in apiResponse.data!.colors!) {
+            colors.add(color);
+          }
+        }
+
+        if (apiResponse.data?.brands != null) {
+          for (var brand in apiResponse.data!.brands!) {
+            brands.add(brand);
+          }
+        }
+
+        if (apiResponse.data?.collections != null) {
+          for (var collection in apiResponse.data!.collections!) {
+            collections.add(collection);
+          }
+        }
+
+        if (apiResponse.data?.styles != null) {
+          for (var style in apiResponse.data!.styles!) {
+            styles.add(style);
+          }
+        }
+
+        if (apiResponse.data?.seasons != null) {
+          for (var season in apiResponse.data!.seasons!) {
+            seasons.add(season);
+          }
+        }
+
+        if (apiResponse.data?.materials != null) {
+          for (var material in apiResponse.data!.materials!) {
+            materials.add(material);
+          }
+        }
+      }
+    } catch (e) {
+      print('filter api failed:  ${e} ');
+
+      print(e.toString());
     }
   }
 }

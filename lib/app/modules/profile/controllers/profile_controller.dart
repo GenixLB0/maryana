@@ -42,6 +42,7 @@ class ProfileController extends GetxController {
     email: '',
     phone: '',
     dob: '',
+    total_points: 0,
   ).obs;
 
   var isLoading = true.obs;

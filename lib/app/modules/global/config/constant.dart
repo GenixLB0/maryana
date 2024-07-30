@@ -15,6 +15,7 @@ class AppConstants {
   }
 
   static LatLng latLng = const LatLng(30.033333, 31.233334);
+
   static showLoading(context) {
     showDialog(
       context: context,
@@ -93,6 +94,7 @@ class AppConstants {
     }
   ]
   ''';
+
   static loadUserFromCache() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('user_data');
@@ -104,4 +106,6 @@ class AppConstants {
       print('User loaded from cache: $userDataJson');
     }
   }
+
+  static String placeHolderImage = "assets/images/placeholder.png";
 }
