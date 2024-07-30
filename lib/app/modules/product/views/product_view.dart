@@ -559,7 +559,8 @@ class ProductView extends GetView<ProductController> {
                         Get.to(
                             () => SizeGuide(
                                   selectedFitType: controller
-                                      .productSizeGuide.value.fitType!,
+                                          .productSizeGuide.value.fitType ??
+                                      "",
                                   selectedStretch: controller
                                       .productSizeGuide.value.stretch!,
                                   selectedAttr:

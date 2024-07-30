@@ -211,61 +211,69 @@ class SearchView extends GetView<CustomSearchController> {
         padding: EdgeInsets.all(15),
         height: 150.h,
         width: MediaQuery.of(context).size.width,
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 3.1,
-            crossAxisCount: 2,
-          ),
-          itemBuilder: (context, index) {
-            return Container(
-              width: 166.w,
-              height: 38.h,
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    child: Container(
-                      width: 166.w,
-                      height: 45.h,
-                      decoration: ShapeDecoration(
-                        color: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+        child: controller.searchKeywords.isEmpty
+            ? Center(
+                child: Text(
+                  "No Search Words Yet ...",
+                  style: primaryTextStyle(),
+                ),
+              )
+            : GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 3.1,
+                  crossAxisCount: 2,
+                ),
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 166.w,
+                    height: 38.h,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          child: Container(
+                            width: 166.w,
+                            height: 45.h,
+                            decoration: ShapeDecoration(
+                              color: Colors.grey[100],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 22.40,
-                    top: 8,
-                    child: Text(controller.searchKeywords[index],
-                        style: secondaryTextStyle(
-                            weight: FontWeight.w600, size: 16.sp.round())),
-                  ),
-                  Positioned(
-                    left: 127.30.w,
-                    top: 9.h,
-                    child: GestureDetector(
-                      onTap: () {
-                        controller.deleteSearchKeyword(
-                            controller.searchKeywords[index]);
-                      },
-                      child: Container(
-                        width: 21.39.w,
-                        height: 21.h,
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.grey,
+                        Positioned(
+                          left: 22.40,
+                          top: 8,
+                          child: Text(controller.searchKeywords[index],
+                              style: secondaryTextStyle(
+                                  weight: FontWeight.w600,
+                                  size: 16.sp.round())),
                         ),
-                      ),
+                        Positioned(
+                          left: 127.30.w,
+                          top: 9.h,
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.deleteSearchKeyword(
+                                  controller.searchKeywords[index]);
+                            },
+                            child: Container(
+                              width: 21.39.w,
+                              height: 21.h,
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-          itemCount: controller.searchKeywords.length,
-        ));
+                  );
+                },
+                itemCount: controller.searchKeywords.length,
+              ));
   }
 }
