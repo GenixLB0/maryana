@@ -9,6 +9,7 @@ import 'package:maryana/app/modules/address/model/address_model.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/config/map_view.dart';
 import 'package:maryana/app/modules/product/views/product_view.dart';
+import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
 
 class AddressController extends GetxController {
@@ -76,7 +77,10 @@ class AddressController extends GetxController {
     bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
     await Geolocator.requestPermission();
     debugPrint('isLocationEnabled $isLocationEnabled');
-    if (isLocationEnabled == false) {}
+    if (isLocationEnabled == false) {
+      Get.snackbar("Permission Denied ",
+          "Enable Location Permission To Enjoy All Features");
+    }
   }
 
   @override
@@ -102,34 +106,36 @@ class AddressController extends GetxController {
   }
 
   void fetchAddresses() async {
-    try {
-      isLoading(true);
-      final response = await apiConsumer.get('profile/address-list');
-      addressList.value = (response['data']["addresses"] as List)
-          .map((address) => Address.fromJson(address))
-          .toList();
+    if (userToken != null) {
       try {
-        // Attempt to find the address with the given condition
-        Address address =
-            addressList.value.firstWhere((address) => address.isDefault == 1);
-        cartController.shippingID.value = address.id.toString();
-        // Handle the found address
-      } catch (e) {
-        if (e is StateError) {
-          // Handle the case where no address is found
-          print('No address found matching the condition.');
-        } else {
-          // Handle any other errors
-          print('An unexpected error occurred: $e');
+        isLoading(true);
+        final response = await apiConsumer.get('profile/address-list');
+        addressList.value = (response['data']["addresses"] as List)
+            .map((address) => Address.fromJson(address))
+            .toList();
+        try {
+          // Attempt to find the address with the given condition
+          Address address =
+              addressList.value.firstWhere((address) => address.isDefault == 0);
+          cartController.shippingID.value = address.id.toString();
+          // Handle the found address
+        } catch (e) {
+          if (e is StateError) {
+            // Handle the case where no address is found
+            print('No address found matching the condition.');
+          } else {
+            // Handle any other errors
+            print('An unexpected error occurred: $e');
+          }
         }
-      }
-    } catch (e, stackTrace) {
-      print(e.toString() + " stackTrace" + stackTrace.toString());
-      Get.snackbar('Error', 'Failed to fetch addresses');
-    } finally {
-      clearFieldsAndErrors();
+      } catch (e, stackTrace) {
+        print(e.toString() + " stackTrace" + stackTrace.toString());
+        Get.snackbar('Error', 'Failed to fetch addresses');
+      } finally {
+        clearFieldsAndErrors();
 
-      isLoading(false);
+        isLoading(false);
+      }
     }
   }
 
