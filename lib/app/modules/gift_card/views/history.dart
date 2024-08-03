@@ -75,7 +75,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                     !controller.sent.value &&
                         controller.receivedTransactions.isEmpty) {
                   return SizedBox(
-                    height: 650.h,
+                    height: 620.h,
                     child: Center(
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
