@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:flutter/material.dart';

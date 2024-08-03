@@ -13,6 +13,7 @@ import 'package:nb_utils/nb_utils.dart'
 
 import '../../global/theme/app_theme.dart';
 import '../controllers/gift_card_controller.dart';
+import 'history.dart';
 
 class GiftCardView extends GetView<GiftCardController> {
   const GiftCardView({Key? key}) : super(key: key);
@@ -70,13 +71,18 @@ class GiftCardView extends GetView<GiftCardController> {
                       ),
                     ),
                     Spacer(),
-                    Text(
-                      "history",
-                      style: TextStyle(
-                          fontFamily: fontCormoantFont,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: primaryColor),
+                    InkResponse(
+                      onTap: () {
+                        Get.to(TransactionHistoryScreen());
+                      },
+                      child: Text(
+                        "history",
+                        style: TextStyle(
+                            fontFamily: fontCormoantFont,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor),
+                      ),
                     ),
                   ],
                 ),

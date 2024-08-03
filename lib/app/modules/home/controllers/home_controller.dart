@@ -970,16 +970,18 @@ class HomeController extends GetxController {
       );
 
       try {
-        if (reponse['status'] != "success") {
+        final apiResponse = ApiSendGiftCard.fromJson(reponse);
+
+        if (apiResponse.status == "success") {
+          Get.offNamedUntil(Routes.MAIN, (Route) => false);
+          Get.closeCurrentSnackbar();
+          Get.snackbar("Sent!", "Gift Card Sent Successfully");
+        } else {
           Get.closeCurrentSnackbar();
           Get.snackbar("System", reponse['errors'].toString());
         }
-
-        if (reponse['status'] == "success") {
-          Get.offNamedUntil(Routes.MAIN, (Route) => false);
-        }
       } catch (e) {
-        print("error happended !");
+        print("error happened !");
 
         Get.closeCurrentSnackbar();
         Get.snackbar("System", "Please Check The Selected Email");
