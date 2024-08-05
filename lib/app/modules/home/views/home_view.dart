@@ -2228,15 +2228,20 @@ class HomeView extends GetView<HomeController> {
                           Spacer(),
                           GestureDetector(
                             onTap: () {
-                              String otherBrandsId =
-                                  controller.otherBrandsId.join(",");
+                              Map payload = {};
 
+                              for (int i = 0;
+                                  i < controller.otherBrandsId.length;
+                                  i++) {
+                                payload["brand_ids[${i}]"] =
+                                    controller.otherBrandsId[i];
+                              }
                               if (CustomSearchController().initialized) {
                                 CustomSearchController controller =
                                     Get.find<CustomSearchController>();
                                 controller.getProductsInSection(
                                     sectionName: "TRENDING BRANDS ITEMS",
-                                    payload: {"brand_ids[0]": otherBrandsId});
+                                    payload: payload);
 
                                 Get.to(() => const ResultView(),
                                     transition: Transition.fadeIn,
@@ -2249,7 +2254,7 @@ class HomeView extends GetView<HomeController> {
                                         CustomSearchController());
                                 controller.getProductsInSection(
                                     sectionName: "TRENDING BRANDS ITEMS",
-                                    payload: {"brand_ids[0]": otherBrandsId});
+                                    payload: payload);
 
                                 Get.to(() => const ResultView(),
                                     transition: Transition.fadeIn,
@@ -2257,6 +2262,8 @@ class HomeView extends GetView<HomeController> {
                                     duration:
                                         const Duration(milliseconds: 400));
                               }
+
+                              payload.clear();
                             },
                             child: Text(
                               "SHOW ALL",
@@ -2315,10 +2322,17 @@ class HomeView extends GetView<HomeController> {
                                                             .productsInBrands[
                                                         index]))
                                             : buildProductShowAll(() {
-                                                String otherBrandsId =
-                                                    controller.otherBrandsId
-                                                        .join(",");
+                                                Map payload = {};
 
+                                                for (int i = 0;
+                                                    i <
+                                                        controller.otherBrandsId
+                                                            .length;
+                                                    i++) {
+                                                  payload["brand_ids[${i}]"] =
+                                                      controller
+                                                          .otherBrandsId[i];
+                                                }
                                                 if (CustomSearchController()
                                                     .initialized) {
                                                   CustomSearchController
@@ -2327,10 +2341,7 @@ class HomeView extends GetView<HomeController> {
                                                   controller.getProductsInSection(
                                                       sectionName:
                                                           "TRENDING BRANDS ITEMS",
-                                                      payload: {
-                                                        "brand_ids[0]":
-                                                            otherBrandsId
-                                                      });
+                                                      payload: payload);
 
                                                   Get.to(
                                                       () => const ResultView(),
@@ -2338,7 +2349,7 @@ class HomeView extends GetView<HomeController> {
                                                           Transition.fadeIn,
                                                       curve: Curves.easeInOut,
                                                       duration: const Duration(
-                                                          milliseconds: 800));
+                                                          milliseconds: 400));
                                                 } else {
                                                   CustomSearchController
                                                       controller =
@@ -2347,10 +2358,7 @@ class HomeView extends GetView<HomeController> {
                                                   controller.getProductsInSection(
                                                       sectionName:
                                                           "TRENDING BRANDS ITEMS",
-                                                      payload: {
-                                                        "brand_ids[0]":
-                                                            otherBrandsId
-                                                      });
+                                                      payload: payload);
 
                                                   Get.to(
                                                       () => const ResultView(),
@@ -2358,8 +2366,10 @@ class HomeView extends GetView<HomeController> {
                                                           Transition.fadeIn,
                                                       curve: Curves.easeInOut,
                                                       duration: const Duration(
-                                                          milliseconds: 800));
+                                                          milliseconds: 400));
                                                 }
+
+                                                payload.clear();
                                               });
                                       },
                                       separatorBuilder: (ctx, index) =>

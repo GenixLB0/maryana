@@ -40,6 +40,8 @@ dependencies:
   local_hero:
   get_it:
   avatar_glow:
+  uni_links:
+  app_links:
 
 
   flutter_spinkit:
@@ -57,6 +59,7 @@ dependencies:
   google_api_headers: 4.0.3
   json_annotation:
   google_maps_flutter: 2.5.3
+  share_plus:
 
 
 

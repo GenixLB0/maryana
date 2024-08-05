@@ -2,6 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>your_scheme</string>
+            </array>
+        </dict>
+    </array>
+    <key>FlutterDeepLinkingEnabled</key>
+    <true/>
+
         <key>CFBundleDevelopmentRegion</key>
         <string>$(DEVELOPMENT_LANGUAGE)</string>
         <key>CFBundleDisplayName</key>
@@ -72,5 +84,29 @@
         <true/>
         <key>UIStatusBarHidden</key>
         <false/>
+
+         <key>CFBundleURLTypes</key>
+            <array>
+                <dict>
+                    <key>CFBundleTypeRole</key>
+                    <string>Editor</string>
+                    <key>CFBundleURLName</key>
+                    <string>maryana.genixs.com.maryana</string>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>https</string>
+                    </array>
+                </dict>
+            </array>
+            <key>NSUserActivityTypes</key>
+            <array>
+                <string>NSUserActivityTypeBrowsingWeb</string>
+            </array>
+            <key>com.apple.developer.associated-domains</key>
+            <array>
+                <string>applinks:mariannela-8c357.web.app/</string>
+            </array>
+
+
     </dict>
 </plist>
