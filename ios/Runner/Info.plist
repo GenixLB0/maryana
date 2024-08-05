@@ -22,17 +22,21 @@
         <string>????</string>
         <key>CFBundleVersion</key>
         <string>$(FLUTTER_BUILD_NUMBER)</string>
-        <key>CFBundleIcons</key>
-        <dict>
-            <key>CFBundlePrimaryIcon</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>Icon-167</string>
-                    <string>Icon-152</string>
-                </array>
-            </dict>
-        </dict>
+<key>CFBundleIcons</key>
+<dict>
+    <key>CFBundlePrimaryIcon</key>
+    <dict>
+        <key>CFBundleIconFiles</key>
+        <array>
+            <string>Icon-60</string>
+            <string>Icon-76</string>
+            <string>Icon-120</string>
+            <string>Icon-167</string>
+            <string>Icon-152</string>
+            <string>Icon-1024</string>
+        </array>
+    </dict>
+</dict>
         <key>LSRequiresIPhoneOS</key>
         <true/>
         <key>NSCameraUsageDescription</key>
