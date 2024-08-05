@@ -169,6 +169,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+  device_info_plus:
+    dependency: transitive
+    description:
+      name: device_info_plus
+      sha256: "93429694c9253d2871b3af80cf11b3cbb5c65660d402ed7bf69854ce4a089f82"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.1.1"
+  device_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: device_info_plus_platform_interface
+      sha256: "282d3cf731045a2feb66abfe61bbc40870ae50a3ed10a4d3d217556c35c8c2ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.1"
   dio:
     dependency: "direct main"
     description:
@@ -773,6 +789,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  os_detect:
+    dependency: transitive
+    description:
+      name: os_detect
+      sha256: faf3bcf39515e64da8ff76b2f2805b20a6ff47ae515393e535f8579ff91d6b7f
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   package_info_plus:
     dependency: transitive
     description:
@@ -1114,6 +1138,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  upgrader:
+    dependency: "direct main"
+    description:
+      name: upgrader
+      sha256: d45483694620883107c2f5ca1dff7cdd4237b16810337a9c9c234203eb79eb5f
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.3.0"
   url_launcher:
     dependency: "direct main"
     description:
@@ -1218,6 +1250,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  version:
+    dependency: transitive
+    description:
+      name: version
+      sha256: "3d4140128e6ea10d83da32fef2fa4003fccbf6852217bb854845802f04191f94"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
   video_player:
     dependency: "direct main"
     description:
@@ -1290,6 +1330,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.5.1"
+  win32_registry:
+    dependency: transitive
+    description:
+      name: win32_registry
+      sha256: "723b7f851e5724c55409bb3d5a32b203b3afe8587eaf5dafb93a5fed8ecda0d6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   xdg_directories:
     dependency: transitive
     description:

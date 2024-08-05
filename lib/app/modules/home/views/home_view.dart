@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/services.dart';
 
@@ -25,6 +26,7 @@ import 'package:nb_utils/nb_utils.dart'
 
 import 'package:shimmer/shimmer.dart';
 import 'package:typewritertext/typewritertext.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -46,206 +48,217 @@ class HomeView extends GetView<HomeController> {
       Get.lazyPut<HomeController>(() => HomeController());
     }
 
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10.h,
-            ),
-            buildUpperBar(context),
-            Obx(() {
-              print("the new value is ${controller.currentSectionName.value}");
-              return controller.currentSectionName.value.isEmpty
-                  ? SizedBox(
-                      height: 5.h,
-                    )
-                  : Container(
-                      // color: const Color(0xffF7D454),
-                      child: SlideToast(
-                        InkWell(
-                          onTap: () {
-                            controller.currentFun();
-                          },
-                          child: AnimatedContainer(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            // color: primaryColor.withOpacity(0.9),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.purple.shade200,
-                                  Colors.purple.shade50,
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            duration: const Duration(seconds: 1),
-                            curve: Curves.fastOutSlowIn,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 15.w,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Check all the products in",
-                                      style: primaryTextStyle(
-                                          color: Colors.white,
-                                          weight: FontWeight.w400,
-                                          size: 12.sp.round()),
-                                    ),
-                                    SizedBox(
-                                      width: 3.w,
-                                    ),
-                                    Shimmer.fromColors(
-                                        baseColor: Colors.purple,
-                                        highlightColor: primaryColor,
-                                        child: Text(
-                                          controller.currentSectionName.value,
-                                          style: primaryTextStyle(
-                                              color: Colors.black,
-                                              weight: FontWeight.w400,
-                                              size: 12.sp.round()),
-                                        ))
+    return UpgradeAlert(
+      dialogStyle: Platform.isIOS
+          ? UpgradeDialogStyle.cupertino
+          : UpgradeDialogStyle.material,
+      barrierDismissible: true,
+      upgrader: Upgrader(
+        durationUntilAlertAgain: const Duration(days: 1),
+      ),
+      child: Scaffold(
+        extendBody: true,
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10.h,
+              ),
+              buildUpperBar(context),
+              Obx(() {
+                print(
+                    "the new value is ${controller.currentSectionName.value}");
+                return controller.currentSectionName.value.isEmpty
+                    ? SizedBox(
+                        height: 5.h,
+                      )
+                    : Container(
+                        // color: const Color(0xffF7D454),
+                        child: SlideToast(
+                          InkWell(
+                            onTap: () {
+                              controller.currentFun();
+                            },
+                            child: AnimatedContainer(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width,
+                              // color: primaryColor.withOpacity(0.9),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.purple.shade200,
+                                    Colors.purple.shade50,
                                   ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
-                                SizedBox(
-                                  width: 3.w,
-                                ),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                  size: 15.sp,
-                                )
-                              ],
+                              ),
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.fastOutSlowIn,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 15.w,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Check all the products in",
+                                        style: primaryTextStyle(
+                                            color: Colors.white,
+                                            weight: FontWeight.w400,
+                                            size: 12.sp.round()),
+                                      ),
+                                      SizedBox(
+                                        width: 3.w,
+                                      ),
+                                      Shimmer.fromColors(
+                                          baseColor: Colors.purple,
+                                          highlightColor: primaryColor,
+                                          child: Text(
+                                            controller.currentSectionName.value,
+                                            style: primaryTextStyle(
+                                                color: Colors.black,
+                                                weight: FontWeight.w400,
+                                                size: 12.sp.round()),
+                                          ))
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                    size: 15.sp,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-            }),
+                      );
+              }),
 
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                controller: controller.scrollController.value,
-                restorationId: "home_scroll",
-                scrollDirection: Axis.vertical,
-                child: Container(
-                  child: Column(
-                    children: [
-                      Obx(() {
-                        return buildCatScroll(context);
-                      }),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      buildBannerScroll(context),
-                      SizedBox(
-                        height: 15.h,
-                      ),
-                      Obx(() {
-                        return buildCustomCatScroll(context);
-                      }),
-                      SizedBox(
-                        height: 15.h,
-                      ),
-                      //here we need collections
-                      GetBuilder<HomeController>(
-                          id: 'collections',
-                          builder: (logic) {
-                            return controller.isCollectionsReached
-                                ? buildCollectionItems(context)
-                                : Container(
-                                    height: 100.h,
-                                    child: LoadingWidget(placeHolderWidget()));
-                          }),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  controller: controller.scrollController.value,
+                  restorationId: "home_scroll",
+                  scrollDirection: Axis.vertical,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Obx(() {
+                          return buildCatScroll(context);
+                        }),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        buildBannerScroll(context),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Obx(() {
+                          return buildCustomCatScroll(context);
+                        }),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        //here we need collections
+                        GetBuilder<HomeController>(
+                            id: 'collections',
+                            builder: (logic) {
+                              return controller.isCollectionsReached
+                                  ? buildCollectionItems(context)
+                                  : Container(
+                                      height: 100.h,
+                                      child:
+                                          LoadingWidget(placeHolderWidget()));
+                            }),
 
-                      SizedBox(
-                        height: 15.h,
-                      ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
 
-                      // here we need brands
-                      GetBuilder<HomeController>(
-                          id: 'brands',
-                          builder: (logic) {
-                            return buildBrandItems(context);
-                          }),
+                        // here we need brands
+                        GetBuilder<HomeController>(
+                            id: 'brands',
+                            builder: (logic) {
+                              return buildBrandItems(context);
+                            }),
 
-                      SizedBox(
-                        height: 15.h,
-                      ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
 
-                      //here we need coupons
+                        //here we need coupons
 
-                      GetBuilder<HomeController>(
-                          id: 'coupons',
-                          builder: (logic) {
-                            return buildCoupon(context);
-                          }),
+                        GetBuilder<HomeController>(
+                            id: 'coupons',
+                            builder: (logic) {
+                              return buildCoupon(context);
+                            }),
 
-                      // here we need Gift Cards
+                        // here we need Gift Cards
 
-                      GetBuilder<HomeController>(
-                          id: 'gift-cards',
-                          builder: (logic) {
-                            return buildGiftCards(context);
-                          }),
+                        GetBuilder<HomeController>(
+                            id: 'gift-cards',
+                            builder: (logic) {
+                              return buildGiftCards(context);
+                            }),
 
-                      // here we need styles
+                        // here we need styles
 
-                      GetBuilder<HomeController>(
-                          id: 'styles',
-                          builder: (logic) {
-                            return buildStyles(context);
-                          }),
+                        GetBuilder<HomeController>(
+                            id: 'styles',
+                            builder: (logic) {
+                              return buildStyles(context);
+                            }),
 
-                      SizedBox(
-                        height: 10.h,
-                      ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
 
-                      //here we need other Brands
-                      GetBuilder<HomeController>(
-                          id: 'other-brands',
-                          builder: (logic) {
-                            return buildOtherBrands(context);
-                          }),
+                        //here we need other Brands
+                        GetBuilder<HomeController>(
+                            id: 'other-brands',
+                            builder: (logic) {
+                              return buildOtherBrands(context);
+                            }),
 
-                      //here we need other brands Products
-                      GetBuilder<HomeController>(
-                          id: 'products-in-other-brands',
-                          builder: (logic) {
-                            return buildProductsInBrands(context);
-                          }),
+                        //here we need other brands Products
+                        GetBuilder<HomeController>(
+                            id: 'products-in-other-brands',
+                            builder: (logic) {
+                              return buildProductsInBrands(context);
+                            }),
 
-                      // buildProductsScroll(context),
-                      SizedBox(
-                        height: 15.h,
-                      ),
+                        // buildProductsScroll(context),
+                        SizedBox(
+                          height: 15.h,
+                        ),
 
-                      //here we need recommended section
+                        //here we need recommended section
 
-                      Obx(() {
-                        return buildRecommendedScroll(context);
-                      }),
+                        Obx(() {
+                          return buildRecommendedScroll(context);
+                        }),
 
-                      SizedBox(
-                        height: 15.h,
-                      ),
-                    ],
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
+              )
 
-            // buildBannerScroll(context),
-          ],
+              // buildBannerScroll(context),
+            ],
+          ),
         ),
       ),
     );

@@ -462,7 +462,7 @@ class _CheckoutPageState extends State<CheckoutPage>
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30.w),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     _buildPaymentMethodCard(
                       "Cash",
@@ -471,34 +471,37 @@ class _CheckoutPageState extends State<CheckoutPage>
                       36.49.w,
                       22.h,
                     ),
+                    SizedBox(
+                      width: 20.w,
+                    ),
                     _buildPaymentMethodCard(
                         "Credit Card",
                         'credit',
                         cartController.selectedMethod.value == "Credit Card",
                         35.w,
                         22.h),
-                    Container(
-                        width: 94.w,
-                        height: 64.w,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: SvgPicture.asset(
-                              'assets/images/cart/more.svg',
-                              width: 150.10.w,
-                              height: 64.h,
-                              fit: BoxFit.cover,
-                            ))),
+                    // Container(
+                    //     width: 94.w,
+                    //     height: 64.w,
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       borderRadius: BorderRadius.circular(12.r),
+                    //       boxShadow: [
+                    //         BoxShadow(
+                    //           color: Colors.black.withOpacity(0.1),
+                    //           blurRadius: 6,
+                    //           offset: Offset(0, 2),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     child: Padding(
+                    //         padding: EdgeInsets.only(top: 10),
+                    //         child: SvgPicture.asset(
+                    //           'assets/images/cart/more.svg',
+                    //           width: 150.10.w,
+                    //           height: 64.h,
+                    //           fit: BoxFit.cover,
+                    //         ))),
                   ],
                 ),
               ),
@@ -939,6 +942,7 @@ class _CheckoutPageState extends State<CheckoutPage>
                                         .shippingID.value.isNotEmpty) {
                                       cartController.step.value = '2';
                                       cartController.fetchCheckoutDetails();
+
                                       //       cartController.checkoutApi();
                                     } else {
                                       Get.snackbar('Sorry',

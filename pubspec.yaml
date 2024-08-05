@@ -33,6 +33,7 @@ dependencies:
   awesome_snackbar_content:
   flutter_screenutil: ^5.9.3
   cached_network_image:
+  upgrader:
   shimmer:
   logger: ^1.1.0
   loading_animation_widget: ^1.2.1

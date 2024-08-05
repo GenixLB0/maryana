@@ -20,6 +20,10 @@ class GiftCardView extends GetView<GiftCardController> {
 
   @override
   Widget build(BuildContext context) {
+    GiftCardController giftCardController = Get.put(GiftCardController());
+
+    TextEditingController emailEditigController =
+        TextEditingController(text: "fg");
     return Scaffold(
         body: SafeArea(
       child: SingleChildScrollView(
