@@ -1178,7 +1178,7 @@ class HomeView extends GetView<HomeController> {
                             style: TextStyle(
                               color: const Color(0xFF9B9B9B),
                               fontSize: 17.sp,
-                              fontFamily: fontCormoantFont,
+                              fontFamily: GoogleFonts.cormorant().fontFamily,
                               fontWeight: FontWeight.w700,
                               height: 0,
                             ),
@@ -1196,7 +1196,8 @@ class HomeView extends GetView<HomeController> {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 27.sp,
-                                  fontFamily: fontCormoantFont,
+                                  fontFamily:
+                                      GoogleFonts.cormorant().fontFamily,
                                   fontWeight: FontWeight.w600,
                                   height: 0,
                                 ),
@@ -1459,7 +1460,7 @@ class HomeView extends GetView<HomeController> {
               child: Text(
                 "new",
                 style: TextStyle(
-                    fontFamily: fontCormoantFont,
+                    fontFamily: GoogleFonts.cormorant().fontFamily,
                     fontSize: 14.sp,
                     color: Colors.grey[300],
                     fontWeight: FontWeight.w400),
@@ -1472,7 +1473,7 @@ class HomeView extends GetView<HomeController> {
               child: Text(
                 "${brand.name} BRAND",
                 style: TextStyle(
-                    fontFamily: fontCormoantFont,
+                    fontFamily: GoogleFonts.cormorant().fontFamily,
                     fontSize: 28.sp,
                     color: Colors.black,
                     fontWeight: FontWeight.w400),
@@ -1688,7 +1689,7 @@ class HomeView extends GetView<HomeController> {
                       Text(
                         "What's Your Vibe?",
                         style: TextStyle(
-                            fontFamily: fontCormoantFont,
+                            fontFamily: GoogleFonts.cormorant().fontFamily,
                             fontSize: 14.sp,
                             color: Colors.grey[300]),
                       ),
@@ -1698,7 +1699,7 @@ class HomeView extends GetView<HomeController> {
                       Text(
                         "Shop By Style",
                         style: TextStyle(
-                            fontFamily: fontCormoantFont,
+                            fontFamily: GoogleFonts.cormorant().fontFamily,
                             fontSize: 28.sp,
                             color: Colors.black),
                       ),
@@ -2035,7 +2036,7 @@ class HomeView extends GetView<HomeController> {
                           style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 14.sp,
-                              fontFamily: fontCormoantFont,
+                              fontFamily: GoogleFonts.cormorant().fontFamily,
                               color: Colors.grey[400]),
                         ),
                         SizedBox(
@@ -2046,7 +2047,7 @@ class HomeView extends GetView<HomeController> {
                           style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 28.sp,
-                              fontFamily: fontCormoantFont),
+                              fontFamily: GoogleFonts.cormorant().fontFamily),
                         ),
                         SizedBox(
                           height: 5.h,

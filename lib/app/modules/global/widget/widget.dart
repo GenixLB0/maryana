@@ -2310,7 +2310,7 @@ buildFilterBottomSheet(
                   child: Text("Filters",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontFamily: fontCormoantFont,
+                          fontFamily: GoogleFonts.cormorant().fontFamily,
                           fontWeight: FontWeight.w700,
                           fontSize: 22.sp)),
                 ),
@@ -2325,7 +2325,7 @@ buildFilterBottomSheet(
                     child: Text("Reset",
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            fontFamily: fontCormoantFont,
+                            fontFamily: GoogleFonts.cormorant().fontFamily,
                             fontWeight: FontWeight.w700,
                             color: Colors.orange,
                             fontSize: 18.sp)),

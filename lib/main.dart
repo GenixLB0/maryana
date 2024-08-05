@@ -65,14 +65,13 @@ void main() async {
   fontFamilyBoldGlobal = GoogleFonts.bebasNeue().fontFamily;
   fontFamilyPrimaryGlobal = GoogleFonts.lato().fontFamily;
   fontFamilySecondaryGlobal = GoogleFonts.nunito().fontFamily;
-  fontCormoantFont = GoogleFonts.cormorant().fontFamily;
+  // GoogleFonts.cormorant().fontFamily = GoogleFonts.cormorant().fontFamily;
 
   // GoogleFonts.cormorant
   Get.put(ApiService());
 
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override

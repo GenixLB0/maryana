@@ -65,7 +65,7 @@ class GiftCardView extends GetView<GiftCardController> {
                       child: Text(
                         "Buy A Gift Card",
                         style: TextStyle(
-                            fontFamily: fontCormoantFont,
+                            fontFamily: GoogleFonts.cormorant().fontFamily,
                             fontSize: 22.sp,
                             fontWeight: FontWeight.w700),
                       ),
@@ -78,7 +78,7 @@ class GiftCardView extends GetView<GiftCardController> {
                       child: Text(
                         "history",
                         style: TextStyle(
-                            fontFamily: fontCormoantFont,
+                            fontFamily: GoogleFonts.cormorant().fontFamily,
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                             color: primaryColor),
