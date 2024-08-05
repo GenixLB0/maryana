@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
 
 class GiftCardController extends GetxController {
@@ -11,7 +10,6 @@ class GiftCardController extends GetxController {
   var sent = true.obs;
 
   final count = 0.obs;
-
   @override
   void onInit() {
     super.onInit();
@@ -29,25 +27,23 @@ class GiftCardController extends GetxController {
   }
 
   Future<void> fetchTransactions() async {
-    if (userToken != null) {
-      loading.value = true;
-      try {
-        final response = await apiConsumer.get('gift-cards');
-        if (response['status'] == 'success') {
-          var sent = response['data']['sent'] as List;
-          var received = response['data']['received'] as List;
-          sentTransactions
-              .assignAll(sent.map((e) => Transaction.fromJson(e)).toList());
-          receivedTransactions
-              .assignAll(received.map((e) => Transaction.fromJson(e)).toList());
-        } else {
-          print('Failed to fetch transactions: ${response['message']}');
-        }
-      } catch (e) {
-        print('Error fetching transactions: $e');
-      } finally {
-        loading.value = false;
+    loading.value = true;
+    try {
+      final response = await apiConsumer.get('gift-cards');
+      if (response['status'] == 'success') {
+        var sent = response['data']['sent'] as List;
+        var received = response['data']['received'] as List;
+        sentTransactions
+            .assignAll(sent.map((e) => Transaction.fromJson(e)).toList());
+        receivedTransactions
+            .assignAll(received.map((e) => Transaction.fromJson(e)).toList());
+      } else {
+        print('Failed to fetch transactions: ${response['message']}');
       }
+    } catch (e) {
+      print('Error fetching transactions: $e');
+    } finally {
+      loading.value = false;
     }
   }
 }

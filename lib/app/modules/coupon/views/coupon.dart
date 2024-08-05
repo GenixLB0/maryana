@@ -235,25 +235,25 @@ class CouponCard extends StatelessWidget {
                           )),
                 ),
               ),
-              PositionedDirectional(
-                end: 61.w,
-                top: 0,
-                child: Column(children: [
-                  Container(
-                    width: 11.w,
-                    height: 11.h,
-                    decoration: const ShapeDecoration(
-                      color: Color.fromRGBO(250, 250, 250, 1),
-                      shape: OvalBorder(),
-                    ),
-                  ),
-                  SvgPicture.asset(
-                    'assets/images/profile/lineCoupon.svg',
-                    width: 82.w,
-                    height: 110.h,
-                  ),
-                ]),
-              ),
+              // PositionedDirectional(
+              //   end: 61.w,
+              //   top: 0,
+              //   child: Column(children: [
+              //     Container(
+              //       width: 11.w,
+              //       height: 11.h,
+              //       decoration: const ShapeDecoration(
+              //         color: Color.fromRGBO(250, 250, 250, 1),
+              //         shape: OvalBorder(),
+              //       ),
+              //     ),
+              //     SvgPicture.asset(
+              //       'assets/images/profile/lineCoupon.svg',
+              //       width: 82.w,
+              //       height: 110.h,
+              //     ),
+              //   ]),
+              // ),
               PositionedDirectional(
                 end: 61.w,
                 bottom: 0,
@@ -275,53 +275,53 @@ class CouponCard extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          Text(
-                            'Exp.',
-                            style: primaryTextStyle(
-                              color: Color(0xFF777E90),
-                              size: 12.round(),
-                              weight: FontWeight.w400,
-                              letterSpacing: -0.12,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                coupon.expireAt == null ||
-                                        coupon.expireAt!.month == null
-                                    ? 'N/A'
-                                    : '${_monthName(coupon.expireAt!.month!)}',
-                                textAlign: TextAlign.center,
-                                style: primaryTextStyle(
-                                  color: Color(0xFF131416),
-                                  size: 12.round(),
-                                  weight: FontWeight.w400,
-                                  height: 0,
-                                  letterSpacing: -0.12,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4.h,
-                              ),
-                              Text(
-                                coupon.expireAt == null ||
-                                        coupon.expireAt!.day == null
-                                    ? 'N/A'
-                                    : '${coupon.expireAt!.day!}',
-                                textAlign: TextAlign.center,
-                                style: primaryTextStyle(
-                                  color: Color(0xFF131416),
-                                  weight: FontWeight.w400,
-                                  size: 12.round(),
-                                  height: 0,
-                                  letterSpacing: -0.12,
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Text(
+                          //   'Exp.',
+                          //   style: primaryTextStyle(
+                          //     color: Color(0xFF777E90),
+                          //     size: 12.round(),
+                          //     weight: FontWeight.w400,
+                          //     letterSpacing: -0.12,
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   height: 10.h,
+                          // ),
+                          // Column(
+                          //   children: [
+                          //     Text(
+                          //       coupon.expireAt == null ||
+                          //               coupon.expireAt!.month == null
+                          //           ? 'N/A'
+                          //           : '${_monthName(coupon.expireAt!.month!)}',
+                          //       textAlign: TextAlign.center,
+                          //       style: primaryTextStyle(
+                          //         color: Color(0xFF131416),
+                          //         size: 12.round(),
+                          //         weight: FontWeight.w400,
+                          //         height: 0,
+                          //         letterSpacing: -0.12,
+                          //       ),
+                          //     ),
+                          //     SizedBox(
+                          //       height: 4.h,
+                          //     ),
+                          //     Text(
+                          //       coupon.expireAt == null ||
+                          //               coupon.expireAt!.day == null
+                          //           ? 'N/A'
+                          //           : '${coupon.expireAt!.day!}',
+                          //       textAlign: TextAlign.center,
+                          //       style: primaryTextStyle(
+                          //         color: Color(0xFF131416),
+                          //         weight: FontWeight.w400,
+                          //         size: 12.round(),
+                          //         height: 0,
+                          //         letterSpacing: -0.12,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ]),

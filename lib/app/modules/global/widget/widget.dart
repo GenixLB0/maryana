@@ -961,6 +961,11 @@ class CustomNavBar extends StatelessWidget {
                   print(
                       " it have clients ${homeController.scrollController!.value.hasClients}");
                   _tabController.changeIndex(index);
+                  if (index == 2) {
+                    // تحقق من أنك على علامة التبويب الخاصة بالعربة
+                    Get.find<CartController>()
+                        .fetchCartDetailsFromAPI(); // تحديث بيانات العربة عند النقر على علامة التبويب
+                  }
                 },
                 currentIndex: _tabController.selectedIndex.value,
                 items: [

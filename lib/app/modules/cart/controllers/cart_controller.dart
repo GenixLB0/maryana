@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:get/get.dart';
+import 'package:maryana/app/modules/address/controllers/address_controller.dart';
 import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.dart';
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:get_storage/get_storage.dart';
@@ -45,6 +46,7 @@ class CartController extends GetxController {
   }
 
   GiftCardController giftCardController = Get.put(GiftCardController());
+  AddressController addressController = Get.put(AddressController());
 
   @override
   void onInit() async {
@@ -55,6 +57,7 @@ class CartController extends GetxController {
       super.onInit();
       selectedMethod.value = "Cash";
       giftCardController.fetchTransactions();
+      //  addressController.fetchAddresses();
 
       bool cachedCart = await loadCartItems();
       if (!cachedCart) {
@@ -70,10 +73,6 @@ class CartController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
-
-    print('teasdsad');
-
-    print('Ready');
   }
 
   Future<String> confirmCheckout(String paymentMethodId) async {

@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maryana/app/modules/address/controllers/address_controller.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/cart/views/checkout_view.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart'
@@ -11,6 +12,7 @@ import 'package:maryana/app/modules/global/model/model_response.dart'
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
+import 'package:maryana/app/routes/app_pages.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CartPage extends StatefulWidget {
@@ -30,6 +32,8 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    cartController.fetchCartDetailsFromAPI();
+
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -76,6 +80,8 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
     _handAnimationController.dispose();
     super.dispose();
   }
+
+  final AddressController addressController = Get.put(AddressController());
 
   Widget itemCart(ViewProductData product, CartItem item, int index) {
     return FadeTransition(
@@ -237,7 +243,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                 ),
                 PositionedDirectional(
                   top: 20.h,
-                  end: 40.w,
+                  end: 70.w,
                   child: ScaleTransition(
                     scale: _scaleAnimation,
                     child: SlideTransition(
@@ -251,24 +257,27 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                   ),
                 ),
                 AnimatedPositionedDirectional(
-                  duration: Duration(milliseconds: 300),
-                  bottom: 12.h,
-                  end: !item.isDismissible ? 16.w : 56.w,
+                  duration: const Duration(milliseconds: 300),
+                  top: 0.h,
+                  end: !item.isDismissible ? 0.w : 0.w,
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 300),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 2.h, horizontal: 10.w),
+                    height: 118.h,
+                    padding: EdgeInsets.symmetric(horizontal: 15.w),
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           width: 1,
-                          color: Colors.black.withOpacity(0.5),
+                          color: Colors.grey.withOpacity(0.5),
                         ),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20),
+                            bottomRight: Radius.circular(20)),
                       ),
                     ),
-                    child: Row(
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         GestureDetector(
                           onTap: () {
@@ -282,14 +291,13 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                             '-',
                             style: TextStyle(
                               color: Colors.black.withOpacity(0.5),
-                              fontSize: 20.sp,
+                              fontSize: 30.sp,
                               fontFamily: 'Roboto',
                               fontWeight: FontWeight.w700,
                               height: 0,
                             ),
                           ),
                         ),
-                        SizedBox(width: 12.w),
                         AnimatedSwitcher(
                           duration: Duration(milliseconds: 300),
                           transitionBuilder:
@@ -302,14 +310,13 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                             key: ValueKey<int>(item.quantity),
                             style: primaryTextStyle(
                               color: Colors.black.withOpacity(0.5),
-                              size: 15.sp.round(),
+                              size: 20.sp.round(),
                               fontFamily: 'Roboto',
                               weight: FontWeight.w700,
                               height: 0,
                             ),
                           ),
                         ),
-                        SizedBox(width: 12.w),
                         GestureDetector(
                           onTap: () {
                             cartController.updateQuantity(
@@ -319,7 +326,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                             '+',
                             style: TextStyle(
                               color: Colors.black.withOpacity(0.5),
-                              fontSize: 20.sp,
+                              fontSize: 25.sp,
                               fontFamily: 'Roboto',
                               fontWeight: FontWeight.w700,
                               height: 0,
@@ -362,7 +369,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                           cartController.removeItem(item);
                         },
                         child: Container(
-                          width: item.isDismissible ? 310.w : 0,
+                          width: item.isDismissible ? 50.w : 0,
                           height: 120.h,
                           decoration: BoxDecoration(
                             color: item.isDismissible
@@ -497,6 +504,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                               ? Dismissible(
                                   key: Key(item.product.toString()),
                                   background: Container(
+                                    width: 50.w,
                                     decoration: BoxDecoration(
                                       color: Colors.red,
                                       border: Border.all(
@@ -573,9 +581,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 Text(
-                                  cartController.total.value != 0.0
-                                      ? '\$ ${cartController.total.value}'
-                                      : '\$ ${cartController.cartItems.fold<double>(0, (sum, item) => sum + num.parse(item.product!.price!) * item.quantity).toStringAsFixed(2)}',
+                                  '\$ ${cartController.cartItems.fold<double>(0, (sum, item) => sum + num.parse(item.product!.price!) * item.quantity).toStringAsFixed(2)}',
                                   style: primaryTextStyle(
                                     size: 20,
                                     color: Colors.black,
@@ -589,7 +595,14 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                           InkWell(
                             onTap: () {
                               cartController.step.value = '1';
-                              Get.to(CheckoutPage());
+                              cartController.shippingID.value =
+                                  addressController.addressList
+                                      .firstWhere(
+                                          (address) => address.isDefault == 1)
+                                      .id
+                                      .toString();
+                         
+                              Get.toNamed(Routes.CHECKOUT);
                             },
                             child: Container(
                               width: 315.w,
