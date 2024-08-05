@@ -116,13 +116,13 @@ class AddressController extends GetxController {
         try {
           // Attempt to find the address with the given condition
           Address address =
-              addressList.value.firstWhere((address) => address.isDefault == 0);
+              addressList.firstWhere((address) => address.isDefault == 1);
           cartController.shippingID.value = address.id.toString();
           // Handle the found address
         } catch (e) {
           if (e is StateError) {
             // Handle the case where no address is found
-            print('No address found matching the condition.');
+            print('No address found matching the condition. ${e.toString()}');
           } else {
             // Handle any other errors
             print('An unexpected error occurred: $e');

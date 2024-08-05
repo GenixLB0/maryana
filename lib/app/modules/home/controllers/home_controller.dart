@@ -961,30 +961,31 @@ class HomeController extends GetxController {
 
   sendGiftCard() async {
     if (userToken != null) {
-      var reponse = await apiConsumer.post(
-        "gift-cards/send",
-        body: {
-          'email': selectedEmail,
-          'gift_card_type_id': selectedGiftCard.id
-        },
-      );
-
+      var apiResponse;
       try {
-        final apiResponse = ApiSendGiftCard.fromJson(reponse);
-
+        var reponse = await apiConsumer.post(
+          "gift-cards/send",
+          body: {
+            'email': selectedEmail,
+            'gift_card_type_id': selectedGiftCard.id
+          },
+        );
+        apiResponse = ApiSendGiftCard.fromJson(reponse);
         if (apiResponse.status == "success") {
           Get.offNamedUntil(Routes.MAIN, (Route) => false);
           Get.closeCurrentSnackbar();
           Get.snackbar("Sent!", "Gift Card Sent Successfully");
         } else {
+          print("error now  1");
           Get.closeCurrentSnackbar();
-          Get.snackbar("System", reponse['errors'].toString());
+          Get.snackbar("Error!", "Please Check The Entered Email");
         }
       } catch (e) {
+        print("error now  2");
         print("error happened !");
 
         Get.closeCurrentSnackbar();
-        Get.snackbar("System", "Please Check The Selected Email");
+        Get.snackbar("Error!", "Please Check The Entered Email");
       }
     }
   }

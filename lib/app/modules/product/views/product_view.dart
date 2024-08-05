@@ -134,16 +134,16 @@ class ProductView extends GetView<ProductController> {
                                   context, controller.product.value),
                               //Product Size Guide
 
-                              Obx(() {
-                                print(
-                                    "guido is ${controller.productSizeGuide.value.fitType}");
-                                return controller
-                                            .productSizeGuide.value.fitType !=
-                                        null
-                                    ? _buildSizeGuide(
-                                        context, controller.product.value)
-                                    : SizedBox();
-                              }),
+                              // Obx(() {
+                              //   print(
+                              //       "guido is ${controller.productSizeGuide.value.fitType}");
+                              //   return controller
+                              //               .productSizeGuide.value.fitType !=
+                              //           null
+                              //       ? _buildSizeGuide(
+                              //           context, controller.product.value)
+                              //       : SizedBox();
+                              // }),
 
                               //Product Reviews
                               _buildProductReviews(
@@ -1522,15 +1522,15 @@ class ProductView extends GetView<ProductController> {
                         SizedBox(
                           height: 3.h,
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width / 3.1),
-                          child: StarRating(
-                              rating: 0,
-                              onRatingChanged: (v) {},
-                              color: Color(0xffFFD600),
-                              isCustomer: true),
-                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.only(
+                        //       left: MediaQuery.of(context).size.width / 3.1),
+                        //   child: StarRating(
+                        //       rating: 0,
+                        //       onRatingChanged: (v) {},
+                        //       color: Color(0xffFFD600),
+                        //       isCustomer: true),
+                        // ),
                         SizedBox(
                           height: 30.h,
                         )

@@ -286,25 +286,28 @@ class OrderDetailsScreen extends GetView<OrdersController> {
                                       ),
                                     )))),
                         SizedBox(width: 24.w),
-                        Container(
-                            width: 119.w,
-                            height: 44.h,
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFF21034F),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24),
+                        InkResponse(
+                          onTap: () {},
+                          child: Container(
+                              width: 119.w,
+                              height: 44.h,
+                              decoration: ShapeDecoration(
+                                color: const Color(0xFF21034F),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
                               ),
-                            ),
-                            child: Center(
-                                child: Text(
-                              'Rate',
-                              textAlign: TextAlign.center,
-                              style: secondaryTextStyle(
-                                color: Colors.white,
-                                size: 16.sp.round(),
-                                weight: FontWeight.w700,
-                              ),
-                            ))),
+                              child: Center(
+                                  child: Text(
+                                'Rate',
+                                textAlign: TextAlign.center,
+                                style: secondaryTextStyle(
+                                  color: Colors.white,
+                                  size: 16.sp.round(),
+                                  weight: FontWeight.w700,
+                                ),
+                              ))),
+                        ),
                       ],
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
+import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:nb_utils/nb_utils.dart' hide primaryTextStyle;
 
 double pixelCountInMm = 7.874015748031496;
@@ -63,7 +64,16 @@ class _SizeGuideState extends State<SizeGuideView>
       "Oversized",
     ];
     return Scaffold(
-      appBar: AppBar(title: Text('Size Guide')),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+        title: Text(
+          'Size Guide',
+          style: primaryTextStyle(size: 20.sp.round(), color: Colors.white),
+        ),
+        backgroundColor: primaryColor,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -85,27 +95,27 @@ class _SizeGuideState extends State<SizeGuideView>
                                 onPressed: () {},
                                 style: ButtonStyle(
                                     maximumSize: WidgetStateProperty.all(
-                                        Size(85.w, 40.h)),
-                                    backgroundColor: WidgetStateProperty.all(
-                                        Colors.purpleAccent)),
+                                        Size(105.w, 40.h)),
+                                    backgroundColor:
+                                        WidgetStateProperty.all(primaryColor)),
                                 child: Text(
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   value,
                                   style: primaryTextStyle(
-                                      color: Colors.white, size: 8.sp.round()),
+                                      color: Colors.white, size: 13.sp.round()),
                                 ),
                               )
                             : ElevatedButton(
                                 style: ButtonStyle(
                                     maximumSize: WidgetStateProperty.all(
-                                        Size(85.w, 40.h))),
+                                        Size(105.w, 40.h))),
                                 onPressed: () {},
                                 child: Text(
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   value,
-                                  style: primaryTextStyle(size: 8.sp.round()),
+                                  style: primaryTextStyle(size: 13.sp.round()),
                                 )),
                       )
                       .toList()),
