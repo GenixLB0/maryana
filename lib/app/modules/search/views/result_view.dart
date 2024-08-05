@@ -64,7 +64,7 @@ class ResultView extends GetView<CustomSearchController> {
                       child: Text(controller.titleResult,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              fontFamily: fontCormoantFont,
+                              fontFamily: GoogleFonts.cormorant().fontFamily,
                               fontWeight: FontWeight.w700,
                               fontSize: 20.sp)),
                     ),

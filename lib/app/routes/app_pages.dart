@@ -141,7 +141,6 @@ class AppPages {
       page: () => TransactionHistoryScreen(),
       binding: GiftCardBinding(),
     ),
- 
     GetPage(
       name: _Paths.COUPON,
       page: () => CouponViwe(),

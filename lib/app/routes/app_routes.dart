@@ -8,6 +8,7 @@ abstract class Routes {
   static const ORDERS = _Paths.ORDERS;
   static const HISTORY = _Paths.HISTORY;
   static const COUPON = _Paths.COUPON;
+  static const CHECKOUT = _Paths.Checkout;
 
   static const LOGIN = _Paths.LOGIN;
   static const REGISTER = _Paths.REGISTER;

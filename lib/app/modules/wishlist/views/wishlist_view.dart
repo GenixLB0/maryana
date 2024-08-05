@@ -75,7 +75,7 @@ class WishlistView extends GetView<WishlistController> {
                                     child: Text("My Wishlist",
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                            fontFamily: fontCormoantFont,
+                                            fontFamily: GoogleFonts.cormorant().fontFamily,
                                             fontWeight: FontWeight.w700,
                                             fontSize: 22.sp)),
                                   ),
