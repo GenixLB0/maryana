@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
-import 'package:nb_utils/nb_utils.dart';
-
+ 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
   Map<int, Color> swatch = <int, Color>{};
@@ -24,7 +23,13 @@ MaterialColor createMaterialColor(Color color) {
   });
   return MaterialColor(color.value, swatch);
 }
-
+// Define global constants for secondary text styles
+const double textSecondarySizeGlobal = 16.0; // حجم النص الثانوي
+const Color textSecondaryColorGlobal = Color(0xFF4E4E4E); // لون النص الثانوي
+const FontWeight fontWeightSecondaryGlobal = FontWeight.w600; // وزن خط النص الثانوي
+const double textBoldSizeGlobal = 18.0;
+const Color textPrimaryColorGlobal = Color(0xFF1A1A1A); // Darker color for primary text
+const FontWeight fontWeightBoldGlobal = FontWeight.w700; // Slightly bolder weight
 TextStyle boldTextStyle({
   int? size,
   Color? color,
@@ -58,7 +63,22 @@ TextStyle boldTextStyle({
     shadows: textShadows
   );
 }
-
+BorderRadius radiusOnly({
+  double topLeft = 0.0,
+  double topRight = 0.0,
+  double bottomLeft = 0.0,
+  double bottomRight = 0.0,
+}) {
+  return BorderRadius.only(
+    topLeft: Radius.circular(topLeft),
+    topRight: Radius.circular(topRight),
+    bottomLeft: Radius.circular(bottomLeft),
+    bottomRight: Radius.circular(bottomRight),
+  );
+}
+// Define global constants for primary text styles
+const double textPrimarySizeGlobal = 18.0; // حجم النص الأساسي
+ const FontWeight fontWeightPrimaryGlobal = FontWeight.w700; // وزن خط النص الأساسي
 TextStyle secondaryTextStyle({
   int? size,
   Color? color,
@@ -121,8 +141,31 @@ TextStyle primaryTextStyle({
     backgroundColor: backgroundColor,
     height: height,
   );
-}
+}// Define a color for dividers in the dark theme
+const Color dividerDarkColor = Color(0xFF2C2C2C);
 
+const double defaultRadius = 8.0;
+ShapeBorder dialogShape({double radius = 8.0}) {
+  return RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(radius)),
+  );
+}
+BoxDecoration boxDecorationDefault({
+  Color color = Colors.white,
+  double borderRadius = 8.0,
+  Color borderColor = Colors.transparent,
+  double borderWidth = 1.0,
+  BoxShape shape = BoxShape.circle,
+  List<BoxShadow>? boxShadow,
+}) {
+  return BoxDecoration(
+    color: color,
+    borderRadius: BorderRadius.circular(borderRadius),
+    border: Border.all(color: borderColor, width: borderWidth),
+    shape: BoxShape.circle,
+    boxShadow: boxShadow,
+  );
+}
 class AppTheme {
   //
   AppTheme._();

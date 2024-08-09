@@ -3,10 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maryana/app/modules/address/controllers/address_controller.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'edit_address_screen.dart';
+ import 'edit_address_screen.dart';
 import 'add_address_screen.dart';
 
 class AddressListScreen extends StatelessWidget {

@@ -8,9 +8,7 @@ import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 
-import 'package:nb_utils/nb_utils.dart'
-    hide boldTextStyle
-    hide primaryTextStyle;
+ 
 
 import '../../global/theme/app_theme.dart';
 import '../controllers/gift_card_controller.dart';

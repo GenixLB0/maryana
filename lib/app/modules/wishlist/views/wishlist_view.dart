@@ -4,8 +4,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nb_utils/nb_utils.dart' hide primaryTextStyle;
-
+ 
 import '../../global/config/configs.dart';
 import '../../global/model/test_model_response.dart';
 import '../../global/theme/app_theme.dart';

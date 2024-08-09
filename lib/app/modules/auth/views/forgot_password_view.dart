@@ -8,8 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/auth/views/verification_code_view.dart';
 import 'package:maryana/app/modules/global/config/helpers.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
-import 'package:nb_utils/nb_utils.dart' hide boldTextStyle;
-
+ 
 import '../../global/widget/widget.dart';
 import '../controllers/forgot_password_controller.dart';
 

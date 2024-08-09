@@ -10,8 +10,7 @@ import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.d
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
-import 'package:nb_utils/nb_utils.dart' as nb;
-import 'package:flutter/services.dart'; // Import the services package for clipboard
+ import 'package:flutter/services.dart'; // Import the services package for clipboard
 
 class CouponViwe extends StatelessWidget {
   final CouponController controller = Get.put(CouponController());

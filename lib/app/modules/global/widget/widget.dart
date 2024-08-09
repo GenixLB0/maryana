@@ -20,6 +20,7 @@ import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart'
     hide Colors;
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
@@ -30,8 +31,7 @@ import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:maryana/app/modules/search/views/search_view.dart';
 import 'package:maryana/app/modules/services/dio_consumer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:shimmer/shimmer.dart';
+ import 'package:shimmer/shimmer.dart';
 
 import '../../../../main.dart';
 import '../../../routes/app_pages.dart';
@@ -2019,7 +2019,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
 
                                 my_search_controller.setNewValue(RangeValues(
                                   minDouble,
-                                  maxPriceController.toDouble(),
+                               double.parse(maxPriceController.toString()),
                                 ));
                               },
                               maxLines: 1,
@@ -2092,7 +2092,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                                         : double.tryParse(maxPriceText)!;
 
                                 my_search_controller.setNewValue(RangeValues(
-                                    minPriceText.toDouble(), maxDouble));
+                                  double.parse(minPriceText.toString()), maxDouble));
                               },
                               maxLines: 1,
                               style: primaryTextStyle(

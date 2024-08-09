@@ -1,5 +1,7 @@
 import 'dart:convert';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
@@ -11,7 +13,6 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 
-import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
@@ -148,10 +149,28 @@ class HomeController extends GetxController {
   bool isRecommendedReached = false;
 
   //////////////////////////////////////////////////////////
+  // Future<void> RequestIOSNotifications() async {
+  //   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+  //     if (!isAllowed) {
+  //       // Insert here your friendly dialog box before call the request method
+  //       // This is very important to not harm the user experience
+  //       AwesomeNotifications().requestPermissionToSendNotifications();
+  //     }
+  //   });
+  // }
+
+  // FirebaseMessaging? messaging;
 
   @override
   void onInit() {
     listenForFirstScroll();
+    // RequestIOSNotifications();
+    // messaging = FirebaseMessaging.instance;
+    // messaging!.getToken().then((value) {
+    //   print('token fcm' + value.toString());
+    //   //PushToken(value!);
+    //   // addTokenToDatabase(userData!.fullName ?? '', value!);
+    // });
     super.onInit();
   }
 

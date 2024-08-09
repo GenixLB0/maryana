@@ -9,8 +9,7 @@ import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.d
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
-import 'package:nb_utils/nb_utils.dart' as nb;
-
+ 
 class TransactionHistoryScreen extends StatelessWidget {
   final GiftCardController controller = Get.put(GiftCardController());
 
@@ -204,7 +203,7 @@ class TransactionList extends StatelessWidget {
                                     width: 204.w,
                                     child: Text(
                                       "${transaction.from!.firstName} ${transaction.from!.lastName}",
-                                      style: nb.primaryTextStyle(
+                                      style:  primaryTextStyle(
                                         color: const Color(0xFF21034F),
                                         size: 14.round(),
                                         weight: FontWeight.w700,
@@ -219,7 +218,7 @@ class TransactionList extends StatelessWidget {
                                     width: 204.w,
                                     child: Text(
                                       transaction.date,
-                                      style: nb.primaryTextStyle(
+                                      style:  primaryTextStyle(
                                         color: const Color(0xFF49454F),
                                         size: 14.round(),
                                         weight: FontWeight.w400,
@@ -234,7 +233,7 @@ class TransactionList extends StatelessWidget {
                               !sent
                                   ? '+${transaction.amount}'
                                   : '${transaction.amount}',
-                              style: nb.primaryTextStyle(
+                              style:  primaryTextStyle(
                                 color: const Color(0xFF49454F),
                                 size: 14.round(),
                                 weight: FontWeight.w500,

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart' hide Material;
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:http/http.dart' as http;
+ import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart';
@@ -872,15 +872,15 @@ class CustomSearchController extends GetxController {
     try {
       final apiResponse = FilterOneModel.fromJson(response);
       if (apiResponse.status == "success") {
-        minPriceApi.value = apiResponse.data!.minPrice.toDouble();
-        maxPriceApi.value = apiResponse.data!.maxPrice.toDouble();
+        minPriceApi.value =  double.parse( apiResponse.data!.minPrice.toString());
+        maxPriceApi.value = double.parse( apiResponse.data!.maxPrice.toString());
         minPriceController.value =
             TextEditingController(text: apiResponse.data!.minPrice!);
         maxPriceController.value =
             TextEditingController(text: apiResponse.data!.maxPrice!);
 
-        setNewValue(RangeValues(apiResponse.data!.minPrice.toDouble(),
-            apiResponse.data!.maxPrice.toDouble()));
+        setNewValue(RangeValues(double.parse( apiResponse.data!.minPrice.toString()),
+            double.parse( apiResponse.data!.maxPrice.toString())));
         if (apiResponse.data?.colors != null) {
           for (var color in apiResponse.data!.colors!) {
             colors.add(color);

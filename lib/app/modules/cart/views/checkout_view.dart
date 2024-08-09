@@ -10,6 +10,7 @@ import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart' as model;
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:maryana/app/routes/app_pages.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class CheckoutPage extends StatefulWidget {
   @override
@@ -185,7 +185,9 @@ class _CheckoutPageState extends State<CheckoutPage>
                             ),
                           ),
                   )),
-              13.width,
+              SizedBox(
+                width: 13.w,
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +203,9 @@ class _CheckoutPageState extends State<CheckoutPage>
                       ),
                     ),
                   ),
-                  16.height,
+                  SizedBox(
+                    height: 16.w,
+                  ),
                   SizedBox(
                     width: 58,
                     height: 19,
@@ -217,7 +221,9 @@ class _CheckoutPageState extends State<CheckoutPage>
                       ),
                     ),
                   ),
-                  8.height,
+                  SizedBox(
+                    height: 8.w,
+                  ),
                   Text(
                     'Size: ${item!.selectedSize.toString()}',
                     style: primaryTextStyle(
@@ -259,17 +265,25 @@ class _CheckoutPageState extends State<CheckoutPage>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  9.width,
-                  Container(
-                    width: 5.79.w,
-                    height: 2.h,
-                    color: Colors.black.withOpacity(0.5),
-                  ).onTap(() {
-                    if (item.quantity > 1) {
-                      cartController.updateQuantity(item, item.quantity - 1);
-                    }
-                  }),
-                  12.width,
+                  SizedBox(
+                    width: 9.w,
+                  ),
+                  InkWell(
+                      onTap: () => {
+                            if (item.quantity > 1)
+                              {
+                                cartController.updateQuantity(
+                                    item, item.quantity - 1)
+                              }
+                          },
+                      child: Container(
+                        width: 5.79.w,
+                        height: 2.h,
+                        color: Colors.black.withOpacity(0.5),
+                      )),
+                  SizedBox(
+                    width: 12.w,
+                  ),
                   SizedBox(
                     width: 6.44.w,
                     height: 13.48.h,
@@ -284,23 +298,28 @@ class _CheckoutPageState extends State<CheckoutPage>
                       ),
                     ),
                   ),
-                  12.width,
                   SizedBox(
-                    width: 5.79.w,
-                    height: 13.48.h,
-                    child: Text(
-                      '+',
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.5),
-                        fontSize: 12,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w700,
-                        height: 0,
-                      ),
-                    ),
-                  ).onTap(() {
-                    cartController.updateQuantity(item, item.quantity + 1);
-                  }),
+                    width: 12.w,
+                  ),
+                  InkWell(
+                      onTap: () => {
+                            cartController.updateQuantity(
+                                item, item.quantity + 1)
+                          },
+                      child: SizedBox(
+                        width: 5.79.w,
+                        height: 13.48.h,
+                        child: Text(
+                          '+',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                            fontSize: 12,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w700,
+                            height: 0,
+                          ),
+                        ),
+                      ))
                 ],
               ),
             ),
@@ -354,7 +373,9 @@ class _CheckoutPageState extends State<CheckoutPage>
           width: 142.w,
           height: 142.h,
         ),
-        62.height,
+        SizedBox(
+          height: 62.h,
+        ),
         ShowUp(
             delay: 200,
             child: Text.rich(
@@ -380,7 +401,9 @@ class _CheckoutPageState extends State<CheckoutPage>
               ),
               textAlign: TextAlign.center,
             )),
-        10.height,
+        SizedBox(
+          height: 10.h,
+        ),
         ShowUp(
           delay: 400,
           child: SizedBox(
@@ -760,9 +783,13 @@ class _CheckoutPageState extends State<CheckoutPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  20.height,
+                  SizedBox(
+                    height: 20.h,
+                  ),
                   step(),
-                  44.height,
+                  SizedBox(
+                    height: 44.h,
+                  ),
                   SizedBox(
                       width: 332.w,
                       child: Column(
@@ -794,8 +821,9 @@ class _CheckoutPageState extends State<CheckoutPage>
                                   ),
                                 )),
                           ])),
-                  30.height,
-                  //   Expanded(
+                  SizedBox(
+                    height: 30.h,
+                  ), //   Expanded(
                   //     child: SizedBox(
                   //       width: 310.w,
                   //       child: ListView.builder(
@@ -857,7 +885,10 @@ class _CheckoutPageState extends State<CheckoutPage>
                                 : null,
                             child: Column(
                               children: [
-                                if (cartController.step.value != '3') 16.height,
+                                if (cartController.step.value != '3')
+                                  SizedBox(
+                                    height: 16.h,
+                                  ),
                                 if (cartController.step.value != '3')
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -885,96 +916,102 @@ class _CheckoutPageState extends State<CheckoutPage>
                                       ],
                                     ),
                                   ),
-                                16.height,
-                                Container(
-                                  width: 315.w,
-                                  height: 60.h,
-                                  decoration: cartController.loading.value
-                                      ? null
-                                      : ShapeDecoration(
-                                          color: const Color(0xFFD4B0FF),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                  child: cartController.loading.value
-                                      ? Center(
-                                          child: Center(
-                                              child:
-                                                  LoadingAnimationWidget.flickr(
-                                            leftDotColor: primaryColor,
-                                            rightDotColor:
-                                                const Color(0xFFFF0084),
-                                            size: 50,
-                                          )),
-                                        )
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/icons/cart_in_button.svg',
-                                              width: 20.w,
-                                              height: 20.h,
-                                            ),
-                                            SizedBox(
-                                              width: 16.w,
-                                            ),
-                                            Text(
-                                              ButtonTitleStep(),
-                                              textAlign: TextAlign.center,
-                                              style: primaryTextStyle(
-                                                color: Color(0xFF21034F),
-                                                size: 16,
-                                                weight: FontWeight.w700,
-                                                height: 0.09,
+                                SizedBox(
+                                  height: 16.h,
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      if (cartController.step.value == '1') {
+                                        if (cartController
+                                            .shippingID.value.isNotEmpty) {
+                                          cartController.step.value = '2';
+                                          cartController.fetchCheckoutDetails();
+
+                                          //       cartController.checkoutApi();
+                                        } else {
+                                          Get.snackbar('Sorry',
+                                              'You should choose the default shipping address.');
+                                        }
+                                      } else if (cartController.step.value ==
+                                          '2') {
+                                        if (cartController
+                                            .shippingID.value.isNotEmpty) {
+                                          cartController
+                                              .confirmCheckout(cartController
+                                                  .selectedMethod.value)
+                                              .then((value) => {
+                                                    if (value == 'true')
+                                                      cartController
+                                                          .step.value = '3'
+                                                  });
+                                          ;
+                                        } else {
+                                          Get.snackbar('Sorry',
+                                              'You should choose the default shipping address.',
+                                              backgroundColor:
+                                                  Colors.yellowAccent);
+                                        }
+                                      } else {
+                                        // send to whatsapp data for number xxx
+                                        _tabController.changeIndex(1);
+
+                                        // _tabController.selectedIndex.value = 1;
+                                        // Get.offAndToNamed(Routes.MAIN);
+                                        Get.offNamedUntil(
+                                            Routes.MAIN, (Route) => false);
+                                      }
+                                    },
+                                    child: Container(
+                                      width: 315.w,
+                                      height: 60.h,
+                                      decoration: cartController.loading.value
+                                          ? null
+                                          : ShapeDecoration(
+                                              color: const Color(0xFFD4B0FF),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                ).onTap(() {
-                                  if (cartController.step.value == '1') {
-                                    if (cartController
-                                        .shippingID.value.isNotEmpty) {
-                                      cartController.step.value = '2';
-                                      cartController.fetchCheckoutDetails();
-
-                                      //       cartController.checkoutApi();
-                                    } else {
-                                      Get.snackbar('Sorry',
-                                          'You should choose the default shipping address.');
-                                    }
-                                  } else if (cartController.step.value == '2') {
-                                    if (cartController
-                                        .shippingID.value.isNotEmpty) {
-                                      cartController
-                                          .confirmCheckout(cartController
-                                              .selectedMethod.value)
-                                          .then((value) => {
-                                                if (value == 'true')
-                                                  cartController.step.value =
-                                                      '3'
-                                              });
-                                      ;
-                                    } else {
-                                      Get.snackbar('Sorry',
-                                          'You should choose the default shipping address.',
-                                          backgroundColor: Colors.yellowAccent);
-                                    }
-                                  } else {
-                                    // send to whatsapp data for number xxx
-                                    _tabController.changeIndex(1);
-
-                                    // _tabController.selectedIndex.value = 1;
-                                    // Get.offAndToNamed(Routes.MAIN);
-                                    Get.offNamedUntil(
-                                        Routes.MAIN, (Route) => false);
-                                  }
-                                }),
+                                      child: cartController.loading.value
+                                          ? Center(
+                                              child: Center(
+                                                  child: LoadingAnimationWidget
+                                                      .flickr(
+                                                leftDotColor: primaryColor,
+                                                rightDotColor:
+                                                    const Color(0xFFFF0084),
+                                                size: 50,
+                                              )),
+                                            )
+                                          : Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/icons/cart_in_button.svg',
+                                                  width: 20.w,
+                                                  height: 20.h,
+                                                ),
+                                                SizedBox(
+                                                  width: 16.w,
+                                                ),
+                                                Text(
+                                                  ButtonTitleStep(),
+                                                  textAlign: TextAlign.center,
+                                                  style: primaryTextStyle(
+                                                    color: Color(0xFF21034F),
+                                                    size: 16,
+                                                    weight: FontWeight.w700,
+                                                    height: 0.09,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    ))
                               ],
                             ),
                           ))),

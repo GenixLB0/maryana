@@ -6,12 +6,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/order/controllers/orders_controller.dart';
 import 'package:maryana/app/modules/order/views/order_detalis.dart';
-import 'package:nb_utils/nb_utils.dart';
-
+ 
 class OrdersView extends GetView<OrdersController> {
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,7 @@ class OrdersView extends GetView<OrdersController> {
                       rightDotColor: const Color(0xFFFF0084),
                       size: 50,
                     ))),
-              if (controller.loading.value) 20.height,
+              if (controller.loading.value) SizedBox(height: 20.h,),
               if (controller.orders.isEmpty && !controller.loading.value)
                 SizedBox(
                     height: 650.h,

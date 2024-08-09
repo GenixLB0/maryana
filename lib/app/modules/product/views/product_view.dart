@@ -21,10 +21,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
-import 'package:nb_utils/nb_utils.dart'
-    hide primaryTextStyle
-    hide boldTextStyle
-    hide secondaryTextStyle;
+ 
 
 import '../../global/theme/app_theme.dart';
 import '../../search/views/search_view.dart';

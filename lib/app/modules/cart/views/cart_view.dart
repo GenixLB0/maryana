@@ -10,11 +10,11 @@ import 'package:maryana/app/modules/cart/views/checkout_view.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart'
     hide Material;
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/routes/app_pages.dart';
-import 'package:nb_utils/nb_utils.dart';
-
+ 
 class CartPage extends StatefulWidget {
   @override
   _CartPageState createState() => _CartPageState();
@@ -486,7 +486,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
     } else {
       return Column(
         children: [
-          30.height,
+          SizedBox(height: 30.h,),
           Expanded(
             child: AnimatedContainer(
               width: 327.w,
@@ -566,7 +566,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                       ),
                       child: Column(
                         children: [
-                          16.height,
+                          SizedBox(height: 16.h,),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 39),
                             child: Row(
@@ -591,7 +591,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          16.height,
+                          SizedBox(height: 16.h,),
                           InkWell(
                             onTap: () {
                               cartController.step.value = '1';

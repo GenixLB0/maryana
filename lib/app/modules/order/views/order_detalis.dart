@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
 import 'package:maryana/app/modules/order/controllers/orders_controller.dart';
 import 'package:maryana/app/routes/app_pages.dart';
-import 'package:nb_utils/nb_utils.dart';
-
+ 
 Widget _buildOrderRow(String label, dynamic value, {bool isTotal = false}) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 2.h),

@@ -10,9 +10,7 @@ import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:nb_utils/nb_utils.dart'
-    hide secondaryTextStyle
-    hide primaryTextStyle;
+ 
 
 class AddAddressScreen extends GetView<AddressController> {
   Position? location;

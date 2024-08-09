@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
-import 'package:nb_utils/nb_utils.dart';
-import '../controllers/auth_controller.dart';
+ import '../controllers/auth_controller.dart';
 
 class RegisterView extends StatelessWidget {
   final AuthController controller = Get.put(AuthController());

@@ -15,50 +15,46 @@ dev_dependencies:
 
 dependencies:
   cupertino_icons: ^1.0.6
-  lottie:
+  lottie: ^3.1.2
   get: 4.6.6
   dio: ^4.0.6
-  nb_utils: 6.1.0
-  flutter_animate:
-  sliding_up_panel:
-  video_player:
-  visibility_detector:
-  typewritertext:
-  get_storage: ^2.0.3
-  carousel_slider:
+  flutter_animate: 4.5.0
+  sliding_up_panel: 2.0.0+1
+  video_player: 2.9.1
+  visibility_detector: 0.4.0+2
+  typewritertext: 3.0.8
+  get_storage: 2.1.1
+  carousel_slider: 5.0.0
   url_launcher: ^6.3.0
-  delayed_widget:
-  page_transition:
-  flutter_svg:
-  awesome_snackbar_content:
+  delayed_widget: any
+  page_transition: any
+  flutter_svg: any
+  shared_preferences: ^2.3.1
+  awesome_snackbar_content: any
   flutter_screenutil: ^5.9.3
-  cached_network_image:
-  upgrader:
-  shimmer:
+  cached_network_image: any
+  upgrader: any
+  shimmer: any
   logger: ^1.1.0
   loading_animation_widget: ^1.2.1
-  local_hero:
-  get_it:
-  avatar_glow:
-
-
-  flutter_spinkit:
-  percent_indicator:
-  pinput:
+  local_hero: any
+  get_it: any
+  avatar_glow: any
+  flutter_spinkit: any
+  percent_indicator: any
+  pinput: any
   mobx: ^2.2.1
-  flutter_mobx: ^2.2.0
-  google_fonts: ^6.2.1
-  modal_bottom_sheet: ^3.0.0
+  flutter_mobx: any
+  google_fonts: any
+  modal_bottom_sheet: any
+  image_picker: any
+  geocoding: 3.0.0
+  geolocator: 12.0.0
 
-
-  image_picker: ^1.1.2
-  geocoding: ^3.0.0
-  geolocator: ^12.0.0
+  device_info_plus: 10.1.0
   google_api_headers: 4.0.3
   json_annotation:
   google_maps_flutter: 2.5.3
-
-
 
 
 flutter:

@@ -17,9 +17,7 @@ import 'package:maryana/app/modules/product/controllers/product_controller.dart'
 import 'package:maryana/app/modules/product/views/product_view.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:nb_utils/nb_utils.dart'
-    hide primaryTextStyle
-    hide boldTextStyle;
+ 
 import 'package:shimmer/shimmer.dart';
 
 import '../../../routes/app_pages.dart';

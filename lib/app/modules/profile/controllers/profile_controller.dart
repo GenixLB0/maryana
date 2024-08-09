@@ -7,8 +7,8 @@ import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/profile/views/update_profile.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
-import 'package:nb_utils/nb_utils.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+ 
 import '../../../routes/app_pages.dart';
 
 class ProfileController extends GetxController {

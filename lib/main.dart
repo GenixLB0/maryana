@@ -1,4 +1,6 @@
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,8 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
-import 'package:maryana/app/modules/main/bindings/main_binding.dart';
-import 'package:maryana/app/modules/main/views/main_view.dart';
+
 import 'package:maryana/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:maryana/app/modules/services/api_consumer.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
@@ -17,15 +18,28 @@ import 'package:maryana/app/modules/services/app_interceptors.dart';
 import 'package:maryana/app/modules/services/dio_consumer.dart';
 import 'package:maryana/app/modules/splash/bindings/splash_binding.dart';
 import 'package:maryana/app/routes/app_pages.dart';
-import 'package:nb_utils/nb_utils.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/modules/onboarding/controllers/onboarding_controller.dart';
 
-import 'app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:flutter/services.dart';
 
 final sl = GetIt.instance;
 ApiConsumer apiConsumer = sl();
+// @pragma('vm:entry-point')
+// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   print("Handling a background message");
+//   showFlutterNotification(message!);
+
+//   if (message.data != null) {
+//     print('Message also contained a notification: ${message.data}');
+//   }
+//   // showFlutterNotification(message);
+//   // If you're going to use other Firebase services in the background, such as Firestore,
+//   // make sure you call `initializeApp` before using other Firebase services.
+//   print('Handling a background message ${message.messageId}');
+// }
 
 Future<void> init() async {
   try {
@@ -45,10 +59,41 @@ Future<void> init() async {
         responseHeader: true,
         error: true));
     sl.registerLazySingleton(() => Dio());
+
+    //   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //     print('Got a message whilst in the foreground!');
+    //     print('Message data: ${message.data}');
+    //     showFlutterNotification(message);
+    //   } as void Function(RemoteMessage event)?);
   } catch (error, stackTrace) {
-    log('test error $stackTrace ');
+    print('test error $stackTrace ');
   }
 }
+
+// void showFlutterNotification(RemoteMessage message) {
+//   var notification = message.data;
+
+//   print('Got a message whilst in the foreground!');
+//   print('Message data: ${message.data}');
+//   if (message.notification != null) {
+//     AwesomeNotifications().createNotification(
+//         content: NotificationContent(
+//       id: 10,
+//       channelKey: 'basic_channel',
+//       title: message.notification!.title, // title
+//       displayOnForeground: true,
+//       displayOnBackground: true,
+//       color: primaryColor,
+//       body: message.notification!.body.toString(), // body
+//     ));
+//     print(" test notification2" + message.notification!.title.toString());
+//   }
+
+//   if (message.data != null) {
+//     print('Message also contained a notification: ${message.data}');
+//   }
+// }
 
 void navigateToOnboarding() {
   Get.lazyPut(() => OnboardingController());
@@ -62,9 +107,6 @@ void main() async {
 
   await AppConstants.loadUserFromCache();
 
-  fontFamilyBoldGlobal = GoogleFonts.bebasNeue().fontFamily;
-  fontFamilyPrimaryGlobal = GoogleFonts.lato().fontFamily;
-  fontFamilySecondaryGlobal = GoogleFonts.nunito().fontFamily;
   // GoogleFonts.cormorant().fontFamily = GoogleFonts.cormorant().fontFamily;
 
   // GoogleFonts.cormorant
@@ -76,27 +118,26 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return RestartAppWidget(
-        child: Observer(
-            builder: (_) => FutureBuilder<Color>(
-                future: getMaterialYouData(),
-                builder: (_, snap) {
-                  return ScreenUtilInit(
-                      designSize: const Size(375, 812),
-                      minTextAdapt: true,
-                      splitScreenMode: true,
-                      // Use builder only if you need to use library outside ScreenUtilInit context
-                      builder: (_, child) {
-                        return Observer(
-                            builder: (_) => GetMaterialApp(
-                                  debugShowCheckedModeBanner: false,
-                                  title: APP_NAME,
-                                  theme: AppTheme.lightTheme(color: snap.data),
-                                  initialRoute: Routes.SPLASH,
-                                  initialBinding: SplashBinding(),
-                                  getPages: AppPages.routes,
-                                ));
-                      });
-                })));
+    return Observer(
+        builder: (_) => FutureBuilder<Color>(
+            future: getMaterialYouData(),
+            builder: (_, snap) {
+              return ScreenUtilInit(
+                  designSize: const Size(375, 812),
+                  minTextAdapt: true,
+                  splitScreenMode: true,
+                  // Use builder only if you need to use library outside ScreenUtilInit context
+                  builder: (_, child) {
+                    return Observer(
+                        builder: (_) => GetMaterialApp(
+                              debugShowCheckedModeBanner: false,
+                              title: APP_NAME,
+                              theme: AppTheme.lightTheme(color: snap.data),
+                              initialRoute: Routes.SPLASH,
+                              initialBinding: SplashBinding(),
+                              getPages: AppPages.routes,
+                            ));
+                  });
+            }));
   }
 }
