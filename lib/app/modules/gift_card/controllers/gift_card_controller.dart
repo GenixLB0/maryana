@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
 
 class GiftCardController extends GetxController {
@@ -13,7 +14,9 @@ class GiftCardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchTransactions();
+    if (userToken != null) {
+      fetchTransactions();
+    }
   }
 
   @override

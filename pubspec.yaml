@@ -1,5 +1,5 @@
 name: maryana
-version: 2.0.1+2
+version: 2.0.2+3
 publish_to: none
 description: A new Flutter project.
 environment:
@@ -20,7 +20,7 @@ dependencies:
   dio: ^4.0.6
   flutter_animate: 4.5.0
   sliding_up_panel: 2.0.0+1
-  video_player: 2.9.1
+  video_player: ^2.8.1
   visibility_detector: 0.4.0+2
   typewritertext: 3.0.8
   get_storage: 2.1.1
@@ -29,7 +29,7 @@ dependencies:
   delayed_widget: any
   page_transition: any
   flutter_svg: any
-  shared_preferences: ^2.3.1
+  shared_preferences: 2.2.2
   awesome_snackbar_content: any
   flutter_screenutil: ^5.9.3
   cached_network_image: any
@@ -45,13 +45,13 @@ dependencies:
   pinput: any
   mobx: ^2.2.1
   flutter_mobx: any
+  path_provider : 2.1.4
   google_fonts: any
   modal_bottom_sheet: any
   image_picker: any
-  geocoding: 3.0.0
-  geolocator: 12.0.0
-
-  device_info_plus: 10.1.0
+  geocoding: ^3.0.0
+  geolocator: ^13.0.1
+  device_info_plus: ^10.1.0
   google_api_headers: 4.0.3
   json_annotation:
   google_maps_flutter: 2.5.3
