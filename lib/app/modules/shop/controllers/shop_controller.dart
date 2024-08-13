@@ -203,7 +203,6 @@ class ShopController extends GetxController {
           productsInCategories.add(ViewProductData.fromJson(product));
         }
 
-        print("your result ${productsInCategories.first.id}");
         isProductsInCategoryLoading.value = false;
         handleScroll();
         return productsInCategories;
