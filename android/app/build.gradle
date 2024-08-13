@@ -1,7 +1,5 @@
 plugins {
-    id "com.android.application"
-    id "kotlin-android" // Ensure this is added if you're using Kotlin
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "com.android.application"    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -57,8 +55,10 @@ android {
         }
     }
      buildTypes {
-        release {
-            signingConfig signingConfigs.release
+        debug {
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.debug
         }
     }
 }
