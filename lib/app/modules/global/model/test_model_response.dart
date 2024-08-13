@@ -4,6 +4,7 @@ class ProductColor {
   int? id;
   String? name;
   String? hex;
+  List<String>? images;
 
   ProductColor({this.id, this.name, this.hex});
 
@@ -11,6 +12,8 @@ class ProductColor {
     id = json['id'];
     name = json['name'];
     hex = json['hex'];
+    images =
+        json['images'] == null ? [] : List<String>.from(json['images'] ?? []);
   }
 
   Map<String, dynamic> toJson() {
@@ -18,6 +21,8 @@ class ProductColor {
     data['id'] = this.id;
     data['name'] = this.name;
     data['hex'] = this.hex;
+    data['images'] = this.images;
+
     return data;
   }
 }
@@ -228,7 +233,7 @@ class ViewProductData {
   String? old_price;
   String? selectedSize;
   String? selectedColor;
-  List<ColorData>? colors;
+  List<ProductColor>? colors;
   List<String>? sizes;
   Unit? unit;
   dynamic rating;
@@ -271,7 +276,7 @@ class ViewProductData {
       price: json['price'],
       old_price: json['old_price'] ?? null,
       colors: (json['colors'] as List<dynamic>?)
-          ?.map((item) => ColorData.fromJson(item))
+          ?.map((item) => ProductColor.fromJson(item))
           .toList(),
       sizes:
           json['sizes'] == null ? [] : List<String>.from(json['sizes'] ?? []),

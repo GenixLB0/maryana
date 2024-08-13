@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
- 
+
 double pixelCountInMm = 7.874015748031496;
 
 class SizeGuideView extends StatefulWidget {

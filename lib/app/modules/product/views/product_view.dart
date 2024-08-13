@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:avatar_glow/avatar_glow.dart';
@@ -6,12 +7,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/cart/views/cart_view.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
+import 'package:maryana/app/modules/home/views/home_view.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/product/views/size_guide.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
@@ -21,11 +24,15 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
- 
 
+import '../../../../main.dart';
 import '../../global/theme/app_theme.dart';
+import '../../global/theme/colors.dart';
 import '../../search/views/search_view.dart';
 import '../controllers/product_controller.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 final CartController cartController = Get.put(CartController());
 
@@ -77,21 +84,11 @@ class ProductView extends GetView<ProductController> {
                                 //Product Price
                                 _buildProductPrice(
                                     context, controller.product.value),
+
                                 //Product Details
                                 _buildProductDetails(
                                     context, controller.product.value),
                                 //Product Size Guide
-
-                                Obx(() {
-                                  print(
-                                      "guido is ${controller.productSizeGuide.value.fitType}");
-                                  return controller
-                                              .productSizeGuide.value.fitType !=
-                                          null
-                                      ? _buildSizeGuide(
-                                          context, controller.product.value)
-                                      : SizedBox();
-                                }),
 
                                 //Product Reviews
                                 _buildProductReviews(
@@ -120,27 +117,24 @@ class ProductView extends GetView<ProductController> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              //build Small Photos
+                              GetBuilder<ProductController>(builder: (logic) {
+                                return _buildSmallImagesView();
+                              }),
+
                               //Product Name and Rating
                               _buildProductNameAndStartRating(
                                   context, controller.product.value),
                               //Product Price
                               _buildProductPrice(
                                   context, controller.product.value),
+
+//Product Colors
+                              _buildProductColors(context),
                               //Product Details
                               _buildProductDetails(
                                   context, controller.product.value),
                               //Product Size Guide
-
-                              // Obx(() {
-                              //   print(
-                              //       "guido is ${controller.productSizeGuide.value.fitType}");
-                              //   return controller
-                              //               .productSizeGuide.value.fitType !=
-                              //           null
-                              //       ? _buildSizeGuide(
-                              //           context, controller.product.value)
-                              //       : SizedBox();
-                              // }),
 
                               //Product Reviews
                               _buildProductReviews(
@@ -532,7 +526,7 @@ class ProductView extends GetView<ProductController> {
     final ScrollController scrollController = ScrollController();
 
     return Container(
-      height: MediaQuery.of(context).size.height / 2,
+      height: MediaQuery.of(context).size.height / 3,
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(
         boxShadow: [
@@ -550,7 +544,7 @@ class ProductView extends GetView<ProductController> {
       child: CustomScrollView(controller: scrollController, slivers: [
         SliverList.list(children: [
           Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: MediaQuery.of(context).size.height / 3,
             child: Column(
               children: [
                 SizedBox(height: 20.h),
@@ -678,102 +672,25 @@ class ProductView extends GetView<ProductController> {
                   ],
                 ),
                 ////////////////////////////////////////////////////
-                SizedBox(height: 20.h),
-                /////////////////Color//////////////////////////////
-                Padding(
-                  padding: EdgeInsets.only(left: 15.w),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Color",
-                      style: boldTextStyle(
-                        size: 18.sp.round(),
-                        letterSpacing: 0.8.w,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-
-                ShowUp(
-                  delay: 300,
-                  child: Obx(() {
-                    return controller.isProductLoading.value
-                        ? loadingIndicatorWidget()
-                        : GetBuilder<ProductController>(
-                            builder: (logic) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 15.w),
-                                height: 45.h,
-                                width: MediaQuery.of(context).size.width,
-                                child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (ctx, index) => GestureDetector(
-                                    onTap: () {
-                                      controller.setColor(
-                                          controller.colorsList[index].name);
-                                    },
-                                    child: Container(
-                                        width: 45.w,
-                                        height: 45.h,
-                                        decoration: ShapeDecoration(
-                                          color: Color(int.parse(
-                                              '0xff${controller.colorsList[index].hex!.split('#')[1]}')),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16.50),
-                                          ),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            Center(
-                                              child: controller.selectedColor
-                                                          .value ==
-                                                      controller
-                                                          .colorsList[index]
-                                                          .name
-                                                  ? ShowUp(
-                                                      delay: 200,
-                                                      child: SvgPicture.asset(
-                                                        'assets/images/selected.svg',
-                                                        width: 20.w,
-                                                        height: 20.w,
-                                                      ),
-                                                    )
-                                                  : SizedBox(),
-                                            ),
-                                            // Center(
-                                            //   child: controller.selectedColor
-                                            //               .value ==
-                                            //           controller
-                                            //               .colorsList[index]
-                                            //               .name
-                                            //       ? ShowUp(
-                                            //           delay: 200,
-                                            //           child: SvgPicture.asset(
-                                            //             'assets/images/selected.svg',
-                                            //             width: 20.w,
-                                            //             height: 20.w,
-                                            //           ),
-                                            //         )
-                                            //       : SizedBox(),
-                                            // ),
-                                          ],
-                                        )),
-                                  ),
-                                  separatorBuilder: (ctx, index) =>
-                                      SizedBox(width: 5.w),
-                                  itemCount: controller.colorsList.length,
-                                ),
-                              );
-                            },
-                          );
-                  }),
-                ),
+                // SizedBox(height: 20.h),
+                // /////////////////Color//////////////////////////////
+                // Padding(
+                //   padding: EdgeInsets.only(left: 15.w),
+                //   child: Align(
+                //     alignment: Alignment.topLeft,
+                //     child: Text(
+                //       "Color",
+                //       style: boldTextStyle(
+                //         size: 18.sp.round(),
+                //         letterSpacing: 0.8.w,
+                //         color: Colors.grey,
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 const Spacer(),
-                SizedBox(height: 15.h),
+
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -1016,82 +933,55 @@ class ProductView extends GetView<ProductController> {
             width: MediaQuery.of(context).size.width,
             child: Row(
               children: [
-                InkWell(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: Container(
-                    height: 40.h,
-                    width: 40.w,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset:
-                              const Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
+                Obx(() {
+                  ProductController productController =
+                      Get.put(ProductController());
+                  return InkWell(
+                    onTap: () {
+                      productController.isHomeIcon.value
+                          ? Get.to(() => MainView())
+                          : Get.back();
+                    },
+                    child: Container(
+                      height: 40.h,
+                      width: 40.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.4),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: productController.isHomeIcon.value
+                          ? const Icon(Icons.home)
+                          : SvgPicture.asset(
+                              "assets/images/forgot_password/Frame 361.svg"),
                     ),
-                    child: SvgPicture.asset(
-                        "assets/images/forgot_password/Frame 361.svg"),
-                  ),
-                ),
+                  );
+                }),
                 Spacer(),
-                // Flexible(
-                //   flex: 20,
-                //   child: TextField(
-                //     onSubmitted: (v) {
-                //       // controller.addSearchKeywords(v);
-                //       // controller.getSearchResultsFromApi();
-                //       //
-                //       //
-                //       //
-                //       // Get.to(()=> ResultView());
-                //     },
-                //     autofocus: false,
-                //     style: primaryTextStyle(
-                //       color: Colors.black,
-                //       size: 14.sp.round(),
-                //       weight: FontWeight.w400,
-                //     ),
-                //     decoration: InputDecoration(
-                //       border: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(12),
-                //           borderSide: BorderSide(color: Colors.grey, width: 2)),
-                //       hintStyle: primaryTextStyle(
-                //         color: Colors.black,
-                //         size: 14.sp.round(),
-                //         weight: FontWeight.w400,
-                //         height: 1,
-                //       ),
-                //       errorStyle: primaryTextStyle(
-                //         color: Colors.red,
-                //         size: 14.sp.round(),
-                //         weight: FontWeight.w400,
-                //         height: 1,
-                //       ),
-                //       labelStyle: primaryTextStyle(
-                //         color: Colors.grey,
-                //         size: 14.sp.round(),
-                //         weight: FontWeight.w400,
-                //         height: 1,
-                //       ),
-                //       labelText: "Search Clothes ...",
-                //       prefixIcon: IconButton(
-                //         icon: SvgPicture.asset(
-                //           'assets/icons/search.svg',
-                //           width: 25.w,
-                //           height: 25.h,
-                //         ),
-                //         onPressed: () {},
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                Obx(() {
+                  return controller.isSharing.value
+                      ? Center(
+                          child: LoadingAnimationWidget.flickr(
+                          leftDotColor: primaryColor,
+                          rightDotColor: const Color(0xFFFF0084),
+                          size: 30,
+                        ))
+                      : IconButton(
+                          icon: Icon(Icons.share),
+                          onPressed: () async {
+                            await _shareProductWithImage();
+                          },
+                        );
+                }),
                 IconButton(
                   icon: Padding(
                     padding: EdgeInsets.only(left: 10.w),
@@ -1142,6 +1032,22 @@ class ProductView extends GetView<ProductController> {
         ),
       ],
     );
+  }
+
+  Future<void> _shareProductWithImage() async {
+    controller.startSharing();
+    final url = "${controller.product.value.image}";
+    final response = await http.get(Uri.parse(url));
+    final documentDirectory = await getApplicationDocumentsDirectory();
+    final file = File('${documentDirectory.path}/image.jpg');
+    file.writeAsBytesSync(response.bodyBytes);
+
+    final xFile = XFile(file.path);
+
+    Share.shareXFiles([xFile],
+        text:
+            'Check out this Product: https://mariannela-8c357.web.app/product/?id=${controller.product.value.id} ');
+    controller.endSharing();
   }
 
   _buildProductImagesCarousel(
@@ -1647,6 +1553,134 @@ class ProductView extends GetView<ProductController> {
                     );
         });
   }
+
+  _buildProductColors(context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Colors", style: boldTextStyle(size: 22.sp.round())),
+          SizedBox(height: 5.h),
+          Divider(
+            color: Colors.grey[300],
+            height: 2,
+          ),
+          SizedBox(height: 10.h),
+          ShowUp(
+            delay: 300,
+            child: Obx(() {
+              return controller.isProductLoading.value
+                  ? loadingIndicatorWidget()
+                  : GetBuilder<ProductController>(
+                      builder: (logic) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5.w),
+                          height: 45.h,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (ctx, index) => GestureDetector(
+                              onTap: () {
+                                controller.setColor(
+                                    controller.colorsList[index].name);
+                                controller.changeImagesList(
+                                    controller.colorsList[index].name);
+                              },
+                              child: Container(
+                                  width: 45.w,
+                                  height: 45.h,
+                                  decoration: ShapeDecoration(
+                                    color: Color(int.parse(
+                                        '0xff${controller.colorsList[index].hex!.split('#')[1]}')),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(16.50),
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Center(
+                                        child: controller.selectedColor.value ==
+                                                controller
+                                                    .colorsList[index].name
+                                            ? ShowUp(
+                                                delay: 200,
+                                                child: SvgPicture.asset(
+                                                  'assets/images/selected.svg',
+                                                  width: 20.w,
+                                                  height: 20.w,
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                      ),
+                                      // Center(
+                                      //   child: controller.selectedColor
+                                      //               .value ==
+                                      //           controller
+                                      //               .colorsList[index]
+                                      //               .name
+                                      //       ? ShowUp(
+                                      //           delay: 200,
+                                      //           child: SvgPicture.asset(
+                                      //             'assets/images/selected.svg',
+                                      //             width: 20.w,
+                                      //             height: 20.w,
+                                      //           ),
+                                      //         )
+                                      //       : SizedBox(),
+                                      // ),
+                                    ],
+                                  )),
+                            ),
+                            separatorBuilder: (ctx, index) =>
+                                SizedBox(width: 5.w),
+                            itemCount: controller.colorsList.length,
+                          ),
+                        );
+                      },
+                    );
+            }),
+          ),
+          SizedBox(height: 15.h),
+        ],
+      ),
+    );
+  }
+
+  _buildSmallImagesView() {
+    return Container(
+      margin: EdgeInsets.only(left: 5.w),
+      height: 90.h,
+      child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemBuilder: (context, index) => InkResponse(
+                onTap: () {
+                  controller.setSelectedIndex(index);
+                  controller.setCarouselControllerIndex(index);
+                },
+                child: Obx(() {
+                  return Container(
+                      width: 80.w,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: controller.selectedIndex.value == index
+                                  ? Colors.black
+                                  : Colors.grey[300]!,
+                              width: 3.w)),
+                      child: Image.network(
+                        controller.productImages[index].path!,
+                        fit: BoxFit.cover,
+                      ));
+                }),
+              ),
+          separatorBuilder: (context, index) => SizedBox(
+                width: 5.w,
+              ),
+          itemCount: controller.productImages.length),
+    );
+  }
 }
 
 typedef void RatingChangeCallback(double rating);
@@ -1850,8 +1884,6 @@ class ImageSliderWithIndicators extends StatefulWidget {
 }
 
 class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
-  int _current = 0;
-
   @override
   Widget build(BuildContext context) {
     final List<Widget> child = widget.imgList.isEmpty
@@ -1881,19 +1913,24 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
         Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            CarouselSlider(
-              items: child,
-              options: CarouselOptions(
-                autoPlay: true,
-                enlargeCenterPage: true,
-                aspectRatio: 1.1,
-                viewportFraction: 1.0,
-                onPageChanged: (index, reason) {
-                  _current = index;
-                  setState(() {});
-                },
-              ),
-            ),
+            GetBuilder<ProductController>(builder: (logic) {
+              return CarouselSlider(
+                carouselController: logic.carouselController,
+                items: child,
+                options: CarouselOptions(
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  initialPage: logic.selectedIndex.value,
+                  aspectRatio: 1.1,
+                  viewportFraction: 1.0,
+                  onPageChanged: (index, reason) {
+                    logic.setSelectedIndex(index);
+
+                    setState(() {});
+                  },
+                ),
+              );
+            }),
             Container(
               margin: EdgeInsets.only(top: 20),
               // Add margin to the top side
@@ -1918,18 +1955,20 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: widget.imgList.map((image) {
                   int index = widget.imgList.indexOf(image);
-                  return Container(
-                    width: 8.0,
-                    height: 8.0,
-                    margin:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _current == index
-                          ? Color.fromRGBO(0, 0, 0, 0.9)
-                          : Color.fromRGBO(0, 0, 0, 0.4),
-                    ),
-                  );
+                  return GetBuilder<ProductController>(builder: (logic) {
+                    return Container(
+                      width: 8.0,
+                      height: 8.0,
+                      margin:
+                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: logic.selectedIndex.value == index
+                            ? Color.fromRGBO(0, 0, 0, 0.9)
+                            : Color.fromRGBO(0, 0, 0, 0.4),
+                      ),
+                    );
+                  });
                 }).toList(),
               ),
             ),

@@ -1,14 +1,18 @@
+import 'package:carousel_slider/carousel_controller.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
+import 'package:maryana/app/modules/main/views/main_view.dart';
 
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../services/api_consumer.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:carousel_slider/carousel_controller.dart';
 
 class ProductController extends GetxController {
 // Rx<Product>? product = Product().obs;
@@ -17,7 +21,7 @@ class ProductController extends GetxController {
   List<Attachments> productImages = [];
 
   // Rx<int> currentStock = 0.obs;
-  List<ColorData> colorsList = [];
+  List<ProductColor> colorsList = [];
   Rx<int> imageIndex = 0.obs;
   Rx<ViewProductData> product = ViewProductData().obs;
   ApiConsumer apiConsumer = sl();
@@ -29,6 +33,7 @@ class ProductController extends GetxController {
 
   Rx<String> selectedColor = "".obs;
   Rx<SizeGuide> productSizeGuide = SizeGuide().obs;
+  RxBool isHomeIcon = false.obs;
 
   @override
   void onInit() {
@@ -50,8 +55,14 @@ class ProductController extends GetxController {
   @override
   void onReady() {
     isFirstTimeGettingReviews = true;
+    carouselController = CarouselSliderController();
     print('tesadasw5');
-    ViewProductData comingProduct = Get.arguments as ViewProductData;
+    print("product arguments are ${deepLinkproduct}");
+    if (isDeepLink) {
+      getProduct(deepLinkproduct!.id);
+      isDeepLink = false;
+    }
+
     if (Get.arguments != null && Get.arguments is ViewProductData) {
       var myProduct = Get.arguments as ViewProductData;
       placeHolderImg.value = myProduct.image!;
@@ -64,9 +75,12 @@ class ProductController extends GetxController {
     } else {
       // Handle the case where no valid arguments are passed
       // You can navigate back or show an error message
-      Get.back();
-      Get.closeCurrentSnackbar();
-      Get.snackbar('Error', 'No product data available');
+      if (isDeepLink == false) {
+        // Get.back();
+        // Get.closeCurrentSnackbar();
+        // Get.snackbar('Error', 'No product data available');
+        isHomeIcon.value = true;
+      }
     }
 
     super.onReady();
@@ -97,6 +111,16 @@ class ProductController extends GetxController {
   List<ReviewsModel> reviews = [];
   bool isFirstTimeGettingReviews = false;
   bool isReviewsLoading = false;
+
+  RxBool isSharing = false.obs;
+
+  startSharing() {
+    isSharing.value = true;
+  }
+
+  endSharing() {
+    isSharing.value = false;
+  }
 
   getProductReviews() async {
     print("start getting review 11");
@@ -135,11 +159,40 @@ class ProductController extends GetxController {
 
   setColor(customColor) {
     selectedColor.value = customColor;
-    for (var color in colorsList) {
-      if (color == selectedColor.value) {}
-    }
+
     update();
-    selectedColor.value = customColor;
+  }
+
+  changeImagesList(incomingColor) {
+    print("updating..");
+    print("old attachmants are ${productImages}");
+    print("incoming color ${incomingColor}");
+    for (var color in colorsList) {
+      if (color.name == incomingColor) {
+        print("true");
+        productImages.clear();
+        for (var image in color.images!) {
+          print("images in color ${color.images}");
+          productImages.addNonNull(
+              Attachments(type: "image", name: "app_show", path: image));
+        }
+      }
+    }
+
+    print("new attachmants are ${productImages}");
+  }
+
+  CarouselSliderController? carouselController;
+  Rx<int> selectedIndex = 0.obs;
+
+  setSelectedIndex(incomingIndex) {
+    selectedIndex.value = incomingIndex;
+  }
+
+  setCarouselControllerIndex(incomingIndex) {
+    if (carouselController != null) {
+      carouselController!.jumpToPage(incomingIndex);
+    }
   }
 
   getProduct(id) async {
@@ -174,7 +227,7 @@ class ProductController extends GetxController {
       for (var color in product.value.colors!) {
         colorsList.addNonNull(color);
       }
-
+      setColor(colorsList.first.name);
       //adding Size Guide
 
       if (product.value.sizeGuide?.fitType != null) {
@@ -187,11 +240,19 @@ class ProductController extends GetxController {
       print("color are  ${colorsList}");
 
       isProductLoading.value = false;
+
+      setSelectedIndex(selectedIndex.value);
+      changeImagesList(selectedColor.value);
       update();
-      getRelatedProducts(product.value.category!.id);
+      if (product.value.category != null) {
+        getRelatedProducts(product.value.category!.id);
+      }
     } catch (e, stackTrace) {
       print(stackTrace.toString() + ' product test error' + '${e.toString()}');
       isProductLoading.value = false;
+      product.value = ViewProductData();
+      Get.snackbar("Error", "Product Not Found Redirect..");
+      Get.off(() => MainView());
     }
   }
 

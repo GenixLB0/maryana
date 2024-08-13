@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -22,6 +23,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'app/modules/global/model/test_model_response.dart';
 import 'app/modules/onboarding/controllers/onboarding_controller.dart';
 
 import 'package:flutter/services.dart';
@@ -46,40 +48,23 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> setupFlutterNotifications() async {
   print("teasdsadsa initialize ");
-    AwesomeNotifications().initialize(
+  AwesomeNotifications().initialize(
     null,
     [
       NotificationChannel(
         channelKey: 'basic_channel',
         channelName: 'Basic Notifications',
         channelDescription: 'Notification channel for basic tests',
-        defaultColor: Color(0xFF9D50DD),
+        defaultColor: primaryColor,
         ledColor: Colors.white,
         importance: NotificationImportance.High,
+        enableVibration: true,
+        playSound: true,
         channelShowBadge: true,
+        defaultRingtoneType: DefaultRingtoneType.Ringtone,
       ),
     ],
   );
-  // AwesomeNotifications().initialize(
-  //     // set the icon to null if you want to use the default app icon
-  //     null,
-  //     [
-  //       NotificationChannel(
-  //         channelKey: 'basic_channel',
-  //         channelName: 'Basic notifications',
-  //         channelDescription: 'Notification channel for basic tests',
-  //         defaultColor: primaryColor,
-  //         ledColor: Colors.white,
-  //         enableVibration: true,
-  //         playSound: true,
-  //         importance: NotificationImportance.Max,
-  //         soundSource: 'resource://raw/custom_ringtone',
-  //         channelShowBadge: true,
-  //         defaultRingtoneType: DefaultRingtoneType.Ringtone,
-  //       ),
-  //     ],
-  //     // Channel groups are only visual and are not required
-  //     debug: true);
 
   /// Update the iOS foreground notification presentation options to allow
   /// heads up notifications.
@@ -126,7 +111,8 @@ void showFlutterNotification(RemoteMessage message) {
         content: NotificationContent(
       id: 10,
       channelKey: 'basic_channel',
-      title: message.notification!.title, // title
+      title: message.notification!.title,
+      // title
       displayOnForeground: true,
       displayOnBackground: true,
       color: primaryColor,
@@ -147,7 +133,7 @@ void navigateToOnboarding() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await _handleUri();
   await init();
 
   await AppConstants.loadUserFromCache();
@@ -158,6 +144,33 @@ void main() async {
   Get.put(ApiService());
 
   runApp(MyApp());
+}
+
+bool isDeepLink = false;
+ViewProductData? deepLinkproduct;
+
+_handleUri() {
+  final _appLinks = AppLinks(); // AppLinks is singleton
+  // Subscribe to all events (initial link and further)
+  _appLinks.uriLinkStream.listen((uri) {
+// Do something (navigation, ...)
+    print("deep link ${uri}");
+    var id = uri.queryParameters["id"];
+    print("deep link ${id}");
+    isDeepLink = true;
+    if (id == null) {
+      isDeepLink = false;
+    } else {
+      deepLinkproduct = ViewProductData(id: int.parse(id));
+    }
+
+    // Get.toNamed(
+    //   Routes.PRODUCT,
+    //   arguments: ViewProductData(
+    //     id: 1,
+    //   ),
+    // );
+  });
 }
 
 class MyApp extends StatelessWidget {
