@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "maryana.genixs.com.maryana"
+    namespace = " "
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
