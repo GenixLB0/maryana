@@ -81,7 +81,7 @@ Future<void> init() async {
   try {
     //Core injections
     await Firebase.initializeApp();
-
+    setupFlutterNotifications();
     sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(client: sl()));
 
     //! External
