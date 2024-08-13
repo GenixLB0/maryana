@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1003467871116",
+    "project_id": "marina-8c46c",
+    "storage_bucket": "marina-8c46c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003467871116:android:f216372461eccc138b3ca9",
+        "android_client_info": {
+          "package_name": "maryana.genixs.com.maryana"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNd-R0aw_rOlFvqX-3Mjv3HLghFoigxyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

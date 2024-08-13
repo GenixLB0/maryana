@@ -152,7 +152,7 @@ ShapeBorder dialogShape({double radius = 8.0}) {
 }
 BoxDecoration boxDecorationDefault({
   Color color = Colors.white,
-  double borderRadius = 8.0,
+  double? borderRadius,
   Color borderColor = Colors.transparent,
   double borderWidth = 1.0,
   BoxShape shape = BoxShape.circle,
@@ -160,7 +160,7 @@ BoxDecoration boxDecorationDefault({
 }) {
   return BoxDecoration(
     color: color,
-    borderRadius: BorderRadius.circular(borderRadius),
+    borderRadius: borderRadius == null ? null : BorderRadius.circular(borderRadius),
     border: Border.all(color: borderColor, width: borderWidth),
     shape: BoxShape.circle,
     boxShadow: boxShadow,

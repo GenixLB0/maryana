@@ -1,6 +1,8 @@
 import 'dart:convert';
 // import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart' as dio;
@@ -149,28 +151,12 @@ class HomeController extends GetxController {
   bool isRecommendedReached = false;
 
   //////////////////////////////////////////////////////////
-  // Future<void> RequestIOSNotifications() async {
-  //   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-  //     if (!isAllowed) {
-  //       // Insert here your friendly dialog box before call the request method
-  //       // This is very important to not harm the user experience
-  //       AwesomeNotifications().requestPermissionToSendNotifications();
-  //     }
-  //   });
-  // }
 
-  // FirebaseMessaging? messaging;
 
   @override
   void onInit() {
     listenForFirstScroll();
-    // RequestIOSNotifications();
-    // messaging = FirebaseMessaging.instance;
-    // messaging!.getToken().then((value) {
-    //   print('token fcm' + value.toString());
-    //   //PushToken(value!);
-    //   // addTokenToDatabase(userData!.fullName ?? '', value!);
-    // });
+ 
     super.onInit();
   }
 

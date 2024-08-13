@@ -31,7 +31,7 @@ import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:maryana/app/modules/search/views/search_view.dart';
 import 'package:maryana/app/modules/services/dio_consumer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
- import 'package:shimmer/shimmer.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../main.dart';
 import '../../../routes/app_pages.dart';
@@ -2019,7 +2019,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
 
                                 my_search_controller.setNewValue(RangeValues(
                                   minDouble,
-                               double.parse(maxPriceController.toString()),
+                                  double.parse(maxPriceController.toString()),
                                 ));
                               },
                               maxLines: 1,
@@ -2092,7 +2092,8 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                                         : double.tryParse(maxPriceText)!;
 
                                 my_search_controller.setNewValue(RangeValues(
-                                  double.parse(minPriceText.toString()), maxDouble));
+                                    double.parse(minPriceText.toString()),
+                                    maxDouble));
                               },
                               maxLines: 1,
                               style: primaryTextStyle(

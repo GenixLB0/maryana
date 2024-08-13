@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
@@ -7,7 +9,7 @@ import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
- import 'package:dio/dio.dart' as dio;
+import 'package:dio/dio.dart' as dio;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -36,10 +38,37 @@ class AuthController extends GetxController {
   static const String passwordMismatchError = 'Passwords do not match';
 
   ApiService apiService = Get.find();
+  Future<void> RequestIOSNotifications() async {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        // Insert here your friendly dialog box before call the request method
+        // This is very important to not harm the user experience
+        messaging = FirebaseMessaging.instance;
+        messaging!.getToken().then((value) {
+          print('token fcm ' + value.toString());
+          fcmToken.value = value!;
+          //PushToken(value!);
+          // addTokenToDatabase(userData!.fullName ?? '', value!);
+        });
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+  }
 
+  var fcmToken = ''.obs;
+
+  FirebaseMessaging? messaging;
   @override
   void onInit() {
     super.onInit();
+    RequestIOSNotifications();
+    messaging = FirebaseMessaging.instance;
+    messaging!.getToken().then((value) {
+      print('token fcm ' + value.toString());
+      fcmToken.value = value!;
+      //PushToken(value!);
+      // addTokenToDatabase(userData!.fullName ?? '', value!);
+    });
     socialView.value = true;
   }
 
@@ -117,7 +146,7 @@ class AuthController extends GetxController {
         'password': password.value,
         'password_confirmation': confirmPassword.value,
         'imei': '1234',
-        'token': 'ffff',
+        'token': fcmToken.value,
         'device_type': 'android',
       });
       try {
@@ -166,6 +195,7 @@ class AuthController extends GetxController {
       var formData = dio.FormData.fromMap({
         'email': email.value,
         'password': password.value,
+        'token': fcmToken.value,
       });
       try {
         final response = await apiConsumer.post(
