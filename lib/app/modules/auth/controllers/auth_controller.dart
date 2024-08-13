@@ -46,7 +46,7 @@ class AuthController extends GetxController {
         messaging = FirebaseMessaging.instance;
         messaging!.getToken().then((value) {
           print('token fcm ' + value.toString());
-          fcmToken.value = value!;
+          fcmToken = value.toString();
           //PushToken(value!);
           // addTokenToDatabase(userData!.fullName ?? '', value!);
         });
@@ -55,7 +55,7 @@ class AuthController extends GetxController {
     });
   }
 
-  var fcmToken = ''.obs;
+  String fcmToken = '';
 
   FirebaseMessaging? messaging;
   @override
@@ -65,7 +65,7 @@ class AuthController extends GetxController {
     messaging = FirebaseMessaging.instance;
     messaging!.getToken().then((value) {
       print('token fcm ' + value.toString());
-      fcmToken.value = value!;
+      fcmToken = value.toString();
       //PushToken(value!);
       // addTokenToDatabase(userData!.fullName ?? '', value!);
     });
@@ -146,7 +146,7 @@ class AuthController extends GetxController {
         'password': password.value,
         'password_confirmation': confirmPassword.value,
         'imei': '1234',
-        'token': fcmToken.value,
+        'token': fcmToken,
         'device_type': 'android',
       });
       try {
@@ -195,7 +195,9 @@ class AuthController extends GetxController {
       var formData = dio.FormData.fromMap({
         'email': email.value,
         'password': password.value,
-        'token': fcmToken.value,
+        'token': fcmToken,
+        'imei': '1234',
+        'device_type': 'android',
       });
       try {
         final response = await apiConsumer.post(

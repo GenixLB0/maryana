@@ -45,36 +45,44 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> setupFlutterNotifications() async {
-  if (isFlutterLocalNotificationsInitialized) {
-    return;
-  }
-
   print("teasdsadsa initialize ");
-  AwesomeNotifications().initialize(
-      // set the icon to null if you want to use the default app icon
-      null,
-      [
-        NotificationChannel(
-          channelKey: 'basic_channel',
-          channelName: 'Basic notifications',
-          channelDescription: 'Notification channel for basic tests',
-          defaultColor: primaryColor,
-          ledColor: Colors.white,
-          enableVibration: true,
-          playSound: true,
-          importance: NotificationImportance.Max,
-          soundSource: 'resource://raw/custom_ringtone',
-          channelShowBadge: true,
-          defaultRingtoneType: DefaultRingtoneType.Ringtone,
-        ),
-      ],
-      // Channel groups are only visual and are not required
-      debug: true);
+    AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic Notifications',
+        channelDescription: 'Notification channel for basic tests',
+        defaultColor: Color(0xFF9D50DD),
+        ledColor: Colors.white,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+      ),
+    ],
+  );
+  // AwesomeNotifications().initialize(
+  //     // set the icon to null if you want to use the default app icon
+  //     null,
+  //     [
+  //       NotificationChannel(
+  //         channelKey: 'basic_channel',
+  //         channelName: 'Basic notifications',
+  //         channelDescription: 'Notification channel for basic tests',
+  //         defaultColor: primaryColor,
+  //         ledColor: Colors.white,
+  //         enableVibration: true,
+  //         playSound: true,
+  //         importance: NotificationImportance.Max,
+  //         soundSource: 'resource://raw/custom_ringtone',
+  //         channelShowBadge: true,
+  //         defaultRingtoneType: DefaultRingtoneType.Ringtone,
+  //       ),
+  //     ],
+  //     // Channel groups are only visual and are not required
+  //     debug: true);
 
   /// Update the iOS foreground notification presentation options to allow
   /// heads up notifications.
-
-  isFlutterLocalNotificationsInitialized = true;
 }
 
 Future<void> init() async {
