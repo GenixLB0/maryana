@@ -135,6 +135,90 @@ class _SocialMediaIconState extends State<SocialMediaIcon>
   }
 }
 
+class SecondMyDefaultButton extends StatefulWidget {
+  final String? btnText;
+  final bool localeText;
+  final Function() onPressed;
+  final Color? color;
+  final Color? textColor;
+  final bool isSelected;
+  final double? height;
+  final bool isloading;
+  final double? width;
+
+  const SecondMyDefaultButton({
+    Key? key,
+    this.btnText,
+    required this.onPressed,
+    this.color,
+    this.isSelected = true,
+    this.localeText = false,
+    required this.isloading,
+    this.textColor,
+    this.height,
+    this.width,
+  }) : super(key: key);
+
+  @override
+  SecondMyDefaultButtonState createState() => SecondMyDefaultButtonState();
+}
+
+class SecondMyDefaultButtonState extends State<SecondMyDefaultButton> {
+  bool isloading = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isloading = widget.isloading!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return widget.isloading!
+        ? Center(
+            child: LoadingAnimationWidget.flickr(
+            leftDotColor: primaryColor,
+            rightDotColor: const Color(0xFFFF0084),
+            size: 50,
+          ))
+        : InkWell(
+            onTap: () => {
+              widget.onPressed(),
+            },
+            child: Container(
+              width: 315,
+              height: 48,
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                color: Color(0xFF21034F),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                      widget.localeText
+                          ? widget.btnText!.toUpperCase()
+                          : widget.btnText!,
+                      textAlign: TextAlign.center,
+                      style: primaryTextStyle(
+                        color: widget.textColor ?? Colors.white,
+                        size: 16.sp.round(),
+                        weight: FontWeight.w700,
+                      )),
+                ],
+              ),
+            ),
+          );
+  }
+}
+
 class MySecondDefaultButton extends StatefulWidget {
   final String? btnText;
   final bool localeText;

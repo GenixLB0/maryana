@@ -59,6 +59,7 @@ dependencies:
   google_maps_flutter: 2.5.3
   share_plus:
   app_links:
+  flutter_rating_bar:
 
 
 flutter:

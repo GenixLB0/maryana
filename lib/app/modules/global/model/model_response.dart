@@ -58,6 +58,7 @@ class Item {
   final double discount;
   final double tax;
   final double total;
+  final Product? product;
 
   Item({
     required this.quantity,
@@ -65,6 +66,7 @@ class Item {
     required this.discount,
     required this.tax,
     required this.total,
+    required this.product,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -74,6 +76,8 @@ class Item {
       discount: json['discount'].toDouble(),
       tax: json['tax'].toDouble(),
       total: json['total'].toDouble(),
+      product:
+          json['product'] == null ? null : Product.fromJson(json['product']),
     );
   }
 }

@@ -11,7 +11,7 @@ import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/order/controllers/orders_controller.dart';
 import 'package:maryana/app/modules/order/views/order_detalis.dart';
- 
+
 class OrdersView extends GetView<OrdersController> {
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,10 @@ class OrdersView extends GetView<OrdersController> {
                       rightDotColor: const Color(0xFFFF0084),
                       size: 50,
                     ))),
-              if (controller.loading.value) SizedBox(height: 20.h,),
+              if (controller.loading.value)
+                SizedBox(
+                  height: 20.h,
+                ),
               if (controller.orders.isEmpty && !controller.loading.value)
                 SizedBox(
                     height: 650.h,
@@ -111,7 +114,7 @@ class OrdersView extends GetView<OrdersController> {
                           itemBuilder: (context, index) {
                             final order = controller.orders[index];
                             return ShowUp(
-                                delay: 100 * index,
+                                delay: 20 * index,
                                 child: Padding(
                                     padding: EdgeInsetsDirectional.symmetric(
                                         vertical: 20.h),

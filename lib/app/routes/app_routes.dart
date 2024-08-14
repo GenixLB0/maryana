@@ -9,7 +9,7 @@ abstract class Routes {
   static const HISTORY = _Paths.HISTORY;
   static const COUPON = _Paths.COUPON;
   static const CHECKOUT = _Paths.Checkout;
-
+  static const AddReview = _Paths.ADDREVIEW;
   static const LOGIN = _Paths.LOGIN;
   static const REGISTER = _Paths.REGISTER;
   static const SPLASH = _Paths.SPLASH;
@@ -49,7 +49,7 @@ abstract class _Paths {
   static const ADDRESS = '/address';
   static const AddADDRESS = '/AddADDRESS';
   static const UPDATEADDRESS = '/UPDATEADDRESS';
-
+  static const ADDREVIEW = '/addreview';
   static const SHOP = '/shop';
   static const PRODUCT = '/product';
   static const CART = '/cart';

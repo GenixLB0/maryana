@@ -26,6 +26,7 @@ import '../modules/main/bindings/main_binding.dart';
 import '../modules/main/views/main_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/order/views/add_rate_product.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/profile/views/update_profile.dart';
@@ -80,6 +81,11 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADDREVIEW,
+      page: () => RateProductScreen(),
+      binding: OrdersBinding(),
     ),
     GetPage(
       name: _Paths.ONBOARDING,
