@@ -95,8 +95,8 @@ class LoginView extends StatelessWidget {
                 letterSpacing: 0.24,
               ),
             )),
-        SizedBox(height: 23.h),
-        gridSocialIcon(),
+        // SizedBox(height: 23.h),
+        // gridSocialIcon(),
         SizedBox(height: 109.h),
         ShowUp(
             delay: 500,
@@ -319,10 +319,10 @@ class LoginView extends StatelessWidget {
                 SizedBox(
                   height: 13.h,
                 ),
-                if (controller.socialView.value)
-                  socialMediaView()
-                else
-                  loginbyPasswordView(context),
+                // if (controller.socialView.value)
+                //   socialMediaView()
+                // else
+                loginbyPasswordView(context),
               ],
             )),
           ));

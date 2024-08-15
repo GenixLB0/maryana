@@ -21,24 +21,33 @@ class SplashController extends GetxController {
   }
 
   Future<void> loadUserData() async {
-    await AppConstants.loadUserFromCache();
-    await Future.delayed(const Duration(seconds: 2));
-    if (userToken != null) {
-      // bool cachedCart = await cartController.loadCartItems();
-      // if (!cachedCart) {
-      //   print('retrived cart from api');
-      //   cartController.fetchCartDetailsFromAPI();
-      // } else {
-      //   //  fetchCartDetailsFromAPI(); // Fetch updated data in the background
-      // }
-      // Get.offAll(() => MainView());
-      Get.offNamedUntil(Routes.MAIN, (Route) => false);
-    }
+    try {
+      await AppConstants.loadUserFromCache();
+      if (userToken != null) {
+        // If the user token exists, navigate to the main screen.
+        Get.offNamedUntil(Routes.MAIN, (route) => false);
+      } else {
+        // If no user token is found, navigate to the onboarding screen.
+        await Future.delayed(const Duration(seconds: 6));
 
-    isLoading.value = false; // Set loading to false when done
+        navigateToOnboarding();
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during loading
+      print("Error loading user data: $e");
+      await Future.delayed(const Duration(seconds: 6));
+      navigateToOnboarding();
+
+      // Consider navigating to an error screen or showing a retry option
+    } finally {
+      // Set loading to false when done
+      isLoading.value = false;
+    }
   }
 
   void navigateToOnboarding() {
-    Get.offAll(() => const OnboardingView());
+    Get.offNamedUntil(Routes.ONBOARDING, (route) => false);
+
+    //  Get.offAll(() => const OnboardingView());
   }
 }
