@@ -698,11 +698,11 @@ class _CheckoutPageState extends State<CheckoutPage>
               cartController.giftCardValue.value == 0.0
           ? Padding(
               padding: EdgeInsets.symmetric(vertical: 2.h),
-              child: DropdownButton<Transaction>(
+              child: DropdownButton<ReceivedTransaction>(
                 isExpanded: true,
                 items:
                     giftCardController.receivedTransactions.map((transaction) {
-                  return DropdownMenuItem<Transaction>(
+                  return DropdownMenuItem<ReceivedTransaction>(
                     value: transaction,
                     child: Row(
                       children: [
@@ -725,7 +725,7 @@ class _CheckoutPageState extends State<CheckoutPage>
                     ),
                   );
                 }).toList(),
-                onChanged: (Transaction? selectedTransaction) {
+                onChanged: (ReceivedTransaction? selectedTransaction) {
                   if (selectedTransaction != null) {
                     cartController
                         .applyGiftCard(selectedTransaction.id.toString());

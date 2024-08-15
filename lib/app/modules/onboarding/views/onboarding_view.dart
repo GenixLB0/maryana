@@ -28,61 +28,60 @@ class OnboardingView extends GetView<OnboardingController> {
 
     return Scaffold(
         body: SafeArea(
-      child: Column(
-        children: <Widget>[
-          Expanded(
-              child: Stack(
-            children: [
-              firstOnBoardingScreen(deviceHeight, context),
+      child: Container(
+        width: 375.w,
+        height: 812.h,
+        child: Stack(
+          children: [
+            firstOnBoardingScreen(deviceHeight, context),
 
-              // PageView(
-              //   onPageChanged: (index) {
-              //     controller.changeIndexValue(index);
-              //   },
-              //   controller: controller.pageController,
-              //   physics: NeverScrollableScrollPhysics(),
-              //   scrollDirection: Axis.horizontal,
-              //   children: <Widget>[
-              //     firstOnBoardingScreen(deviceHeight, context),
-              //     secondOnBoardingScreen(deviceHeight, context),
-              //     thirdOnBoardingScreen(deviceHeight, context),
-              //   ],
-              // ),
-              // Obx(
-              //   () => Padding(
-              //     padding: EdgeInsets.only(
-              //         top: MediaQuery.of(context).size.height - 100.h,
-              //         left: MediaQuery.of(context).size.width - 200.w),
-              //     child: Row(
-              //       mainAxisSize: MainAxisSize.max,
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       crossAxisAlignment: CrossAxisAlignment.center,
-              //       children: <Widget>[
-              //         _Indicator(
-              //           positionIndex: 0,
-              //           currentIndex: controller.currentIndex.value,
-              //         ),
-              //         const SizedBox(
-              //           width: 10,
-              //         ),
-              //         _Indicator(
-              //           positionIndex: 1,
-              //           currentIndex: controller.currentIndex.value,
-              //         ),
-              //         const SizedBox(
-              //           width: 10,
-              //         ),
-              //         _Indicator(
-              //           positionIndex: 2,
-              //           currentIndex: controller.currentIndex.value,
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-            ],
-          )),
-        ],
+            // PageView(
+            //   onPageChanged: (index) {
+            //     controller.changeIndexValue(index);
+            //   },
+            //   controller: controller.pageController,
+            //   physics: NeverScrollableScrollPhysics(),
+            //   scrollDirection: Axis.horizontal,
+            //   children: <Widget>[
+            //     firstOnBoardingScreen(deviceHeight, context),
+            //     secondOnBoardingScreen(deviceHeight, context),
+            //     thirdOnBoardingScreen(deviceHeight, context),
+            //   ],
+            // ),
+            // Obx(
+            //   () => Padding(
+            //     padding: EdgeInsets.only(
+            //         top: MediaQuery.of(context).size.height - 100.h,
+            //         left: MediaQuery.of(context).size.width - 200.w),
+            //     child: Row(
+            //       mainAxisSize: MainAxisSize.max,
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: <Widget>[
+            //         _Indicator(
+            //           positionIndex: 0,
+            //           currentIndex: controller.currentIndex.value,
+            //         ),
+            //         const SizedBox(
+            //           width: 10,
+            //         ),
+            //         _Indicator(
+            //           positionIndex: 1,
+            //           currentIndex: controller.currentIndex.value,
+            //         ),
+            //         const SizedBox(
+            //           width: 10,
+            //         ),
+            //         _Indicator(
+            //           positionIndex: 2,
+            //           currentIndex: controller.currentIndex.value,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
       ),
     ));
   }
