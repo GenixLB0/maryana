@@ -84,8 +84,8 @@ class _ProfileViewState extends State<ProfileView>
                             _buildMenuItem('order.svg', 'Orders', () {
                               Get.toNamed(Routes.ORDERS);
                             }, 24, 3),
-                            _buildMenuItem(
-                                'rate.svg', 'Rate this app', () {}, 24, 4),
+                            // _buildMenuItem(
+                            //     'rate.svg', 'Rate this app', () {}, 24, 4),
                             _buildMenuItem('terms.svg', 'Terms of Use', () {
                               _launchURL(
                                   'https://mariannella.genixarea.pro/terms.html');

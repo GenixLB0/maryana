@@ -8,7 +8,7 @@ import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
- import '../controllers/auth_controller.dart';
+import '../controllers/auth_controller.dart';
 
 class RegisterView extends StatelessWidget {
   final AuthController controller = Get.put(AuthController());
@@ -111,20 +111,20 @@ class RegisterView extends StatelessWidget {
           ),
         ),
         SizedBox(height: 35.h),
-        Opacity(
-            opacity: 0.60,
-            child: Text(
-              'or log in with',
-              textAlign: TextAlign.center,
-              style: primaryTextStyle(
-                color: Colors.black,
-                size: 12.sp.round(),
-                weight: FontWeight.w400,
-                letterSpacing: 0.24,
-              ),
-            )),
+        // Opacity(
+        //     opacity: 0.60,
+        //     child: Text(
+        //       'or log in with',
+        //       textAlign: TextAlign.center,
+        //       style: primaryTextStyle(
+        //         color: Colors.black,
+        //         size: 12.sp.round(),
+        //         weight: FontWeight.w400,
+        //         letterSpacing: 0.24,
+        //       ),
+        //     )),
         SizedBox(height: 23.h),
-        gridSocialIcon(),
+        // gridSocialIcon(),
         SizedBox(height: 40.h),
         ShowUp(
           delay: 500,

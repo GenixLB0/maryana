@@ -56,24 +56,24 @@ class LoginView extends StatelessWidget {
               obscureText: true,
             )),
         SizedBox(height: 28.h),
-        SizedBox(
-            width: 310.w,
-            child: InkWell(
-                onTap: () {
-                  Get.toNamed(Routes.FORGOT_PASSWORD);
-                },
-                child: Align(
-                  alignment: AlignmentDirectional.topEnd,
-                  child: Text(
-                    'Forgot Password?',
-                    textAlign: TextAlign.center,
-                    style: primaryTextStyle(
-                      color: Colors.black,
-                      size: 12.sp.round(),
-                      weight: FontWeight.w400,
-                    ),
-                  ),
-                ))),
+        // SizedBox(
+        //     width: 310.w,
+        //     child: InkWell(
+        //         onTap: () {
+        //           Get.toNamed(Routes.FORGOT_PASSWORD);
+        //         },
+        //         child: Align(
+        //           alignment: AlignmentDirectional.topEnd,
+        //           child: Text(
+        //             'Forgot Password?',
+        //             textAlign: TextAlign.center,
+        //             style: primaryTextStyle(
+        //               color: Colors.black,
+        //               size: 12.sp.round(),
+        //               weight: FontWeight.w400,
+        //             ),
+        //           ),
+        //         ))),
         SizedBox(height: 25.h),
         ShowUp(
             delay: 800,
@@ -83,18 +83,18 @@ class LoginView extends StatelessWidget {
               onPressed: () => controller.login(),
             )),
         SizedBox(height: 35.h),
-        Opacity(
-            opacity: 0.60,
-            child: Text(
-              'or log in with',
-              textAlign: TextAlign.center,
-              style: primaryTextStyle(
-                color: Colors.black,
-                size: 12.sp.round(),
-                weight: FontWeight.w400,
-                letterSpacing: 0.24,
-              ),
-            )),
+        // Opacity(
+        //     opacity: 0.60,
+        //     child: Text(
+        //       'or log in with',
+        //       textAlign: TextAlign.center,
+        //       style: primaryTextStyle(
+        //         color: Colors.black,
+        //         size: 12.sp.round(),
+        //         weight: FontWeight.w400,
+        //         letterSpacing: 0.24,
+        //       ),
+        //     )),
         // SizedBox(height: 23.h),
         // gridSocialIcon(),
         SizedBox(height: 109.h),
