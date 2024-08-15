@@ -27,8 +27,7 @@ class SplashController extends GetxController {
         // If the user token exists, navigate to the main screen.
         print("userToken retrived user data: ");
         await Future.delayed(const Duration(seconds: 3));
-
-        Get.offNamedUntil(Routes.MAIN, (route) => false);
+        Get.offAllNamed(Routes.MAIN);
       } else {
         // If no user token is found, navigate to the onboarding screen.
         await Future.delayed(const Duration(seconds: 3));
