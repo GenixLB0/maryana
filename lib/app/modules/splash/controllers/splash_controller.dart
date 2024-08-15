@@ -25,17 +25,20 @@ class SplashController extends GetxController {
       await AppConstants.loadUserFromCache();
       if (userToken != null) {
         // If the user token exists, navigate to the main screen.
+        print("userToken retrived user data: ");
+        await Future.delayed(const Duration(seconds: 3));
+
         Get.offNamedUntil(Routes.MAIN, (route) => false);
       } else {
         // If no user token is found, navigate to the onboarding screen.
-        await Future.delayed(const Duration(seconds: 6));
+        await Future.delayed(const Duration(seconds: 3));
 
         navigateToOnboarding();
       }
     } catch (e) {
       // Handle any exceptions that may occur during loading
       print("Error loading user data: $e");
-      await Future.delayed(const Duration(seconds: 6));
+      await Future.delayed(const Duration(seconds: 3));
       navigateToOnboarding();
 
       // Consider navigating to an error screen or showing a retry option
