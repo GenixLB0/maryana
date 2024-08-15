@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
@@ -13,14 +12,12 @@ import 'package:local_hero/local_hero.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
-import 'package:maryana/app/modules/product/controllers/product_controller.dart';
-import 'package:maryana/app/modules/product/views/product_view.dart';
+
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
  
 import 'package:shimmer/shimmer.dart';
 
-import '../../../routes/app_pages.dart';
 import '../../global/config/configs.dart';
 import '../../global/theme/app_theme.dart';
 import '../../search/views/result_view.dart';
