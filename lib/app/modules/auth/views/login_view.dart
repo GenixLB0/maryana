@@ -10,7 +10,7 @@ import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
- import '../../../routes/app_pages.dart';
+import '../../../routes/app_pages.dart';
 import 'forgot_password_view.dart';
 import '../controllers/auth_controller.dart';
 
@@ -168,13 +168,18 @@ class LoginView extends StatelessWidget {
         SizedBox(
           height: 32.h,
         ),
-        buttonSocialMedia(
-            icon: 'assets/icons/google.svg',
-            index: 0,
-            text: 'Continue with Google',
-            color: 0xffFFFFFF,
-            txtColor: 0xFF090A0A,
-            borderColor: 0xFFE3E4E5),
+        InkWell(
+            onTap: () {
+              print('dsadsa');
+              controller.googleLogin();
+            },
+            child: buttonSocialMedia(
+                icon: 'assets/icons/google.svg',
+                index: 0,
+                text: 'Continue with Google',
+                color: 0xffFFFFFF,
+                txtColor: 0xFF090A0A,
+                borderColor: 0xFFE3E4E5)),
         SizedBox(
           height: 16.h,
         ),

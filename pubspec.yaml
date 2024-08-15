@@ -20,6 +20,8 @@ dependencies:
   dio: ^4.0.6
   flutter_animate: 4.5.0
   sliding_up_panel: 2.0.0+1
+  google_sign_in: any
+  firebase_auth: any
   video_player: ^2.8.1
   visibility_detector: 0.4.0+2
   typewritertext: 3.0.8
@@ -28,6 +30,8 @@ dependencies:
   carousel_slider: 5.0.0
   url_launcher: ^6.3.0
   delayed_widget: any
+  flutter_rating_bar: any
+
   page_transition: any
   flutter_svg: any
   shared_preferences: 2.2.2
@@ -59,7 +63,6 @@ dependencies:
   google_maps_flutter: 2.5.3
   share_plus:
   app_links:
-  flutter_rating_bar:
 
 
 flutter:
