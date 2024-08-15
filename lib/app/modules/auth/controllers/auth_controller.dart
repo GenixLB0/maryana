@@ -110,6 +110,7 @@ class AuthController extends GetxController {
   static const String passwordMismatchError = 'Passwords do not match';
 
   ApiService apiService = Get.find();
+
   Future<void> RequestIOSNotifications() async {
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
@@ -130,6 +131,7 @@ class AuthController extends GetxController {
   String fcmToken = '';
 
   FirebaseMessaging? messaging;
+
   @override
   void onInit() {
     super.onInit();
@@ -333,6 +335,8 @@ class AuthController extends GetxController {
         isLoading.value = false;
         final apiResponse = ApiResponse.fromJson(response);
         if (apiResponse.status == 'success') {
+          print("is fcm token is sent? ${fcmToken}");
+          print("my sent form data ${formData.fields}");
           print('Login successful');
           // Handle successful login
           isGuest.value = false;
