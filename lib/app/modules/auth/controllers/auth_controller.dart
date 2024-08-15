@@ -12,6 +12,8 @@ import 'package:maryana/main.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart' as authTest;
 
 import '../../../routes/app_pages.dart';
 
@@ -30,6 +32,76 @@ class AuthController extends GetxController {
   var user = Rxn<User>();
   var firstNameError = ''.obs;
   var lastNameError = ''.obs;
+  var googleSignIn = GoogleSignIn();
+
+  authTest.FirebaseAuth auth = authTest.FirebaseAuth.instance;
+
+  // Existing methods...
+
+  Future<void> googleLogin() async {
+    try {
+      isLoading.value = true;
+
+      // Step 1: Initiate the Google Sign-In process
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        // User canceled the sign-in process
+        isLoading.value = false;
+        print('User canceled the Google Sign-In process');
+        return;
+      }
+
+      // Step 2: Retrieve the authentication details
+      GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Step 3: Retry authentication if idToken is null
+      if (googleAuth.idToken == null) {
+        googleAuth = await googleUser.authentication;
+      }
+
+      // Step 4: Check if idToken is available
+      if (googleAuth.idToken != null) {
+        final providerToken = googleAuth.idToken;
+
+      // Step 5: Create a credential with the Google auth details
+        final authTest.OAuthCredential credential =
+            authTest.GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        // Step 6: Sign in with the credential
+        final authTest.UserCredential userCredential =
+            await auth.signInWithCredential(credential);
+
+        // Step 7: Extract user information
+        email.value = userCredential.user!.email ?? '';
+        firstName.value = userCredential.user!.displayName ?? '';
+        lastName.value = ''; // Adjust as needed
+
+        // Step 8: Call the loginWithGoogle method with the provider token
+        loginWithGoogle(providerToken!);
+      } else {
+        // Step 9: Handle the error when idToken is null
+        print(
+            'Failed to retrieve idToken. The Google Sign-In might have failed.');
+        // You can also show a Snackbar or AlertDialog to inform the user
+        Get.snackbar(
+            'Error', 'Failed to sign in with Google. Please try again.');
+      }
+    } catch (e, stackTrace) {
+      // Step 10: Catch and handle any errors during the process
+      isLoading.value = false;
+      print("Google Login Failed: $e\n$stackTrace");
+      // You can also show a Snackbar or AlertDialog to inform the user
+      Get.snackbar('Error',
+          'An error occurred during Google Sign-In. Please try again.');
+    } finally {
+      // Ensure that isLoading is set to false when the process is complete
+      isLoading.value = false;
+    }
+  }
+
   static const String emptyFirstNameError = 'First name required!';
   static const String emptyLastNameError = 'Last name required!';
   static const String invalidEmailError = 'Enter a valid email';
@@ -115,6 +187,58 @@ class AuthController extends GetxController {
     }
     lastNameError.value = '';
     return true;
+  }
+
+  void loginWithGoogle(String providerToken) async {
+    // Validate that all required data is available
+    if (validateEmail()) {
+      isLoading.value = true;
+      globalController.errorMessage.value = '';
+
+      var formData = dio.FormData.fromMap({
+        'provider_token': providerToken,
+        'email': email.value,
+        'first_name': firstName.value,
+        'last_name': lastName.value,
+        'imei': '1234', // Example IMEI, adjust as needed
+        'device_token': fcmToken, // FCM token for push notifications
+        'device_type': 'ios', // Change to 'android' if applicable
+      });
+
+      try {
+        final response = await apiConsumer.post(
+          'login/google', // Adjust the endpoint as needed
+          formDataIsEnabled: true,
+          formData: formData,
+        );
+
+        final apiResponse = ApiResponse.fromJson(response);
+        if (apiResponse.status == 'success') {
+          print('Login successful');
+          isGuest.value = false;
+
+          await cacheUserData(apiResponse.data!);
+          AppConstants.userData = apiResponse.data!;
+          user.value = apiResponse.data!.user;
+          userToken = AppConstants.userData!.token;
+
+          Get.offNamedUntil(Routes.MAIN, (Route) => false);
+        } else {
+          handleApiErrorUser(apiResponse.message);
+          handleApiError(response.statusCode);
+          print('Login failed: ${response.statusMessage}');
+        }
+        isLoading.value = false;
+      } catch (e, stackTrace) {
+        isGuest.value = false;
+        isLoading.value = false;
+
+        print('Login failed: $e $stackTrace');
+        final apiResponse = ApiResponse.fromJson(jsonDecode(e.toString()));
+        handleApiErrorUser(apiResponse.message);
+        print(e.toString() + stackTrace.toString());
+      }
+    }
   }
 
   void clearFields() {

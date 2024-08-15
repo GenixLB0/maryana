@@ -84,7 +84,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ADDREVIEW,
-      page: () => RateProductScreen(),
+      page: () => const RateProductScreen(),
       binding: OrdersBinding(),
     ),
     GetPage(
