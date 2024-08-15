@@ -56,24 +56,24 @@ class LoginView extends StatelessWidget {
               obscureText: true,
             )),
         SizedBox(height: 28.h),
-        // SizedBox(
-        //     width: 310.w,
-        //     child: InkWell(
-        //         onTap: () {
-        //           Get.toNamed(Routes.FORGOT_PASSWORD);
-        //         },
-        //         child: Align(
-        //           alignment: AlignmentDirectional.topEnd,
-        //           child: Text(
-        //             'Forgot Password?',
-        //             textAlign: TextAlign.center,
-        //             style: primaryTextStyle(
-        //               color: Colors.black,
-        //               size: 12.sp.round(),
-        //               weight: FontWeight.w400,
-        //             ),
-        //           ),
-        //         ))),
+        SizedBox(
+            width: 310.w,
+            child: InkWell(
+                onTap: () {
+                  Get.toNamed(Routes.FORGOT_PASSWORD);
+                },
+                child: Align(
+                  alignment: AlignmentDirectional.topEnd,
+                  child: Text(
+                    'Forgot Password?',
+                    textAlign: TextAlign.center,
+                    style: primaryTextStyle(
+                      color: Colors.black,
+                      size: 12.sp.round(),
+                      weight: FontWeight.w400,
+                    ),
+                  ),
+                ))),
         SizedBox(height: 25.h),
         ShowUp(
             delay: 800,
@@ -97,6 +97,24 @@ class LoginView extends StatelessWidget {
         //     )),
         // SizedBox(height: 23.h),
         // gridSocialIcon(),
+
+        InkWell(
+            onTap: () {
+              controller.isGuest.value = true;
+              Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
+              // Get.to(MainView());
+              Get.offNamedUntil(Routes.MAIN, (Route) => false);
+            },
+            child: buttonSocialMedia(
+                icon: 'assets/images/onboarding/person.svg',
+                index: 3,
+                text: 'Sign in As a Guest',
+                color: 0xFFD4B0FF,
+                txtColor: 0xFF21034F,
+                borderColor: 0xFFD4B0FF)),
+        SizedBox(
+          height: 34.h,
+        ),
         SizedBox(height: 109.h),
         ShowUp(
             delay: 500,
@@ -220,23 +238,23 @@ class LoginView extends StatelessWidget {
                 color: 0xFFD4B0FF,
                 txtColor: 0xFF21034F,
                 borderColor: 0xFFD4B0FF)),
-        SizedBox(
-          height: 34.h,
-        ),
-        InkWell(
-            onTap: () {
-              controller.isGuest.value = true;
-              Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
-              // Get.to(MainView());
-              Get.offNamedUntil(Routes.MAIN, (Route) => false);
-            },
-            child: buttonSocialMedia(
-                icon: 'assets/images/onboarding/person.svg',
-                index: 3,
-                text: 'Sign in As a Guest',
-                color: 0xFFD4B0FF,
-                txtColor: 0xFF21034F,
-                borderColor: 0xFFD4B0FF)),
+        // SizedBox(
+        //   height: 34.h,
+        // ),
+        // InkWell(
+        //     onTap: () {
+        //       controller.isGuest.value = true;
+        //       Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
+        //       // Get.to(MainView());
+        //       Get.offNamedUntil(Routes.MAIN, (Route) => false);
+        //     },
+        //     child: buttonSocialMedia(
+        //         icon: 'assets/images/onboarding/person.svg',
+        //         index: 3,
+        //         text: 'Sign in As a Guest',
+        //         color: 0xFFD4B0FF,
+        //         txtColor: 0xFF21034F,
+        //         borderColor: 0xFFD4B0FF)),
         SizedBox(
           height: 26.h,
         ),

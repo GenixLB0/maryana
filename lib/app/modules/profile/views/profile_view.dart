@@ -51,7 +51,7 @@ class _ProfileViewState extends State<ProfileView>
                       SizedBox(height: 45.h),
                       Container(
                         width: 327.w,
-                        height: 570.h,
+                        height: 500.h,
                         decoration: ShapeDecoration(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(

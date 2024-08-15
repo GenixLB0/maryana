@@ -63,7 +63,7 @@ class AuthController extends GetxController {
       if (googleAuth.idToken != null) {
         final providerToken = googleAuth.idToken;
 
-      // Step 5: Create a credential with the Google auth details
+        // Step 5: Create a credential with the Google auth details
         final authTest.OAuthCredential credential =
             authTest.GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
@@ -271,7 +271,7 @@ class AuthController extends GetxController {
         'password_confirmation': confirmPassword.value,
         'imei': '1234',
         'token': fcmToken,
-        'device_type': 'android',
+        'device_type': 'ios',
       });
       try {
         final response = await apiConsumer.post(
@@ -321,7 +321,7 @@ class AuthController extends GetxController {
         'password': password.value,
         'token': fcmToken,
         'imei': '1234',
-        'device_type': 'android',
+        'device_type': 'ios',
       });
       try {
         final response = await apiConsumer.post(

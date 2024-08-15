@@ -2611,40 +2611,40 @@ Widget socialMediaPlaceHolder() {
       SizedBox(
         height: 32.h,
       ),
-      buttonSocialMedia(
-          icon: 'assets/icons/google.svg',
-          index: 0,
-          text: 'Continue with Google',
-          color: 0xffFFFFFF,
-          txtColor: 0xFF090A0A,
-          borderColor: 0xFFE3E4E5),
-      SizedBox(
-        height: 16.h,
-      ),
-      buttonSocialMedia(
-          icon: 'assets/icons/facebook.svg',
-          index: 1,
-          text: 'Continue with Facebook',
-          color: 0xFF0066DA,
-          txtColor: 0xffFFFFFF,
-          borderColor: 0xFF0066DA),
-      SizedBox(
-        height: 16.h,
-      ),
-      buttonSocialMedia(
-          icon: 'assets/icons/apple.svg',
-          index: 2,
-          text: 'Continue with Apple',
-          color: 0xFF090A0A,
-          txtColor: 0xffFFFFFF,
-          borderColor: 0xFFE3E4E5),
-      SizedBox(
-        height: 35.h,
-      ),
-      DividerSocial(),
-      SizedBox(
-        height: 34.h,
-      ),
+      // buttonSocialMedia(
+      //     icon: 'assets/icons/google.svg',
+      //     index: 0,
+      //     text: 'Continue with Google',
+      //     color: 0xffFFFFFF,
+      //     txtColor: 0xFF090A0A,
+      //     borderColor: 0xFFE3E4E5),
+      // SizedBox(
+      //   height: 16.h,
+      // ),
+      // buttonSocialMedia(
+      //     icon: 'assets/icons/facebook.svg',
+      //     index: 1,
+      //     text: 'Continue with Facebook',
+      //     color: 0xFF0066DA,
+      //     txtColor: 0xffFFFFFF,
+      //     borderColor: 0xFF0066DA),
+      // SizedBox(
+      //   height: 16.h,
+      // ),
+      // buttonSocialMedia(
+      //     icon: 'assets/icons/apple.svg',
+      //     index: 2,
+      //     text: 'Continue with Apple',
+      //     color: 0xFF090A0A,
+      //     txtColor: 0xffFFFFFF,
+      //     borderColor: 0xFFE3E4E5),
+      // SizedBox(
+      //   height: 35.h,
+      // ),
+      // DividerSocial(),
+      // SizedBox(
+      //   height: 34.h,
+      // ),
       InkWell(
           onTap: () {
             Authcontroller.socialView.value = false;

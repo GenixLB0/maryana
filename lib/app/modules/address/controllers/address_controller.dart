@@ -72,15 +72,70 @@ class AddressController extends GetxController {
   }
 
   Future<void> getPermission() async {
-    // var permission = await Permission.location.status;
-
     bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
-    await Geolocator.requestPermission();
-    debugPrint('isLocationEnabled $isLocationEnabled');
-    if (isLocationEnabled == false) {
-      Get.snackbar("Permission Denied ",
-          "Enable Location Permission To Enjoy All Features");
+
+    if (!isLocationEnabled) {
+      _showLocationServicesDialog();
+      _stopSpinner();
+      return;
     }
+
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      _showPermissionDeniedSnackbar();
+      _stopSpinner();
+      return;
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      _showPermissionDeniedForeverDialog();
+      _stopSpinner();
+      return;
+    }
+
+    _onPermissionGranted();
+  }
+
+  void _stopSpinner() {
+    isLoading.value = false; // تغيير حالة التحميل إلى false لإيقاف المؤشر
+  }
+
+  void _showPermissionDeniedSnackbar() {
+    Get.snackbar(
+      "Permission Denied",
+      "Location permission is required to access certain features.",
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+
+  void _showLocationServicesDialog() {
+    Get.defaultDialog(
+      title: "Location Services Disabled",
+      middleText: "Please enable location services to use this feature.",
+      textConfirm: "OK",
+      onConfirm: () {
+        Get.back();
+      },
+    );
+  }
+
+  void _showPermissionDeniedForeverDialog() {
+    Get.defaultDialog(
+      title: "Location Permission Denied Permanently",
+      middleText:
+          "You have permanently denied location permission. Please enable it from the app settings.",
+      textConfirm: "OK",
+      onConfirm: () {
+        Get.back();
+      },
+    );
+  }
+
+  void _onPermissionGranted() {
+    isLoading.value = false; // إيقاف التحميل عند الحصول على الإذن
+    // تنفيذ الوظائف التي تعتمد على الموقع هنا
+    debugPrint(
+        'Location permission granted, proceeding with location features.');
   }
 
   @override
