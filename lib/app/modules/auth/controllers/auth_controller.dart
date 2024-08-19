@@ -272,7 +272,7 @@ class AuthController extends GetxController {
         'password': password.value,
         'password_confirmation': confirmPassword.value,
         'imei': '1234',
-        'token': fcmToken,
+        'token': fcmToken == null || fcmToken.isEmpty ? 'test' : fcmToken,
         'device_type': 'ios',
       });
       try {
@@ -321,7 +321,7 @@ class AuthController extends GetxController {
       var formData = dio.FormData.fromMap({
         'email': email.value,
         'password': password.value,
-        'token': fcmToken,
+        'token': fcmToken == null || fcmToken.isEmpty ? 'test' : fcmToken,
         'imei': '1234',
         'device_type': 'ios',
       });
