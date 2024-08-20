@@ -37,7 +37,7 @@ class AuthController extends GetxController {
 
   String fcmToken = '';
   String deviceId = '';
-  FirebaseMessaging? messaging;
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   @override
   void onInit() {
@@ -71,7 +71,7 @@ class AuthController extends GetxController {
     });
 
     if (GetPlatform.isIOS) {
-      await messaging!.requestPermission(
+      await messaging.requestPermission(
         alert: true,
         announcement: false,
         badge: true,
