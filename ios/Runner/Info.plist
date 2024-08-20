@@ -41,15 +41,6 @@
     <string>$(FLUTTER_BUILD_NUMBER)</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
-    		<key>NSAppTransportSecurity</key>
-		<dict>
-			<key>NSAllowsArbitraryLoads</key>
-			<true/>
-			<key>NSAllowsArbitraryLoadsInWebContent</key>
-			<true/>
-			<key>NSAllowsLocalNetworking</key>
-			<true/>
-		</dict>
     <key>NSCameraUsageDescription</key>
     <string>Our app requires access to your camera to enable you to take and set a profile photo directly within the app. This feature is designed to personalize your user.</string>
     <key>NSLocationAlwaysUsageDescription</key>
