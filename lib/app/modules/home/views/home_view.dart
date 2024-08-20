@@ -21,8 +21,6 @@ import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
 
- 
-
 import 'package:shimmer/shimmer.dart';
 import 'package:typewritertext/typewritertext.dart';
 import 'package:upgrader/upgrader.dart';

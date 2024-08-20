@@ -2,80 +2,85 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Mariannella</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>Icon-60</string>
-				<string>Icon-76</string>
-				<string>Icon-120</string>
-				<string>Icon-167</string>
-				<string>Icon-152</string>
-				<string>Icon-1024</string>
-			</array>
-		</dict>
-	</dict>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>maryana</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Our app requires access to your camera to enable you to take and set a profile photo directly within the app. This feature is designed to personalize your user.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>To provide ongoing location-based services such as real-time alerts and updates specific to your area, our app needs continuous access to your location, even when the app is not in use.</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Our app requires your location to offer tailored services and content based on where you are, enhancing your overall app experience.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>To provide ongoing location-based services such as real-time alerts and updates specific to your area, our app needs continuous access to your location, even when the app is not in use.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To enhance your experience, our app needs access to your photo library. This allows you to select personal photos for creating promotional materials and updating your profile picture. Rest assured, your photos remain private and are not used for any other purposes.</string>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIStatusBarHidden</key>
-	<false/>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleDisplayName</key>
+    <string>Mariannella</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIcons</key>
+    <dict>
+        <key>CFBundlePrimaryIcon</key>
+        <dict>
+            <key>CFBundleIconFiles</key>
+            <array>
+                <string>Icon-60</string>
+                <string>Icon-76</string>
+                <string>Icon-120</string>
+                <string>Icon-167</string>
+                <string>Icon-152</string>
+                <string>Icon-1024</string>
+            </array>
+        </dict>
+    </dict>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>maryana</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(FLUTTER_BUILD_NAME)</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleVersion</key>
+    <string>$(FLUTTER_BUILD_NUMBER)</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>NSCameraUsageDescription</key>
+    <string>Our app requires access to your camera to enable you to take and set a profile photo directly within the app. This feature is designed to personalize your user.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>To provide ongoing location-based services such as real-time alerts and updates specific to your area, our app needs continuous access to your location, even when the app is not in use.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>Our app requires your location to offer tailored services and content based on where you are, enhancing your overall app experience.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>To provide ongoing location-based services such as real-time alerts and updates specific to your area, our app needs continuous access to your location, even when the app is not in use.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>To enhance your experience, our app needs access to your photo library. This allows you to select personal photos for creating promotional materials and updating your profile picture. Rest assured, your photos remain private and are not used for any other purposes.</string>
+    <key>NSAppleMusicUsageDescription</key>
+    <string>Your app requires access to your Apple account for user authentication.</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>Your app uses this permission to provide personalized content based on your Apple account.</string>
+    <key>ASAuthorizationAppleIDProvider</key>
+    <true/>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification</string>
+    </array>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+    <key>UIStatusBarHidden</key>
+    <false/>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+
 </dict>
 </plist>
