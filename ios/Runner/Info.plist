@@ -52,6 +52,12 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To enhance your experience, our app needs access to your photo library. This allows you to select personal photos for creating promotional materials and updating your profile picture. Rest assured, your photos remain private and are not used for any other purposes.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Your app requires access to your Apple account for user authentication.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Your app uses this permission to provide personalized content based on your Apple account.</string>
+	<true/>
+	<key>ASAuthorizationAppleIDProvider</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
