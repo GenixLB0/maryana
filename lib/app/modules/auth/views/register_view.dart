@@ -111,20 +111,20 @@ class RegisterView extends StatelessWidget {
           ),
         ),
         SizedBox(height: 35.h),
-        // Opacity(
-        //     opacity: 0.60,
-        //     child: Text(
-        //       'or log in with',
-        //       textAlign: TextAlign.center,
-        //       style: primaryTextStyle(
-        //         color: Colors.black,
-        //         size: 12.sp.round(),
-        //         weight: FontWeight.w400,
-        //         letterSpacing: 0.24,
-        //       ),
-        //     )),
+        Opacity(
+            opacity: 0.60,
+            child: Text(
+              'or log in with',
+              textAlign: TextAlign.center,
+              style: primaryTextStyle(
+                color: Colors.black,
+                size: 12.sp.round(),
+                weight: FontWeight.w400,
+                letterSpacing: 0.24,
+              ),
+            )),
         SizedBox(height: 23.h),
-        // gridSocialIcon(),
+        gridSocialIcon(),
         SizedBox(height: 40.h),
         ShowUp(
           delay: 500,

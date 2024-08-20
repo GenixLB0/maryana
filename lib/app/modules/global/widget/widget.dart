@@ -40,36 +40,40 @@ import '../../auth/views/register_view.dart';
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
 
+final AuthController authcontroller = Get.put(AuthController());
+
 Widget gridSocialIcon() {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      ShowUp(
-          delay: 400,
-          child: SocialMediaIcon(
-            assetPath: 'assets/icons/small_apple.svg',
-            onTap: () {
-              // Handle Apple login
-            },
-          )),
-      SizedBox(width: 16.w),
+      // ShowUp(
+      //     delay: 400,
+      //     child: SocialMediaIcon(
+      //       assetPath: 'assets/icons/small_apple.svg',
+      //       onTap: () {
+      //         // Handle Apple login
+      //         authcontroller.googleLogin();
+      //       },
+      //     )),
+      // SizedBox(width: 16.w),
       ShowUp(
           delay: 200,
           child: SocialMediaIcon(
             assetPath: 'assets/icons/small_google.svg',
             onTap: () {
               // Handle Google login
+              authcontroller.googleLogin();
             },
           )),
-      SizedBox(width: 16.w),
-      ShowUp(
-          delay: 400,
-          child: SocialMediaIcon(
-            assetPath: 'assets/icons/small_facebook.svg',
-            onTap: () {
-              // Handle Facebook login
-            },
-          )),
+      // SizedBox(width: 16.w),
+      // ShowUp(
+      //     delay: 400,
+      //     child: SocialMediaIcon(
+      //       assetPath: 'assets/icons/small_facebook.svg',
+      //       onTap: () {
+      //         // Handle Facebook login
+      //       },
+      //     )),
     ],
   );
 }
