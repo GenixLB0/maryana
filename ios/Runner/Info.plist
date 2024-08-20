@@ -76,5 +76,7 @@
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
 
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

@@ -83,20 +83,20 @@ class LoginView extends StatelessWidget {
               onPressed: () => controller.login(),
             )),
         SizedBox(height: 35.h),
-        // Opacity(
-        //     opacity: 0.60,
-        //     child: Text(
-        //       'or log in with',
-        //       textAlign: TextAlign.center,
-        //       style: primaryTextStyle(
-        //         color: Colors.black,
-        //         size: 12.sp.round(),
-        //         weight: FontWeight.w400,
-        //         letterSpacing: 0.24,
-        //       ),
-        //     )),
-        // SizedBox(height: 23.h),
-        // gridSocialIcon(),
+        Opacity(
+            opacity: 0.60,
+            child: Text(
+              'or log in with',
+              textAlign: TextAlign.center,
+              style: primaryTextStyle(
+                color: Colors.black,
+                size: 12.sp.round(),
+                weight: FontWeight.w400,
+                letterSpacing: 0.24,
+              ),
+            )),
+        SizedBox(height: 23.h),
+        gridSocialIcon(),
 
         InkWell(
             onTap: () {
@@ -186,38 +186,38 @@ class LoginView extends StatelessWidget {
         SizedBox(
           height: 32.h,
         ),
-        InkWell(
-            onTap: () {
-              print('dsadsa');
-              controller.googleLogin();
-            },
-            child: buttonSocialMedia(
-                icon: 'assets/icons/google.svg',
-                index: 0,
-                text: 'Continue with Google',
-                color: 0xffFFFFFF,
-                txtColor: 0xFF090A0A,
-                borderColor: 0xFFE3E4E5)),
-        SizedBox(
-          height: 16.h,
-        ),
-        buttonSocialMedia(
-            icon: 'assets/icons/facebook.svg',
-            index: 1,
-            text: 'Continue with Facebook',
-            color: 0xFF0066DA,
-            txtColor: 0xffFFFFFF,
-            borderColor: 0xFF0066DA),
-        SizedBox(
-          height: 16.h,
-        ),
-        buttonSocialMedia(
-            icon: 'assets/icons/apple.svg',
-            index: 2,
-            text: 'Continue with Apple',
-            color: 0xFF090A0A,
-            txtColor: 0xffFFFFFF,
-            borderColor: 0xFFE3E4E5),
+        // InkWell(
+        //     onTap: () {
+        //       print('dsadsa');
+        //       controller.googleLogin();
+        //     },
+        //     child: buttonSocialMedia(
+        //         icon: 'assets/icons/google.svg',
+        //         index: 0,
+        //         text: 'Continue with Google',
+        //         color: 0xffFFFFFF,
+        //         txtColor: 0xFF090A0A,
+        //         borderColor: 0xFFE3E4E5)),
+        // SizedBox(
+        //   height: 16.h,
+        // ),
+        // buttonSocialMedia(
+        //     icon: 'assets/icons/facebook.svg',
+        //     index: 1,
+        //     text: 'Continue with Facebook',
+        //     color: 0xFF0066DA,
+        //     txtColor: 0xffFFFFFF,
+        //     borderColor: 0xFF0066DA),
+        // SizedBox(
+        //   height: 16.h,
+        // ),
+        // buttonSocialMedia(
+        //     icon: 'assets/icons/apple.svg',
+        //     index: 2,
+        //     text: 'Continue with Apple',
+        //     color: 0xFF090A0A,
+        //     txtColor: 0xffFFFFFF,
+        //     borderColor: 0xFFE3E4E5),
         SizedBox(
           height: 35.h,
         ),
