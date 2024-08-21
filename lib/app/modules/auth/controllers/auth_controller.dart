@@ -166,7 +166,7 @@ class AuthController extends GetxController {
       );
 
       // Step 2: Use the credential to sign in with Firebase or call your API
-      final providerToken = credential.authorizationCode;
+      final providerToken = credential.userIdentifier;
 
       email.value = credential.email ?? '';
       firstName.value = credential.givenName ?? '';
