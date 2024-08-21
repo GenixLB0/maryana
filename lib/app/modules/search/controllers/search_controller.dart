@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide Material;
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
- import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
@@ -20,7 +20,7 @@ class CustomSearchController extends GetxController {
   late SharedPreferences prefs;
   final Rx<int> resultCount = 0.obs;
 
-  List<String> searchKeywords = [];
+  RxList<String> searchKeywords = <String>[].obs;
   String titleResult = "";
   List<int> activeCats = [];
   RxBool isSearchLoading = false.obs;
@@ -42,7 +42,7 @@ class CustomSearchController extends GetxController {
   RxList<Styles> styles = <Styles>[].obs;
   RxList<String> sizes = <String>[].obs;
 
-  RxList<Materials> materials = <Materials>[].obs;
+  RxList<Material> materials = <Material>[].obs;
   RxList<String> seasons = <String>[].obs;
   RxBool colorFullLength = false.obs;
 
@@ -87,7 +87,7 @@ class CustomSearchController extends GetxController {
     prefs = await SharedPreferences.getInstance();
     List<String>? keyWords = prefs.getStringList("search_keywords");
     if (keyWords != null) {
-      searchKeywords = keyWords;
+      searchKeywords.value = keyWords;
     }
     print("list is ${searchKeywords}");
     update();
@@ -157,7 +157,7 @@ class CustomSearchController extends GetxController {
     //   await getCategoriesList();
     // }
     // mimicCatsForActiveCats(false, 1);
-
+    resultCount.value = 0;
     isFromSearch.value = false;
     titleResult = sectionName;
     resultSearchProducts.clear();
@@ -187,12 +187,12 @@ class CustomSearchController extends GetxController {
         for (var product in responseData['data']) {
           resultSearchProducts.add(ViewProductData.fromJson(product));
         }
-        resultCount.value = resultSearchProducts.length;
+
         isSearchLoading.value = false;
         resultCount.value = resultSearchProducts.length;
         print("your map ${payload}");
 
-        print("your result ${resultSearchProducts}");
+        print("your resultt ${resultSearchProducts}");
 
         return resultSearchProducts;
       } else {
@@ -872,15 +872,16 @@ class CustomSearchController extends GetxController {
     try {
       final apiResponse = FilterOneModel.fromJson(response);
       if (apiResponse.status == "success") {
-        minPriceApi.value =  double.parse( apiResponse.data!.minPrice.toString());
-        maxPriceApi.value = double.parse( apiResponse.data!.maxPrice.toString());
+        minPriceApi.value = double.parse(apiResponse.data!.minPrice.toString());
+        maxPriceApi.value = double.parse(apiResponse.data!.maxPrice.toString());
         minPriceController.value =
             TextEditingController(text: apiResponse.data!.minPrice!);
         maxPriceController.value =
             TextEditingController(text: apiResponse.data!.maxPrice!);
 
-        setNewValue(RangeValues(double.parse( apiResponse.data!.minPrice.toString()),
-            double.parse( apiResponse.data!.maxPrice.toString())));
+        setNewValue(RangeValues(
+            double.parse(apiResponse.data!.minPrice.toString()),
+            double.parse(apiResponse.data!.maxPrice.toString())));
         if (apiResponse.data?.colors != null) {
           for (var color in apiResponse.data!.colors!) {
             colors.add(color);
@@ -916,11 +917,23 @@ class CustomSearchController extends GetxController {
             materials.add(material);
           }
         }
+
+        if (apiResponse.data?.sizes != null) {
+          for (var size in apiResponse.data!.sizes!) {
+            sizes.add(size);
+          }
+        }
       }
     } catch (e) {
       print('filter api failed:  ${e} ');
 
       print(e.toString());
     }
+  }
+
+  clearSavedSearchKeyWords() async {
+    searchKeywords.clear();
+    prefs = await SharedPreferences.getInstance();
+    prefs.setStringList("search_keywords", []);
   }
 }

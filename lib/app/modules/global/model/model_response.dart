@@ -1269,7 +1269,7 @@ class OneFilterData {
   List<Brands>? brands;
   List<Styles>? styles;
   List<Collections>? collections;
-  List<Materials>? materials;
+  List<Material>? materials;
   List<String>? seasons;
   List<String>? sizes;
 
@@ -1312,9 +1312,9 @@ class OneFilterData {
       });
     }
     if (json['materials'] != null) {
-      materials = <Materials>[];
+      materials = <Material>[];
       json['materials'].forEach((v) {
-        materials!.add(new Materials.fromJson(v));
+        materials!.add(new Material.fromJson(v));
       });
     }
     seasons = json['seasons'].cast<String>();
@@ -1342,25 +1342,6 @@ class OneFilterData {
     }
     data['seasons'] = this.seasons;
     data['sizes'] = this.sizes;
-    return data;
-  }
-}
-
-class Materials {
-  int? id;
-  String? name;
-
-  Materials({this.id, this.name});
-
-  Materials.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
     return data;
   }
 }

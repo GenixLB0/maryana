@@ -1337,17 +1337,17 @@ buildSearchAndFilter(
                   ),
                   onPressed: () {},
                 ),
-                suffixIcon: IconButton(
-                  icon: Padding(
-                    padding: EdgeInsets.only(right: 5.w),
-                    child: SvgPicture.asset(
-                      'assets/icons/camera.svg',
-                      width: 23.w,
-                      height: 23.h,
-                    ),
-                  ),
-                  onPressed: () {},
-                ),
+                // suffixIcon: IconButton(
+                //   icon: Padding(
+                //     padding: EdgeInsets.only(right: 5.w),
+                //     child: SvgPicture.asset(
+                //       'assets/icons/camera.svg',
+                //       width: 23.w,
+                //       height: 23.h,
+                //     ),
+                //   ),
+                //   onPressed: () {},
+                // ),
               ),
             ),
           ),
