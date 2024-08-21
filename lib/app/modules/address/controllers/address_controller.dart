@@ -72,28 +72,28 @@ class AddressController extends GetxController {
   }
 
   Future<void> getPermission() async {
-    bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+    // bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
-    if (!isLocationEnabled) {
-      _showLocationServicesDialog();
-      _stopSpinner();
-      return;
-    }
+    // if (!isLocationEnabled) {
+    //   _showLocationServicesDialog();
+    //   _stopSpinner();
+    //   return;
+    // }
 
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      _showPermissionDeniedSnackbar();
-      _stopSpinner();
-      return;
-    }
+    // LocationPermission permission = await Geolocator.requestPermission();
+    // if (permission == LocationPermission.denied) {
+    //   _showPermissionDeniedSnackbar();
+    //   _stopSpinner();
+    //   return;
+    // }
 
-    if (permission == LocationPermission.deniedForever) {
-      _showPermissionDeniedForeverDialog();
-      _stopSpinner();
-      return;
-    }
+    // if (permission == LocationPermission.deniedForever) {
+    //   _showPermissionDeniedForeverDialog();
+    //   _stopSpinner();
+    //   return;
+    // }
 
-    _onPermissionGranted();
+    // _onPermissionGranted();
   }
 
   void _stopSpinner() {
@@ -147,7 +147,7 @@ class AddressController extends GetxController {
     selectedCountry.value = "Lebanon";
     fetchCurrentLocation();
 
-    getPermission();
+    //getPermission();
   }
 
   bool validateField(String field, RxString error) {
