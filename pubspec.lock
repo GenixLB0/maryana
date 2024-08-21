@@ -1053,6 +1053,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  public_ip_address:
+    dependency: "direct main"
+    description:
+      name: public_ip_address
+      sha256: "03b78fb35f7b683bbefca62c19571405a5f641c9e0277aa4fdd8e47198cc7779"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   rxdart:
     dependency: transitive
     description:
@@ -1069,6 +1077,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  share_plus:
+    dependency: "direct main"
+    description:
+      name: share_plus
+      sha256: "59dfd53f497340a0c3a81909b220cfdb9b8973a91055c4e5ab9b9b9ad7c513c0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.0.0"
+  share_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: share_plus_platform_interface
+      sha256: "6ababf341050edff57da8b6990f11f4e99eaba837865e2e6defe16d039619db5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   shared_preferences:
     dependency: "direct main"
     description:

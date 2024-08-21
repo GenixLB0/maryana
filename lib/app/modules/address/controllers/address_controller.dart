@@ -11,6 +11,7 @@ import 'package:maryana/app/modules/global/config/map_view.dart';
 import 'package:maryana/app/modules/product/views/product_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
+import 'package:public_ip_address/public_ip_address.dart';
 
 class AddressController extends GetxController {
   var addressList = <Address>[].obs;
@@ -141,12 +142,13 @@ class AddressController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-   // getPermission();
+    // getPermission();
   }
 
   @override
   void onInit() {
     super.onInit();
+
     fetchAddresses();
     fetchCountries();
     label.value = 'Home';
@@ -468,4 +470,6 @@ class AddressController extends GetxController {
       isLoading(false);
     }
   }
+
+  bool isFirstOpen = true;
 }

@@ -30,7 +30,7 @@ import '../../global/theme/app_theme.dart';
 import '../../global/theme/colors.dart';
 import '../../search/views/search_view.dart';
 import '../controllers/product_controller.dart';
-// import 'package:share_plus/share_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -1042,11 +1042,11 @@ class ProductView extends GetView<ProductController> {
     final file = File('${documentDirectory.path}/image.jpg');
     file.writeAsBytesSync(response.bodyBytes);
 
-    // final xFile = XFile(file.path);
+    final xFile = XFile(file.path);
 
-    // Share.shareXFiles([xFile],
-    //     text:
-    //         'Check out this Product: https://mariannela-8c357.web.app/product/?id=${controller.product.value.id} ');
+    Share.shareXFiles([xFile],
+        text:
+            'Check out this Product: https://mariannela-8c357.web.app/product/?id=${controller.product.value.id} ');
     controller.endSharing();
   }
 

@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 // import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart' as dio;
@@ -19,6 +21,7 @@ import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/modules/wishlist/controllers/wishlist_controller.dart';
+import 'package:public_ip_address/public_ip_address.dart';
 
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
@@ -152,11 +155,10 @@ class HomeController extends GetxController {
 
   //////////////////////////////////////////////////////////
 
-
   @override
   void onInit() {
     listenForFirstScroll();
- 
+
     super.onInit();
   }
 
@@ -171,6 +173,7 @@ class HomeController extends GetxController {
     getHomeApi();
 
     runVideo();
+    getCountryFromIp();
     // mimicCatsForActiveCats(false, null);
     super.onReady();
   }
@@ -993,5 +996,14 @@ class HomeController extends GetxController {
         Get.snackbar("Error!", "Please Check The Entered Email");
       }
     }
+  }
+
+  getCountryFromIp() async {
+    IpAddress _ipAddress = IpAddress();
+
+    String country = await IpAddress().getCountry();
+    // var ip = await _ipAddress.getIp();
+    // print(ip);
+    Get.snackbar("Welcome", "Welcome Mariannella User From ${country}");
   }
 }
