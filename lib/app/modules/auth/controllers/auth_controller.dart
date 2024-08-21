@@ -66,7 +66,7 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> _requestNotificationPermissions() async {
+  Future<void>  requestNotificationPermissions() async {
     // طلب الأذونات للإشعارات لكل من Android وiOS
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
@@ -135,7 +135,7 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> _initFCMToken() async {
+  Future<void>  initFCMToken() async {
     messaging = FirebaseMessaging.instance;
 
     // توليد الـ FCM Token

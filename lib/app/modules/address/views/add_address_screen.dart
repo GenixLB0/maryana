@@ -16,6 +16,8 @@ class AddAddressScreen extends GetView<AddressController> {
   final bool? viewsOnly;
   AddAddressScreen({super.key, this.viewsOnly}) {
     controller.fetchCurrentLocation();
+    controller.getPermission();
+    
   }
 
   @override
