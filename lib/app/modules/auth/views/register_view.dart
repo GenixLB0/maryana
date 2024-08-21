@@ -123,8 +123,8 @@ class RegisterView extends StatelessWidget {
                 letterSpacing: 0.24,
               ),
             )),
-        if (!GetPlatform.isIOS) SizedBox(height: 23.h),
-        if (!GetPlatform.isIOS) gridSocialIcon(),
+        SizedBox(height: 23.h),
+        gridSocialIcon(),
         SizedBox(height: 40.h),
         ShowUp(
           delay: 500,

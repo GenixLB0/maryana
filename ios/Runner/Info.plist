@@ -45,6 +45,8 @@
     <string>Our app requires access to your camera to enable you to take and set a profile photo directly within the app. This feature is designed to personalize your user.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>To provide ongoing location-based services such as real-time alerts and updates specific to your area, our app needs continuous access to your location, even when the app is not in use.</string>
+     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Our app needs access to your location to provide personalized services that depend on your location at all times.</string>
     <key>NSLocationUsageDescription</key>
     <string>Our app requires your location to offer tailored services and content based on where you are, enhancing your overall app experience.</string>
     <key>NSLocationWhenInUseUsageDescription</key>

@@ -46,16 +46,16 @@ Widget gridSocialIcon() {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      // ShowUp(
-      //     delay: 400,
-      //     child: SocialMediaIcon(
-      //       assetPath: 'assets/icons/small_apple.svg',
-      //       onTap: () {
-      //         // Handle Apple login
-      //         authcontroller.googleLogin();
-      //       },
-      //     )),
-      // SizedBox(width: 16.w),
+      ShowUp(
+          delay: 400,
+          child: SocialMediaIcon(
+            assetPath: 'assets/icons/small_apple.svg',
+            onTap: () {
+              // Handle Apple login
+              authcontroller.appleLogin();
+            },
+          )),
+      SizedBox(width: 16.w),
       ShowUp(
           delay: 200,
           child: SocialMediaIcon(

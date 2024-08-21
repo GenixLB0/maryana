@@ -101,8 +101,8 @@ class LoginView extends StatelessWidget {
               ),
             )),
         SizedBox(height: 23.h),
-        if (!GetPlatform.isIOS) gridSocialIcon(),
-        if (!GetPlatform.isIOS) SizedBox(height: 23.h),
+        gridSocialIcon(),
+        SizedBox(height: 23.h),
         InkWell(
             onTap: () {
               controller.isGuest.value = true;
@@ -213,22 +213,25 @@ class LoginView extends StatelessWidget {
         //     color: 0xFF0066DA,
         //     txtColor: 0xffFFFFFF,
         //     borderColor: 0xFF0066DA),
-        // SizedBox(
-        //   height: 16.h,
-        // ),
-        // if (GetPlatform.isIOS)
-
-        // buttonSocialMedia(
-        //     icon: 'assets/icons/apple.svg',
-        //     index: 2,
-        //     text: 'Continue with Apple',
-        //     color: 0xFF090A0A,
-        //     txtColor: 0xffFFFFFF,
-        //     borderColor: 0xFFE3E4E5),
-        if (!GetPlatform.isIOS)
-          SizedBox(
-            height: 35.h,
-          ),
+        SizedBox(
+          height: 16.h,
+        ),
+        if (GetPlatform.isIOS)
+          InkWell(
+              onTap: () {
+                print('dsadsa');
+                controller.appleLogin();
+              },
+              child: buttonSocialMedia(
+                  icon: 'assets/icons/apple.svg',
+                  index: 2,
+                  text: 'Continue with Apple',
+                  color: 0xFF090A0A,
+                  txtColor: 0xffFFFFFF,
+                  borderColor: 0xFFE3E4E5)),
+        SizedBox(
+          height: 35.h,
+        ),
         DividerSocial(),
         SizedBox(
           height: 34.h,

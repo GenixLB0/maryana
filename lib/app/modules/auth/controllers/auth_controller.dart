@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart' as authTest;
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:maryana/main.dart';
 import '../../../routes/app_pages.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -66,7 +65,7 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void>  requestNotificationPermissions() async {
+  Future<void> requestNotificationPermissions() async {
     // طلب الأذونات للإشعارات لكل من Android وiOS
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
@@ -135,7 +134,7 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void>  initFCMToken() async {
+  Future<void> initFCMToken() async {
     messaging = FirebaseMessaging.instance;
 
     // توليد الـ FCM Token
@@ -180,7 +179,7 @@ class AuthController extends GetxController {
 
         email.value = userCredential.user!.email ?? '';
         firstName.value = userCredential.user!.displayName ?? '';
-        lastName.value = ''; // يمكن تعديلها حسب الحاجة
+        lastName.value = '(A)'; // يمكن تعديلها حسب الحاجة
 
         // استدعاء API الخاص بك
         loginWithSocial(providerToken!);
