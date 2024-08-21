@@ -165,30 +165,15 @@ class AuthController extends GetxController {
         ],
       );
 
-      if (credential.identityToken != null) {
-        // Step 2: Use the credential to sign in with Firebase or call your API
-        final providerToken = credential.identityToken;
+      // Step 2: Use the credential to sign in with Firebase or call your API
+      final providerToken = credential.authorizationCode;
 
-        // Example of using the credential with Firebase (if using Firebase Auth)
-        final oauthCredential = authTest.OAuthProvider('apple.com').credential(
-          idToken: providerToken,
-          accessToken: credential.authorizationCode,
-        );
+      email.value = credential.email ?? '';
+      firstName.value = credential.givenName ?? '';
+      lastName.value = '(A)'; // يمكن تعديلها حسب الحاجة
 
-        final userCredential = await auth.signInWithCredential(oauthCredential);
-
-        email.value = userCredential.user!.email ?? '';
-        firstName.value = userCredential.user!.displayName ?? '';
-        lastName.value = '(A)'; // يمكن تعديلها حسب الحاجة
-
-        // استدعاء API الخاص بك
-        loginWithSocial(providerToken!);
-      } else {
-        print(
-            'Failed to retrieve identityToken. The Apple Sign-In might have failed.');
-        Get.snackbar(
-            'Error', 'Failed to sign in with Apple. Please try again.');
-      }
+      // استدعاء API الخاص بك
+      loginWithSocial(providerToken!);
     } catch (e, stackTrace) {
       isLoading.value = false;
       print("Apple Login Failed: $e\n$stackTrace");
