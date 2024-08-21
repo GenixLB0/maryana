@@ -66,6 +66,13 @@
             </array>
         </dict>
     </array>
+    	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<false/>
+	</dict>
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
