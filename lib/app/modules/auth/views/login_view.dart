@@ -351,11 +351,11 @@ class LoginView extends StatelessWidget {
                 SizedBox(
                   height: 13.h,
                 ),
-                if (!GetPlatform.isIOS)
-                  if (controller.socialView.value)
-                    socialMediaView()
-                  else
-                    loginbyPasswordView(context),
+                // if (!GetPlatform.isIOS)
+                if (controller.socialView.value)
+                  socialMediaView()
+                else
+                  loginbyPasswordView(context),
               ],
             )),
           ));
