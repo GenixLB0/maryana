@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart' as dio;
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/profile/views/update_profile.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../routes/app_pages.dart';
 
@@ -170,7 +172,14 @@ class ProfileController extends GetxController {
       await apiConsumer.post(
         'logout',
       );
+      if (await GoogleSignIn().isSignedIn()) {
+        GoogleSignIn().disconnect();
+      }
+
       firebase.FirebaseAuth.instance.signOut();
+      if (firebase.FirebaseAuth.instance.currentUser != null) {
+        firebase.FirebaseAuth.instance.currentUser!.delete();
+      }
       Get.snackbar('Success', 'Logged out successfully');
       reset();
     } finally {

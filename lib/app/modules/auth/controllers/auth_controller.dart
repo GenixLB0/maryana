@@ -37,6 +37,7 @@ class AuthController extends GetxController {
   String fcmToken = '';
   String deviceId = '';
   FirebaseMessaging? messaging;
+
   @override
   void onReady() {
     super.onReady();

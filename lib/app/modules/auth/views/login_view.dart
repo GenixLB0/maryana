@@ -100,8 +100,8 @@ class LoginView extends StatelessWidget {
                 letterSpacing: 0.24,
               ),
             )),
-        // SizedBox(height: 23.h),
-        // gridSocialIcon(),
+        SizedBox(height: 23.h),
+        gridSocialIcon(),
         SizedBox(height: 23.h),
         InkWell(
             onTap: () {
@@ -191,19 +191,19 @@ class LoginView extends StatelessWidget {
         SizedBox(
           height: 32.h,
         ),
-        if (!GetPlatform.isIOS)
-          InkWell(
-              onTap: () {
-                print('dsadsa');
-                controller.googleLogin();
-              },
-              child: buttonSocialMedia(
-                  icon: 'assets/icons/google.svg',
-                  index: 0,
-                  text: 'Continue with Google',
-                  color: 0xffFFFFFF,
-                  txtColor: 0xFF090A0A,
-                  borderColor: 0xFFE3E4E5)),
+        // if (!GetPlatform.isIOS)
+        InkWell(
+            onTap: () {
+              print('dsadsa');
+              controller.googleLogin();
+            },
+            child: buttonSocialMedia(
+                icon: 'assets/icons/google.svg',
+                index: 0,
+                text: 'Continue with Google',
+                color: 0xffFFFFFF,
+                txtColor: 0xFF090A0A,
+                borderColor: 0xFFE3E4E5)),
         // SizedBox(
         //   height: 16.h,
         // ),
