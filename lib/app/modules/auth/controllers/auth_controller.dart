@@ -41,8 +41,8 @@ class AuthController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    _requestNotificationPermissions();
-    _initFCMToken();
+    // _requestNotificationPermissions();
+    //_initFCMToken();
   }
 
   @override
