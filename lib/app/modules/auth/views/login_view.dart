@@ -17,6 +17,11 @@ import '../controllers/auth_controller.dart';
 class LoginView extends StatelessWidget {
   final AuthController controller = Get.put(AuthController());
 
+  LoginView({super.key}) {
+    controller.requestNotificationPermissions();
+    controller.initFCMToken();
+  }
+
   Widget loginbyPasswordView(context) {
     return Column(
       children: [
@@ -341,11 +346,11 @@ class LoginView extends StatelessWidget {
                 SizedBox(
                   height: 13.h,
                 ),
-                if (!GetPlatform.isIOS)
-                  if (controller.socialView.value)
-                    socialMediaView()
-                  else
-                    loginbyPasswordView(context),
+                // if (!GetPlatform.isIOS)
+                if (controller.socialView.value)
+                  socialMediaView()
+                else
+                  loginbyPasswordView(context),
               ],
             )),
           ));

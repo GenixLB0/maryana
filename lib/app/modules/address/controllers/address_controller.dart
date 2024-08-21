@@ -141,7 +141,7 @@ class AddressController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    getPermission();
+   // getPermission();
   }
 
   @override

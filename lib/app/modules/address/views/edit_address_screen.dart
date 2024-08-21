@@ -41,6 +41,7 @@ class EditAddressScreen extends GetView<AddressController> {
       zoom: 11.0,
     )));
     controller.setCustomMarker();
+    controller.getPermission();
   }
 
   @override
