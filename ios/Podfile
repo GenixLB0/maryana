@@ -38,4 +38,16 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
+
+  # Remove Local Network Usage Description
+  info_plist_path = File.join(__dir__, 'Runner', 'Info.plist')
+  if File.exist?(info_plist_path)
+    require 'plist'
+    info_plist = Plist.parse_xml(info_plist_path)
+    if info_plist && info_plist['Privacy - Local Network Usage Description']
+      info_plist.delete('Privacy - Local Network Usage Description')
+      File.open(info_plist_path, 'w') { |f| f.write(info_plist.to_plist) }
+      puts "Removed 'Privacy - Local Network Usage Description' from Info.plist"
+    end
+  end
 end
