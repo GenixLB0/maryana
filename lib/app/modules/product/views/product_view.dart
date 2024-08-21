@@ -1593,7 +1593,7 @@ class ProductView extends GetView<ProductController> {
                                 children: [
                                   Container(
                                     width: 45.w,
-                                    height: 45.h,
+                                    height: 43.h,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
@@ -1628,9 +1628,8 @@ class ProductView extends GetView<ProductController> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
-                                      height: 5
-                                          .h), // Spacing between the circle and the text
+                                  SizedBox(height: 5.h),
+                                  // Spacing between the circle and the text
                                   Text(
                                     controller.colorsList[index].name ??
                                         '', // Display color name

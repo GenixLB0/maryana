@@ -65,6 +65,8 @@ dependencies:
   share_plus:
   app_links:
   public_ip_address:
+  image: ^3.0.1
+  smooth_page_indicator:
 
 
 flutter:

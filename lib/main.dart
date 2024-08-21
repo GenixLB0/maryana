@@ -189,6 +189,7 @@ class MyApp extends StatelessWidget {
                     return Observer(
                         builder: (_) => GetMaterialApp(
                               debugShowCheckedModeBanner: false,
+                              useInheritedMediaQuery: true,
                               title: APP_NAME,
                               theme: AppTheme.lightTheme(color: snap.data),
                               initialRoute: Routes.SPLASH,
