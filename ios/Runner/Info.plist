@@ -41,6 +41,8 @@
     <string>$(FLUTTER_BUILD_NUMBER)</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>We need access to the local network to automatically determine your country based on your IP address. This will help you quickly select your address when adding or editing it.</string>
     <key>NSCameraUsageDescription</key>
     <string>Our app requires access to your camera to enable you to take and set a profile photo directly within the app. This feature is designed to personalize your user.</string>
     <key>NSLocationAlwaysUsageDescription</key>
@@ -82,7 +84,7 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 		<key>NSAllowsLocalNetworking</key>
-		<false/>
+		<true/>
 	</dict>
     <key>UIBackgroundModes</key>
     <array>
