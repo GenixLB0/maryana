@@ -38,12 +38,16 @@ class AuthController extends GetxController {
   String fcmToken = '';
   String deviceId = '';
   FirebaseMessaging? messaging;
+  @override
+  void onReady() {
+    super.onReady();
+    _requestNotificationPermissions();
+    _initFCMToken();
+  }
 
   @override
   void onInit() {
     super.onInit();
-    _requestNotificationPermissions();
-    _initFCMToken();
     getDeviceId();
     socialView.value = true;
   }
