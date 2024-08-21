@@ -6,7 +6,7 @@ const APP_NAME = 'Maryana';
 var defaultPrimaryColor = Color(0xFFD4B0FF);
 
 const DOMAIN_URL =
-    'http://panel.mariannella.com'; // Don't add slash at the end of the url
+    'https://panel.mariannella.com'; // Don't add slash at the end of the url
 const BASE_URL = '$DOMAIN_URL/api/';
 
 const DEFAULT_LANGUAGE = 'en';

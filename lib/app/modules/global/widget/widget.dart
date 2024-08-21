@@ -1061,7 +1061,7 @@ class CustomNavBar extends StatelessWidget {
                   // Home
                   _buildBottomNavigationBarItem(0, "Home", "home"),
                   // Shop
-                  _buildBottomNavigationBarItem(1, "Shop", "shop"),
+                  _buildBottomNavigationBarItem(1, "Category", "category"),
                   // Bag
                   _buildBottomNavigationBarItem(2, "Cart", "bag"),
                   // Wishlist

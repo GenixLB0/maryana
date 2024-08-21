@@ -957,7 +957,8 @@ class HomeView extends GetView<HomeController> {
                                           SizedBox(
                                             width: 3.w,
                                           ),
-                                          myCatList[index].image!.isEmpty
+                                          myCatList[index].image!.isEmpty ||
+                                                  myCatList[index].image == null
                                               ? SvgPicture.asset(
                                                   "assets/images/home/cat_icon.svg",
                                                   width: 20.w,
@@ -1323,52 +1324,70 @@ class HomeView extends GetView<HomeController> {
                             ),
                           ),
                           Container(
-                            height: 320.h,
+                            height: snapshot.data!.isEmpty ? 50.h : 320.h,
                             width: MediaQuery.of(context).size.width,
                             child: ListView.separated(
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (ctx, index) {
-                                return index != snapshot.data!.length
-                                    ? buildProductCard(
-                                        product: ViewProductData.fromJson(
-                                            snapshot.data![index]),
-                                      )
-                                    : buildProductShowAll(() {
-                                        if (CustomSearchController()
-                                            .initialized) {
-                                          CustomSearchController controller =
-                                              Get.find<
-                                                  CustomSearchController>();
-                                          controller.getProductsInSection(
-                                              sectionName: collection.name!,
-                                              payload: {
-                                                "collection_ids[0]":
-                                                    collection.id.toString()
-                                              });
+                                return snapshot.data!.isEmpty
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3.5),
+                                        child: Shimmer.fromColors(
+                                            baseColor: Colors.black,
+                                            highlightColor: primaryColor,
+                                            child: Text(
+                                              "Coming Soon ..",
+                                              style: primaryTextStyle(
+                                                  color: Colors.black,
+                                                  weight: FontWeight.w800,
+                                                  size: 22.sp.round()),
+                                            )))
+                                    : index != snapshot.data!.length
+                                        ? buildProductCard(
+                                            product: ViewProductData.fromJson(
+                                                snapshot.data![index]),
+                                          )
+                                        : buildProductShowAll(() {
+                                            if (CustomSearchController()
+                                                .initialized) {
+                                              CustomSearchController
+                                                  controller = Get.find<
+                                                      CustomSearchController>();
+                                              controller.getProductsInSection(
+                                                  sectionName: collection.name!,
+                                                  payload: {
+                                                    "collection_ids[0]":
+                                                        collection.id.toString()
+                                                  });
 
-                                          Get.to(() => const ResultView(),
-                                              transition: Transition.fadeIn,
-                                              curve: Curves.easeInOut,
-                                              duration:
-                                                  Duration(milliseconds: 400));
-                                        } else {
-                                          CustomSearchController controller =
-                                              Get.put<CustomSearchController>(
-                                                  CustomSearchController());
-                                          controller.getProductsInSection(
-                                              sectionName: collection.name!,
-                                              payload: {
-                                                "collection_ids[0]":
-                                                    collection.id.toString()
-                                              });
-                                          Get.to(() => const ResultView(),
-                                              transition: Transition.fadeIn,
-                                              curve: Curves.easeInOut,
-                                              duration:
-                                                  Duration(milliseconds: 400));
-                                        }
-                                      });
+                                              Get.to(() => const ResultView(),
+                                                  transition: Transition.fadeIn,
+                                                  curve: Curves.easeInOut,
+                                                  duration: Duration(
+                                                      milliseconds: 400));
+                                            } else {
+                                              CustomSearchController
+                                                  controller =
+                                                  Get.put<CustomSearchController>(
+                                                      CustomSearchController());
+                                              controller.getProductsInSection(
+                                                  sectionName: collection.name!,
+                                                  payload: {
+                                                    "collection_ids[0]":
+                                                        collection.id.toString()
+                                                  });
+                                              Get.to(() => const ResultView(),
+                                                  transition: Transition.fadeIn,
+                                                  curve: Curves.easeInOut,
+                                                  duration: Duration(
+                                                      milliseconds: 400));
+                                            }
+                                          });
                               },
                               separatorBuilder: (ctx, index) => SizedBox(
                                 width: 10.w,
@@ -1490,82 +1509,42 @@ class HomeView extends GetView<HomeController> {
                 builder: (ctx, snapshot) {
                   // Checking if future is resolved
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w),
-                      child: ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 50.h,
-                            child: Row(
-                              children: [
-                                Text(
-                                  "${brand.name!} BEST SELLING",
-                                  style: boldTextStyle(
-                                      weight: FontWeight.w400,
-                                      size: 18.sp.round(),
-                                      color: Colors.black),
-                                ),
-                                Spacer(),
-                                GestureDetector(
-                                  onTap: () {
-                                    if (CustomSearchController().initialized) {
-                                      CustomSearchController controller =
-                                          Get.find<CustomSearchController>();
-                                      controller.getProductsInSection(
-                                          sectionName: brand.name!,
-                                          payload: {
-                                            "brand_ids[0]": brand.id.toString()
-                                          });
-
-                                      Get.to(() => const ResultView(),
-                                          transition: Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration:
-                                              Duration(milliseconds: 400));
-                                    } else {
-                                      CustomSearchController controller =
-                                          Get.put<CustomSearchController>(
-                                              CustomSearchController());
-                                      controller.getProductsInSection(
-                                          sectionName: brand.name!,
-                                          payload: {
-                                            "brand_ids[0]": brand.id.toString()
-                                          });
-                                      Get.to(() => const ResultView(),
-                                          transition: Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration:
-                                              Duration(milliseconds: 400));
-                                    }
-                                  },
-                                  child: Text(
-                                    "SHOW ALL",
-                                    style: boldTextStyle(
-                                        weight: FontWeight.w400,
-                                        size: 16.sp.round(),
-                                        color: Color(0xff9B9B9B)),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: smallSpacing,
-                                )
-                              ],
+                    return snapshot.data!.isEmpty
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width / 15,
+                              top: MediaQuery.of(context).size.width / 9,
                             ),
-                          ),
-                          Container(
-                            height: 320.h,
-                            width: MediaQuery.of(context).size.width,
-                            child: ListView.separated(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (ctx, index) {
-                                  return index != snapshot.data!.length
-                                      ? buildProductCard(
-                                          product: ViewProductData.fromJson(
-                                              snapshot.data![index]))
-                                      : buildProductShowAll(() {
+                            child: Shimmer.fromColors(
+                                baseColor: Colors.black,
+                                highlightColor: primaryColor,
+                                child: Text(
+                                  "Coming Soon ..",
+                                  style: primaryTextStyle(
+                                      color: Colors.black,
+                                      weight: FontWeight.w800,
+                                      size: 22.sp.round()),
+                                )))
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.w),
+                            child: ListView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 50.h,
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "${brand.name!} BEST SELLING",
+                                        style: boldTextStyle(
+                                            weight: FontWeight.w400,
+                                            size: 18.sp.round(),
+                                            color: Colors.black),
+                                      ),
+                                      Spacer(),
+                                      GestureDetector(
+                                        onTap: () {
                                           if (CustomSearchController()
                                               .initialized) {
                                             CustomSearchController controller =
@@ -1582,7 +1561,7 @@ class HomeView extends GetView<HomeController> {
                                                 transition: Transition.fadeIn,
                                                 curve: Curves.easeInOut,
                                                 duration: Duration(
-                                                    milliseconds: 800));
+                                                    milliseconds: 400));
                                           } else {
                                             CustomSearchController controller =
                                                 Get.put<CustomSearchController>(
@@ -1597,18 +1576,89 @@ class HomeView extends GetView<HomeController> {
                                                 transition: Transition.fadeIn,
                                                 curve: Curves.easeInOut,
                                                 duration: Duration(
-                                                    milliseconds: 800));
+                                                    milliseconds: 400));
                                           }
-                                        });
-                                },
-                                separatorBuilder: (ctx, index) => SizedBox(
-                                      width: 10.w,
-                                    ),
-                                itemCount: snapshot.data!.length + 1),
-                          ),
-                        ],
-                      ),
-                    );
+                                        },
+                                        child: Text(
+                                          "SHOW ALL",
+                                          style: boldTextStyle(
+                                              weight: FontWeight.w400,
+                                              size: 16.sp.round(),
+                                              color: Color(0xff9B9B9B)),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: smallSpacing,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 320.h,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (ctx, index) {
+                                        return index != snapshot.data!.length
+                                            ? buildProductCard(
+                                                product:
+                                                    ViewProductData.fromJson(
+                                                        snapshot.data![index]))
+                                            : buildProductShowAll(() {
+                                                if (CustomSearchController()
+                                                    .initialized) {
+                                                  CustomSearchController
+                                                      controller = Get.find<
+                                                          CustomSearchController>();
+                                                  controller
+                                                      .getProductsInSection(
+                                                          sectionName:
+                                                              brand.name!,
+                                                          payload: {
+                                                        "brand_ids[0]":
+                                                            brand.id.toString()
+                                                      });
+
+                                                  Get.to(
+                                                      () => const ResultView(),
+                                                      transition:
+                                                          Transition.fadeIn,
+                                                      curve: Curves.easeInOut,
+                                                      duration: Duration(
+                                                          milliseconds: 800));
+                                                } else {
+                                                  CustomSearchController
+                                                      controller =
+                                                      Get.put<CustomSearchController>(
+                                                          CustomSearchController());
+                                                  controller
+                                                      .getProductsInSection(
+                                                          sectionName:
+                                                              brand.name!,
+                                                          payload: {
+                                                        "brand_ids[0]":
+                                                            brand.id.toString()
+                                                      });
+                                                  Get.to(
+                                                      () => const ResultView(),
+                                                      transition:
+                                                          Transition.fadeIn,
+                                                      curve: Curves.easeInOut,
+                                                      duration: Duration(
+                                                          milliseconds: 800));
+                                                }
+                                              });
+                                      },
+                                      separatorBuilder: (ctx, index) =>
+                                          SizedBox(
+                                            width: 10.w,
+                                          ),
+                                      itemCount: snapshot.data!.length + 1),
+                                ),
+                              ],
+                            ),
+                          );
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting ||
@@ -2224,15 +2274,19 @@ class HomeView extends GetView<HomeController> {
                           Spacer(),
                           GestureDetector(
                             onTap: () {
-                              String otherBrandsId =
-                                  controller.otherBrandsId.join(",");
+                              Map<String, dynamic> payload = {};
+                              int i = 0;
+                              for (var brand in controller.otherBrandsId) {
+                                payload["brand_ids[${i}]"] = brand;
+                                i++;
+                              }
 
                               if (CustomSearchController().initialized) {
                                 CustomSearchController controller =
                                     Get.find<CustomSearchController>();
                                 controller.getProductsInSection(
                                     sectionName: "TRENDING BRANDS ITEMS",
-                                    payload: {"brand_ids[0]": otherBrandsId});
+                                    payload: payload);
 
                                 Get.to(() => const ResultView(),
                                     transition: Transition.fadeIn,
@@ -2245,7 +2299,7 @@ class HomeView extends GetView<HomeController> {
                                         CustomSearchController());
                                 controller.getProductsInSection(
                                     sectionName: "TRENDING BRANDS ITEMS",
-                                    payload: {"brand_ids[0]": otherBrandsId});
+                                    payload: payload);
 
                                 Get.to(() => const ResultView(),
                                     transition: Transition.fadeIn,

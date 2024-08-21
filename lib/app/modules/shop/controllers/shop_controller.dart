@@ -3,35 +3,26 @@ import 'package:dio/dio.dart' as dio;
 
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:http/http.dart' as http;
 import '../../../../main.dart';
 import '../../global/model/test_model_response.dart' hide Brands;
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
-import 'package:flutter/material.dart';
 
 class ShopController extends GetxController {
   RxList<Categories> categories = <Categories>[].obs;
-
-  // Rx<Categories> currentCat = Categories().obs;
-
-  RxList<ViewProductData> productsInCategories = <ViewProductData>[].obs;
+  RxList<Categories> subCategories = <Categories>[].obs;
   RxBool isCategoryLoading = false.obs;
   RxBool isProductLoading = false.obs;
   RxList<ViewProductData> products = <ViewProductData>[].obs;
   ApiConsumer apiConsumer = sl();
   final count = 0.obs;
-  RxBool isProductsInCategoryLoading = false.obs;
+  RxBool isSubCategoriesLoading = false.obs;
   RxBool isBrandsLoading = false.obs;
   RxList<Brands> brands = <Brands>[].obs;
-  String choosenCatId = "";
-  ScrollController scrollController = ScrollController();
-  RxBool showText = false.obs;
-  RxBool showTextTop = false.obs;
-  Rx<Categories> selectedCat = Categories().obs;
+  RxString choosenCatId = "".obs;
+  RxString choosenCatName = "".obs;
 
   @override
   void onInit() {
@@ -42,7 +33,6 @@ class ShopController extends GetxController {
   void onReady() {
     getCategories();
     getProducts();
-
     super.onReady();
   }
 
@@ -73,17 +63,12 @@ class ShopController extends GetxController {
         for (var category in apiResponse.data!) {
           categories.add(category);
         }
-        currentCatIndex.value = 1;
-        selectedCat.value = categories.first;
-        getBrandsInCategory(selectedCat.value.id!);
-        getProductsInCategory(selectedCat.value.id!, "");
-        update(["drawer_cats"]);
+        ;
       } else {
         handleApiErrorUser(apiResponse.message);
         handleApiError(response.statusCode);
       }
       isCategoryLoading.value = false;
-
       update();
     } catch (e, stackTrace) {
       print('search api failed:  ${e} $stackTrace');
@@ -91,43 +76,6 @@ class ShopController extends GetxController {
       print(e.toString() + stackTrace.toString());
       isCategoryLoading.value = false;
       update();
-    }
-  }
-
-  Rx<int> currentCatIndex = 0.obs;
-
-  changeClickCurrentCat(
-    int index,
-  ) {
-    currentCatIndex.value = index;
-  }
-
-  RxBool isSideBarOpen = false.obs;
-
-  openSideBar() {
-    isSideBarOpen.value = !isSideBarOpen.value;
-    print("result is the ${isSideBarOpen.value}");
-  }
-
-  changeCurrentCat(bool swipeUp) {
-    if (swipeUp) {
-      print("yes swipe up");
-      if (categories.length > currentCatIndex.value + 1) {
-        currentCatIndex.value++;
-      }
-
-      changeClickCurrentCat(currentCatIndex.value);
-      getBrandsInCategory(currentCatIndex.value + 1);
-      getProductsInCategory(currentCatIndex.value + 1, "");
-    } else {
-      print("yes swipe down");
-      if (categories.length > currentCatIndex.value - 1) {
-        currentCatIndex.value = currentCatIndex.value - 1;
-      }
-      print("the real index = ${currentCatIndex.value}");
-      changeClickCurrentCat(currentCatIndex.value);
-      getBrandsInCategory(currentCatIndex.value + 1);
-      getProductsInCategory(currentCatIndex.value + 1, "");
     }
   }
 
@@ -169,70 +117,39 @@ class ShopController extends GetxController {
     }
   }
 
-  int? selectedCatId;
-
-  getProductsInCategory(int CatId, String? orderTag) async {
-    orderTag = selectedOption;
-    selectedCatId = CatId;
-    isProductsInCategoryLoading.value = true;
-    productsInCategories.clear();
-
-    var headers = {
-      'Accept': 'application/json',
-      'x-from': 'app',
-      'x-lang': 'en',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    };
-
-    var bodyFields = {
-      "category_ids[0]": "${CatId.toString()}",
-      'orderBy': orderTag.isEmpty ? "featured" : orderTag
-    };
-
-    final response = await http.post(
-      Uri.parse('https://mariana.genixarea.pro/api/products'),
-      headers: headers,
-      body: bodyFields,
-    );
+  getSubCategoriesInCategory(int CatId) async {
+    isSubCategoriesLoading.value = true;
+    subCategories.clear();
+    var formData = dio.FormData.fromMap({
+      'parent_id': CatId,
+    });
+    final response = await apiConsumer.post('categories',
+        formDataIsEnabled: true, formData: formData);
 
     try {
-      if (response.statusCode == 200) {
-        var responseData = json.decode(response.body);
-        print("response data ${responseData['data'].length}");
-        for (var product in responseData['data']) {
-          productsInCategories.add(ViewProductData.fromJson(product));
+      final apiResponse = ApiCategoryResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('');
+
+        for (var category in apiResponse.data!) {
+          subCategories.add(category);
         }
 
-        isProductsInCategoryLoading.value = false;
-        handleScroll();
-        return productsInCategories;
-      } else {
-        print(response.reasonPhrase);
-        isProductsInCategoryLoading.value = false;
-        print('products fetch failed 1: ${response.reasonPhrase} ');
+        if (subCategories.isNotEmpty) {
+          subCategories.insert(0, Categories());
+        }
 
-        return [];
+        isSubCategoriesLoading.value = false;
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+        isSubCategoriesLoading.value = false;
       }
     } catch (e, stackTrace) {
-      isProductsInCategoryLoading.value = false;
-      print('products fetch failed 2:  ${e} $stackTrace');
+      print('subCat api failed:  ${e} $stackTrace');
 
       print(e.toString() + stackTrace.toString());
-
-      return [];
-    }
-  }
-
-  String selectedOption = 'featured'; // Ini
-  changeDropDownValue(int? id, String option) {
-    if (selectedCatId != null) {
-      selectedOption = option;
-      getProductsInCategory(id!, option);
-      update(['products_in_categories']);
-    } else {
-      Get.closeCurrentSnackbar();
-      Get.snackbar("Pick A Category",
-          "please pick a category first from the left side bar");
+      isSubCategoriesLoading.value = false;
     }
   }
 
@@ -267,43 +184,11 @@ class ShopController extends GetxController {
     }
   }
 
-  changeChoosenCat(Categories cat) {
-    selectedCat.value = cat;
+  changeChoosenCatId(id, name) {
     print("changed id with 1 ${choosenCatId}");
 
-    choosenCatId = cat.id.toString();
+    choosenCatId.value = id;
+    choosenCatName.value = name;
     print("changed id with 2 ${choosenCatId}");
   }
-
-  handleScroll() {
-    scrollController.addListener(() {
-      print("start 11111");
-      if (scrollController.position.atEdge) {
-        final isTop = scrollController.position.pixels == 0;
-        if (isTop) {
-          print('At the top');
-          showTextTop.value = true;
-          showText.value = false;
-        } else {
-          print('At the bottom');
-          showText.value = true;
-          showTextTop.value = false;
-        }
-      }
-    });
-  }
-
-// changeCurrentCatOnSwipe() {
-//   print("swipped");
-//   changeCurrentCat(nextCat.value, currentCatIndex + 1, true);
-//   getBrandsInCategory(nextCat.value.id!);
-//   getProductsInCategory(nextCat.value.id!, "featured");
-// }
-//
-// changeCurrentCatOnSwipeDown() {
-//   print("swipped Down");
-//   changeCurrentCat(nextCat.value, currentCatIndex - 1, false);
-//   getBrandsInCategory(nextCat.value.id!);
-//   getProductsInCategory(nextCat.value.id!, "featured");
-// }
 }
