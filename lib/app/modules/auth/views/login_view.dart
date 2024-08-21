@@ -96,8 +96,8 @@ class LoginView extends StatelessWidget {
               ),
             )),
         SizedBox(height: 23.h),
-        gridSocialIcon(),
-
+        if (!GetPlatform.isIOS) gridSocialIcon(),
+        if (!GetPlatform.isIOS) SizedBox(height: 23.h),
         InkWell(
             onTap: () {
               controller.isGuest.value = true;
@@ -186,18 +186,19 @@ class LoginView extends StatelessWidget {
         SizedBox(
           height: 32.h,
         ),
-        // InkWell(
-        //     onTap: () {
-        //       print('dsadsa');
-        //       controller.googleLogin();
-        //     },
-        //     child: buttonSocialMedia(
-        //         icon: 'assets/icons/google.svg',
-        //         index: 0,
-        //         text: 'Continue with Google',
-        //         color: 0xffFFFFFF,
-        //         txtColor: 0xFF090A0A,
-        //         borderColor: 0xFFE3E4E5)),
+        if (!GetPlatform.isIOS)
+          InkWell(
+              onTap: () {
+                print('dsadsa');
+                controller.googleLogin();
+              },
+              child: buttonSocialMedia(
+                  icon: 'assets/icons/google.svg',
+                  index: 0,
+                  text: 'Continue with Google',
+                  color: 0xffFFFFFF,
+                  txtColor: 0xFF090A0A,
+                  borderColor: 0xFFE3E4E5)),
         // SizedBox(
         //   height: 16.h,
         // ),
@@ -211,6 +212,8 @@ class LoginView extends StatelessWidget {
         // SizedBox(
         //   height: 16.h,
         // ),
+        // if (GetPlatform.isIOS)
+
         // buttonSocialMedia(
         //     icon: 'assets/icons/apple.svg',
         //     index: 2,
@@ -218,9 +221,10 @@ class LoginView extends StatelessWidget {
         //     color: 0xFF090A0A,
         //     txtColor: 0xffFFFFFF,
         //     borderColor: 0xFFE3E4E5),
-        SizedBox(
-          height: 35.h,
-        ),
+        if (!GetPlatform.isIOS)
+          SizedBox(
+            height: 35.h,
+          ),
         DividerSocial(),
         SizedBox(
           height: 34.h,
@@ -238,23 +242,23 @@ class LoginView extends StatelessWidget {
                 color: 0xFFD4B0FF,
                 txtColor: 0xFF21034F,
                 borderColor: 0xFFD4B0FF)),
-        // SizedBox(
-        //   height: 34.h,
-        // ),
-        // InkWell(
-        //     onTap: () {
-        //       controller.isGuest.value = true;
-        //       Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
-        //       // Get.to(MainView());
-        //       Get.offNamedUntil(Routes.MAIN, (Route) => false);
-        //     },
-        //     child: buttonSocialMedia(
-        //         icon: 'assets/images/onboarding/person.svg',
-        //         index: 3,
-        //         text: 'Sign in As a Guest',
-        //         color: 0xFFD4B0FF,
-        //         txtColor: 0xFF21034F,
-        //         borderColor: 0xFFD4B0FF)),
+        SizedBox(
+          height: 34.h,
+        ),
+        InkWell(
+            onTap: () {
+              controller.isGuest.value = true;
+              Get.snackbar('Guest Mode', 'You\'re Acting As A Guest');
+              // Get.to(MainView());
+              Get.offNamedUntil(Routes.MAIN, (Route) => false);
+            },
+            child: buttonSocialMedia(
+                icon: 'assets/images/onboarding/person.svg',
+                index: 3,
+                text: 'Sign in As a Guest',
+                color: 0xFFD4B0FF,
+                txtColor: 0xFF21034F,
+                borderColor: 0xFFD4B0FF)),
         SizedBox(
           height: 26.h,
         ),
@@ -314,6 +318,7 @@ class LoginView extends StatelessWidget {
       return Scaffold(
           appBar: CustomAppBar(
             function: controller.socialView.value == true ? null : back,
+            back: controller.socialView.value == true ? false : true,
           ),
           body: SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -337,10 +342,11 @@ class LoginView extends StatelessWidget {
                 SizedBox(
                   height: 13.h,
                 ),
-                // if (controller.socialView.value)
-                //   socialMediaView()
-                // else
-                loginbyPasswordView(context),
+                if (!GetPlatform.isIOS)
+                  if (controller.socialView.value)
+                    socialMediaView()
+                  else
+                    loginbyPasswordView(context),
               ],
             )),
           ));

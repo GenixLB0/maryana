@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart' as dio;
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
@@ -8,7 +9,7 @@ import 'package:maryana/app/modules/profile/views/update_profile.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
- 
+
 import '../../../routes/app_pages.dart';
 
 class ProfileController extends GetxController {
@@ -169,7 +170,7 @@ class ProfileController extends GetxController {
       await apiConsumer.post(
         'logout',
       );
-
+      firebase.FirebaseAuth.instance.signOut();
       Get.snackbar('Success', 'Logged out successfully');
       reset();
     } finally {

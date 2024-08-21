@@ -37,7 +37,7 @@ class AuthController extends GetxController {
 
   String fcmToken = '';
   String deviceId = '';
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging? messaging;
 
   @override
   void onInit() {
@@ -71,7 +71,7 @@ class AuthController extends GetxController {
     });
 
     if (GetPlatform.isIOS) {
-      await messaging.requestPermission(
+      await messaging!.requestPermission(
         alert: true,
         announcement: false,
         badge: true,
@@ -95,12 +95,12 @@ class AuthController extends GetxController {
       }
 
       GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      if (googleAuth.idToken == null) {
+      if (googleAuth.accessToken == null) {
         googleAuth = await googleUser.authentication;
       }
 
-      if (googleAuth.idToken != null) {
-        final providerToken = googleAuth.idToken;
+      if (googleAuth.accessToken != null) {
+        final providerToken = googleAuth.accessToken;
 
         final authTest.OAuthCredential credential =
             authTest.GoogleAuthProvider.credential(
@@ -110,12 +110,11 @@ class AuthController extends GetxController {
 
         final authTest.UserCredential userCredential =
             await auth.signInWithCredential(credential);
-
         email.value = userCredential.user!.email ?? '';
         firstName.value = userCredential.user!.displayName ?? '';
-        lastName.value = ''; // يمكن تعديلها حسب الحاجة
+        lastName.value = '(G)'; // يمكن تعديلها حسب الحاجة
 
-        loginWithSocial(providerToken!);
+        loginWithSocial(userCredential.user!.uid!);
       } else {
         print(
             'Failed to retrieve idToken. The Google Sign-In might have failed.');
@@ -237,6 +236,8 @@ class AuthController extends GetxController {
           AppConstants.userData = apiResponse.data!;
           user.value = apiResponse.data!.user;
           userToken = AppConstants.userData!.token;
+          clearFields();
+
           Get.offNamedUntil(Routes.MAIN, (Route) => false);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -288,6 +289,8 @@ class AuthController extends GetxController {
           AppConstants.userData = apiResponse.data!;
           user.value = apiResponse.data!.user;
           userToken = AppConstants.userData!.token;
+          clearFields();
+
           Get.offNamedUntil(Routes.MAIN, (Route) => false);
         } else {
           handleApiErrorUser(apiResponse.message);
@@ -389,6 +392,7 @@ class AuthController extends GetxController {
           AppConstants.userData = apiResponse.data!;
           user.value = apiResponse.data!.user;
           userToken = AppConstants.userData!.token;
+          clearFields();
           Get.offNamedUntil(Routes.MAIN, (Route) => false);
         } else {
           handleApiErrorUser(apiResponse.message);

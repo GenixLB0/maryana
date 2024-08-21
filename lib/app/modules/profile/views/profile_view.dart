@@ -194,6 +194,22 @@ class _ProfileViewState extends State<ProfileView>
     );
   }
 
+  late AnimationController _animationController;
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   Widget _buildProfileHeader(BuildContext context) {
     return AnimatedOpacity(
         duration: Duration(milliseconds: 500),
@@ -203,10 +219,7 @@ class _ProfileViewState extends State<ProfileView>
             begin: Offset(0, -1),
             end: Offset(0, 0),
           ).animate(CurvedAnimation(
-            parent: AnimationController(
-              duration: Duration(milliseconds: 500),
-              vsync: this,
-            )..forward(),
+            parent: _animationController,
             curve: Curves.easeOut,
           )),
           child: SizedBox(
@@ -253,21 +266,29 @@ class _ProfileViewState extends State<ProfileView>
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(() => Text(
-                          '${controller.userModel.value.firstName} ${controller.userModel.value.lastName}',
+                    Obx(() => SizedBox(
+                        width: 150.w,
+                        child: Text(
+                          GetMaxChar(
+                              '${controller.userModel.value.firstName} ${controller.userModel.value.lastName}',
+                              13),
                           style: primaryTextStyle(
                               color: Colors.black,
                               size: 16.sp.round(),
                               weight: FontWeight.bold),
-                        )),
-                    SizedBox(height: 6.h),
-                    Obx(() => Text(
-                          controller.userModel.value.email,
-                          style: primaryTextStyle(
-                              weight: FontWeight.w400,
-                              color: Colors.black,
-                              size: 12.sp.round()),
-                        )),
+                        ))),
+                    SizedBox(height: 15.h),
+                    Obx(() {
+                      return controller.userModel.value.email.isNotEmpty
+                          ? Text(
+                              GetMaxChar(controller.userModel.value.email, 20),
+                              style: primaryTextStyle(
+                                  weight: FontWeight.w400,
+                                  color: Colors.black,
+                                  size: 12.sp.round()),
+                            )
+                          : SizedBox(); // التعامل مع الحالة التي يكون فيها العرض صفرًا
+                    }),
                   ],
                 ),
                 Spacer(),

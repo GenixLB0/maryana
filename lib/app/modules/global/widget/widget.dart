@@ -2603,6 +2603,17 @@ Widget socialMediaPlaceHolder() {
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
+      ShowUp(
+          delay: 200,
+          child: SvgPicture.asset(
+            LOGO,
+            width: 124.w,
+            height: 82.h,
+            fit: BoxFit.cover,
+          )),
+      SizedBox(
+        height: 32.h,
+      ),
       Text(
         'Please log in or sign up to continue shopping',
         textAlign: TextAlign.center,
@@ -2615,16 +2626,22 @@ Widget socialMediaPlaceHolder() {
       SizedBox(
         height: 32.h,
       ),
-      // buttonSocialMedia(
-      //     icon: 'assets/icons/google.svg',
-      //     index: 0,
-      //     text: 'Continue with Google',
-      //     color: 0xffFFFFFF,
-      //     txtColor: 0xFF090A0A,
-      //     borderColor: 0xFFE3E4E5),
-      // SizedBox(
-      //   height: 16.h,
-      // ),
+      if (!GetPlatform.isIOS)
+        InkWell(
+            onTap: () {
+              Authcontroller.googleLogin();
+            },
+            child: buttonSocialMedia(
+                icon: 'assets/icons/google.svg',
+                index: 0,
+                text: 'Continue with Google',
+                color: 0xffFFFFFF,
+                txtColor: 0xFF090A0A,
+                borderColor: 0xFFE3E4E5)),
+      if (!GetPlatform.isIOS)
+        SizedBox(
+          height: 16.h,
+        ),
       // buttonSocialMedia(
       //     icon: 'assets/icons/facebook.svg',
       //     index: 1,

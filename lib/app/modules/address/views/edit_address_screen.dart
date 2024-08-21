@@ -97,6 +97,110 @@ class EditAddressScreen extends GetView<AddressController> {
                     height: 15.h,
                   ),
                   SizedBox(
+                      width: 310.w,
+                      child: Obx(() => InputDecorator(
+                            decoration: InputDecoration(),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                underline: Container(
+                                  height: 1,
+                                  color: const Color(0xFFA6AAC3),
+                                ),
+                                isDense: true,
+                                value: controller.selectedCountry.value,
+                                isExpanded: true,
+                                onChanged: (String? newValue) {
+                                  controller.selectedCountry.value = newValue!;
+                                },
+                                items: controller.countriesList
+                                    .map<DropdownMenuItem<String>>(
+                                        (Country country) {
+                                  return DropdownMenuItem<String>(
+                                    value: country.name,
+                                    child: Text(
+                                      country.name,
+                                      style: primaryTextStyle(
+                                        color: const Color(0xFFA6AAC3),
+                                        size: 14.sp.round(),
+                                        weight: FontWeight.w400,
+                                        height: 1,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ))),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  Obx(() => CustomTextField(
+                        initialValue: controller.address.value,
+                        labelText: 'Address *',
+                        onChanged: (value) {
+                          controller.address.value = value;
+                          controller.validateField(
+                              value, controller.addressError);
+                        },
+                        errorText: controller.addressError.value.isEmpty
+                            ? null
+                            : controller.addressError.value,
+                      )),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  Obx(() => CustomTextField(
+                        initialValue: controller.phone.value,
+                        keyboardType: TextInputType.phone,
+                        labelText: 'Phone *',
+                        onChanged: (value) {
+                          controller.phone.value = value;
+                          controller.validateField(
+                              value, controller.phoneError);
+                        },
+                        errorText: controller.phoneError.value.isEmpty
+                            ? null
+                            : controller.phoneError.value,
+                      )),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  SizedBox(
+                      width: 310.w,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                                flex: 2,
+                                child: Obx(() => CustomTextField(
+                                      initialValue: controller.state.value,
+                                      labelText: 'State *',
+                                      onChanged: (value) {
+                                        controller.state.value = value;
+                                        controller.validateField(
+                                            value, controller.stateError);
+                                      },
+                                      errorText:
+                                          controller.stateError.value.isEmpty
+                                              ? null
+                                              : controller.stateError.value,
+                                    ))),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Flexible(
+                                flex: 2,
+                                child: CustomTextField(
+                                  initialValue: controller.city.value,
+                                  labelText: 'City',
+                                  onChanged: (value) {
+                                    controller.city.value = value;
+                                    //   controller.validateField(value, controller.cityError);
+                                  },
+                                )),
+                          ])),
+                  SizedBox(
                     height: 15.h,
                   ),
                   SizedBox(
@@ -160,113 +264,6 @@ class EditAddressScreen extends GetView<AddressController> {
                                               ? null
                                               : controller.buildingError.value,
                                     )))
-                          ])),
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  Obx(() => CustomTextField(
-                        initialValue: controller.address.value,
-                        labelText: 'Address *',
-                        onChanged: (value) {
-                          controller.address.value = value;
-                          controller.validateField(
-                              value, controller.addressError);
-                        },
-                        errorText: controller.addressError.value.isEmpty
-                            ? null
-                            : controller.addressError.value,
-                      )),
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  Obx(() => CustomTextField(
-                        initialValue: controller.phone.value,
-                        keyboardType: TextInputType.phone,
-                        labelText: 'Phone *',
-                        onChanged: (value) {
-                          controller.phone.value = value;
-                          controller.validateField(
-                              value, controller.phoneError);
-                        },
-                        errorText: controller.phoneError.value.isEmpty
-                            ? null
-                            : controller.phoneError.value,
-                      )),
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  SizedBox(
-                      width: 310.w,
-                      child: Obx(() => InputDecorator(
-                            decoration: InputDecoration(),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                underline: Container(
-                                  height: 1,
-                                  color: const Color(0xFFA6AAC3),
-                                ),
-                                isDense: true,
-                                value: controller.selectedCountry.value,
-                                isExpanded: true,
-                                onChanged: (String? newValue) {
-                                  controller.selectedCountry.value = newValue!;
-                                },
-                                items: controller.countriesList
-                                    .map<DropdownMenuItem<String>>(
-                                        (Country country) {
-                                  return DropdownMenuItem<String>(
-                                    value: country.name,
-                                    child: Text(
-                                      country.name,
-                                      style: primaryTextStyle(
-                                        color: const Color(0xFFA6AAC3),
-                                        size: 14.sp.round(),
-                                        weight: FontWeight.w400,
-                                        height: 1,
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ))),
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  SizedBox(
-                      width: 310.w,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(
-                                flex: 2,
-                                child: Obx(() => CustomTextField(
-                                      initialValue: controller.state.value,
-                                      labelText: 'State *',
-                                      onChanged: (value) {
-                                        controller.state.value = value;
-                                        controller.validateField(
-                                            value, controller.stateError);
-                                      },
-                                      errorText:
-                                          controller.stateError.value.isEmpty
-                                              ? null
-                                              : controller.stateError.value,
-                                    ))),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Flexible(
-                                flex: 2,
-                                child: CustomTextField(
-                                  initialValue: controller.city.value,
-                                  labelText: 'City',
-                                  onChanged: (value) {
-                                    controller.city.value = value;
-                                    //   controller.validateField(value, controller.cityError);
-                                  },
-                                )),
                           ])),
                   SizedBox(
                     height: 15.h,

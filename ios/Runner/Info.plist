@@ -51,6 +51,21 @@
     <string>To provide ongoing location-based services such as real-time alerts and updates specific to your area, our app needs continuous access to your location, even when the app is not in use.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>To enhance your experience, our app needs access to your photo library. This allows you to select personal photos for creating promotional materials and updating your profile picture. Rest assured, your photos remain private and are not used for any other purposes.</string>
+    <key>GIDServerClientID</key>
+    <string>1003467871116-0a6orgrv0vqo3lpm22rffrh749d470pi.apps.googleusercontent.com</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <!-- TODO Replace this value: -->
+                <!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+                <string>com.googleusercontent.apps.1003467871116-0a6orgrv0vqo3lpm22rffrh749d470pi</string>
+            </array>
+        </dict>
+    </array>
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
@@ -76,7 +91,5 @@
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
 
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

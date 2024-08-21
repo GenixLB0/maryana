@@ -14,7 +14,8 @@ import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/routes/app_pages.dart';
- 
+import 'package:collection/collection.dart'; // You have to add this manually, for some reason it cannot be added automatically
+
 class CartPage extends StatefulWidget {
   @override
   _CartPageState createState() => _CartPageState();
@@ -486,7 +487,9 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
     } else {
       return Column(
         children: [
-          SizedBox(height: 30.h,),
+          SizedBox(
+            height: 30.h,
+          ),
           Expanded(
             child: AnimatedContainer(
               width: 327.w,
@@ -566,7 +569,9 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                       ),
                       child: Column(
                         children: [
-                          SizedBox(height: 16.h,),
+                          SizedBox(
+                            height: 16.h,
+                          ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 39),
                             child: Row(
@@ -591,17 +596,25 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          SizedBox(height: 16.h,),
+                          SizedBox(
+                            height: 16.h,
+                          ),
                           InkWell(
                             onTap: () {
                               cartController.step.value = '1';
-                              cartController.shippingID.value =
-                                  addressController.addressList
-                                      .firstWhere(
-                                          (address) => address.isDefault == 1)
-                                      .id
-                                      .toString();
-                         
+
+                              var defaultAddress = addressController.addressList
+                                  .firstWhereOrNull(
+                                (address) => address.isDefault == 1,
+                                // إرجاع null إذا لم يتم العثور على عنوان افتراضي
+                              );
+
+                              if (defaultAddress != null) {
+                                cartController.shippingID.value =
+                                    defaultAddress.id.toString();
+                                Get.toNamed(Routes.CHECKOUT);
+                              }
+
                               Get.toNamed(Routes.CHECKOUT);
                             },
                             child: Container(
