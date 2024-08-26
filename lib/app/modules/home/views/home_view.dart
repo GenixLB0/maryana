@@ -18,8 +18,11 @@ import 'package:maryana/app/modules/global/model/test_model_response.dart'
     hide Brands;
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
+import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
+import 'package:maryana/app/modules/shop/controllers/shop_controller.dart';
+import 'package:maryana/app/modules/shop/views/shop_view.dart';
 
 import 'package:shimmer/shimmer.dart';
 import 'package:typewritertext/typewritertext.dart';
@@ -33,7 +36,7 @@ import '../../search/views/search_view.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({Key? key}) : super(key: key);
+  HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -262,6 +265,8 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
+
+  ShopController shopController = Get.put(ShopController());
 
   buildBannerScroll(context) {
     print("type is ${controller.homeModel.value.banners}");
@@ -863,6 +868,8 @@ class HomeView extends GetView<HomeController> {
                   ));
   }
 
+  final NavigationsBarController _tabController = Get.find();
+
   buildCatScroll(context) {
     List<Categories> myCatList = [];
     Categories allItemCategory =
@@ -914,14 +921,17 @@ class HomeView extends GetView<HomeController> {
                                         ? {}
                                         : {
                                             "category_ids[0]":
-                                                "${myCatList[index].id.toString()}"
+                                                myCatList[index].id.toString()
                                           });
-                                Get.to(() => const ResultView(),
-                                    transition: Transition.fadeIn,
-                                    curve: Curves.easeInOut,
-                                    duration:
-                                        const Duration(milliseconds: 400));
+                                print(myCatList[index].name.toString() +
+                                    'test cate');
+                                shopController.changeChoosenCatId(
+                                    myCatList[index].id!.toString(),
+                                    myCatList[index].name!);
+                                _tabController.changeIndex(1);
                               } else {
+                                print(myCatList[index].name.toString() +
+                                    'test cate');
                                 CustomSearchController controller =
                                     Get.put<CustomSearchController>(
                                         CustomSearchController());
@@ -933,24 +943,20 @@ class HomeView extends GetView<HomeController> {
                                             "category_ids[0]":
                                                 "${myCatList[index].id.toString()}"
                                           });
-
-                                Get.to(() => const ResultView(),
-                                    transition: Transition.fadeIn,
-                                    curve: Curves.easeInOut,
-                                    duration:
-                                        const Duration(milliseconds: 400));
+                                shopController.changeChoosenCatId(
+                                    myCatList[index].id!.toString(),
+                                    myCatList[index].name!);
+                                _tabController.changeIndex(1);
                               }
                             },
                             child: SizedBox(
                               child: Container(
                                 padding: EdgeInsets.symmetric(horizontal: 6.w),
                                 decoration: BoxDecoration(
-                                    color: controller.activeCats[index] == 1
-                                        ? Color(0xffE7D3FF)
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(10.sp),
-                                    border: Border.all(
-                                        color: Colors.grey, width: 1)),
+                                  borderRadius: BorderRadius.circular(5.sp),
+                                  // border: Border.all(
+                                  //     color: Colors.grey, width: 1)
+                                ),
                                 child: myCatList[index].image != null
                                     ? Row(
                                         mainAxisAlignment:
@@ -959,27 +965,27 @@ class HomeView extends GetView<HomeController> {
                                           SizedBox(
                                             width: 3.w,
                                           ),
-                                          myCatList[index].image!.isEmpty ||
-                                                  myCatList[index].image == null
-                                              ? SvgPicture.asset(
-                                                  "assets/images/home/cat_icon.svg",
-                                                  width: 20.w,
-                                                  height: 20.h,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : CachedNetworkImage(
-                                                  imageUrl:
-                                                      myCatList[index].image!,
-                                                  width: 20.w,
-                                                  height: 20.h,
-                                                  fit: BoxFit.cover,
-                                                  placeholder: (ctx, v) {
-                                                    return placeHolderWidget();
-                                                  },
-                                                ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
+                                          // myCatList[index].image!.isEmpty ||
+                                          //         myCatList[index].image == null
+                                          //     ? SvgPicture.asset(
+                                          //         "assets/images/home/cat_icon.svg",
+                                          //         width: 20.w,
+                                          //         height: 20.h,
+                                          //         fit: BoxFit.cover,
+                                          //       )
+                                          //     : CachedNetworkImage(
+                                          //         imageUrl:
+                                          //             myCatList[index].image!,
+                                          //         width: 20.w,
+                                          //         height: 20.h,
+                                          //         fit: BoxFit.cover,
+                                          //         placeholder: (ctx, v) {
+                                          //           return placeHolderWidget();
+                                          //         },
+                                          //       ),
+                                          // const SizedBox(
+                                          //   width: 5,
+                                          // ),
                                           Text(
                                             myCatList[index].name!,
                                           ),

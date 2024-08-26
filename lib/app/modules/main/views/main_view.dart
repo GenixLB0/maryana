@@ -14,7 +14,7 @@ class MainView extends StatelessWidget {
       Get.put(NavigationsBarController());
 
   final List<Widget> _screens = [
-    const HomeView(),
+      HomeView(),
     const ShopView(),
     CartPage(),
     // const WishlistView(),
