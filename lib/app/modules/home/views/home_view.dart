@@ -946,6 +946,10 @@ class HomeView extends GetView<HomeController> {
                                     myCatList[index].id!.toString(),
                                     myCatList[index].name!);
                                 _tabController.changeIndex(1);
+
+                                shopController.getSubCategoriesInCategory(
+                                    myCatList[index].id!);
+                                shopController.changeScrollExtent();
                               }
                             },
                             child: SizedBox(

@@ -637,8 +637,8 @@ class ShopView extends GetView<ShopController> {
                                           duration: const Duration(seconds: 1),
                                           curve: Curves.easeInOut,
                                           child: InkResponse(
-                                            radius: 55,
-                                            splashColor: primaryColor,
+                                            // radius: 55,
+                                            // splashColor: primaryColor,
                                             containedInkWell: true,
                                             onTap: () {
                                               controller.changeChoosenCatId(
@@ -654,9 +654,9 @@ class ShopView extends GetView<ShopController> {
                                                           .categories[index]
                                                           .id!);
 
-                                              controller.getBrandsInCategory(
-                                                  controller
-                                                      .categories[index].id!);
+                                              // controller.getBrandsInCategory(
+                                              //     controller
+                                              //         .categories[index].id!);
                                             },
                                             child: Padding(
                                                 padding:

@@ -122,6 +122,7 @@ class ShopController extends GetxController {
   }
 
   getSubCategoriesInCategory(int CatId) async {
+    print("is removing sub category ?");
     isSubCategoriesLoading.value = true;
     subCategories.clear();
     var formData = dio.FormData.fromMap({
@@ -133,7 +134,7 @@ class ShopController extends GetxController {
     try {
       final apiResponse = ApiCategoryResponse.fromJson(response);
       if (apiResponse.status == 'success') {
-        print('');
+        print('subcat response ${apiResponse.data!}');
 
         for (var category in apiResponse.data!) {
           subCategories.add(category);
@@ -144,6 +145,7 @@ class ShopController extends GetxController {
         }
 
         isSubCategoriesLoading.value = false;
+        print("over all subs caount is ${subCategories.length}");
       } else {
         handleApiErrorUser(apiResponse.message);
         handleApiError(response.statusCode);
@@ -201,8 +203,9 @@ class ShopController extends GetxController {
     choosenCatId.value = id;
     choosenCatName.value = name;
     print("changed id with 2 ${choosenCatId}");
-    getSubCategoriesInCategory(int.parse(id));
+  }
 
+  changeScrollExtent() {
     Future.delayed(const Duration(milliseconds: 100), () {
       categoriesScrollController.scrollTo(
         index: chosenCatIndex,
