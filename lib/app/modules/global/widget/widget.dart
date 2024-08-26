@@ -1219,11 +1219,11 @@ buildSearchAndFilter(
     List<ViewProductData>? products,
     List<Categories>? categories,
     required bool isSearch,
-    final Function(String)? onSubmitted // Add this parameter
-    }) {
+    final Function(String)? onSubmitted, // Add this parameter
+    final double height = 65}) {
   return Container(
     width: MediaQuery.of(context).size.width,
-    height: 75.h,
+    height: height.h,
     child: Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

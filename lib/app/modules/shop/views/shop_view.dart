@@ -48,11 +48,14 @@ class ShopView extends GetView<ShopController> {
             height: 15.h,
           ),
           buildSearchAndFilter(
+              height: 55,
               context: context,
               isSearch: false,
               categories: controller.categories,
               products: controller.products),
-
+          SizedBox(
+            height: 5.h,
+          ),
           Container(
             height: 2,
             width: double.infinity,
@@ -68,6 +71,7 @@ class ShopView extends GetView<ShopController> {
               ],
             ),
           ),
+
           _buildCategories(context),
           // Obx(() {
           //   return Expanded(
