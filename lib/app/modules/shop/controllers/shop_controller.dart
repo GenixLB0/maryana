@@ -5,10 +5,12 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../../../main.dart';
 import '../../global/model/test_model_response.dart' hide Brands;
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
+import 'package:flutter/material.dart';
 
 class ShopController extends GetxController {
   RxList<Categories> categories = <Categories>[].obs;
@@ -23,6 +25,8 @@ class ShopController extends GetxController {
   RxList<Brands> brands = <Brands>[].obs;
   RxString choosenCatId = "".obs;
   RxString choosenCatName = "".obs;
+
+  ItemScrollController categoriesScrollController = ItemScrollController();
 
   @override
   void onInit() {
@@ -184,6 +188,13 @@ class ShopController extends GetxController {
     }
   }
 
+  int chosenCatIndex = 0;
+
+  sendchosenCatIndex(index) {
+    chosenCatIndex = index;
+    print("the choosen index is ${chosenCatIndex}");
+  }
+
   changeChoosenCatId(id, name) {
     print("changed id with 1 ${choosenCatId}");
 
@@ -191,5 +202,17 @@ class ShopController extends GetxController {
     choosenCatName.value = name;
     print("changed id with 2 ${choosenCatId}");
     getSubCategoriesInCategory(int.parse(id));
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      categoriesScrollController.scrollTo(
+        index: chosenCatIndex,
+        duration: Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+      // if (categoriesScrollController.hasClients) {
+      //   categoriesScrollController
+      //       .jumpTo(categoriesScrollController.position.maxScrollExtent);
+      // }
+    });
   }
 }

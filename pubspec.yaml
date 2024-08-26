@@ -66,6 +66,7 @@ dependencies:
   app_links:
   public_ip_address:
   image: ^3.0.1
+  scrollable_positioned_list:
   smooth_page_indicator:
 
 

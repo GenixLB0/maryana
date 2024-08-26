@@ -10,6 +10,8 @@ import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../global/config/configs.dart';
@@ -599,104 +601,128 @@ class ShopView extends GetView<ShopController> {
           children: [
             Expanded(
                 flex: 2,
-                child: ListView.separated(
+                child: ScrollablePositionedList.separated(
+                    itemScrollController: controller.categoriesScrollController,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
+                      if (controller.choosenCatId.value ==
+                          controller.categories[index].id.toString()) {
+                        controller.sendchosenCatIndex(index);
+                      }
+
                       print("categories count is ${index}");
                       return controller.isCategoryLoading.value
                           ? placeHolderWidget()
                           : index != controller.categories.length
                               ? Obx(() {
-                                  return Container(
-                                    color: controller.choosenCatId.value ==
-                                            controller.categories[index].id!
-                                                .toString()
-                                        ? Colors.white
-                                        : Colors.grey[200],
-                                    child: AnimatedOpacity(
-                                        opacity: 1,
-                                        duration: const Duration(seconds: 1),
-                                        curve: Curves.easeInOut,
-                                        child: InkResponse(
-                                          radius: 55,
-                                          splashColor: primaryColor,
-                                          containedInkWell: true,
-                                          onTap: () {
-                                            controller.changeChoosenCatId(
-                                                controller.categories[index].id!
-                                                    .toString(),
-                                                controller
-                                                    .categories[index].name!);
+                                  return VisibilityDetector(
+                                    onVisibilityChanged: (visibilityInfo) {
+                                      var visiblePercentage =
+                                          visibilityInfo.visibleFraction * 100;
+                                      if (controller.choosenCatId.value ==
+                                          index.toString()) {
+                                        debugPrint(
+                                            'Chosen Cat Widget Collection ${visibilityInfo.key} is ${visiblePercentage}% visible');
+                                      }
+                                    },
+                                    key: Key("chosenCat${index}"),
+                                    child: Container(
+                                      color: controller.choosenCatId.value ==
+                                              controller.categories[index].id!
+                                                  .toString()
+                                          ? Colors.white
+                                          : Colors.grey[200],
+                                      child: AnimatedOpacity(
+                                          opacity: 1,
+                                          duration: const Duration(seconds: 1),
+                                          curve: Curves.easeInOut,
+                                          child: InkResponse(
+                                            radius: 55,
+                                            splashColor: primaryColor,
+                                            containedInkWell: true,
+                                            onTap: () {
+                                              controller.changeChoosenCatId(
+                                                  controller
+                                                      .categories[index].id!
+                                                      .toString(),
+                                                  controller
+                                                      .categories[index].name!);
 
-                                            controller
-                                                .getSubCategoriesInCategory(
-                                                    controller
-                                                        .categories[index].id!);
+                                              controller
+                                                  .getSubCategoriesInCategory(
+                                                      controller
+                                                          .categories[index]
+                                                          .id!);
 
-                                            controller.getBrandsInCategory(
-                                                controller
-                                                    .categories[index].id!);
-                                          },
-                                          child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 1.w),
-                                              child: Row(
-                                                children: [
-                                                  controller.choosenCatId
-                                                              .value ==
+                                              controller.getBrandsInCategory(
+                                                  controller
+                                                      .categories[index].id!);
+                                            },
+                                            child: Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 1.w),
+                                                child: Row(
+                                                  children: [
+                                                    controller.choosenCatId
+                                                                .value ==
+                                                            controller
+                                                                .categories[
+                                                                    index]
+                                                                .id!
+                                                                .toString()
+                                                        ? Container(
+                                                            color: Colors.black,
+                                                            width: 5.w,
+                                                            height: 20.h,
+                                                          )
+                                                        : SizedBox(),
+                                                    SizedBox(
+                                                      width: 5.w,
+                                                    ),
+                                                    Container(
+                                                      constraints:
+                                                          BoxConstraints(
+                                                        maxWidth: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            3.5,
+                                                      ),
+                                                      height: 45.h,
+                                                      child: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
                                                           controller
                                                               .categories[index]
-                                                              .id!
-                                                              .toString()
-                                                      ? Container(
-                                                          color: Colors.black,
-                                                          width: 5.w,
-                                                          height: 20.h,
-                                                        )
-                                                      : SizedBox(),
-                                                  SizedBox(
-                                                    width: 5.w,
-                                                  ),
-                                                  Container(
-                                                    constraints: BoxConstraints(
-                                                      maxWidth:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              3.5,
-                                                    ),
-                                                    height: 45.h,
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Text(
-                                                        controller
-                                                            .categories[index]
-                                                            .name!,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 2,
-                                                        style: primaryTextStyle(
-                                                            size: 13.sp.round(),
-                                                            color: Colors.black,
-                                                            weight: controller
-                                                                        .choosenCatId
-                                                                        .value ==
-                                                                    controller
-                                                                        .categories[
-                                                                            index]
-                                                                        .id!
-                                                                        .toString()
-                                                                ? FontWeight
-                                                                    .w600
-                                                                : FontWeight
-                                                                    .w500),
+                                                              .name!,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 2,
+                                                          style: primaryTextStyle(
+                                                              size:
+                                                                  13.sp.round(),
+                                                              color:
+                                                                  Colors.black,
+                                                              weight: controller
+                                                                          .choosenCatId
+                                                                          .value ==
+                                                                      controller
+                                                                          .categories[
+                                                                              index]
+                                                                          .id!
+                                                                          .toString()
+                                                                  ? FontWeight
+                                                                      .w600
+                                                                  : FontWeight
+                                                                      .w500),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              )),
-                                        )),
+                                                  ],
+                                                )),
+                                          )),
+                                    ),
                                   );
                                 })
                               : SizedBox();
