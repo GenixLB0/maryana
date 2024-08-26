@@ -214,7 +214,7 @@ class LoginView extends StatelessWidget {
         //     color: 0xFF0066DA,
         //     txtColor: 0xffFFFFFF,
         //     borderColor: 0xFF0066DA),
-        if (!GetPlatform.isIOS)
+        if (GetPlatform.isIOS)
           SizedBox(
             height: 16.h,
           ),

@@ -17,7 +17,7 @@ class MainView extends StatelessWidget {
     const HomeView(),
     const ShopView(),
     CartPage(),
-    const WishlistView(),
+    // const WishlistView(),
     ProfileView(),
     // WishlistView(),
   ];

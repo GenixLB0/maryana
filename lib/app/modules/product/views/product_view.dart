@@ -16,6 +16,7 @@ import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/home/views/home_view.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
+import 'package:maryana/app/modules/product/views/FullImage.dart';
 import 'package:maryana/app/modules/product/views/size_guide.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/routes/app_pages.dart';
@@ -1576,7 +1577,8 @@ class ProductView extends GetView<ProductController> {
                       builder: (logic) {
                         return Container(
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
-                          height: 45.h,
+                          height:
+                              70.h, // Increase height to accommodate the text
                           width: MediaQuery.of(context).size.width,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
@@ -1587,51 +1589,58 @@ class ProductView extends GetView<ProductController> {
                                 controller.changeImagesList(
                                     controller.colorsList[index].name);
                               },
-                              child: Container(
-                                  width: 45.w,
-                                  height: 45.h,
-                                  decoration: ShapeDecoration(
-                                    color: Color(int.parse(
-                                        '0xff${controller.colorsList[index].hex!.split('#')[1]}')),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(16.50),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 45.w,
+                                    height: 45.h,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Colors.grey.withOpacity(0.3)),
+                                      color: Color(int.parse(
+                                          '0xff${controller.colorsList[index].hex!.split('#')[1]}')),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Center(
+                                          child:
+                                              controller.selectedColor.value ==
+                                                      controller
+                                                          .colorsList[index]
+                                                          .name
+                                                  ? ShowUp(
+                                                      delay: 200,
+                                                      child: SvgPicture.asset(
+                                                          'assets/images/selected.svg',
+                                                          width: 20.w,
+                                                          height: 20.w,
+                                                          color: controller
+                                                                      .colorsList[
+                                                                          index]
+                                                                      .name ==
+                                                                  'White'
+                                                              ? Colors.black
+                                                              : Colors.white),
+                                                    )
+                                                  : SizedBox(),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  child: Stack(
-                                    children: [
-                                      Center(
-                                        child: controller.selectedColor.value ==
-                                                controller
-                                                    .colorsList[index].name
-                                            ? ShowUp(
-                                                delay: 200,
-                                                child: SvgPicture.asset(
-                                                  'assets/images/selected.svg',
-                                                  width: 20.w,
-                                                  height: 20.w,
-                                                ),
-                                              )
-                                            : SizedBox(),
-                                      ),
-                                      // Center(
-                                      //   child: controller.selectedColor
-                                      //               .value ==
-                                      //           controller
-                                      //               .colorsList[index]
-                                      //               .name
-                                      //       ? ShowUp(
-                                      //           delay: 200,
-                                      //           child: SvgPicture.asset(
-                                      //             'assets/images/selected.svg',
-                                      //             width: 20.w,
-                                      //             height: 20.w,
-                                      //           ),
-                                      //         )
-                                      //       : SizedBox(),
-                                      // ),
-                                    ],
-                                  )),
+                                  SizedBox(
+                                      height: 5
+                                          .h), // Spacing between the circle and the text
+                                  Text(
+                                    controller.colorsList[index].name ??
+                                        '', // Display color name
+                                    style: primaryTextStyle(
+                                        size: 12.sp.round(),
+                                        weight: FontWeight
+                                            .w400), // Adjust font size
+                                  ),
+                                ],
+                              ),
                             ),
                             separatorBuilder: (ctx, index) =>
                                 SizedBox(width: 5.w),
@@ -1890,22 +1899,30 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
         ? List.generate(
             3, (int index) => Image.asset("assets/images/placeholder.png"))
         : widget.imgList.map((image) {
-            return Container(
-              margin: EdgeInsets.all(5.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                child: Stack(
-                  children: <Widget>[
-                    CachedNetworkImage(
-                      height: MediaQuery.of(context).size.height / 2,
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                      imageUrl: image.path!,
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return InkWell(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => FullScreenImage(
+                        imageUrl: image.path!.toString(),
+                      ),
+                    )),
+                child: Hero(
+                    tag: image.path![image.path!.length - 1],
+                    child: Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        child: Stack(
+                          children: <Widget>[
+                            CachedNetworkImage(
+                              height: MediaQuery.of(context).size.height / 2,
+                              fit: BoxFit.cover,
+                              width: MediaQuery.of(context).size.width,
+                              imageUrl: image.path!,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )));
           }).toList();
 
     return Column(

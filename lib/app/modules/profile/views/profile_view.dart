@@ -51,7 +51,7 @@ class _ProfileViewState extends State<ProfileView>
                       SizedBox(height: 45.h),
                       Container(
                         width: 327.w,
-                        height: 500.h,
+                        height: 575.h,
                         decoration: ShapeDecoration(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -84,8 +84,19 @@ class _ProfileViewState extends State<ProfileView>
                             _buildMenuItem('order.svg', 'Orders', () {
                               Get.toNamed(Routes.ORDERS);
                             }, 24, 3),
-                            // _buildMenuItem(
-                            //     'rate.svg', 'Rate this app', () {}, 24, 4),
+                            _buildMenuItem('rate.svg', 'Rate this app', () {
+                              if (GetPlatform.isAndroid) {
+                                // Handle Google Play Store rating
+                                // You can use a URL launcher to direct to Google Play Store
+                                _launchURL(
+                                    'https://play.google.com/store/apps/details?id=maryana.genixs.com.maryana');
+                              } else if (GetPlatform.isIOS) {
+                                // Handle Apple App Store rating
+                                // You can use a URL launcher to direct to the Apple App Store
+                                _launchURL(
+                                    'https://apps.apple.com/hk/app/mariannella/id6608972125?l=en-GB');
+                              }
+                            }, 24, 4),
                             _buildMenuItem('terms.svg', 'Terms of Use', () {
                               _launchURL(
                                   'https://mariannella.genixarea.pro/terms.html');

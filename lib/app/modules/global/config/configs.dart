@@ -6,7 +6,7 @@ const APP_NAME = 'Maryana';
 var defaultPrimaryColor = Color(0xFFD4B0FF);
 
 const DOMAIN_URL =
-    'https://mariana.genixarea.pro'; // Don't add slash at the end of the url
+    'http://panel.mariannella.com'; // Don't add slash at the end of the url
 const BASE_URL = '$DOMAIN_URL/api/';
 
 const DEFAULT_LANGUAGE = 'en';
@@ -21,6 +21,7 @@ const String unexpectedError = 'Unexpected Error';
 const String unAuthorizedFailure = 'unAuthorizedFailures';
 
 final smallSpacing = 5.w;
+
 extension HexColor on Color {
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();

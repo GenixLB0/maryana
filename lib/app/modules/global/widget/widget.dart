@@ -1063,11 +1063,11 @@ class CustomNavBar extends StatelessWidget {
                   // Shop
                   _buildBottomNavigationBarItem(1, "Shop", "shop"),
                   // Bag
-                  _buildBottomNavigationBarItem(2, "Bag", "bag"),
+                  _buildBottomNavigationBarItem(2, "Cart", "bag"),
                   // Wishlist
-                  _buildBottomNavigationBarItem(3, "Wishlist", "wishlist"),
+                  // _buildBottomNavigationBarItem(3, "Wishlist", "wishlist"),
                   // Profile
-                  _buildBottomNavigationBarItem(4, "Profile", "profile"),
+                  _buildBottomNavigationBarItem(3, "Profile", "profile"),
                 ],
               ),
             ));
@@ -1090,12 +1090,12 @@ class CustomNavBar extends StatelessWidget {
 
   Widget _buildSelectedIcon(index, String iconName, String label) {
     return SizedBox(
-        width: 60.w, // Use .w for width
-        height: 60.h, // Use .h for height
+        width: 62.w, // Use .w for width
+        height: 62.h, // Use .h for height
         child: Stack(children: [
           Container(
-              height: 60.h, // Use .h for height
-              width: 60.w, // Use .w for width
+              height: 62.h, // Use .h for height
+              width: 62.w, // Use .w for width
               decoration: BoxDecoration(
                 color: const Color(0xffE8DEF8),
                 borderRadius: BorderRadius.circular(30.r), // Use .r for radius
@@ -1122,7 +1122,7 @@ class CustomNavBar extends StatelessWidget {
           if (index == 2)
             Obx(() {
               return Positioned(
-                top: -5.h, // Use .h for height
+                top: -0.h, // Use .h for height
                 right: 0,
                 child: cartController.cartItems.isNotEmpty
                     ? Container(
@@ -1150,12 +1150,12 @@ class CustomNavBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-            width: 30.w, // Use .w for width
-            height: 30.h, // Use .h for height
+            width: 32.w, // Use .w for width
+            height: 32.h, // Use .h for height
             child: Stack(children: [
               SvgPicture.asset(
                 "assets/icons/$iconName.svg",
-                height: 30.h,
+                height: 32.h,
               ),
               if (index == 2)
                 Obx(() {
@@ -1191,7 +1191,7 @@ class CustomNavBar extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: primaryTextStyle(
               weight: FontWeight.w700,
-              size: 8.sp.round(), // Use .sp for font size
+              size: 9.sp.round(), // Use .sp for font size
               color: Colors.grey,
             ),
           ),
