@@ -351,15 +351,14 @@ class HomeView extends GetView<HomeController> {
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (ctx, index) {
                   return LoadingWidget(
-                    SizedBox(
-                      width: 150.w,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.sp),
-                            border: Border.all(color: Colors.grey, width: 1)),
-                      ),
-                    ),
+                    SizedBox(width: 150.w, child: placeHolderWidget()
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //       color: Colors.white,
+                        //       borderRadius: BorderRadius.circular(15.sp),
+                        //       border: Border.all(color: Colors.grey, width: 1)),
+                        // ),
+                        ),
                   );
                 },
                 separatorBuilder: (ctx, index) => SizedBox(
@@ -501,7 +500,12 @@ class HomeView extends GetView<HomeController> {
                                                       height: 200.h,
                                                       fit: BoxFit.cover,
                                                       placeholder: (ctx, v) {
-                                                        return placeHolderWidget();
+                                                        return Image.asset(
+                                                          "assets/images/placeholder.png",
+                                                          width: 130.w,
+                                                          height: 200.h,
+                                                          fit: BoxFit.cover,
+                                                        );
                                                       },
                                                     ),
                                                   ),
@@ -550,25 +554,11 @@ class HomeView extends GetView<HomeController> {
                                     Stack(
                                       alignment: Alignment.bottomCenter,
                                       children: [
-                                        placeHolderWidget(),
-                                        Text(
-                                          controller.homeModel.value
-                                              .categories![index].name!
-                                              .toUpperCase(),
-                                          style: boldTextStyle(
-                                            weight: FontWeight.w400,
-                                            size: 22.sp.round(),
-                                            color: Colors.white,
-                                            textShadows: [
-                                              const BoxShadow(
-                                                  color: Colors.black,
-                                                  spreadRadius: 5,
-                                                  blurRadius: 25),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 20.h,
+                                        Image.asset(
+                                          "assets/images/placeholder.png",
+                                          width: 130.w,
+                                          height: 200.h,
+                                          fit: BoxFit.cover,
                                         )
                                       ],
                                     ),
@@ -871,16 +861,16 @@ class HomeView extends GetView<HomeController> {
   final NavigationsBarController _tabController = Get.find();
 
   buildCatScroll(context) {
-    List<Categories> myCatList = [];
-    Categories allItemCategory =
-        Categories(name: "All Items", slug: "", image: "", id: 00);
-    // List<Categories>? catFromApi = controller.homeModel.value.categories;
-    if (controller.homeModel.value.categories != null) {
-      myCatList.add(allItemCategory);
-      for (var cat in controller.homeModel.value.categories!) {
-        myCatList.add(cat);
-      }
-    }
+    // List<Categories> myCatList = [];
+    // Categories allItemCategory =
+    //     Categories(name: "All Items", slug: "", image: "", id: 00);
+    //
+    // if (controller.homeModel.value.categories != null) {
+    //   // myCatList.add(allItemCategory);
+    //   for (var cat in controller.homeModel.value.categories!) {
+    //     myCatList.add(cat);
+    //   }
+    // }
 
     return Padding(
         padding: EdgeInsets.only(left: 20.w),
@@ -913,42 +903,66 @@ class HomeView extends GetView<HomeController> {
                         return GestureDetector(
                             onTap: () {
                               if (CustomSearchController().initialized) {
-                                CustomSearchController controller =
+                                CustomSearchController searchController =
                                     Get.find<CustomSearchController>();
-                                controller.getProductsInSection(
-                                    sectionName: myCatList[index].name!,
-                                    payload: myCatList[index].id == 0
+                                searchController.getProductsInSection(
+                                    sectionName: controller.homeModel.value
+                                        .categories![index].name!,
+                                    payload: controller.homeModel.value
+                                                .categories![index].id ==
+                                            0
                                         ? {}
                                         : {
-                                            "category_ids[0]":
-                                                myCatList[index].id.toString()
+                                            "category_ids[0]": controller
+                                                .homeModel
+                                                .value
+                                                .categories![index]
+                                                .id
+                                                .toString()
                                           });
-                                print(myCatList[index].name.toString() +
-                                    'test cate');
+
                                 shopController.changeChoosenCatId(
-                                    myCatList[index].id!.toString(),
-                                    myCatList[index].name!);
-                                _tabController.changeIndex(1);
-                              } else {
-                                print('${myCatList[index].name}test cate');
-                                CustomSearchController controller =
-                                    Get.put<CustomSearchController>(
-                                        CustomSearchController());
-                                controller.getProductsInSection(
-                                    sectionName: myCatList[index].name!,
-                                    payload: myCatList[index].id == 0
-                                        ? {}
-                                        : {
-                                            "category_ids[0]":
-                                                "${myCatList[index].id.toString()}"
-                                          });
-                                shopController.changeChoosenCatId(
-                                    myCatList[index].id!.toString(),
-                                    myCatList[index].name!);
+                                    controller
+                                        .homeModel.value.categories![index].id!
+                                        .toString(),
+                                    controller.homeModel.value
+                                        .categories![index].name!);
                                 _tabController.changeIndex(1);
 
                                 shopController.getSubCategoriesInCategory(
-                                    myCatList[index].id!);
+                                    controller.homeModel.value
+                                        .categories![index].id!);
+                                shopController.changeScrollExtent();
+                              } else {
+                                CustomSearchController searchController =
+                                    Get.put<CustomSearchController>(
+                                        CustomSearchController());
+                                searchController.getProductsInSection(
+                                    sectionName: controller.homeModel.value
+                                        .categories![index].name!,
+                                    payload: controller.homeModel.value
+                                                .categories![index].id ==
+                                            0
+                                        ? {}
+                                        : {
+                                            "category_ids[0]": controller
+                                                .homeModel
+                                                .value
+                                                .categories![index]
+                                                .id
+                                                .toString()
+                                          });
+                                shopController.changeChoosenCatId(
+                                    controller
+                                        .homeModel.value.categories![index].id!
+                                        .toString(),
+                                    controller.homeModel.value
+                                        .categories![index].name!);
+                                _tabController.changeIndex(1);
+
+                                shopController.getSubCategoriesInCategory(
+                                    controller.homeModel.value
+                                        .categories![index].id!);
                                 shopController.changeScrollExtent();
                               }
                             },
@@ -960,7 +974,9 @@ class HomeView extends GetView<HomeController> {
                                   // border: Border.all(
                                   //     color: Colors.grey, width: 1)
                                 ),
-                                child: myCatList[index].image != null
+                                child: controller.homeModel.value
+                                            .categories![index].image !=
+                                        null
                                     ? Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -968,29 +984,9 @@ class HomeView extends GetView<HomeController> {
                                           SizedBox(
                                             width: 3.w,
                                           ),
-                                          // myCatList[index].image!.isEmpty ||
-                                          //         myCatList[index].image == null
-                                          //     ? SvgPicture.asset(
-                                          //         "assets/images/home/cat_icon.svg",
-                                          //         width: 20.w,
-                                          //         height: 20.h,
-                                          //         fit: BoxFit.cover,
-                                          //       )
-                                          //     : CachedNetworkImage(
-                                          //         imageUrl:
-                                          //             myCatList[index].image!,
-                                          //         width: 20.w,
-                                          //         height: 20.h,
-                                          //         fit: BoxFit.cover,
-                                          //         placeholder: (ctx, v) {
-                                          //           return placeHolderWidget();
-                                          //         },
-                                          //       ),
-                                          // const SizedBox(
-                                          //   width: 5,
-                                          // ),
                                           Text(
-                                            myCatList[index].name!,
+                                            controller.homeModel.value
+                                                .categories![index].name!,
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -1011,7 +1007,8 @@ class HomeView extends GetView<HomeController> {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          Text(myCatList[index].name!),
+                                          Text(controller.homeModel.value
+                                              .categories![index].name!),
                                           const SizedBox(
                                             width: 10,
                                           ),
@@ -1023,7 +1020,7 @@ class HomeView extends GetView<HomeController> {
                       separatorBuilder: (ctx, index) => SizedBox(
                             width: 10.w,
                           ),
-                      itemCount: myCatList.length)
+                      itemCount: controller.homeModel.value.categories!.length)
                   : SizedBox(),
         ));
   }
@@ -1133,7 +1130,6 @@ class HomeView extends GetView<HomeController> {
   }
 
   _buildCollectionItem(context, Collections collection) {
-    controller.analyzeImage(collection.image!);
     final typeController = TypeWriterController(
       text: collection.name!,
       duration: const Duration(milliseconds: 150),
@@ -1168,11 +1164,16 @@ class HomeView extends GetView<HomeController> {
               alignment: Alignment.bottomRight,
               children: [
                 CachedNetworkImage(
-                  width: MediaQuery.of(context).size.width,
-                  height: 255.h,
-                  imageUrl: collection.image!,
-                  fit: BoxFit.cover,
-                ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 255.h,
+                    imageUrl: collection.image!,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Image.asset(
+                          "assets/images/placeholder.png",
+                          width: MediaQuery.of(context).size.width,
+                          height: 200.h,
+                          fit: BoxFit.cover,
+                        )),
                 SizedBox(
                     width: 180.w,
                     height: 150.h,
@@ -1221,53 +1222,6 @@ class HomeView extends GetView<HomeController> {
                                 maxLines: 1,
                               );
                             }),
-                        // Spacer(),
-                        // Padding(
-                        //   padding: EdgeInsets.only(left: 50.w),
-                        //   child: GestureDetector(
-                        //     onTap: () {
-                        //       if (CustomSearchController().initialized) {
-                        //         CustomSearchController controller =
-                        //             Get.find<CustomSearchController>();
-                        //         controller.getProductsInSection(
-                        //             sectionName: collection.name!,
-                        //             payload: {
-                        //               "collection_ids[0]":
-                        //                   collection.id.toString()
-                        //             });
-                        //
-                        //         Get.to(() => const ResultView(),
-                        //             transition: Transition.fadeIn,
-                        //             curve: Curves.easeInOut,
-                        //             duration: Duration(milliseconds: 400));
-                        //       } else {
-                        //         CustomSearchController controller =
-                        //             Get.put<CustomSearchController>(
-                        //                 CustomSearchController());
-                        //         controller.getProductsInSection(
-                        //             sectionName: collection.name!,
-                        //             payload: {
-                        //               "collection_ids[0]":
-                        //                   collection.id.toString()
-                        //             });
-                        //         Get.to(() => const ResultView(),
-                        //             transition: Transition.fadeIn,
-                        //             curve: Curves.easeInOut,
-                        //             duration: Duration(milliseconds: 400));
-                        //       }
-                        //     },
-                        //     child: Container(
-                        //       color: Colors.grey.shade600,
-                        //       child: Text('SHOW ALL',
-                        //           overflow: TextOverflow.ellipsis,
-                        //           style: boldTextStyle(
-                        //               weight: FontWeight.w400,
-                        //               color: Colors.white,
-                        //               size: 16.sp.round(),
-                        //               letterSpacing: 0.3)),
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ))
               ],
@@ -1540,11 +1494,16 @@ class HomeView extends GetView<HomeController> {
               height: 4.h,
             ),
             CachedNetworkImage(
-              width: MediaQuery.of(context).size.width,
-              height: 255.h,
-              imageUrl: brand.image!,
-              fit: BoxFit.cover,
-            ),
+                width: MediaQuery.of(context).size.width,
+                height: 255.h,
+                imageUrl: brand.image!,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Image.asset(
+                      "assets/images/placeholder.png",
+                      width: MediaQuery.of(context).size.width,
+                      height: 200.h,
+                      fit: BoxFit.cover,
+                    )),
             FutureBuilder(
                 future: controller.getProductsInBrand(brand),
                 builder: (ctx, snapshot) {
@@ -2170,7 +2129,7 @@ class HomeView extends GetView<HomeController> {
                                     }
                                   },
                                   child: ClipRRect(
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                           Radius.circular(5.0)),
                                       child: Container(
                                         padding: EdgeInsets.all(8),

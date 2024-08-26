@@ -23,7 +23,7 @@ class ShopController extends GetxController {
   RxBool isSubCategoriesLoading = false.obs;
   RxBool isBrandsLoading = false.obs;
   RxList<Brands> brands = <Brands>[].obs;
-  RxString choosenCatId = "".obs;
+  RxString choosenCatId = "0".obs;
   RxString choosenCatName = "".obs;
 
   ItemScrollController categoriesScrollController = ItemScrollController();
@@ -67,12 +67,15 @@ class ShopController extends GetxController {
         for (var category in apiResponse.data!) {
           categories.add(category);
         }
-        ;
       } else {
         handleApiErrorUser(apiResponse.message);
         handleApiError(response.statusCode);
       }
       isCategoryLoading.value = false;
+      choosenCatId.value = categories[0].id.toString();
+      choosenCatName.value = categories[0].name.toString();
+      getSubCategoriesInCategory(categories[0].id!);
+
       update();
     } catch (e, stackTrace) {
       print('search api failed:  ${e} $stackTrace');
@@ -123,39 +126,48 @@ class ShopController extends GetxController {
 
   getSubCategoriesInCategory(int CatId) async {
     print("is removing sub category ?");
-    isSubCategoriesLoading.value = true;
-    subCategories.clear();
-    var formData = dio.FormData.fromMap({
-      'parent_id': CatId,
-    });
-    final response = await apiConsumer.post('categories',
-        formDataIsEnabled: true, formData: formData);
 
-    try {
-      final apiResponse = ApiCategoryResponse.fromJson(response);
-      if (apiResponse.status == 'success') {
-        print('subcat response ${apiResponse.data!}');
+    if (isSubCategoriesLoading.value == true) {
+      Get.closeCurrentSnackbar();
+      Get.snackbar(
+        "Loading",
+        "Please Wait For the Current Request to Finish",
+      );
+    } else {
+      isSubCategoriesLoading.value = true;
+      subCategories.clear();
+      var formData = dio.FormData.fromMap({
+        'parent_id': CatId,
+      });
+      final response = await apiConsumer.post('categories',
+          formDataIsEnabled: true, formData: formData);
 
-        for (var category in apiResponse.data!) {
-          subCategories.add(category);
+      try {
+        final apiResponse = ApiCategoryResponse.fromJson(response);
+        if (apiResponse.status == 'success') {
+          print('subcat response ${apiResponse.data!}');
+
+          for (var category in apiResponse.data!) {
+            subCategories.add(category);
+          }
+
+          if (subCategories.isNotEmpty) {
+            subCategories.insert(0, Categories());
+          }
+
+          isSubCategoriesLoading.value = false;
+          print("over all subs caount is ${subCategories.length}");
+        } else {
+          handleApiErrorUser(apiResponse.message);
+          handleApiError(response.statusCode);
+          isSubCategoriesLoading.value = false;
         }
+      } catch (e, stackTrace) {
+        print('subCat api failed:  ${e} $stackTrace');
 
-        if (subCategories.isNotEmpty) {
-          subCategories.insert(0, Categories());
-        }
-
-        isSubCategoriesLoading.value = false;
-        print("over all subs caount is ${subCategories.length}");
-      } else {
-        handleApiErrorUser(apiResponse.message);
-        handleApiError(response.statusCode);
+        print(e.toString() + stackTrace.toString());
         isSubCategoriesLoading.value = false;
       }
-    } catch (e, stackTrace) {
-      print('subCat api failed:  ${e} $stackTrace');
-
-      print(e.toString() + stackTrace.toString());
-      isSubCategoriesLoading.value = false;
     }
   }
 
@@ -206,12 +218,12 @@ class ShopController extends GetxController {
   }
 
   changeScrollExtent() {
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       categoriesScrollController.scrollTo(
-        index: chosenCatIndex,
-        duration: Duration(seconds: 1),
-        curve: Curves.easeInOut,
-      );
+          index: chosenCatIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.fastEaseInToSlowEaseOut,
+          alignment: 0);
       // if (categoriesScrollController.hasClients) {
       //   categoriesScrollController
       //       .jumpTo(categoriesScrollController.position.maxScrollExtent);

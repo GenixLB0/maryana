@@ -598,27 +598,30 @@ class ShopView extends GetView<ShopController> {
   _buildCategories(context) {
     return Obx(() {
       return Expanded(
-        flex: 5,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
                 flex: 2,
-                child: ScrollablePositionedList.separated(
-                    itemScrollController: controller.categoriesScrollController,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      if (controller.choosenCatId.value ==
-                          controller.categories[index].id.toString()) {
-                        controller.sendchosenCatIndex(index);
-                      }
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 5.h, bottom: 5.h),
+                    child: ScrollablePositionedList.separated(
+                        scrollDirection: Axis.vertical,
+                        itemScrollController:
+                            controller.categoriesScrollController,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          if (controller.choosenCatId.value ==
+                              controller.categories[index].id.toString()) {
+                            controller.sendchosenCatIndex(index);
+                          }
 
-                      print("categories count is ${index}");
-                      return controller.isCategoryLoading.value
-                          ? placeHolderWidget()
-                          : index != controller.categories.length
-                              ? Obx(() {
+                          print("categories count is ${index}");
+                          return controller.isCategoryLoading.value
+                              ? placeHolderWidget()
+                              : Obx(() {
                                   return VisibilityDetector(
                                     onVisibilityChanged: (visibilityInfo) {
                                       var visiblePercentage =
@@ -640,10 +643,7 @@ class ShopView extends GetView<ShopController> {
                                           opacity: 1,
                                           duration: const Duration(seconds: 1),
                                           curve: Curves.easeInOut,
-                                          child: InkResponse(
-                                            // radius: 55,
-                                            // splashColor: primaryColor,
-                                            containedInkWell: true,
+                                          child: InkWell(
                                             onTap: () {
                                               controller.changeChoosenCatId(
                                                   controller
@@ -679,7 +679,13 @@ class ShopView extends GetView<ShopController> {
                                                             width: 5.w,
                                                             height: 20.h,
                                                           )
-                                                        : SizedBox(),
+                                                        // : SizedBox(),
+                                                        : Container(
+                                                            color: Colors
+                                                                .transparent,
+                                                            width: 5.w,
+                                                            height: 20.h,
+                                                          ),
                                                     SizedBox(
                                                       width: 5.w,
                                                     ),
@@ -728,13 +734,14 @@ class ShopView extends GetView<ShopController> {
                                           )),
                                     ),
                                   );
-                                })
-                              : SizedBox();
-                    },
-                    separatorBuilder: (context, index) => SizedBox(),
-                    itemCount: controller.isCategoryLoading.value
-                        ? 10
-                        : controller.categories.length)),
+                                });
+                        },
+                        separatorBuilder: (context, index) => SizedBox(),
+                        itemCount: controller.isCategoryLoading.value
+                            ? 10
+                            : controller.categories.length),
+                  ),
+                )),
             SizedBox(
               width: 10.w,
             ),
@@ -879,17 +886,21 @@ class ShopView extends GetView<ShopController> {
               child: LoadingWidget(Container(
                   height: MediaQuery.of(context).size.height / 4,
                   child: GridView.count(
-                    crossAxisCount: 4,
+                    crossAxisCount: 3,
                     padding: EdgeInsets.all(8.w),
                     crossAxisSpacing: 10.h,
                     mainAxisSpacing: 10,
                     childAspectRatio: 6 / 7,
                     shrinkWrap: true,
                     children: <Widget>[
-                      for (int i = 0; i < 12; ++i)
-                        Container(
-                            width: 100.w,
-                            color: Color.fromARGB(255, 10 * i, 1 * i, 50))
+                      for (int i = 0; i < 9; ++i)
+                        CircleAvatar(
+                          backgroundColor: Colors.grey[200],
+                          radius: 35, // Adjust the radius as needed
+                        ),
+                      // Container(
+                      //     width: 100.w,
+                      //     color: Color.fromARGB(255, 10 * i, 1 * i, 50))
                     ],
                   ))),
             )
@@ -1037,10 +1048,12 @@ class ShopView extends GetView<ShopController> {
                                         backgroundColor: Colors.grey[200],
                                         radius:
                                             40, // Adjust the radius as needed
-                                        backgroundImage: CachedNetworkImageProvider(
-                                            shopController
-                                                .subCategories[index].image!
-                                                .toString()), // Use your image URL here
+                                        backgroundImage:
+                                            CachedNetworkImageProvider(
+                                          shopController
+                                              .subCategories[index].image!
+                                              .toString(),
+                                        ), // Use your image URL here
                                       ),
                                       const SizedBox(
                                           height:

@@ -1677,9 +1677,10 @@ class ProductView extends GetView<ProductController> {
                                   ? Colors.black
                                   : Colors.grey[300]!,
                               width: 3.w)),
-                      child: Image.network(
-                        controller.productImages[index].path!,
+                      child: CachedNetworkImage(
+                        imageUrl: controller.productImages[index].path!,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => placeHolderWidget(),
                       ));
                 }),
               ),
@@ -1917,6 +1918,8 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                               fit: BoxFit.cover,
                               width: MediaQuery.of(context).size.width,
                               imageUrl: image.path!,
+                              placeholder: (context, url) =>
+                                  placeHolderWidget(),
                             ),
                           ],
                         ),

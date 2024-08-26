@@ -1015,49 +1015,4 @@ class HomeController extends GetxController {
     // print(ip);
     Get.snackbar("Welcome", "Welcome Mariannella User From ${country}");
   }
-
-  var textColor = Colors.black.obs;
-
-  void updateTextColor(double brightness) {
-    textColor.value = brightness > 0.6 ? Colors.black : Colors.white;
-    print(brightness.toString() + 'test brightnees');
-  }
-
-  Future<void> analyzeImage(String imageUrl) async {
-    // Fetch the image from the network
-    final response = await http.get(Uri.parse(imageUrl));
-    if (response.statusCode == 200) {
-      final Uint8List bytes = response.bodyBytes;
-      final img.Image? image = img.decodeImage(bytes);
-
-      if (image != null) {
-        // Get the average brightness of the image
-        double brightness = calculateBrightness(image);
-
-        // Set the text color based on the brightness
-        updateTextColor(brightness);
-      }
-    }
-  }
-
-  double calculateBrightness(img.Image image) {
-    int totalBrightness = 0;
-    int pixelCount = 0;
-
-    for (int y = 0; y < image.height; y += 10) {
-      for (int x = 0; x < image.width; x += 10) {
-        final int pixel = image.getPixel(x, y);
-        final int r = img.getRed(pixel);
-        final int g = img.getGreen(pixel);
-        final int b = img.getBlue(pixel);
-
-        // Calculate brightness using the luminance formula
-        double brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        totalBrightness += (brightness * 100).toInt();
-        pixelCount++;
-      }
-    }
-
-    return totalBrightness / pixelCount / 100;
-  }
 }
