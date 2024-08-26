@@ -190,5 +190,6 @@ class ShopController extends GetxController {
     choosenCatId.value = id;
     choosenCatName.value = name;
     print("changed id with 2 ${choosenCatId}");
+    getSubCategoriesInCategory(int.parse(id));
   }
 }

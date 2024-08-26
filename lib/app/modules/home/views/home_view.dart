@@ -930,8 +930,7 @@ class HomeView extends GetView<HomeController> {
                                     myCatList[index].name!);
                                 _tabController.changeIndex(1);
                               } else {
-                                print(myCatList[index].name.toString() +
-                                    'test cate');
+                                print('${myCatList[index].name}test cate');
                                 CustomSearchController controller =
                                     Get.put<CustomSearchController>(
                                         CustomSearchController());
