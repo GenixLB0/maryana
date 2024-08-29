@@ -1880,11 +1880,14 @@ class _BuildBundleState extends State<BuildBundle> {
 }
 
 class ImageSliderWithIndicators extends StatefulWidget {
-  const ImageSliderWithIndicators(
-      {required this.imgList, required this.placeHolderImg});
-
   final List<Attachments> imgList;
   final String placeHolderImg;
+
+  const ImageSliderWithIndicators({
+    required this.imgList,
+    required this.placeHolderImg,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ImageSliderWithIndicatorsState createState() =>
@@ -1892,36 +1895,45 @@ class ImageSliderWithIndicators extends StatefulWidget {
 }
 
 class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
+  int _currentIndex = 0;
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
+
   @override
   Widget build(BuildContext context) {
-    final List<Widget> child = widget.imgList.isEmpty
+    final List<Widget> imageWidgets = widget.imgList.isEmpty
         ? List.generate(
             3, (int index) => Image.asset("assets/images/placeholder.png"))
         : widget.imgList.map((image) {
             return InkWell(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => FullScreenImage(
-                        imageUrl: image.path!.toString(),
-                      ),
-                    )),
-                child: Hero(
-                    tag: image.path![image.path!.length - 1],
-                    child: Container(
-                      margin: EdgeInsets.all(5.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        child: Stack(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              height: MediaQuery.of(context).size.height / 2,
-                              fit: BoxFit.cover,
-                              width: MediaQuery.of(context).size.width,
-                              imageUrl: image.path!,
-                            ),
-                          ],
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => FullScreenImage(
+                    imageUrls: widget.imgList.map((e) => e.path!).toList(),
+                    initialIndex: widget.imgList.indexOf(image),
+                  ),
+                ),
+              ),
+              child: Hero(
+                tag: image.path!,
+                child: Container(
+                  margin: const EdgeInsets.all(5.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.network(
+                          image.path!,
+                          height: MediaQuery.of(context).size.height / 2,
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
                         ),
-                      ),
-                    )));
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
           }).toList();
 
     return Column(
@@ -1929,34 +1941,30 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
         Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            GetBuilder<ProductController>(builder: (logic) {
-              return CarouselSlider(
-                carouselController: logic.carouselController,
-                items: child,
-                options: CarouselOptions(
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  initialPage: logic.selectedIndex.value,
-                  aspectRatio: 1.1,
-                  viewportFraction: 1.0,
-                  onPageChanged: (index, reason) {
-                    logic.setSelectedIndex(index);
-
-                    setState(() {});
-                  },
-                ),
-              );
-            }),
+            CarouselSlider(
+              carouselController: _carouselController,
+              items: imageWidgets,
+              options: CarouselOptions(
+                autoPlay: true,
+                enlargeCenterPage: true,
+                initialPage: _currentIndex,
+                aspectRatio: 1.1,
+                viewportFraction: 1.0,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+              ),
+            ),
             Container(
-              margin: EdgeInsets.only(top: 20),
-              // Add margin to the top side
+              margin: const EdgeInsets.only(top: 20),
               decoration: const BoxDecoration(
                 boxShadow: [
                   BoxShadow(
                     color: Colors.white12,
-                    //Color.fromARGB(255, 218, 218, 218),
                     blurRadius: 2.0,
-                    offset: Offset(0, -2), // Shadow only at the top
+                    offset: Offset(0, -2),
                   ),
                 ],
                 borderRadius: BorderRadius.only(
@@ -1969,22 +1977,22 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
               width: MediaQuery.of(context).size.width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: widget.imgList.map((image) {
-                  int index = widget.imgList.indexOf(image);
-                  return GetBuilder<ProductController>(builder: (logic) {
-                    return Container(
+                children: widget.imgList.asMap().entries.map((entry) {
+                  return GestureDetector(
+                    onTap: () => _carouselController.animateToPage(entry.key),
+                    child: Container(
                       width: 8.0,
                       height: 8.0,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 2.0),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: logic.selectedIndex.value == index
-                            ? Color.fromRGBO(0, 0, 0, 0.9)
-                            : Color.fromRGBO(0, 0, 0, 0.4),
+                        color: _currentIndex == entry.key
+                            ? const Color.fromRGBO(0, 0, 0, 0.9)
+                            : const Color.fromRGBO(0, 0, 0, 0.4),
                       ),
-                    );
-                  });
+                    ),
+                  );
                 }).toList(),
               ),
             ),
