@@ -1168,11 +1168,13 @@ class HomeView extends GetView<HomeController> {
                     height: 255.h,
                     imageUrl: collection.image!,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => Image.asset(
-                          "assets/images/placeholder.png",
-                          width: MediaQuery.of(context).size.width,
-                          height: 200.h,
-                          fit: BoxFit.cover,
+                    placeholder: (context, url) => LoadingWidget(
+                          Image.asset(
+                            "assets/images/placeholder.png",
+                            width: MediaQuery.of(context).size.width,
+                            height: 200.h,
+                            fit: BoxFit.cover,
+                          ),
                         )),
                 SizedBox(
                     width: 180.w,
@@ -1498,11 +1500,13 @@ class HomeView extends GetView<HomeController> {
                 height: 255.h,
                 imageUrl: brand.image!,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Image.asset(
-                      "assets/images/placeholder.png",
-                      width: MediaQuery.of(context).size.width,
-                      height: 200.h,
-                      fit: BoxFit.cover,
+                placeholder: (context, url) => LoadingWidget(
+                      Image.asset(
+                        "assets/images/placeholder.png",
+                        width: MediaQuery.of(context).size.width,
+                        height: 200.h,
+                        fit: BoxFit.cover,
+                      ),
                     )),
             FutureBuilder(
                 future: controller.getProductsInBrand(brand),
