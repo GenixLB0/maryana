@@ -98,7 +98,7 @@ class ShopController extends GetxController {
     var bodyFields = {};
 
     final response = await http.post(
-      Uri.parse('https://mariana.genixarea.pro/api/products'),
+      Uri.parse('https://panel.mariannella.com/api/products'),
       headers: headers,
       body: bodyFields,
     );

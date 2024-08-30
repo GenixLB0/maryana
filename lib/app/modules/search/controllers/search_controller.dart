@@ -175,7 +175,7 @@ class CustomSearchController extends GetxController {
     };
 
     final response = await http.post(
-      Uri.parse('https://mariana.genixarea.pro/api/products'),
+      Uri.parse('https://panel.mariannella.com/api/products'),
       headers: headers,
       body: bodyFields,
     );
@@ -269,7 +269,7 @@ class CustomSearchController extends GetxController {
     List<Categories> myCatList = [];
     List<int> activeCats = [];
     Categories allItemCategory =
-        Categories(name: "All", slug: "", image: "", id: 0);
+    Categories(name: "All", slug: "", image: "", id: 0);
 
     myCatList.add(allItemCategory);
 
@@ -298,8 +298,8 @@ class CustomSearchController extends GetxController {
     addActiveCats(activeCats);
   }
 
-  filterProductsAccordingToCat(
-      int id, bool isCategoryFilter, List<Categories>? mycategories) async {
+  filterProductsAccordingToCat(int id, bool isCategoryFilter,
+      List<Categories>? mycategories) async {
     isSearchLoading.value = true;
     categories.clear();
     resultSearchProducts.clear();
@@ -333,15 +333,15 @@ class CustomSearchController extends GetxController {
     } else {
       id == 00
           ? bodyFields = {
-              'keywords': titleResult,
-            }
+        'keywords': titleResult,
+      }
           : bodyFields = {'category_ids[0]': id.toString()};
     }
 
     if (isCategoryFilter) {
       print("cat filter 1");
       final response = await http.post(
-        Uri.parse('https://mariana.genixarea.pro/api/products'),
+        Uri.parse('https://panel.mariannella.com/api/products'),
         headers: headers,
         body: bodyFields,
       );
@@ -372,7 +372,7 @@ class CustomSearchController extends GetxController {
     } else {
       if (titleResult.isNotEmpty) {
         final response = await http.post(
-          Uri.parse('https://mariana.genixarea.pro/api/products'),
+          Uri.parse('https://panel.mariannella.com/api/products'),
           headers: headers,
           body: bodyFields,
         );
@@ -397,7 +397,7 @@ class CustomSearchController extends GetxController {
         }
       } else {
         final response = await http.post(
-          Uri.parse('https://mariana.genixarea.pro/api/products'),
+          Uri.parse('https://panel.mariannella.com/api/products'),
           headers: headers,
           body: bodyFields,
         );
@@ -461,8 +461,7 @@ class CustomSearchController extends GetxController {
 
   setArgs() {
     getSearchKeywords();
-    if (Get.arguments == null) {
-    } else {
+    if (Get.arguments == null) {} else {
       print("the arguments are ${Get.arguments}");
       products = Get.arguments[0] as List<ViewProductData>;
       categories.value = Get.arguments[1] as List<Categories>;
@@ -847,7 +846,8 @@ class CustomSearchController extends GetxController {
       minPriceController.value.text = value.start.toInt().toString();
       maxPriceController.value.text = value.end.toInt().toString();
       print(
-          "setted the start is ${minPriceController.value.text} and the end is ${maxPriceController.value.text}");
+          "setted the start is ${minPriceController.value
+              .text} and the end is ${maxPriceController.value.text}");
     } else {
       print("the con 1 ${value.end > value.start}");
       print("the con 2 ${value.end <= 10000.0}");

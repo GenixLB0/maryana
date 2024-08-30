@@ -11,11 +11,8 @@ import 'package:http/http.dart' as http;
 import 'package:maryana/app/modules/auth/views/create_new_password_view.dart';
 
 class ForgotPasswordController extends GetxController {
-
-
   final count = 0.obs;
   RxBool isResetDone = false.obs;
-
 
   RxBool isConfirmPasswordTyping = false.obs;
   RxBool isNewPasswordTyping = false.obs;
@@ -35,7 +32,7 @@ class ForgotPasswordController extends GetxController {
 
   String myEmail = "";
 
-    String emptyEmailError = 'Email cannot be empty';
+  String emptyEmailError = 'Email cannot be empty';
 
   @override
   void onInit() {
@@ -54,22 +51,19 @@ class ForgotPasswordController extends GetxController {
 
   void increment() => count.value++;
 
-
   bool isEmail(String em) {
+    String p =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
-    String p = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-
-    RegExp regExp =  RegExp(p);
-
+    RegExp regExp = RegExp(p);
 
     return regExp.hasMatch(em);
-
   }
 
-  Future<dynamic> sendOTP(email , isFirstPhase) async {
-    if(isFirstPhase){
+  Future<dynamic> sendOTP(email, isFirstPhase) async {
+    if (isFirstPhase) {
       myEmail = email;
-    }else {
+    } else {
       null;
     }
 
@@ -82,10 +76,9 @@ class ForgotPasswordController extends GetxController {
       'x-guest': '****',
       'Content-Type': 'application/x-www-form-urlencoded'
     };
-    var request = http.Request('POST', Uri.parse('https://mariana.genixarea.pro/api/password/forget'));
-    request.bodyFields = {
-      'email': '${myEmail}'
-    };
+    var request = http.Request(
+        'POST', Uri.parse('https://panel.mariannella.com/api/password/forget'));
+    request.bodyFields = {'email': '${myEmail}'};
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -96,9 +89,8 @@ class ForgotPasswordController extends GetxController {
       if (kDebugMode) {
         print("${response.statusCode}");
       }
-      return  response.reasonPhrase;
-    }
-    else {
+      return response.reasonPhrase;
+    } else {
       if (kDebugMode) {
         print(response.reasonPhrase);
       }
@@ -108,63 +100,56 @@ class ForgotPasswordController extends GetxController {
       }
       return response.reasonPhrase;
     }
-
   }
 
-
-
-
-  endTimer(){
+  endTimer() {
     isEnded.value = true;
   }
 
-  startTimer() async{
+  startTimer() async {
     randomTheId();
     tweenId.value = randomId;
     isEnded.value = false;
 
-    await sendOTP(myEmail , false);
-
+    await sendOTP(myEmail, false);
   }
 
-  randomTheId(){
+  randomTheId() {
     randomId = Random().nextInt(999999);
   }
 
-  validateOTP(otp){
-    if(otp == "1111"){
-      Get.to(()=> const CreateNewPasswordView());
+  validateOTP(otp) {
+    if (otp == "1111") {
+      Get.to(() => const CreateNewPasswordView());
     }
   }
 
-
-  changeConfirmPasswordTypingStatus(){
+  changeConfirmPasswordTypingStatus() {
     isConfirmPasswordTyping.value = true;
   }
-  endConfirmPasswordTypingStatus(){
+
+  endConfirmPasswordTypingStatus() {
     isConfirmPasswordTyping.value = false;
   }
 
-  changeNewPasswordTypingStatus(){
+  changeNewPasswordTypingStatus() {
     isNewPasswordTyping.value = true;
   }
-  endNewPasswordTypingStatus(){
+
+  endNewPasswordTypingStatus() {
     isNewPasswordTyping.value = false;
   }
 
-
-  validatePassword(newpasssword , confirmpassword){
-    if(newpasssword == confirmpassword){
+  validatePassword(newpasssword, confirmpassword) {
+    if (newpasssword == confirmpassword) {
       isValid.value = true;
-    } else{
+    } else {
       isValid.value = false;
-
     }
   }
 
-
-  Future<dynamic> changePassword()async{
-    if(isValid.value){
+  Future<dynamic> changePassword() async {
+    if (isValid.value) {
       print(newPasswordController.text);
       print(confirmPasswordController.text);
       var headers = {
@@ -174,7 +159,8 @@ class ForgotPasswordController extends GetxController {
         'x-guest': '****',
         'Content-Type': 'application/x-www-form-urlencoded'
       };
-      var request = http.Request('POST', Uri.parse('https://mariana.genixarea.pro/api/password/reset'));
+      var request = http.Request('POST',
+          Uri.parse('https://panel.mariannella.com/api/password/reset'));
       request.bodyFields = {
         'token': '1111',
         'password': newPasswordController.text,
@@ -187,26 +173,22 @@ class ForgotPasswordController extends GetxController {
       if (response.statusCode == 200) {
         print(await response.stream.bytesToString());
         return response.reasonPhrase;
-      }
-      else {
+      } else {
         print(response.reasonPhrase);
         return response.reasonPhrase;
       }
     }
-
-
   }
-  changeReset(){
+
+  changeReset() {
     isResetDone.value = true;
   }
 
-
-  switchNewPasswordVisibility(){
-    isNewPasswordObsecure.value =! isNewPasswordObsecure.value;
+  switchNewPasswordVisibility() {
+    isNewPasswordObsecure.value = !isNewPasswordObsecure.value;
   }
 
-  switcConfirmPasswordVisibility(){
-    isConfirmPasswordObsecure.value  =! isConfirmPasswordObsecure.value ;
+  switcConfirmPasswordVisibility() {
+    isConfirmPasswordObsecure.value = !isConfirmPasswordObsecure.value;
   }
-
 }
