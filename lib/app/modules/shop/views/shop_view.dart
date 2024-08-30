@@ -644,24 +644,34 @@ class ShopView extends GetView<ShopController> {
                                           duration: const Duration(seconds: 1),
                                           curve: Curves.easeInOut,
                                           child: InkWell(
-                                            onTap: () {
-                                              controller.changeChoosenCatId(
-                                                  controller
-                                                      .categories[index].id!
-                                                      .toString(),
-                                                  controller
-                                                      .categories[index].name!);
+                                            onTap: controller
+                                                    .isSubCategoriesLoading
+                                                    .value
+                                                ? () {}
+                                                : () {
+                                                    controller
+                                                        .changeChoosenCatId(
+                                                            controller
+                                                                .categories[
+                                                                    index]
+                                                                .id!
+                                                                .toString(),
+                                                            controller
+                                                                .categories[
+                                                                    index]
+                                                                .name!);
 
-                                              controller
-                                                  .getSubCategoriesInCategory(
-                                                      controller
-                                                          .categories[index]
-                                                          .id!);
+                                                    controller
+                                                        .getSubCategoriesInCategory(
+                                                            controller
+                                                                .categories[
+                                                                    index]
+                                                                .id!);
 
-                                              // controller.getBrandsInCategory(
-                                              //     controller
-                                              //         .categories[index].id!);
-                                            },
+                                                    // controller.getBrandsInCategory(
+                                                    //     controller
+                                                    //         .categories[index].id!);
+                                                  },
                                             child: Padding(
                                                 padding:
                                                     EdgeInsets.only(left: 1.w),
