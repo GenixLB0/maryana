@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -6,7 +8,8 @@ import 'package:maryana/app/modules/address/controllers/address_controller.dart'
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
- import 'edit_address_screen.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'edit_address_screen.dart';
 import 'add_address_screen.dart';
 
 class AddressListScreen extends StatelessWidget {
@@ -68,38 +71,36 @@ class AddressListScreen extends StatelessWidget {
                           if (viewOnly == null || viewOnly == false) {
                             Get.to(() => AddAddressScreen());
                           } else {
-                            Get.dialog(
-                              Scaffold(
-                                backgroundColor: Colors.transparent,
-                                body: Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    width: 375.w,
-                                    height: 0.6.sh,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 20.w, vertical: 40.h),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(30),
-                                        topRight: Radius.circular(30),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3FABABAB),
-                                          blurRadius: 11,
-                                          offset: Offset(0, -4),
-                                          spreadRadius: 0,
-                                        ),
-                                      ],
+                            showMaterialModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              expand: false,
+                              builder: (context) => BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                child: Container(
+                                  width: 375.w,
+                                  height: 0.6.sh,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20.w, vertical: 40.h),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30),
                                     ),
-                                    child:
-                                        AddAddressScreen(viewsOnly: viewOnly),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x3FABABAB),
+                                        blurRadius: 11,
+                                        offset: Offset(0, -4),
+                                        spreadRadius: 0,
+                                      ),
+                                    ],
                                   ),
+                                  child: AddAddressScreen(viewsOnly: viewOnly),
                                 ),
                               ),
-                              barrierDismissible: true,
-                              useSafeArea: true,
                             );
                           }
                         },
