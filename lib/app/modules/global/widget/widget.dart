@@ -1707,6 +1707,29 @@ enum FilterTypeEnum {
   // Add more animation states as needed
 }
 
+class CustomDivider extends StatelessWidget {
+  final double thickness;
+  final Color color;
+  final EdgeInsetsGeometry margin;
+
+  CustomDivider({
+    this.thickness = 2.0,
+    this.color = Colors.grey,
+    this.margin = const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: margin,
+      child: Divider(
+        thickness: thickness,
+        color: color,
+      ),
+    );
+  }
+}
+
 List<Widget> buildChildren(FilterTypeEnum filterName,
     CustomSearchController my_search_controller, context) {
   switch (filterName) {
@@ -1714,13 +1737,16 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
       return [
         Text(
           "Size",
-          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+          style: primaryTextStyle(
+              size: 16.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
         ),
         SizedBox(
-          height: 10.h,
+          height: 15.h,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.only(left: 0.w),
           child: Obx(() {
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -1773,12 +1799,12 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
         Text(
           "Color",
           style: primaryTextStyle(
-              size: 20.sp.round(),
+              size: 16.sp.round(),
               color: Colors.black,
               weight: FontWeight.w500),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.only(left: 0.w),
           child: Obx(() {
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -1843,11 +1869,17 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
     case FilterTypeEnum.Brands:
       return [
         Text(
-          "Brands :",
-          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+          "Brands",
+          style: primaryTextStyle(
+              size: 16.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
+        ),
+        SizedBox(
+          height: 15.h,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.only(left: 0.w),
           child: Obx(() {
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -1870,11 +1902,11 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                         decoration: BoxDecoration(
                             color: Colors.grey[300],
                             border: Border.all(
-                                width: 4.w,
+                                width: 3.w,
                                 color: my_search_controller.selectedBrands
                                         .contains(
                                             my_search_controller.brands[index])
-                                    ? Colors.black
+                                    ? Color(0xffE7D3FF)
                                     : Colors.grey[300]!)),
                         child: CachedNetworkImage(
                           imageUrl: my_search_controller.brands[index].image!,
@@ -1893,11 +1925,17 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
     case FilterTypeEnum.Style:
       return [
         Text(
-          "Styles :",
-          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+          "Styles",
+          style: primaryTextStyle(
+              size: 16.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
+        ),
+        SizedBox(
+          height: 15.h,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.only(left: 0.w),
           child: Obx(() {
             return my_search_controller.styles.isEmpty
                 ? Center(
@@ -1926,7 +1964,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                         },
                         child: Obx(() {
                           return Container(
-                            padding: EdgeInsets.all(2.w),
+                            padding: EdgeInsets.all(8.w),
                             width: 70.w,
                             height: 40.h,
                             decoration: BoxDecoration(
@@ -1941,7 +1979,9 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                                 overflow: TextOverflow.ellipsis,
                                 my_search_controller.styles[index].name!,
                                 style: primaryTextStyle(
-                                    size: 10.sp.round(), color: Colors.black),
+                                    size: 10.sp.round(),
+                                    color: Colors.black,
+                                    weight: FontWeight.w500),
                               ),
                             ),
                           );
@@ -1959,13 +1999,16 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
       return [
         Text(
           "Season",
-          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+          style: primaryTextStyle(
+              size: 16.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
         ),
         SizedBox(
-          height: 10.h,
+          height: 15.h,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.only(left: 0.w),
           child: Obx(() {
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -1985,7 +2028,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                   },
                   child: Obx(() {
                     return Container(
-                      padding: EdgeInsets.all(2.w),
+                      padding: EdgeInsets.all(6.w),
                       width: 70.w,
                       height: 40.h,
                       decoration: BoxDecoration(
@@ -1999,7 +2042,9 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                           overflow: TextOverflow.ellipsis,
                           my_search_controller.seasons[index],
                           style: primaryTextStyle(
-                              size: 10.sp.round(), color: Colors.black),
+                              size: 10.sp.round(),
+                              color: Colors.black,
+                              weight: FontWeight.w500),
                         ),
                       ),
                     );
@@ -2016,14 +2061,17 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
     case FilterTypeEnum.Materials:
       return [
         Text(
-          "Materials :",
-          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+          "Materials",
+          style: primaryTextStyle(
+              size: 16.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
         ),
         SizedBox(
-          height: 10.h,
+          height: 15.h,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.only(left: 0.w),
           child: Obx(() {
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -2043,7 +2091,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                   },
                   child: Obx(() {
                     return Container(
-                      padding: EdgeInsets.all(2.w),
+                      padding: EdgeInsets.all(6.w),
                       width: 70.w,
                       height: 40.h,
                       decoration: BoxDecoration(
@@ -2058,7 +2106,9 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                           overflow: TextOverflow.ellipsis,
                           my_search_controller.materials[index].name!,
                           style: primaryTextStyle(
-                              size: 10.sp.round(), color: Colors.black),
+                              size: 10.sp.round(),
+                              color: Colors.black,
+                              weight: FontWeight.w500),
                         ),
                       ),
                     );
@@ -2076,7 +2126,13 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
       return [
         Text(
           "Price",
-          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+          style: primaryTextStyle(
+              size: 16.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
+        ),
+        SizedBox(
+          height: 15.h,
         ),
         Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -2263,11 +2319,17 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
     case FilterTypeEnum.Collection:
       return [
         Text(
-          "Collections :",
-          style: primaryTextStyle(size: 20.sp.round(), color: Colors.black),
+          "Collections",
+          style: primaryTextStyle(
+              size: 16.sp.round(),
+              color: Colors.black,
+              weight: FontWeight.w500),
+        ),
+        SizedBox(
+          height: 15.h,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.only(left: 0.w),
           child: Obx(() {
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -2590,6 +2652,10 @@ buildFilterItem(FilterTypeEnum filterName, context,
               height: 5.h,
             ),
             ...buildChildren(filterName, my_search_controller, context),
+            SizedBox(
+              height: 5.h,
+            ),
+            CustomDivider(thickness: 0.5, color: Colors.grey),
           ],
         ),
       ),
