@@ -231,7 +231,7 @@ class HomeView extends GetView<HomeController> {
                               return buildOtherBrands(context);
                             }),
 
-                        //here we need other brands Products
+                        // here we need other brands Products
                         GetBuilder<HomeController>(
                             id: 'products-in-other-brands',
                             builder: (logic) {
@@ -243,7 +243,7 @@ class HomeView extends GetView<HomeController> {
                           height: 15.h,
                         ),
 
-                        //here we need recommended section
+                        // here we need recommended section
 
                         Obx(() {
                           return buildRecommendedScroll(context);

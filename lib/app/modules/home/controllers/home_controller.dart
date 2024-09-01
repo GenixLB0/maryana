@@ -31,6 +31,8 @@ import 'package:maryana/app/modules/search/views/result_view.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/modules/wishlist/controllers/wishlist_controller.dart';
 import 'package:public_ip_address/public_ip_address.dart';
+import 'package:restart_app/restart_app.dart';
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
@@ -183,8 +185,85 @@ class HomeController extends GetxController {
 
     runVideo();
     getCountryFromIp();
+    checkForUpdates();
     // mimicCatsForActiveCats(false, null);
     super.onReady();
+  }
+
+  bool isUpdateLoading = false;
+
+  Future<void> checkForUpdates() async {
+    final shorebirdCodePush = ShorebirdCodePush();
+
+    // Check whether a patch is available to install.
+    final isUpdateAvailable =
+        await shorebirdCodePush.isNewPatchAvailableForDownload();
+
+    if (isUpdateAvailable) {
+      await Get.dialog(
+        isUpdateLoading
+            ? const CircularProgressIndicator()
+            : AlertDialog(
+                title: Text(
+                  'Update Available!',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                content: Text(
+                  'A new version of the app is available. Do you want to download it now?',
+                  style: TextStyle(fontSize: 16),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text('No'),
+                    onPressed: () => Get.back(),
+                  ),
+                  ElevatedButton(
+                    child: Text('Yes'),
+                    onPressed: () async {
+                      isUpdateLoading = true;
+                      Get.back(closeOverlays: true);
+                      await shorebirdCodePush
+                          .downloadUpdateIfAvailable()
+                          .then((value) {
+                        isUpdateLoading = false;
+                      });
+
+                      if (!Get.isDialogOpen! && isUpdateLoading == false) {
+                        Get.dialog(
+                          AlertDialog(
+                            title: Text(
+                              'Restart App',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            content: Text(
+                              'restart the app for the new patch to take effect. Do you want to restart it now?',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: Text('No'),
+                                onPressed: () => Get.back(),
+                              ),
+                              ElevatedButton(
+                                child: Text('Yes'),
+                                onPressed: () async {
+                                  print("restart app");
+                                  Restart.restartApp.call();
+                                },
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  )
+                ],
+              ),
+        useSafeArea: false,
+      );
+      // Download the new patch if it's available.
+    }
   }
 
   @override

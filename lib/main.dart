@@ -11,7 +11,9 @@ import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:restart_app/restart_app.dart';
 
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:maryana/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:maryana/app/modules/services/api_consumer.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
@@ -20,8 +22,10 @@ import 'package:maryana/app/modules/services/dio_consumer.dart';
 import 'package:maryana/app/modules/splash/bindings/splash_binding.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:restart_app/restart_app.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 import 'app/modules/global/model/test_model_response.dart';
 import 'app/modules/onboarding/controllers/onboarding_controller.dart';
@@ -134,6 +138,7 @@ void navigateToOnboarding() {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _handleUri();
+
   await init();
 
   await AppConstants.loadUserFromCache();
