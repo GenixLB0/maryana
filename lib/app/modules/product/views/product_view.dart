@@ -89,7 +89,6 @@ class ProductView extends GetView<ProductController> {
                                 //Product Details
                                 _buildProductDetails(
                                     context, controller.product.value),
-                                //Product Size Guide
 
                                 //Product Reviews
                                 _buildProductReviews(
@@ -132,10 +131,16 @@ class ProductView extends GetView<ProductController> {
 
 //Product Colors
                               _buildProductColors(context),
+
+                              //Product Sizes
+                              _buildProductSizes(context),
                               //Product Details
                               _buildProductDetails(
                                   context, controller.product.value),
                               //Product Size Guide
+
+                              // _buildSizeGuide(
+                              //     context, controller.product.value),
 
                               //Product Reviews
                               _buildProductReviews(
@@ -567,128 +572,52 @@ class ProductView extends GetView<ProductController> {
                       ),
                     ),
                     Spacer(),
-                    controller.product.value.sizeGuide?.fitType == null
-                        ? SizedBox()
-                        : GestureDetector(
-                            onTap: () {
-                              Get.to(
-                                  () => SizeGuideView(
-                                        selectedFitType: controller
-                                                .productSizeGuide
-                                                .value
-                                                .fitType ??
-                                            "",
-                                        selectedStretch: controller
-                                            .productSizeGuide.value.stretch!,
-                                        selectedAttr: controller
-                                            .productSizeGuide.value.attr!,
-                                      ),
-                                  transition: Transition.fadeIn,
-                                  curve: Curves.easeInOut,
-                                  duration: const Duration(milliseconds: 400));
-                            },
-                            child: LoadingWidget(
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Size Guide",
-                                      style: primaryTextStyle(
-                                          color: Colors.grey[300]),
-                                    ),
-                                    SizedBox(
-                                      width: 3.w,
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      color: Colors.grey[300],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
+                    // controller.product.value.sizeGuide?.fitType == null
+                    //     ? SizedBox()
+                    //     : GestureDetector(
+                    //         onTap: () {
+                    //           Get.to(
+                    //               () => SizeGuideView(
+                    //                     selectedFitType: controller
+                    //                             .productSizeGuide
+                    //                             .value
+                    //                             .fitType ??
+                    //                         "",
+                    //                     selectedStretch: controller
+                    //                         .productSizeGuide.value.stretch!,
+                    //                     selectedAttr: controller
+                    //                         .productSizeGuide.value.attr!,
+                    //                   ),
+                    //               transition: Transition.fadeIn,
+                    //               curve: Curves.easeInOut,
+                    //               duration: const Duration(milliseconds: 400));
+                    //         },
+                    //         child: LoadingWidget(
+                    //           Padding(
+                    //             padding: EdgeInsets.symmetric(horizontal: 15.w),
+                    //             child: Row(
+                    //               crossAxisAlignment: CrossAxisAlignment.center,
+                    //               children: [
+                    //                 Text(
+                    //                   "Size Guide",
+                    //                   style: primaryTextStyle(
+                    //                       color: Colors.grey[300]),
+                    //                 ),
+                    //                 SizedBox(
+                    //                   width: 3.w,
+                    //                 ),
+                    //                 Icon(
+                    //                   Icons.arrow_forward_ios_rounded,
+                    //                   color: Colors.grey[300],
+                    //                 )
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       )
                   ],
                 ),
                 SizedBox(height: 10.h),
-
-                Column(
-                  children: [
-                    ShowUp(
-                      delay: 300,
-                      child: Obx(() {
-                        return controller.isProductLoading.value
-                            ? loadingIndicatorWidget()
-                            : GetBuilder<ProductController>(
-                                builder: (logic) {
-                                  return Container(
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 15.w),
-                                    height: 50.h,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: ListView.separated(
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (ctx, index) =>
-                                          GestureDetector(
-                                        onTap: () {
-                                          controller.setSize(
-                                              controller.sizeList[index]);
-                                        },
-                                        child: Container(
-                                          width: 45.w,
-                                          height: 45.h,
-                                          decoration: ShapeDecoration(
-                                            color: controller.sizeList[index] ==
-                                                    controller
-                                                        .selectedSize.value
-                                                ? Color(0xFF515151)
-                                                : Color(0xFFFAFAFA),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16.50),
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              controller.sizeList[index],
-                                              style: primaryTextStyle(
-                                                color: Color(0xffCCCCCC),
-                                                size: 15.sp.round(),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      separatorBuilder: (ctx, index) =>
-                                          SizedBox(width: 5.w),
-                                      itemCount: controller.sizeList.length,
-                                    ),
-                                  );
-                                },
-                              );
-                      }),
-                    ),
-                  ],
-                ),
-                ////////////////////////////////////////////////////
-                // SizedBox(height: 20.h),
-                // /////////////////Color//////////////////////////////
-                // Padding(
-                //   padding: EdgeInsets.only(left: 15.w),
-                //   child: Align(
-                //     alignment: Alignment.topLeft,
-                //     child: Text(
-                //       "Color",
-                //       style: boldTextStyle(
-                //         size: 18.sp.round(),
-                //         letterSpacing: 0.8.w,
-                //         color: Colors.grey,
-                //       ),
-                //     ),
-                //   ),
-                // ),
 
                 const Spacer(),
 
@@ -1189,54 +1118,50 @@ class ProductView extends GetView<ProductController> {
   }
 
   _buildSizeGuide(BuildContext context, ViewProductData comingProduct) {
-    return Column(
-      children: [
-        //Details
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: Row(
+    return controller.product.value.sizeGuide?.fitType == null
+        ? SizedBox()
+        : Column(
             children: [
-              Text("Size Guide", style: boldTextStyle(size: 22.sp.round())),
-              Spacer(),
-              IconButton(
-                  onPressed: () {
-                    Get.to(
-                        () => SizeGuideView(
-                              selectedFitType:
-                                  controller.productSizeGuide.value.fitType ??
-                                      "",
-                              selectedStretch:
-                                  controller.productSizeGuide.value.stretch ??
-                                      "",
-                              selectedAttr:
-                                  controller.productSizeGuide.value.attr ?? [],
-                            ),
-                        transition: Transition.fadeIn,
-                        curve: Curves.easeInOut,
-                        duration: const Duration(milliseconds: 400));
-                  },
-                  icon: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 25.w,
-                  ))
+              //Details
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                child: Row(
+                  children: [
+                    Text("Size Guide",
+                        style: boldTextStyle(size: 22.sp.round())),
+                    Spacer(),
+                    IconButton(
+                        onPressed: () {
+                          Get.to(
+                              () => SizeGuideView(
+                                    selectedFitType: controller
+                                            .productSizeGuide.value.fitType ??
+                                        "",
+                                    selectedStretch: controller
+                                            .productSizeGuide.value.stretch ??
+                                        "",
+                                    selectedAttr: controller
+                                            .productSizeGuide.value.attr ??
+                                        [],
+                                  ),
+                              transition: Transition.fadeIn,
+                              curve: Curves.easeInOut,
+                              duration: const Duration(milliseconds: 400));
+                        },
+                        icon: Icon(Icons.arrow_forward_ios_rounded, size: 17.w))
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 7.w),
+                height: 1.h,
+                color: Colors.grey[300],
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
             ],
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 7.w),
-          height: 1.h,
-          color: Colors.grey[300],
-        ),
-        SizedBox(
-          height: 5.h,
-        ),
-        Obx(() => controller.isShowDescription.value
-            ? DescriptionTextWidget(
-                text: comingProduct.description!,
-              )
-            : SizedBox()),
-      ],
-    );
+          );
   }
 
   _buildSeeAlsoProduct(BuildContext context, ViewProductData comingProduct) {
@@ -1304,41 +1229,124 @@ class ProductView extends GetView<ProductController> {
   _buildAddToCartButton(myContext, ViewProductData comingProduct) {
     return GestureDetector(
       onTap: () {
-        controller.changeAddToCartStatus();
-        // Future.delayed(Duration(milliseconds: 1700), () {
-        //   showMaterialModalBottomSheet(
-        //     context: myContext,
-        //     backgroundColor: Colors.transparent,
-        //     expand: false,
-        //     builder: (context) => BackdropFilter(
-        //         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        //         child: buildBottomSheet("", "", "", myContext)),
-        //   );
-        // });
-        if (controller.colorsList.length == 1 &&
-            controller.sizeList.length == 1) {
-          if (userToken != null) {
-            print('teasdsadsa');
-            bool isProductInCart = cartController.cartItems.any(
-              (element) =>
-                  element.product != null &&
-                  controller.product != null &&
-                  element.selectedSize == controller.selectedSize.value &&
-                  element.product.id == controller.product.value.id,
-            );
-            print('teasdsadsa2');
+        // controller.changeAddToCartStatus();
+        // // Future.delayed(Duration(milliseconds: 1700), () {
+        // //   showMaterialModalBottomSheet(
+        // //     context: myContext,
+        // //     backgroundColor: Colors.transparent,
+        // //     expand: false,
+        // //     builder: (context) => BackdropFilter(
+        // //         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        // //         child: buildBottomSheet("", "", "", myContext)),
+        // //   );
+        // // });
+        // if (controller.colorsList.length == 1 &&
+        //     controller.sizeList.length == 1) {
+        //   if (userToken != null) {
+        //     print('teasdsadsa');
+        //     bool isProductInCart = cartController.cartItems.any(
+        //       (element) =>
+        //           element.product != null &&
+        //           controller.product != null &&
+        //           element.selectedSize == controller.selectedSize.value &&
+        //           element.product.id == controller.product.value.id,
+        //     );
+        //     print('teasdsadsa2');
+        //
+        //     if (isProductInCart) {
+        //       cartController.removeItem(cartController.cartItems.firstWhere(
+        //           (element) =>
+        //               element.product.id == controller.product.value.id));
+        //     }
+        //     print('teasdsadsa3');
+        //     cartController.loading.value = true;
+        //     controller.product.value.selectedSize =
+        //         controller.selectedSize.value;
+        //     controller.product.value.selectedColor =
+        //         controller.selectedColor.value;
+        //     cartController.addToCart(
+        //       controller.product.value,
+        //       controller.selectedSize.value,
+        //       controller.selectedColor.value,
+        //       quantity: 1,
+        //     );
+        //     print('teasdsadsa4');
+        //     Get.toNamed(Routes.CART);
+        //     cartController.loading.value = false;
+        //   } else {
+        //     Get.to(() => CartPage());
+        //   }
+        // } else {
+        //   if (controller.colorsList.isEmpty && controller.sizeList.isEmpty) {
+        //     if (userToken != null) {
+        //       print('teasdsadsa');
+        //       bool isProductInCart = cartController.cartItems.any(
+        //         (element) =>
+        //             element.product != null &&
+        //             controller.product != null &&
+        //             element.selectedSize == controller.selectedSize.value &&
+        //             element.product.id == controller.product.value.id,
+        //       );
+        //       print('teasdsadsa2');
+        //
+        //       if (isProductInCart) {
+        //         cartController.removeItem(cartController.cartItems.firstWhere(
+        //             (element) =>
+        //                 element.product.id == controller.product.value.id));
+        //       }
+        //       print('teasdsadsa3');
+        //       cartController.loading.value = true;
+        //       controller.product.value.selectedSize =
+        //           controller.selectedSize.value;
+        //       controller.product.value.selectedColor =
+        //           controller.selectedColor.value;
+        //       cartController.addToCart(
+        //         controller.product.value,
+        //         controller.selectedSize.value,
+        //         controller.selectedColor.value,
+        //         quantity: 1,
+        //       );
+        //       print('teasdsadsa4');
+        //       Get.toNamed(Routes.CART);
+        //       cartController.loading.value = false;
+        //     } else {
+        //       Get.to(() => CartPage());
+        //     }
+        //   }
+        //   // showMaterialModalBottomSheet(
+        //   //   context: myContext,
+        //   //   backgroundColor: Colors.transparent,
+        //   //   expand: false,
+        //   //   builder: (context) => BackdropFilter(
+        //   //       filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        //   //       child: buildBottomSheet(comingProduct, myContext)),
+        //   // );
+        // }
+        // Handle Add to Cart action
+        if (userToken != null) {
+          print('teasdsadsa');
+          bool isProductInCart = cartController.cartItems.any(
+            (element) =>
+                element.product != null &&
+                controller.product != null &&
+                element.selectedSize == controller.selectedSize.value &&
+                element.product.id == controller.product.value.id,
+          );
 
-            if (isProductInCart) {
-              cartController.removeItem(cartController.cartItems.firstWhere(
-                  (element) =>
-                      element.product.id == controller.product.value.id));
-            }
-            print('teasdsadsa3');
-            cartController.loading.value = true;
-            controller.product.value.selectedSize =
-                controller.selectedSize.value;
-            controller.product.value.selectedColor =
-                controller.selectedColor.value;
+          print('teasdsadsa2');
+
+          if (isProductInCart) {
+            cartController.removeItem(cartController.cartItems.firstWhere(
+                (element) =>
+                    element.product.id == controller.product.value.id));
+          }
+          print('teasdsadsa3');
+          cartController.loading.value = true;
+          controller.product.value.selectedSize = controller.selectedSize.value;
+          controller.product.value.selectedColor =
+              controller.selectedColor.value;
+          if (controller.selectedSize.value.isNotEmpty &&
+              controller.selectedColor.value.isNotEmpty) {
             cartController.addToCart(
               controller.product.value,
               controller.selectedSize.value,
@@ -1349,53 +1357,11 @@ class ProductView extends GetView<ProductController> {
             Get.toNamed(Routes.CART);
             cartController.loading.value = false;
           } else {
-            Get.to(() => CartPage());
+            Get.snackbar("Error", "Please Select From Options First",
+                backgroundColor: Colors.white);
           }
         } else {
-          if (controller.colorsList.isEmpty && controller.sizeList.isEmpty) {
-            if (userToken != null) {
-              print('teasdsadsa');
-              bool isProductInCart = cartController.cartItems.any(
-                (element) =>
-                    element.product != null &&
-                    controller.product != null &&
-                    element.selectedSize == controller.selectedSize.value &&
-                    element.product.id == controller.product.value.id,
-              );
-              print('teasdsadsa2');
-
-              if (isProductInCart) {
-                cartController.removeItem(cartController.cartItems.firstWhere(
-                    (element) =>
-                        element.product.id == controller.product.value.id));
-              }
-              print('teasdsadsa3');
-              cartController.loading.value = true;
-              controller.product.value.selectedSize =
-                  controller.selectedSize.value;
-              controller.product.value.selectedColor =
-                  controller.selectedColor.value;
-              cartController.addToCart(
-                controller.product.value,
-                controller.selectedSize.value,
-                controller.selectedColor.value,
-                quantity: 1,
-              );
-              print('teasdsadsa4');
-              Get.toNamed(Routes.CART);
-              cartController.loading.value = false;
-            } else {
-              Get.to(() => CartPage());
-            }
-          }
-          showMaterialModalBottomSheet(
-            context: myContext,
-            backgroundColor: Colors.transparent,
-            expand: false,
-            builder: (context) => BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: buildBottomSheet(comingProduct, myContext)),
-          );
+          Get.to(() => CartPage());
         }
       },
       child: SvgPicture.asset(
@@ -1420,7 +1386,7 @@ class ProductView extends GetView<ProductController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "No Reviews Yet ..",
+                          "No Comments Yet ..",
                           style: primaryTextStyle(),
                         ),
                         SizedBox(
@@ -1538,19 +1504,25 @@ class ProductView extends GetView<ProductController> {
                         ),
                       ),
                     )
-                  : GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.1),
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 5.w),
-                      itemBuilder: (context, index) {
-                        return buildProductCard(
-                            product: controller.finalRelatedProducts[index]);
-                      },
-                      itemCount: controller.finalRelatedProducts.length,
+                  : Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio:
+                                MediaQuery.of(context).size.width /
+                                    (MediaQuery.of(context).size.height /
+                                        heightDevidedRatio),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: crossAxisSpacing,
+                            mainAxisSpacing: mainAxisSpacing),
+                        itemBuilder: (context, index) {
+                          return buildProductCard(
+                              product: controller.finalRelatedProducts[index]);
+                        },
+                        itemCount: controller.finalRelatedProducts.length,
+                      ),
                     );
         });
   }
@@ -1646,6 +1618,258 @@ class ProductView extends GetView<ProductController> {
                             itemCount: controller.colorsList.length,
                           ),
                         );
+                      },
+                    );
+            }),
+          ),
+          SizedBox(height: 15.h),
+        ],
+      ),
+    );
+  }
+
+  _buildProductSizes(context) {
+    // Column(
+    //   children: [
+    //     ShowUp(
+    //       delay: 300,
+    //       child: Obx(() {
+    //         return controller.isProductLoading.value
+    //             ? loadingIndicatorWidget()
+    //             : GetBuilder<ProductController>(
+    //           builder: (logic) {
+    //             return Container(
+    //               margin:
+    //               EdgeInsets.symmetric(horizontal: 15.w),
+    //               height: 50.h,
+    //               width: MediaQuery.of(context).size.width,
+    //               child: ListView.separated(
+    //                 scrollDirection: Axis.horizontal,
+    //                 itemBuilder: (ctx, index) =>
+    //                     GestureDetector(
+    //                       onTap: () {
+    //                         controller.setSize(
+    //                             controller.sizeList[index]);
+    //                       },
+    //                       child: Container(
+    //                         width: 45.w,
+    //                         height: 45.h,
+    //                         decoration: ShapeDecoration(
+    //                           color: controller.sizeList[index] ==
+    //                               controller
+    //                                   .selectedSize.value
+    //                               ? Color(0xFF515151)
+    //                               : Color(0xFFFAFAFA),
+    //                           shape: RoundedRectangleBorder(
+    //                             borderRadius:
+    //                             BorderRadius.circular(16.50),
+    //                           ),
+    //                         ),
+    //                         child: Center(
+    //                           child: Text(
+    //                             controller.sizeList[index],
+    //                             style: primaryTextStyle(
+    //                               color: Color(0xffCCCCCC),
+    //                               size: 15.sp.round(),
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       ),
+    //                     ),
+    //                 separatorBuilder: (ctx, index) =>
+    //                     SizedBox(width: 5.w),
+    //                 itemCount: controller.sizeList.length,
+    //               ),
+    //             );
+    //           },
+    //         );
+    //       }),
+    //     ),
+    //   ],
+    // ),
+    // //////////////////////////////////////////////////
+    // SizedBox(height: 20.h),
+    // /////////////////Color//////////////////////////////
+    // Padding(
+    // padding: EdgeInsets.only(left: 15.w),
+    // child: Align(
+    // alignment: Alignment.topLeft,
+    // child: Text(
+    // "Color",
+    // style: boldTextStyle(
+    // size: 18.sp.round(),
+    // letterSpacing: 0.8.w,
+    // color: Colors.grey,
+    // ),
+    // ),
+    // ),
+    // ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //point here
+          Row(
+            children: [
+              Text("Sizes", style: boldTextStyle(size: 22.sp.round())),
+              Spacer(),
+              controller.product.value.sizeGuide?.fitType == null
+                  ? SizedBox()
+                  : Row(
+                      children: [
+                        Text("Size Guide",
+                            style: primaryTextStyle(size: 15.sp.round())),
+                        IconButton(
+                            onPressed: () {
+                              Get.to(
+                                  () => SizeGuideView(
+                                        selectedFitType: controller
+                                                .productSizeGuide
+                                                .value
+                                                .fitType ??
+                                            "",
+                                        selectedStretch: controller
+                                                .productSizeGuide
+                                                .value
+                                                .stretch ??
+                                            "",
+                                        selectedAttr: controller
+                                                .productSizeGuide.value.attr ??
+                                            [],
+                                      ),
+                                  transition: Transition.fadeIn,
+                                  curve: Curves.easeInOut,
+                                  duration: const Duration(milliseconds: 400));
+                            },
+                            icon: Icon(Icons.arrow_forward_ios_rounded,
+                                size: 17.w)),
+                      ],
+                    )
+            ],
+          ),
+          SizedBox(height: 5.h),
+          Divider(
+            color: Colors.grey[300],
+            height: 2,
+          ),
+          SizedBox(height: 10.h),
+          ShowUp(
+            delay: 300,
+            child: Obx(() {
+              return controller.isProductLoading.value
+                  ? loadingIndicatorWidget()
+                  : GetBuilder<ProductController>(
+                      builder: (logic) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 8.w),
+                          height: 50.h,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (ctx, index) => GestureDetector(
+                              onTap: () {
+                                controller.setSize(controller.sizeList[index]);
+                              },
+                              child: Container(
+                                width: 45.w,
+                                height: 45.h,
+                                decoration: ShapeDecoration(
+                                  color: controller.sizeList[index] ==
+                                          controller.selectedSize.value
+                                      ? Color(0xFF515151)
+                                      : Color(0xFFFAFAFA),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.50),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    controller.sizeList[index],
+                                    style: primaryTextStyle(
+                                      color: Color(0xffCCCCCC),
+                                      size: 15.sp.round(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            separatorBuilder: (ctx, index) =>
+                                SizedBox(width: 5.w),
+                            itemCount: controller.sizeList.length,
+                          ),
+                        );
+                        //   Container(
+                        //   margin: EdgeInsets.symmetric(horizontal: 5.w),
+                        //   height:
+                        //       70.h, // Increase height to accommodate the text
+                        //   width: MediaQuery.of(context).size.width,
+                        //   child: ListView.separated(
+                        //     scrollDirection: Axis.horizontal,
+                        //     itemBuilder: (ctx, index) => GestureDetector(
+                        //       onTap: () {
+                        //         controller.setColor(
+                        //             controller.colorsList[index].name);
+                        //         controller.changeImagesList(
+                        //             controller.colorsList[index].name);
+                        //       },
+                        //       child: Column(
+                        //         children: [
+                        //           Container(
+                        //             width: 45.w,
+                        //             height: 43.h,
+                        //             decoration: BoxDecoration(
+                        //               shape: BoxShape.circle,
+                        //               border: Border.all(
+                        //                   color: Colors.grey.withOpacity(0.3)),
+                        //               color: Color(int.parse(
+                        //                   '0xff${controller.colorsList[index].hex!.split('#')[1]}')),
+                        //             ),
+                        //             child: Stack(
+                        //               children: [
+                        //                 Center(
+                        //                   child:
+                        //                       controller.selectedColor.value ==
+                        //                               controller
+                        //                                   .colorsList[index]
+                        //                                   .name
+                        //                           ? ShowUp(
+                        //                               delay: 200,
+                        //                               child: SvgPicture.asset(
+                        //                                   'assets/images/selected.svg',
+                        //                                   width: 20.w,
+                        //                                   height: 20.w,
+                        //                                   color: controller
+                        //                                               .colorsList[
+                        //                                                   index]
+                        //                                               .name ==
+                        //                                           'White'
+                        //                                       ? Colors.black
+                        //                                       : Colors.white),
+                        //                             )
+                        //                           : SizedBox(),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //           SizedBox(height: 5.h),
+                        //           // Spacing between the circle and the text
+                        //           Text(
+                        //             controller.colorsList[index].name ??
+                        //                 '', // Display color name
+                        //             style: primaryTextStyle(
+                        //                 size: 12.sp.round(),
+                        //                 weight: FontWeight
+                        //                     .w400), // Adjust font size
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     separatorBuilder: (ctx, index) =>
+                        //         SizedBox(width: 5.w),
+                        //     itemCount: controller.colorsList.length,
+                        //   ),
+                        // );
                       },
                     );
             }),
@@ -1896,9 +2120,8 @@ class ImageSliderWithIndicators extends StatefulWidget {
 }
 
 class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
-  int _currentIndex = 0;
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
+  // int _currentIndex = 0;
+  ProductController productController = Get.put(ProductController());
 
   @override
   Widget build(BuildContext context) {
@@ -1918,14 +2141,13 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
               child: Hero(
                 tag: image.path!,
                 child: Container(
-                  margin: const EdgeInsets.all(5.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5.0),
                     child: Stack(
                       children: <Widget>[
                         CachedNetworkImage(
                           imageUrl: image.path!,
-                          height: MediaQuery.of(context).size.height / 2,
+                          height: MediaQuery.of(context).size.height / 1.2,
                           fit: BoxFit.cover,
                           width: MediaQuery.of(context).size.width,
                           placeholder: (context, url) => placeHolderWidget(),
@@ -1944,23 +2166,23 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
           alignment: Alignment.bottomCenter,
           children: [
             CarouselSlider(
-              carouselController: _carouselController,
+              carouselController: productController.carouselController,
               items: imageWidgets,
               options: CarouselOptions(
                 autoPlay: true,
                 enlargeCenterPage: true,
-                initialPage: _currentIndex,
+                initialPage: productController.selectedIndex.value,
                 aspectRatio: 1.1,
                 viewportFraction: 1.0,
                 onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
+                  productController.setSelectedIndex(index);
+                  // setState(() {
+                  //   _currentIndex = index;
+                  // });
                 },
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 20),
               decoration: const BoxDecoration(
                 boxShadow: [
                   BoxShadow(
@@ -1975,26 +2197,30 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                 ),
                 color: Colors.white,
               ),
-              height: 30.h,
+              height: 8.h,
               width: MediaQuery.of(context).size.width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: widget.imgList.asMap().entries.map((entry) {
-                  return GestureDetector(
-                    onTap: () => _carouselController.animateToPage(entry.key),
-                    child: Container(
-                      width: 8.0,
-                      height: 8.0,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _currentIndex == entry.key
-                            ? const Color.fromRGBO(0, 0, 0, 0.9)
-                            : const Color.fromRGBO(0, 0, 0, 0.4),
+                  return Obx(() {
+                    return GestureDetector(
+                      onTap: () => productController.carouselController
+                          ?.animateToPage(entry.key),
+                      child: Container(
+                        width: 6.0,
+                        height: 6.0,
+                        margin: EdgeInsets.only(
+                            top: 4.0.h, left: 2.0.w, right: 2.0.w),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color:
+                              productController.selectedIndex.value == entry.key
+                                  ? const Color.fromRGBO(0, 0, 0, 0.9)
+                                  : const Color.fromRGBO(0, 0, 0, 0.4),
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  });
                 }).toList(),
               ),
             ),

@@ -121,9 +121,6 @@ class SearchView extends GetView<CustomSearchController> {
                       child: buildProductsScroll(context),
                       delay: 400,
                     )),
-            SizedBox(
-              height: 40.h,
-            ),
           ],
         ),
       ),
@@ -191,7 +188,7 @@ class SearchView extends GetView<CustomSearchController> {
                   height: 5.h,
                 ),
                 Container(
-                  padding: EdgeInsets.all(smallSpacing),
+                  padding: EdgeInsets.symmetric(horizontal: smallSpacing),
                   height: 330.h,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.separated(

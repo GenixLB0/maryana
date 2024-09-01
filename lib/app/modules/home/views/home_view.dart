@@ -1192,270 +1192,329 @@ class HomeView extends GetView<HomeController> {
       },
       child: ShowUp(
         delay: 300,
-        child: ListView(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          children: <Widget>[
-            Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                CachedNetworkImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: 255.h,
-                    imageUrl: collection.image!,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => LoadingWidget(
-                          Image.asset(
-                            "assets/images/placeholder.png",
-                            width: MediaQuery.of(context).size.width,
-                            height: 200.h,
-                            fit: BoxFit.cover,
-                          ),
-                        )),
-                SizedBox(
-                    width: 180.w,
-                    height: 150.h,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 30.w),
-                          child: Text(
-                            'SHOP OUR',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: const Color(0xFF9B9B9B),
-                              fontSize: 17.sp,
-                              fontFamily: GoogleFonts.cormorant().fontFamily,
-                              fontWeight: FontWeight.w700,
-                              height: 0,
+        child: InkResponse(
+          onTap: () {
+            if (CustomSearchController().initialized) {
+              CustomSearchController controller =
+                  Get.find<CustomSearchController>();
+              controller.getProductsInSection(
+                  sectionName: collection.name!,
+                  payload: {"collection_ids[0]": collection.id.toString()});
+
+              Get.to(() => const ResultView(),
+                  transition: Transition.fadeIn,
+                  curve: Curves.easeInOut,
+                  duration: Duration(milliseconds: 400));
+            } else {
+              CustomSearchController controller =
+                  Get.put<CustomSearchController>(CustomSearchController());
+              controller.getProductsInSection(
+                  sectionName: collection.name!,
+                  payload: {"collection_ids[0]": collection.id.toString()});
+              Get.to(() => const ResultView(),
+                  transition: Transition.fadeIn,
+                  curve: Curves.easeInOut,
+                  duration: Duration(milliseconds: 400));
+            }
+          },
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: <Widget>[
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CachedNetworkImage(
+                      width: MediaQuery.of(context).size.width,
+                      height: 255.h,
+                      imageUrl: collection.image!,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => LoadingWidget(
+                            Image.asset(
+                              "assets/images/placeholder.png",
+                              width: MediaQuery.of(context).size.width,
+                              height: 200.h,
+                              fit: BoxFit.cover,
+                            ),
+                          )),
+                  SizedBox(
+                      width: 180.w,
+                      height: 150.h,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            color: Colors.grey.withOpacity(0.3),
+                            width: 100.w,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15.w),
+                              child: Center(
+                                child: Text('SHOP OUR',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: boldTextStyle(
+                                      letterSpacing: 0.8,
+                                      color: Colors.white,
+                                      textShadows: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.7),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    )
+
+                                    // TextStyle(
+                                    //   color: const Color(0xFF9B9B9B),
+                                    //   shadows: const [
+                                    //     BoxShadow(
+                                    //         color: Colors.black,
+                                    //         spreadRadius: 5,
+                                    //         blurRadius: 20),
+                                    //   ],
+                                    //   fontSize: 15.sp,
+                                    //   fontFamily:
+                                    //       GoogleFonts.cormorant().fontFamily,
+                                    //   fontWeight: FontWeight.w700,
+                                    //   height: 0,
+                                    // ),
+                                    ),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        TypeWriter(
-                            controller: typeController,
-                            builder: (context, value) {
-                              return Text(
-                                overflow: TextOverflow.ellipsis,
-                                value.text,
-                                style: TextStyle(
-                                  color: Colors.white,
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          TypeWriter(
+                              controller: typeController,
+                              builder: (context, value) {
+                                return Text(
                                   overflow: TextOverflow.ellipsis,
-                                  fontSize: 22.sp,
-                                  fontFamily:
-                                      GoogleFonts.cormorant().fontFamily,
-                                  fontWeight: FontWeight.w900,
-                                  shadows: const [
-                                    BoxShadow(
-                                        color: Colors.black,
-                                        spreadRadius: 5,
-                                        blurRadius: 20),
-                                  ],
-                                  height: 0,
-                                ),
-                                maxLines: 1,
-                              );
-                            }),
-                      ],
-                    ))
-              ],
-            ),
-            FutureBuilder(
-                future: controller.getProductsInCollection(collection),
-                builder: (ctx, snapshot) {
-                  // Checking if future is resolved
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    print("snap done !!!!!");
-                    return snapshot.data!.isEmpty
-                        ? const SizedBox()
-                        : Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10.w),
-                            child: ListView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: 50.h,
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        collection.name!,
-                                        style: boldTextStyle(
-                                            weight: FontWeight.w400,
-                                            size: 18.sp.round(),
-                                            color: Colors.black),
-                                      ),
-                                      Spacer(),
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (CustomSearchController()
-                                              .initialized) {
-                                            CustomSearchController controller =
-                                                Get.find<
-                                                    CustomSearchController>();
-                                            controller.getProductsInSection(
-                                                sectionName: collection.name!,
-                                                payload: {
-                                                  "collection_ids[0]":
-                                                      collection.id.toString()
-                                                });
-
-                                            Get.to(() => const ResultView(),
-                                                transition: Transition.fadeIn,
-                                                curve: Curves.easeInOut,
-                                                duration: Duration(
-                                                    milliseconds: 400));
-                                          } else {
-                                            CustomSearchController controller =
-                                                Get.put<CustomSearchController>(
-                                                    CustomSearchController());
-                                            controller.getProductsInSection(
-                                                sectionName: collection.name!,
-                                                payload: {
-                                                  "collection_ids[0]":
-                                                      collection.id.toString()
-                                                });
-                                            Get.to(() => const ResultView(),
-                                                transition: Transition.fadeIn,
-                                                curve: Curves.easeInOut,
-                                                duration: Duration(
-                                                    milliseconds: 400));
-                                          }
-                                        },
-                                        child: Text(
-                                          "SHOW ALL",
+                                  value.text,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 22.sp,
+                                    fontFamily:
+                                        GoogleFonts.cormorant().fontFamily,
+                                    fontWeight: FontWeight.w900,
+                                    shadows: const [
+                                      BoxShadow(
+                                          color: Colors.black,
+                                          spreadRadius: 5,
+                                          blurRadius: 20),
+                                    ],
+                                    height: 0,
+                                  ),
+                                  maxLines: 1,
+                                );
+                              }),
+                        ],
+                      ))
+                ],
+              ),
+              FutureBuilder(
+                  future: controller.getProductsInCollection(collection),
+                  builder: (ctx, snapshot) {
+                    // Checking if future is resolved
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      print("snap done !!!!!");
+                      return snapshot.data!.isEmpty
+                          ? const SizedBox()
+                          : Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: ListView(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 50.h,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          collection.name!,
                                           style: boldTextStyle(
                                               weight: FontWeight.w400,
-                                              size: 16.sp.round(),
-                                              color: Color(0xff9B9B9B)),
+                                              size: 18.sp.round(),
+                                              color: Colors.black),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: smallSpacing,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  height: 320.h,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: ListView.separated(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (ctx, index) {
-                                      return snapshot.data!.isEmpty
-                                          ? Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      3.5),
-                                              child: Shimmer.fromColors(
-                                                  baseColor: Colors.black,
-                                                  highlightColor: primaryColor,
-                                                  child: Text(
-                                                    "Coming Soon ..",
-                                                    style: primaryTextStyle(
-                                                        color: Colors.black,
-                                                        weight: FontWeight.w800,
-                                                        size: 22.sp.round()),
-                                                  )))
-                                          : index != snapshot.data!.length
-                                              ? buildProductCard(
-                                                  product:
-                                                      ViewProductData.fromJson(
-                                                          snapshot
-                                                              .data![index]),
-                                                )
-                                              : buildProductShowAll(() {
-                                                  if (CustomSearchController()
-                                                      .initialized) {
-                                                    CustomSearchController
-                                                        controller = Get.find<
-                                                            CustomSearchController>();
-                                                    controller
-                                                        .getProductsInSection(
-                                                            sectionName:
-                                                                collection
-                                                                    .name!,
-                                                            payload: {
-                                                          "collection_ids[0]":
-                                                              collection.id
-                                                                  .toString()
-                                                        });
+                                        Spacer(),
+                                        GestureDetector(
+                                          onTap: () {
+                                            if (CustomSearchController()
+                                                .initialized) {
+                                              CustomSearchController
+                                                  controller = Get.find<
+                                                      CustomSearchController>();
+                                              controller.getProductsInSection(
+                                                  sectionName: collection.name!,
+                                                  payload: {
+                                                    "collection_ids[0]":
+                                                        collection.id.toString()
+                                                  });
 
-                                                    Get.to(
-                                                        () =>
-                                                            const ResultView(),
-                                                        transition:
-                                                            Transition.fadeIn,
-                                                        curve: Curves.easeInOut,
-                                                        duration: Duration(
-                                                            milliseconds: 400));
-                                                  } else {
-                                                    CustomSearchController
-                                                        controller =
-                                                        Get.put<CustomSearchController>(
-                                                            CustomSearchController());
-                                                    controller
-                                                        .getProductsInSection(
-                                                            sectionName:
-                                                                collection
-                                                                    .name!,
-                                                            payload: {
-                                                          "collection_ids[0]":
-                                                              collection.id
-                                                                  .toString()
-                                                        });
-                                                    Get.to(
-                                                        () =>
-                                                            const ResultView(),
-                                                        transition:
-                                                            Transition.fadeIn,
-                                                        curve: Curves.easeInOut,
-                                                        duration: Duration(
-                                                            milliseconds: 400));
-                                                  }
-                                                });
-                                    },
-                                    separatorBuilder: (ctx, index) => SizedBox(
-                                      width: 10.w,
+                                              Get.to(() => const ResultView(),
+                                                  transition: Transition.fadeIn,
+                                                  curve: Curves.easeInOut,
+                                                  duration: Duration(
+                                                      milliseconds: 400));
+                                            } else {
+                                              CustomSearchController
+                                                  controller =
+                                                  Get.put<CustomSearchController>(
+                                                      CustomSearchController());
+                                              controller.getProductsInSection(
+                                                  sectionName: collection.name!,
+                                                  payload: {
+                                                    "collection_ids[0]":
+                                                        collection.id.toString()
+                                                  });
+                                              Get.to(() => const ResultView(),
+                                                  transition: Transition.fadeIn,
+                                                  curve: Curves.easeInOut,
+                                                  duration: Duration(
+                                                      milliseconds: 400));
+                                            }
+                                          },
+                                          child: Text(
+                                            "SHOW ALL",
+                                            style: boldTextStyle(
+                                                weight: FontWeight.w400,
+                                                size: 16.sp.round(),
+                                                color: Color(0xff9B9B9B)),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: smallSpacing,
+                                        )
+                                      ],
                                     ),
-                                    itemCount: snapshot.data!.length + 1,
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                  }
+                                  Container(
+                                    height: 320.h,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (ctx, index) {
+                                        return snapshot.data!.isEmpty
+                                            ? Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        3.5),
+                                                child: Shimmer.fromColors(
+                                                    baseColor: Colors.black,
+                                                    highlightColor:
+                                                        primaryColor,
+                                                    child: Text(
+                                                      "Coming Soon ..",
+                                                      style: primaryTextStyle(
+                                                          color: Colors.black,
+                                                          weight:
+                                                              FontWeight.w800,
+                                                          size: 22.sp.round()),
+                                                    )))
+                                            : index != snapshot.data!.length
+                                                ? buildProductCard(
+                                                    product: ViewProductData
+                                                        .fromJson(snapshot
+                                                            .data![index]),
+                                                  )
+                                                : buildProductShowAll(() {
+                                                    if (CustomSearchController()
+                                                        .initialized) {
+                                                      CustomSearchController
+                                                          controller = Get.find<
+                                                              CustomSearchController>();
+                                                      controller
+                                                          .getProductsInSection(
+                                                              sectionName:
+                                                                  collection
+                                                                      .name!,
+                                                              payload: {
+                                                            "collection_ids[0]":
+                                                                collection.id
+                                                                    .toString()
+                                                          });
 
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.connectionState == ConnectionState.active) {
-                    return Container(
-                        height: 60.h,
-                        child: LoadingWidget(placeHolderWidget()));
-                  }
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        '${snapshot.error} occurred',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    );
+                                                      Get.to(
+                                                          () =>
+                                                              const ResultView(),
+                                                          transition:
+                                                              Transition.fadeIn,
+                                                          curve:
+                                                              Curves.easeInOut,
+                                                          duration: Duration(
+                                                              milliseconds:
+                                                                  400));
+                                                    } else {
+                                                      CustomSearchController
+                                                          controller =
+                                                          Get.put<CustomSearchController>(
+                                                              CustomSearchController());
+                                                      controller
+                                                          .getProductsInSection(
+                                                              sectionName:
+                                                                  collection
+                                                                      .name!,
+                                                              payload: {
+                                                            "collection_ids[0]":
+                                                                collection.id
+                                                                    .toString()
+                                                          });
+                                                      Get.to(
+                                                          () =>
+                                                              const ResultView(),
+                                                          transition:
+                                                              Transition.fadeIn,
+                                                          curve:
+                                                              Curves.easeInOut,
+                                                          duration: Duration(
+                                                              milliseconds:
+                                                                  400));
+                                                    }
+                                                  });
+                                      },
+                                      separatorBuilder: (ctx, index) =>
+                                          SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      itemCount: snapshot.data!.length + 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                    }
 
-                    // if we got our data
-                  } else if (snapshot.hasData) {
-                    // Extracting data from snapshot object
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.connectionState == ConnectionState.active) {
+                      return Container(
+                          height: 60.h,
+                          child: LoadingWidget(placeHolderWidget()));
+                    }
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          '${snapshot.error} occurred',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      );
 
+                      // if we got our data
+                    } else if (snapshot.hasData) {
+                      // Extracting data from snapshot object
+
+                      return SizedBox();
+                    }
                     return SizedBox();
-                  }
-                  return SizedBox();
-                }),
-          ],
+                  }),
+            ],
+          ),
         ),
       ),
     );

@@ -191,7 +191,9 @@ class ProductController extends GetxController {
 
   setCarouselControllerIndex(incomingIndex) {
     if (carouselController != null) {
-      carouselController!.jumpToPage(incomingIndex);
+      print("carousel controller is not null");
+      print("incoming index ${incomingIndex}");
+      carouselController?.jumpToPage(incomingIndex);
     }
   }
 

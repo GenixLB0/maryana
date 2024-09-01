@@ -237,7 +237,7 @@ class CustomSearchController extends GetxController {
 
   void scrollToTop() {
     scrollController.animateTo(0,
-        duration: const Duration(seconds: 3), curve: Curves.linear);
+        duration: const Duration(seconds: 1), curve: Curves.linear);
   }
 
   addActiveCats(List<int> incomingActiveCats) {

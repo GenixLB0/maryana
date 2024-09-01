@@ -85,40 +85,90 @@ class _SizeGuideState extends State<SizeGuideView>
               SizedBox(
                 height: 5.h,
               ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: fitTypeList
-                      .map(
-                        (value) => value == widget.selectedFitType
-                            ? ElevatedButton(
-                                onPressed: () {},
-                                style: ButtonStyle(
-                                    maximumSize: WidgetStateProperty.all(
-                                        Size(105.w, 40.h)),
-                                    backgroundColor:
-                                        WidgetStateProperty.all(primaryColor)),
-                                child: Text(
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  value,
-                                  style: primaryTextStyle(
-                                      color: Colors.white, size: 13.sp.round()),
-                                ),
-                              )
-                            : ElevatedButton(
-                                style: ButtonStyle(
-                                    maximumSize: WidgetStateProperty.all(
-                                        Size(105.w, 40.h))),
-                                onPressed: () {},
-                                child: Text(
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  value,
-                                  style: primaryTextStyle(size: 13.sp.round()),
-                                )),
-                      )
-                      .toList()),
-              SizedBox(height: 20),
+              SizedBox(
+                height: 50.h,
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return fitTypeList[index] == widget.selectedFitType
+                          ? ElevatedButton(
+                              onPressed: () {},
+                              style: ButtonStyle(
+                                  minimumSize: WidgetStateProperty.all(
+                                      Size(105.w, 40.h)),
+                                  maximumSize: WidgetStateProperty.all(
+                                      Size(105.w, 40.h)),
+                                  backgroundColor:
+                                      WidgetStateProperty.all(primaryColor)),
+                              child: Text(
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                fitTypeList[index],
+                                style: primaryTextStyle(
+                                    color: Colors.white, size: 13.sp.round()),
+                              ),
+                            )
+                          : ElevatedButton(
+                              style: ButtonStyle(
+                                  minimumSize: WidgetStateProperty.all(
+                                      Size(105.w, 40.h)),
+                                  maximumSize: WidgetStateProperty.all(
+                                      Size(105.w, 40.h))),
+                              onPressed: () {},
+                              child: Text(
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                fitTypeList[index],
+                                style: primaryTextStyle(size: 13.sp.round()),
+                              ));
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(
+                        width: 10.w,
+                      );
+                    },
+                    itemCount: fitTypeList.length),
+              ),
+              // Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //     children: fitTypeList
+              //         .map(
+              //           (value) =>
+              //           value == widget.selectedFitType
+              //               ? ElevatedButton(
+              //                   onPressed: () {},
+              //                   style: ButtonStyle(
+              //                       minimumSize: WidgetStateProperty.all(
+              //                           Size(105.w, 40.h)),
+              //                       maximumSize: WidgetStateProperty.all(
+              //                           Size(105.w, 40.h)),
+              //                       backgroundColor:
+              //                           WidgetStateProperty.all(primaryColor)),
+              //                   child: Text(
+              //                     overflow: TextOverflow.ellipsis,
+              //                     maxLines: 1,
+              //                     value,
+              //                     style: primaryTextStyle(
+              //                         color: Colors.white, size: 13.sp.round()),
+              //                   ),
+              //                 )
+              //               : ElevatedButton(
+              //                   style: ButtonStyle(
+              //                       minimumSize: WidgetStateProperty.all(
+              //                           Size(105.w, 40.h)),
+              //                       maximumSize: WidgetStateProperty.all(
+              //                           Size(105.w, 40.h))),
+              //                   onPressed: () {},
+              //                   child: Text(
+              //                     overflow: TextOverflow.ellipsis,
+              //                     maxLines: 1,
+              //                     value,
+              //                     style: primaryTextStyle(size: 13.sp.round()),
+              //                   )),
+              //         )
+              //         .toList()),
+              const SizedBox(height: 20),
               Text('Stretch',
                   style: primaryTextStyle(
                       size: 18.sp.round(), weight: FontWeight.w700)),
