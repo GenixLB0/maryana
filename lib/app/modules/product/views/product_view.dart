@@ -1763,7 +1763,7 @@ class ProductView extends GetView<ProductController> {
                       builder: (logic) {
                         return Container(
                           margin: EdgeInsets.symmetric(horizontal: 8.w),
-                          height: 50.h,
+                          height: 42.h,
                           width: MediaQuery.of(context).size.width,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
@@ -1772,8 +1772,8 @@ class ProductView extends GetView<ProductController> {
                                 controller.setSize(controller.sizeList[index]);
                               },
                               child: Container(
-                                width: 45.w,
-                                height: 45.h,
+                                width: 35.w,
+                                // height: 30.h,
                                 decoration: ShapeDecoration(
                                   color: controller.sizeList[index] ==
                                           controller.selectedSize.value
