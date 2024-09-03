@@ -387,78 +387,74 @@ class Attachments {
   }
 }
 
-class Setting {
-  final String homeVideo;
-
-  Setting({
-    required this.homeVideo,
-  });
-
-  factory Setting.fromJson(Map<String, dynamic> json) {
-    return Setting(
-      homeVideo: json['home_video'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'home_video': homeVideo,
-    };
-  }
-}
-
 class HomeData {
-  List<Setting>? setting;
+  List<String>? setting;
   int? totalPoints;
   List<Categories>? categories;
   List<Brands>? brands;
   List<Banners>? banners;
   List<ViewProductData>? product;
 
-  HomeData({
-    this.setting,
-    this.totalPoints,
-    this.categories,
-    this.brands,
-    this.banners,
-    this.product,
-  });
+  HomeData(
+      {this.setting,
+      this.totalPoints,
+      this.categories,
+      this.brands,
+      this.banners,
+      this.product});
 
-  // Factory constructor for creating a new HomeData instance from JSON
-  factory HomeData.fromJson(Map<String, dynamic> json) {
-    return HomeData(
-      setting: json['setting'] != null
-          ? (json['setting'] as List).map((i) => Setting.fromJson(i)).toList()
-          : null,
-      totalPoints: json['total_points'],
-      categories: json['categories'] != null
-          ? (json['categories'] as List)
-              .map((i) => Categories.fromJson(i))
-              .toList()
-          : null,
-      brands: json['brands'] != null
-          ? (json['brands'] as List).map((i) => Brands.fromJson(i)).toList()
-          : null,
-      banners: json['banners'] != null
-          ? (json['banners'] as List).map((i) => Banners.fromJson(i)).toList()
-          : null,
-      product: json['product'] != null
-          ? (json['product'] as List)
-              .map((i) => ViewProductData.fromJson(i))
-              .toList()
-          : null,
-    );
+  HomeData.fromJson(Map<String, dynamic> json) {
+    if (json['setting'] != null) {
+      setting = <String>[];
+      json['setting'].forEach((v) {
+        // setting!.add(new Null.fromJson(v));
+      });
+    }
+    totalPoints = json['total_points'];
+    if (json['categories'] != null) {
+      categories = <Categories>[];
+      json['categories'].forEach((v) {
+        categories!.add(new Categories.fromJson(v));
+      });
+    }
+    if (json['brands'] != null) {
+      brands = <Brands>[];
+      json['brands'].forEach((v) {
+        brands!.add(new Brands.fromJson(v));
+      });
+    }
+    if (json['banners'] != null) {
+      banners = <Banners>[];
+      json['banners'].forEach((v) {
+        banners!.add(new Banners.fromJson(v));
+      });
+    }
+    if (json['product'] != null) {
+      product = <ViewProductData>[];
+      json['product'].forEach((v) {
+        product!.add(ViewProductData.fromJson(v));
+      });
+    }
   }
 
-  // Method to convert HomeData instance back to JSON
   Map<String, dynamic> toJson() {
-    return {
-      'setting': setting?.map((i) => i.toJson()).toList(),
-      'total_points': totalPoints,
-      'categories': categories?.map((i) => i.toJson()).toList(),
-      'brands': brands?.map((i) => i.toJson()).toList(),
-      'banners': banners?.map((i) => i.toJson()).toList(),
-      'product': product?.map((i) => i.toJson()).toList(),
-    };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.setting != null) {
+      // data['setting'] = this.setting!.map((v) => v!.toJson()).toList();
+    }
+    data['total_points'] = this.totalPoints;
+    if (this.categories != null) {
+      data['categories'] = this.categories!.map((v) => v.toJson()).toList();
+    }
+    if (this.brands != null) {
+      data['brands'] = this.brands!.map((v) => v.toJson()).toList();
+    }
+    if (this.banners != null) {
+      data['banners'] = this.banners!.map((v) => v.toJson()).toList();
+    }
+    if (this.product != null) {
+      data['product'] = this.product!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }

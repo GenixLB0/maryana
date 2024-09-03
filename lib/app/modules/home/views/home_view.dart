@@ -296,7 +296,7 @@ class HomeView extends GetView<HomeController> {
                       children: [
                         AspectRatio(
                           aspectRatio: 9 / 16,
-                          child:   VideoPlayer(logic.videoController),
+                          child: VideoPlayer(logic.videoController),
                         ),
                         Transform.translate(
                           offset: Offset(0, -50.h),
