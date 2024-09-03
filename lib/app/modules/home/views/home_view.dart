@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -294,10 +295,18 @@ class HomeView extends GetView<HomeController> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        AspectRatio(
-                          aspectRatio: 9 / 16,
-                          child:   VideoPlayer(logic.videoController),
-                        ),
+                        Obx(() {
+                          if (controller.isLoadingVideo.value) {
+                            // تأكد من استخدام .value مع Rx
+                            return VideoLoading(); // استخدام الـ Loading الاحترافي
+                          } else {
+                            return AspectRatio(
+                              aspectRatio:
+                                  controller.videoController!.value.aspectRatio,
+                              child: VideoPlayer(controller.videoController!),
+                            );
+                          }
+                        }),
                         Transform.translate(
                           offset: Offset(0, -50.h),
                           child: Column(

@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
@@ -94,8 +95,7 @@ class HomeController extends GetxController {
   //////////////////////////////////////////
 ////////////////collections//////////////////////////
   bool isCollectionLoading = false;
-  bool isVideoLoading = true;
-  List<Collections> collections = [];
+   List<Collections> collections = [];
 
   bool isCollectionProductsLoading = false;
   List<CollectionProducts> collectionProducts = <CollectionProducts>[];
@@ -184,6 +184,7 @@ class HomeController extends GetxController {
   @override
   void onReady() {
     getHomeApi();
+    runVideo();
 
     getCountryFromIp();
     checkForUpdates();
@@ -323,8 +324,11 @@ class HomeController extends GetxController {
     update();
   }
 
+  var isLoadingVideo = true.obs;
+
   Future<void> initializeVideoController() async {
     print('tasdsadsad');
+    isLoadingVideo.value = true;
     if (homeModel.value.setting == null || homeModel.value.setting!.isEmpty) {
       // Load video from assets if no URL is provided
       print('tasdsadsad2');
@@ -334,6 +338,7 @@ class HomeController extends GetxController {
         videoPlayerOptions: VideoPlayerOptions(),
       )..initialize().then((_) {
           print("started... 2");
+          isLoadingVideo.value = false;
         });
     } else {
       print(
@@ -351,6 +356,7 @@ class HomeController extends GetxController {
         videoPlayerOptions: VideoPlayerOptions(),
       )..initialize().then((_) {
           print("started... 2");
+          isLoadingVideo.value = false;
         });
     }
   }
