@@ -1393,7 +1393,7 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                   ),
                                   Container(
-                                    height: 320.h,
+                                    height: productsSectionHeight,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.separated(
                                       shrinkWrap: true,
@@ -1679,7 +1679,7 @@ class HomeView extends GetView<HomeController> {
                                   ),
                                 ),
                                 Container(
-                                  height: 320.h,
+                                  height: productsSectionHeight,
                                   width: MediaQuery.of(context).size.width,
                                   child: ListView.separated(
                                       shrinkWrap: true,

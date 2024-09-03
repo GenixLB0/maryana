@@ -82,7 +82,7 @@ class ResultView extends GetView<CustomSearchController> {
                               fit: BoxFit.cover,
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: 16.w, top: 1.h),
+                              padding: EdgeInsets.only(left: 12.w, top: 1.h),
                               child: Obx(() {
                                 return Text(
                                   "${controller.resultCount.value} Results",
@@ -264,12 +264,17 @@ class ResultView extends GetView<CustomSearchController> {
                         ),
                       ),
                     );
+            }),
+            Obx(() {
+              return controller.isPaginationSearchLoading.value
+                  ? loadingIndicatorWidget()
+                  : const SizedBox();
             })
           ],
         ),
       ),
       floatingActionButton: Obx(() {
-        return controller.showBackToTopButton.value == false
+        return !controller.isEndScroll.value
             ? const SizedBox()
             : InkWell(
                 onTap: () {
@@ -290,12 +295,25 @@ class ResultView extends GetView<CustomSearchController> {
                       ),
                     ],
                   ),
-                  child: Icon(
-                    Icons.arrow_upward,
-                    size: 20.w,
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: Icon(
+                      Icons.arrow_upward,
+                      key: ValueKey<bool>(controller.isEndScroll.value),
+                      size: 30.0,
+                    ),
                   ),
                 ),
+                // Icon(
+                //   Icons.arrow_upward,
+                //   size: 20.w,
+                // ),
               );
+
         // Container(
         //         width: 60.w,
         //         height: 60.h,
@@ -396,8 +414,8 @@ class ResultView extends GetView<CustomSearchController> {
   buildProductGrid(context) {
     print("product grid are ${controller.resultSearchProducts}");
 
-    return GetBuilder<CustomSearchController>(
-      builder: (_) => SizedBox(
+    return Obx(() {
+      return SizedBox(
           width: MediaQuery.of(context).size.width,
           child: controller.resultSearchProducts.isEmpty
               ? Align(
@@ -414,7 +432,7 @@ class ResultView extends GetView<CustomSearchController> {
                   controller: controller.scrollController,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: MediaQuery.of(context).size.width /
-                          (MediaQuery.of(context).size.height /
+                          (MediaQuery.of(context).size.height *
                               heightDevidedRatio),
                       crossAxisCount: 2,
                       crossAxisSpacing: crossAxisSpacing,
@@ -424,7 +442,7 @@ class ResultView extends GetView<CustomSearchController> {
                         product: controller.resultSearchProducts[index]);
                   },
                   itemCount: controller.resultSearchProducts.length,
-                )),
-    );
+                ));
+    });
   }
 }

@@ -1413,7 +1413,10 @@ class _buildCardProductState extends State<buildProductCard> {
         child: widget.product.image != null
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //this column is for product image and details
                 children: [
+                  //this column is for product image and details
                   Stack(
                     alignment: Alignment.topRight,
                     children: [
@@ -1479,9 +1482,9 @@ class _buildCardProductState extends State<buildProductCard> {
                       }),
                     ],
                   ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
+                  // SizedBox(
+                  //   height: 3.h,
+                  // ),
                   Padding(
                     padding: EdgeInsets.only(left: 7.w),
                     child: GestureDetector(
@@ -1508,9 +1511,9 @@ class _buildCardProductState extends State<buildProductCard> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 1.h,
-                  ),
+                  // SizedBox(
+                  //   height: 1.h,
+                  // ),
                   Padding(
                     padding: EdgeInsets.only(left: 7.w),
                     child: GestureDetector(
@@ -1534,9 +1537,9 @@ class _buildCardProductState extends State<buildProductCard> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 1.h,
-                  ),
+                  // SizedBox(
+                  //   height: 1.h,
+                  // ),
                   Padding(
                     padding: EdgeInsets.only(left: 7.w),
                     child: GestureDetector(
@@ -1558,9 +1561,9 @@ class _buildCardProductState extends State<buildProductCard> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 6.h,
-                  ),
+                  // SizedBox(
+                  //   height: 6.h,
+                  // ),
                   widget.isInWishlist
                       ? GestureDetector(
                           onTap: () {
@@ -1626,10 +1629,11 @@ buildProductShowAll(getProductsInSection) {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
             width: 175.w,
-            height: 210.h,
+            height: 190.h,
             child: placeHolderWidget(),
           ),
           SizedBox(
@@ -1640,7 +1644,7 @@ buildProductShowAll(getProductsInSection) {
             child: Row(
               children: [
                 SizedBox(
-                  width: 150.w,
+                  width: 120.w,
                   child: Padding(
                     padding: EdgeInsets.only(left: 5.w),
                     child: Text(

@@ -15,7 +15,7 @@ import 'package:dio/dio.dart' as dio;
 
 class CustomSearchController extends GetxController {
   List<ViewProductData> products = [];
-  List<ViewProductData> resultSearchProducts = [];
+  List<ViewProductData> resultSearchProducts = <ViewProductData>[].obs;
   RxList<Categories> categories = <Categories>[].obs;
   late SharedPreferences prefs;
   final Rx<int> resultCount = 0.obs;
@@ -95,6 +95,7 @@ class CustomSearchController extends GetxController {
 
   addSearchKeywords(searchValue) async {
     if (searchKeywords.contains(searchValue)) {
+      titleResult = searchValue;
     } else {
       titleResult = searchValue;
       searchKeywords.add(searchValue);
@@ -109,6 +110,8 @@ class CustomSearchController extends GetxController {
   getSearchResultsFromApi() async {
     if (titleResult.isNotEmpty) {
       print("searching 1");
+      isFromSearch.value = true;
+      resultCount.value = 0;
       resultSearchProducts.clear();
       isSearchLoading.value = true;
       print('search api successful');
@@ -154,22 +157,33 @@ class CustomSearchController extends GetxController {
     }
   }
 
+  int currentPage = 1;
+  var controllerPayload = {};
+  int total = 0;
+
   Future<List<dynamic>> getProductsInSection(
       {required String sectionName, required payload}) async {
     // if (categories.isEmpty) {
     //   await getCategoriesList();
     // }
     // mimicCatsForActiveCats(false, 1);
+    isEndScroll.value = false;
+    controllerPayload = payload;
+    total = 0;
     resultCount.value = 0;
+    currentPage = 1;
     isFromSearch.value = false;
     titleResult = sectionName;
     resultSearchProducts.clear();
     isSearchLoading.value = true;
 
-    print("the payload ${payload}");
+    print("the payload ${controllerPayload}");
     print("should called once...");
-    var bodyFields = payload;
+    var bodyFields = controllerPayload;
 
+    bodyFields['current_page'] = currentPage.toString();
+    bodyFields['per_page'] = "6";
+    print("body feilds ${bodyFields}");
     var headers = {
       'Accept': 'application/json',
       'x-from': 'app',
@@ -190,12 +204,18 @@ class CustomSearchController extends GetxController {
         for (var product in responseData['data']) {
           resultSearchProducts.add(ViewProductData.fromJson(product));
         }
-
+        int total = responseData['meta']['total'];
+        print("total is ${total}");
         isSearchLoading.value = false;
-        resultCount.value = resultSearchProducts.length;
+        if (total != 0) {
+          resultCount.value = total;
+        } else {
+          resultCount.value = resultSearchProducts.length;
+        }
+
         print("your map ${payload}");
 
-        print("your resultt ${resultSearchProducts}");
+        print("your result length 1 is ${resultSearchProducts.length}");
 
         return resultSearchProducts;
       } else {
@@ -215,6 +235,78 @@ class CustomSearchController extends GetxController {
     }
   }
 
+  RxBool isPaginationSearchLoading = false.obs;
+  RxBool isEndScroll = false.obs;
+
+  Future<List<dynamic>> continueGettingProductsInSection(
+      {required String sectionName, required payload}) async {
+    if (isFromSearch.value) {
+      return [];
+    } else {
+      isEndScroll.value = false;
+      isFromSearch.value = false;
+      titleResult = sectionName;
+
+      var bodyFields = payload;
+
+      bodyFields['current_page'] = currentPage.toString();
+      bodyFields['per_page'] = "6";
+      print("body feilds ${bodyFields}");
+      var headers = {
+        'Accept': 'application/json',
+        'x-from': 'app',
+        'x-lang': 'en',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      };
+
+      final response = await http.post(
+        Uri.parse('https://panel.mariannella.com/api/products'),
+        headers: headers,
+        body: bodyFields,
+      );
+
+      try {
+        if (response.statusCode == 200) {
+          var responseData = json.decode(response.body);
+          print("response data ${responseData['data'].length}");
+          if (responseData['data'].length == 0) {
+            isEndScroll.value = true;
+          } else {}
+          for (var product in responseData['data']) {
+            resultSearchProducts.add(ViewProductData.fromJson(product));
+          }
+          int total = responseData['meta']['total'];
+          print("total is ${total}");
+          isPaginationSearchLoading.value = false;
+          if (total != 0) {
+            resultCount.value = total;
+          } else {
+            resultCount.value = resultSearchProducts.length;
+          }
+
+          print("your map ${payload}");
+
+          print("your result length 2 is ${resultSearchProducts.length}");
+
+          return resultSearchProducts;
+        } else {
+          print(response.reasonPhrase);
+          isPaginationSearchLoading.value = false;
+          print('products fetch failed 1: ${response.reasonPhrase} ');
+
+          return [];
+        }
+      } catch (e, stackTrace) {
+        isPaginationSearchLoading.value = false;
+        print('products fetch failed 2:  ${e} $stackTrace');
+
+        print(e.toString() + stackTrace.toString());
+
+        return [];
+      }
+    }
+  }
+
   filterResultSearchProducts(filteredProducts) {
     resultSearchProducts = filteredProducts;
   }
@@ -231,6 +323,19 @@ class CustomSearchController extends GetxController {
       } else {
         print("bbbbbbbbbbbbbbbbbbbbbbbbbb");
         showBackToTopButton.value = false; // Hide the back-to-top button
+      }
+
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          !isPaginationSearchLoading.value &&
+          !isFromSearch.value) {
+        print("yes scrolling max");
+        currentPage++;
+        isPaginationSearchLoading.value = true;
+        continueGettingProductsInSection(
+            sectionName: titleResult, payload: controllerPayload);
+      } else {
+        print("not scrolling max");
       }
     });
   }

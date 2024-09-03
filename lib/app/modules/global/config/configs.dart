@@ -23,7 +23,9 @@ const String unAuthorizedFailure = 'unAuthorizedFailures';
 final smallSpacing = 5.w;
 final crossAxisSpacing = 5.w;
 final mainAxisSpacing = 15.w;
-const heightDevidedRatio = 1.2;
+const heightDevidedRatio = 0.81;
+final productsSectionHeight = 300.h;
+
 
 extension HexColor on Color {
   static Color fromHex(String hexString) {
