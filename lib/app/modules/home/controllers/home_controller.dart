@@ -12,6 +12,7 @@ import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/rendering.dart';
@@ -93,6 +94,7 @@ class HomeController extends GetxController {
   //////////////////////////////////////////
 ////////////////collections//////////////////////////
   bool isCollectionLoading = false;
+  bool isVideoLoading = true;
   List<Collections> collections = [];
 
   bool isCollectionProductsLoading = false;
@@ -183,7 +185,6 @@ class HomeController extends GetxController {
   void onReady() {
     getHomeApi();
 
-    runVideo();
     getCountryFromIp();
     checkForUpdates();
     // mimicCatsForActiveCats(false, null);
@@ -286,6 +287,7 @@ class HomeController extends GetxController {
         print('home data successful');
         isHomeLoading.value = false;
         homeModel.value = apiResponse.data!;
+        runVideo();
         List<String> banners = [];
         print("the type is ${homeModel.value.banners.runtimeType}");
 
@@ -297,12 +299,14 @@ class HomeController extends GetxController {
         mimicCatsForActiveCats(false, null);
         // await getHomeScreenCollections();
       } else {
+        runVideo();
         handleApiErrorUser(apiResponse.message);
         handleApiError(response.statusCode);
         print('Registration failed: ${response.statusMessage}');
       }
       // isLoading.value = false;
     } catch (e, stackTrace) {
+      runVideo();
       isHomeLoading.value = false;
       // isLoading.value = false;
       print('home api failed:  ${e} $stackTrace');
@@ -319,14 +323,42 @@ class HomeController extends GetxController {
     update();
   }
 
-  runVideo() {
-    print("started... 1");
-    videoController = VideoPlayerController.asset(
+  Future<void> initializeVideoController() async {
+    print('tasdsadsad');
+    if (homeModel.value.setting == null || homeModel.value.setting!.isEmpty) {
+      // Load video from assets if no URL is provided
+      print('tasdsadsad2');
+
+      videoController = VideoPlayerController.asset(
         'assets/images/home/home_video.mp4',
-        videoPlayerOptions: VideoPlayerOptions())
-      ..initialize().then((_) {
-        print("started... 2");
-      });
+        videoPlayerOptions: VideoPlayerOptions(),
+      )..initialize().then((_) {
+          print("started... 2");
+        });
+    } else {
+      print(
+          'tasdsadsad3 ' + homeModel.value.setting!.first.homeVideo.toString());
+
+      // Caching the network video
+      final videoUrl = homeModel.value.setting!.first.homeVideo;
+
+      // Use DefaultCacheManager to cache the video
+      final file = await DefaultCacheManager().getSingleFile(videoUrl);
+
+      // Use the cached video file to initialize VideoPlayerController
+      videoController = VideoPlayerController.file(
+        file,
+        videoPlayerOptions: VideoPlayerOptions(),
+      )..initialize().then((_) {
+          print("started... 2");
+        });
+    }
+  }
+
+  runVideo() async {
+    print("started... 1");
+
+    await initializeVideoController();
     videoController.play(); // Autoplay the video
     videoController.setLooping(true); // Enable video looping
     isVideoInit = true;
