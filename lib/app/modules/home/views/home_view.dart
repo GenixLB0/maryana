@@ -2409,7 +2409,7 @@ class HomeView extends GetView<HomeController> {
                       Container(
                           color: Colors.white,
                           padding: EdgeInsets.all(2),
-                          height: 340.h,
+                          height: productsSectionHeight,
                           width: MediaQuery.of(context).size.width,
                           child: controller.isProductsInBrandsLoading
                               ? ListView.separated(

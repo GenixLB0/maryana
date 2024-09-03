@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 class ShopController extends GetxController {
   RxList<Categories> categories = <Categories>[].obs;
   RxList<Categories> subCategories = <Categories>[].obs;
+  RxList<Categories> allSubCategories = <Categories>[].obs;
+
   RxBool isCategoryLoading = false.obs;
   RxBool isProductLoading = false.obs;
   RxList<ViewProductData> products = <ViewProductData>[].obs;
@@ -171,6 +173,63 @@ class ShopController extends GetxController {
     }
   }
 
+  RxBool isAll = false.obs;
+
+  switchAll({required bool isFromAll}) {
+    if (isFromAll) {
+      isAll.value = true;
+    } else {
+      isAll.value = false;
+    }
+    if (isAll.value && isSubCategoriesLoading.value == false) {
+      changeChoosenCatId("", "");
+      getAllSubCategories();
+    }
+  }
+
+  getAllSubCategories() async {
+    allSubCategories.clear();
+    isSubCategoriesLoading.value = true;
+    for (var cat in categories) {
+      getEverySubCategoriesInCategory(cat.id!);
+    }
+  }
+
+  getEverySubCategoriesInCategory(int CatId) async {
+    var formData = dio.FormData.fromMap({
+      'parent_id': CatId,
+    });
+    final response = await apiConsumer.post('categories',
+        formDataIsEnabled: true, formData: formData);
+
+    try {
+      final apiResponse = ApiCategoryResponse.fromJson(response);
+      if (apiResponse.status == 'success') {
+        print('subcat response ${apiResponse.data!}');
+
+        for (var category in apiResponse.data!) {
+          allSubCategories.add(category);
+        }
+
+        if (subCategories.isNotEmpty) {
+          subCategories.insert(0, Categories());
+        }
+
+        isSubCategoriesLoading.value = false;
+        print("over all subs caount is ${subCategories.length}");
+      } else {
+        handleApiErrorUser(apiResponse.message);
+        handleApiError(response.statusCode);
+        isSubCategoriesLoading.value = false;
+      }
+    } catch (e, stackTrace) {
+      print('subCat api failed:  ${e} $stackTrace');
+
+      print(e.toString() + stackTrace.toString());
+      isSubCategoriesLoading.value = false;
+    }
+  }
+
   getBrandsInCategory(int CatId) async {
     isBrandsLoading.value = true;
     brands.clear();
@@ -211,10 +270,9 @@ class ShopController extends GetxController {
 
   changeChoosenCatId(id, name) {
     print("changed id with 1 ${choosenCatId}");
-
+    print("changed id with name ${name}");
     choosenCatId.value = id;
     choosenCatName.value = name;
-    print("changed id with 2 ${choosenCatId}");
   }
 
   changeScrollExtent() {

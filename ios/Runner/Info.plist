@@ -110,6 +110,17 @@
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLName</key>
+    <string></string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>https://mariannela-8c357.web.app/</string>
+    </array>
+  </dict>
+</array>
 
 </dict>
 </plist>
