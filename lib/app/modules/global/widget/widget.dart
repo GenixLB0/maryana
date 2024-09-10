@@ -1384,7 +1384,42 @@ buildSearchAndFilter(
     ),
   );
 }
-
+class VideoLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 200.0,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 20),
+          Container(
+            width: double.infinity,
+            height: 20.0,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            height: 20.0,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            height: 20.0,
+            color: Colors.grey[300],
+          ),
+        ],
+      ),
+    );
+  }
+}
 class buildProductCard extends StatefulWidget {
   buildProductCard(
       {super.key, required this.product, this.isInWishlist = false});

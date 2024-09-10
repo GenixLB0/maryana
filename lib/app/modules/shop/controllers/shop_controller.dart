@@ -189,13 +189,17 @@ class ShopController extends GetxController {
 
   getAllSubCategories() async {
     allSubCategories.clear();
-    isSubCategoriesLoading.value = true;
-    for (var cat in categories) {
-      getEverySubCategoriesInCategory(cat.id!);
+
+    if (isSubCategoriesLoading.value == true) {
+    } else {
+      for (var cat in categories) {
+        getEverySubCategoriesInCategory(cat.id!);
+      }
     }
   }
 
   getEverySubCategoriesInCategory(int CatId) async {
+    isSubCategoriesLoading.value = true;
     var formData = dio.FormData.fromMap({
       'parent_id': CatId,
     });

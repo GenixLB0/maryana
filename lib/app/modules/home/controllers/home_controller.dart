@@ -1089,9 +1089,19 @@ class HomeController extends GetxController {
   getCountryFromIp() async {
     IpAddress _ipAddress = IpAddress();
 
-    String country = await IpAddress().getCountry();
+    String country = await IpAddress().getCountry().then((value) {
+      if (value.contains("Format")) {
+        Get.snackbar("Welcome", "Welcome To Mariannella App");
+      } else {
+        if (value.contains("Hand")) {
+          Get.snackbar("Welcome", "Welcome To Mariannella App");
+        } else {
+          Get.snackbar("Welcome", "Welcome Mariannella User From ${value}");
+        }
+      }
+      return value;
+    });
     // var ip = await _ipAddress.getIp();
     // print(ip);
-    Get.snackbar("Welcome", "Welcome Mariannella User From ${country}");
   }
 }

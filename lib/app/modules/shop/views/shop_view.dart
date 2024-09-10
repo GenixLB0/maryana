@@ -76,10 +76,12 @@ class ShopView extends GetView<ShopController> {
           ),
           Obx(() {
             return SizedBox(
-              height: 25.h,
-              width: MediaQuery.of(context).size.width,
-              child: _buildUpperCategoriesList(context),
-            );
+                height: 55.h,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  child: _buildUpperCategoriesList(context),
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                ));
           }),
 
           _buildCategories(context),
@@ -1306,12 +1308,18 @@ class ShopView extends GetView<ShopController> {
                                         backgroundColor: Colors.grey[200],
                                         radius:
                                             40, // Adjust the radius as needed
-                                        backgroundImage:
-                                            CachedNetworkImageProvider(
-                                          shopController
-                                              .subCategories[index].image!
-                                              .toString(),
-                                        ), // Use your image URL here
+                                        backgroundImage: shopController
+                                                    .subCategories[index]
+                                                    .image ==
+                                                null
+                                            ? CachedNetworkImageProvider(
+                                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                              )
+                                            : CachedNetworkImageProvider(
+                                                shopController
+                                                    .subCategories[index].image
+                                                    .toString(),
+                                              ), // Use your image URL here
                                       ),
                                       const SizedBox(
                                           height:
@@ -1355,7 +1363,7 @@ class ShopView extends GetView<ShopController> {
                           Text(
                             'All',
                             style: primaryTextStyle(
-                              size: 12,
+                              size: 14.sp.round(),
                               color: controller.isAll.value
                                   ? Colors.black
                                   : Colors.grey,
@@ -1402,7 +1410,7 @@ class ShopView extends GetView<ShopController> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 style: primaryTextStyle(
-                                  size: 12,
+                                  size: 14.sp.round(),
                                   color: controller.choosenCatId.value ==
                                           controller.categories[myIndex].id!
                                               .toString()
