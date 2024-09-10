@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:app_links/app_links.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
@@ -7,10 +10,16 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:googleapis/vision/v1.dart' as vision;
+import 'package:googleapis_auth/auth.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:http/src/client.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 
 import 'package:shorebird_code_push/shorebird_code_push.dart';
@@ -150,6 +159,8 @@ void main() async {
 
   runApp(MyApp());
 }
+
+var clothingType = "";
 
 bool isDeepLink = false;
 ViewProductData? deepLinkproduct;

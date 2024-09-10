@@ -118,9 +118,7 @@ class ProductView extends GetView<ProductController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               //build Small Photos
-                              GetBuilder<ProductController>(builder: (logic) {
-                                return _buildSmallImagesView();
-                              }),
+                              _buildSmallImagesView(),
 
                               //Product Name and Rating
                               _buildProductNameAndStartRating(
@@ -1889,6 +1887,8 @@ class ProductView extends GetView<ProductController> {
   }
 
   _buildSmallImagesView() {
+    ProductController myController = Get.put(ProductController());
+
     return Container(
       margin: EdgeInsets.only(left: 5.w),
       height: 90.h,
@@ -1897,20 +1897,20 @@ class ProductView extends GetView<ProductController> {
           shrinkWrap: true,
           itemBuilder: (context, index) => InkResponse(
                 onTap: () {
-                  controller.setSelectedIndex(index);
-                  controller.setCarouselControllerIndex(index);
+                  myController.setSelectedIndex(index);
+                  myController.setCarouselControllerIndex(index);
                 },
                 child: Obx(() {
                   return Container(
                       width: 80.w,
                       decoration: BoxDecoration(
                           border: Border.all(
-                              color: controller.selectedIndex.value == index
+                              color: myController.selectedIndex.value == index
                                   ? Colors.black
                                   : Colors.grey[300]!,
                               width: 3.w)),
                       child: CachedNetworkImage(
-                        imageUrl: controller.productImages[index].path!,
+                        imageUrl: myController.productImages[index].path!,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => placeHolderWidget(),
                       ));
@@ -1919,7 +1919,7 @@ class ProductView extends GetView<ProductController> {
           separatorBuilder: (context, index) => SizedBox(
                 width: 5.w,
               ),
-          itemCount: controller.productImages.length),
+          itemCount: myController.productImages.length),
     );
   }
 }

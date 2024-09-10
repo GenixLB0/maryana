@@ -1338,17 +1338,21 @@ buildSearchAndFilter(
                   ),
                   onPressed: () {},
                 ),
-                // suffixIcon: IconButton(
-                //   icon: Padding(
-                //     padding: EdgeInsets.only(right: 5.w),
-                //     child: SvgPicture.asset(
-                //       'assets/icons/camera.svg',
-                //       width: 23.w,
-                //       height: 23.h,
-                //     ),
-                //   ),
-                //   onPressed: () {},
-                // ),
+                suffixIcon: IconButton(
+                  icon: Padding(
+                    padding: EdgeInsets.only(right: 5.w),
+                    child: SvgPicture.asset(
+                      'assets/icons/camera.svg',
+                      width: 23.w,
+                      height: 23.h,
+                    ),
+                  ),
+                  onPressed: () {
+                    CustomSearchController controller =
+                        Get.put(CustomSearchController());
+                    controller.showPickerDialog(context);
+                  },
+                ),
               ),
             ),
           ),
@@ -1384,6 +1388,7 @@ buildSearchAndFilter(
     ),
   );
 }
+
 class VideoLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1420,6 +1425,7 @@ class VideoLoading extends StatelessWidget {
     );
   }
 }
+
 class buildProductCard extends StatefulWidget {
   buildProductCard(
       {super.key, required this.product, this.isInWishlist = false});

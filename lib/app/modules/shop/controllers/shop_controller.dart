@@ -130,11 +130,6 @@ class ShopController extends GetxController {
     print("is removing sub category ?");
 
     if (isSubCategoriesLoading.value == true) {
-      // Get.closeCurrentSnackbar();
-      // Get.snackbar(
-      //   "Loading",
-      //   "Please Wait For the Current Request to Finish",
-      // );
     } else {
       isSubCategoriesLoading.value = true;
       subCategories.clear();

@@ -1,17 +1,27 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart' hide Material;
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:http/http.dart' as http;
+import 'package:maryana/app/modules/home/views/home_view.dart';
+import 'package:maryana/app/modules/main/views/main_view.dart';
+import 'package:maryana/app/modules/search/views/search_view.dart';
+import 'package:maryana/app/modules/shop/views/shop_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart';
-
+import 'package:googleapis/vision/v1.dart' as vision;
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:flutter/services.dart' as rootBundle;
+import '../views/ai_loading_image.dart';
+import '../views/result_view.dart';
 
 class CustomSearchController extends GetxController {
   List<ViewProductData> products = [];
@@ -160,13 +170,18 @@ class CustomSearchController extends GetxController {
   int currentPage = 1;
   var controllerPayload = {};
   int total = 0;
+  bool isFromAiPhase = false;
 
   Future<List<dynamic>> getProductsInSection(
-      {required String sectionName, required payload}) async {
+      {required String sectionName,
+      required payload,
+      bool isFromAi = false,
+      String clothesType = ""}) async {
     // if (categories.isEmpty) {
     //   await getCategoriesList();
     // }
     // mimicCatsForActiveCats(false, 1);
+    isFromAiPhase = isFromAi;
     isEndScroll.value = false;
     controllerPayload = payload;
     total = 0;
@@ -182,7 +197,10 @@ class CustomSearchController extends GetxController {
     var bodyFields = controllerPayload;
 
     bodyFields['current_page'] = currentPage.toString();
-    bodyFields['per_page'] = "6";
+    if (!isFromAi) {
+      bodyFields['per_page'] = "6";
+    }
+
     print("body feilds ${bodyFields}");
     var headers = {
       'Accept': 'application/json',
@@ -202,9 +220,24 @@ class CustomSearchController extends GetxController {
         var responseData = json.decode(response.body);
         print("response data ${responseData['data'].length}");
         for (var product in responseData['data']) {
-          resultSearchProducts.add(ViewProductData.fromJson(product));
+          if (isFromAi) {
+            print("from ai 1 ${isFromAi}");
+            print("from ai 3 ${product['name']}");
+            print("from ai 4 ${clothesType}");
+            if (product['name']
+                .toString()
+                .toLowerCase()
+                .contains(clothesType)) {
+              resultSearchProducts.add(ViewProductData.fromJson(product));
+              print("from ai 2 ${product['name']}");
+            } else {}
+          } else {
+            resultSearchProducts.add(ViewProductData.fromJson(product));
+          }
         }
-        int total = responseData['meta']['total'];
+        int total = isFromAi
+            ? resultSearchProducts.length
+            : responseData['meta']['total'];
         print("total is ${total}");
         isSearchLoading.value = false;
         if (total != 0) {
@@ -328,7 +361,8 @@ class CustomSearchController extends GetxController {
       if (scrollController.position.pixels ==
               scrollController.position.maxScrollExtent &&
           !isPaginationSearchLoading.value &&
-          !isFromSearch.value) {
+          !isFromSearch.value &&
+          !isFromAiPhase) {
         print("yes scrolling max");
         currentPage++;
         isPaginationSearchLoading.value = true;
@@ -1043,5 +1077,195 @@ class CustomSearchController extends GetxController {
     searchKeywords.clear();
     prefs = await SharedPreferences.getInstance();
     prefs.setStringList("search_keywords", []);
+  }
+
+  ///////////////////////////////////////////////////////
+////////////////////AI SEARCH //////////////////////////
+  RxString myClothingType = "".obs;
+  final ImagePicker _picker = ImagePicker();
+  XFile? _image;
+
+  Future<void> showPickerDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Image Source'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: Text('Camera'),
+                  onTap: () {
+                    _pickImage(ImageSource.camera);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Text('Gallery'),
+                  onTap: () {
+                    _pickImage(ImageSource.gallery);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  List<Categories> aiSearchCats = [];
+  var ongoingPayload;
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(
+      source: source,
+      imageQuality: 100, // Set the image quality to the highest
+    );
+
+    if (pickedFile != null) {
+      clothingType = "";
+      Get.to(FullScreenImageWithLoading(
+        image: File(pickedFile.path),
+      ));
+      _image = pickedFile;
+      await detectClothesType();
+    }
+  }
+
+  void currentFun() {
+    if (CustomSearchController().initialized) {
+      CustomSearchController controller = Get.find<CustomSearchController>();
+      controller.getProductsInSection(
+          sectionName: myClothingType.value,
+          payload: {},
+          isFromAi: true,
+          clothesType: myClothingType.value.toLowerCase());
+
+      Get.to(() => const ResultView(),
+          transition: Transition.fadeIn,
+          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 400));
+    } else {
+      CustomSearchController controller =
+          Get.put<CustomSearchController>(CustomSearchController());
+      controller.getProductsInSection(
+          sectionName: myClothingType.value,
+          payload: {},
+          isFromAi: true,
+          clothesType: myClothingType.value.toLowerCase());
+
+      Get.to(() => const ResultView(),
+          transition: Transition.fadeIn,
+          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 400));
+    }
+  }
+
+  Future<void> detectClothesType() async {
+    try {
+      final String jsonresponse = await rootBundle.rootBundle
+          .loadString('assets/goolge_vision_api_creds.json');
+
+      final data = await json.decode(jsonresponse);
+
+      final authClient = await clientViaServiceAccount(
+        ServiceAccountCredentials.fromJson(data),
+        [vision.VisionApi.cloudPlatformScope],
+      );
+      [vision.VisionApi.cloudPlatformScope];
+
+      final visionApi = vision.VisionApi(authClient);
+
+      final imageFile = File(_image!.path);
+      final bytes = imageFile.readAsBytesSync();
+
+      final base64Image = base64Encode(bytes);
+      final request = vision.BatchAnnotateImagesRequest.fromJson({
+        "requests": [
+          {
+            "image": {"content": base64Image},
+            "features": [
+              {"type": "LABEL_DETECTION", "maxResults": 10}
+            ]
+          }
+        ]
+      });
+      final clothingTypes = [
+        'shirt',
+        'dress',
+        'pants',
+        'skirt',
+        'jacket',
+        'coat',
+        'sweater',
+        't-shirt',
+        'jeans',
+        'shorts',
+        'bag',
+        'sock',
+        'shoes',
+        'hat',
+        'glove',
+        'sweatpant',
+        'sweatshirt',
+        'jumper',
+        'bottle',
+        'bra',
+        'underwear',
+        'define',
+        'legging',
+        'sport',
+        'hoodie',
+        'set',
+        'sleeve',
+        'bra',
+        'trouser',
+        'top',
+        'hat',
+        'shoe',
+        'sneaker'
+      ];
+      final response = await visionApi.images.annotate(request);
+      final annotateImageResponses = response.responses;
+      for (var annotateImageResponse in annotateImageResponses!) {
+        if (annotateImageResponse.labelAnnotations != null) {
+          bool isMatching = false;
+          for (var label in annotateImageResponse.labelAnnotations!) {
+            print("your desc label: ${label.description}");
+            if (clothingTypes.contains(label.description?.toLowerCase())) {
+              isMatching = true;
+              // print('Clothing Type: ${label.description}');
+              // isMatching = true;
+              myClothingType.value = label.description!;
+            } else {
+              // if (isMatching) {
+              // } else {
+
+              // }
+            }
+          }
+
+          if (isMatching) {
+            currentFun();
+            Get.back();
+            Get.off(const ResultView());
+          } else {
+            Get.back();
+
+            // Get.off(ShopView());
+            Get.snackbar(
+                "Not Recognized", "No Clothing Detected try another image");
+          }
+        }
+      }
+
+      authClient.close();
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
   }
 }

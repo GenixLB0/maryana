@@ -1,12 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../../main.dart';
 
 class OnboardingController extends GetxController {
-
   RxInt currentIndex = 0.obs;
   final count = 0.obs;
   static const _kDuration = const Duration(milliseconds: 300);
-
 
   static const _kCurve = Curves.easeOut;
   PageController pageController = PageController();
@@ -14,11 +20,10 @@ class OnboardingController extends GetxController {
   nextFunction() {
     pageController.nextPage(duration: _kDuration, curve: _kCurve);
   }
+
   previousFunction() {
     pageController.previousPage(duration: _kDuration, curve: _kCurve);
   }
-
-
 
   @override
   void onInit() {
@@ -38,26 +43,22 @@ class OnboardingController extends GetxController {
 
   void increment() => count.value++;
 
-
-
-  startNavigation(){
+  startNavigation() {
     Future.delayed(Duration(milliseconds: 3000), () {
       // Get.off(OnboardingScreen1View());
     });
   }
 
-
-  changeIndexValue(index){
+  changeIndexValue(index) {
     currentIndex.value = index;
     print('comming value is ${index}');
     print('current value is ${currentIndex}');
     update();
   }
 
-  increaseIndexValue(){
-    currentIndex.value ++;
+  increaseIndexValue() {
+    currentIndex.value++;
     print('current value is ${currentIndex}');
     update();
   }
-
 }

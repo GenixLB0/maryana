@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:maryana/app/modules/search/views/search_view.dart';
 import '../../global/config/configs.dart';
 import '../../global/model/test_model_response.dart';
 import '../../global/widget/widget.dart';
@@ -38,7 +39,7 @@ class ResultView extends GetView<CustomSearchController> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Get.back();
+                        Get.off(SearchView());
                       },
                       child: Container(
                         height: 35.h,

@@ -15,6 +15,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../global/config/configs.dart';
+import '../../global/model/model_response.dart';
 import '../../global/theme/app_theme.dart';
 import '../../search/views/result_view.dart';
 import '../controllers/shop_controller.dart';
@@ -608,6 +609,15 @@ class ShopView extends GetView<ShopController> {
   }
 
   _buildCategories(context) {
+    List<Categories> filteredCategories = [];
+    for (var category in controller.categories) {
+      if (category.name!.toLowerCase() == "men" ||
+          category.name!.toLowerCase() == "women" ||
+          category.name!.toLowerCase() == "home") {
+      } else {
+        filteredCategories.add(category);
+      }
+    }
     return Obx(() {
       return Expanded(
         child: Row(
@@ -626,7 +636,7 @@ class ShopView extends GetView<ShopController> {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           if (controller.choosenCatId.value ==
-                              controller.categories[index].id.toString()) {
+                              filteredCategories[index].id.toString()) {
                             controller.sendchosenCatIndex(index);
                           }
 
@@ -647,7 +657,8 @@ class ShopView extends GetView<ShopController> {
                                     key: Key("chosenCat${index}"),
                                     child: Container(
                                       color: controller.choosenCatId.value ==
-                                              controller.categories[index].id!
+                                              filteredCategories[index]
+                                                  .id!
                                                   .toString()
                                           ? Colors.white
                                           : Colors.grey[200],
@@ -664,13 +675,12 @@ class ShopView extends GetView<ShopController> {
                                                     print(
                                                         "second ${controller.choosenCatId.value}");
                                                     print(
-                                                        "second 2  ${controller.categories[index].id!.toString()}");
+                                                        "second 2  ${filteredCategories[index].id!.toString()}");
                                                     controller.switchAll(
                                                         isFromAll: false);
                                                     controller
                                                         .changeChoosenCatId(
-                                                            controller
-                                                                .categories[
+                                                            filteredCategories[
                                                                     index]
                                                                 .id!
                                                                 .toString(),
@@ -681,8 +691,7 @@ class ShopView extends GetView<ShopController> {
 
                                                     controller
                                                         .getSubCategoriesInCategory(
-                                                            controller
-                                                                .categories[
+                                                            filteredCategories[
                                                                     index]
                                                                 .id!);
 
@@ -697,8 +706,7 @@ class ShopView extends GetView<ShopController> {
                                                   children: [
                                                     controller.choosenCatId
                                                                 .value ==
-                                                            controller
-                                                                .categories[
+                                                            filteredCategories[
                                                                     index]
                                                                 .id!
                                                                 .toString()
@@ -731,8 +739,8 @@ class ShopView extends GetView<ShopController> {
                                                         alignment: Alignment
                                                             .centerLeft,
                                                         child: Text(
-                                                          controller
-                                                              .categories[index]
+                                                          filteredCategories[
+                                                                  index]
                                                               .name!,
                                                           overflow: TextOverflow
                                                               .ellipsis,
@@ -745,8 +753,7 @@ class ShopView extends GetView<ShopController> {
                                                               weight: controller
                                                                           .choosenCatId
                                                                           .value ==
-                                                                      controller
-                                                                          .categories[
+                                                                      filteredCategories[
                                                                               index]
                                                                           .id!
                                                                           .toString()
@@ -767,7 +774,7 @@ class ShopView extends GetView<ShopController> {
                         separatorBuilder: (context, index) => SizedBox(),
                         itemCount: controller.isCategoryLoading.value
                             ? 10
-                            : controller.categories.length),
+                            : filteredCategories.length),
                   ),
                 )),
             SizedBox(
@@ -1088,10 +1095,10 @@ class ShopView extends GetView<ShopController> {
                                           Get.put(CustomSearchController());
                                       controller.getProductsInSection(
                                           sectionName: shopController
-                                              .subCategories[index].name!,
+                                              .allSubCategories[index].name!,
                                           payload: {
                                             "category_ids[0]": shopController
-                                                .subCategories[index].id!
+                                                .allSubCategories[index].id!
                                                 .toString(),
                                           });
 
@@ -1263,79 +1270,95 @@ class ShopView extends GetView<ShopController> {
                                     ],
                                   ),
                                 )
-                              : InkWell(
-                                  onTap: () {
-                                    if (CustomSearchController().initialized) {
-                                      CustomSearchController controller =
-                                          Get.find<CustomSearchController>();
-                                      controller.getProductsInSection(
-                                          sectionName: shopController
-                                              .subCategories[index].name!,
-                                          payload: {
-                                            "category_ids[0]": shopController
-                                                .subCategories[index].id!
-                                                .toString(),
-                                          });
+                              : controller.subCategories[index].image == null
+                                  ? SizedBox()
+                                  : InkWell(
+                                      onTap: () {
+                                        if (CustomSearchController()
+                                            .initialized) {
+                                          CustomSearchController controller =
+                                              Get.find<
+                                                  CustomSearchController>();
+                                          controller.getProductsInSection(
+                                              sectionName: shopController
+                                                  .subCategories[index].name!,
+                                              payload: {
+                                                "category_ids[0]":
+                                                    shopController
+                                                        .subCategories[index]
+                                                        .id!
+                                                        .toString(),
+                                              });
 
-                                      Get.to(() => const ResultView(),
-                                          transition: Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration: const Duration(
-                                              milliseconds: 800));
-                                    } else {
-                                      CustomSearchController controller =
-                                          Get.put(CustomSearchController());
-                                      controller.getProductsInSection(
-                                          sectionName: shopController
-                                              .subCategories[index].name!,
-                                          payload: {
-                                            "category_ids[0]": shopController
-                                                .subCategories[index].id!
-                                                .toString(),
-                                          });
+                                          Get.to(() => const ResultView(),
+                                              transition: Transition.fadeIn,
+                                              curve: Curves.easeInOut,
+                                              duration: const Duration(
+                                                  milliseconds: 800));
+                                        } else {
+                                          CustomSearchController controller =
+                                              Get.put(CustomSearchController());
+                                          controller.getProductsInSection(
+                                              sectionName: shopController
+                                                  .subCategories[index].name!,
+                                              payload: {
+                                                "category_ids[0]":
+                                                    shopController
+                                                        .subCategories[index]
+                                                        .id!
+                                                        .toString(),
+                                              });
 
-                                      Get.to(() => const ResultView(),
-                                          transition: Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration: const Duration(
-                                              milliseconds: 800));
-                                    }
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundColor: Colors.grey[200],
-                                        radius:
-                                            40, // Adjust the radius as needed
-                                        backgroundImage: shopController
-                                                    .subCategories[index]
-                                                    .image ==
-                                                null
-                                            ? CachedNetworkImageProvider(
-                                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                                              )
-                                            : CachedNetworkImageProvider(
-                                                shopController
-                                                    .subCategories[index].image
-                                                    .toString(),
-                                              ), // Use your image URL here
+                                          Get.to(() => const ResultView(),
+                                              transition: Transition.fadeIn,
+                                              curve: Curves.easeInOut,
+                                              duration: const Duration(
+                                                  milliseconds: 800));
+                                        }
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor: Colors.grey[200],
+                                            radius:
+                                                40, // Adjust the radius as needed
+                                            backgroundImage: shopController
+                                                        .subCategories[index]
+                                                        .image ==
+                                                    null
+                                                ? const CachedNetworkImageProvider(
+                                                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                                  )
+                                                : CachedNetworkImageProvider(
+                                                    shopController
+                                                        .subCategories[index]
+                                                        .image
+                                                        .toString(),
+                                                  ), // Use your image URL here
+                                          ),
+                                          const SizedBox(
+                                              height:
+                                                  8), // Space between image and text
+                                          shopController.subCategories[index]
+                                                      .name ==
+                                                  null
+                                              ? SizedBox()
+                                              : SizedBox(
+                                                  height: 45.h,
+                                                  child: Text(
+                                                    shopController
+                                                        .subCategories[index]
+                                                        .name!,
+                                                    style: primaryTextStyle(
+                                                        size: 12),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                        ],
                                       ),
-                                      const SizedBox(
-                                          height:
-                                              8), // Space between image and text
-                                      SizedBox(
-                                        height: 45.h,
-                                        child: Text(
-                                          shopController
-                                              .subCategories[index].name!,
-                                          style: primaryTextStyle(size: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                    );
                         },
                       ),
                     );
@@ -1343,6 +1366,15 @@ class ShopView extends GetView<ShopController> {
   }
 
   _buildUpperCategoriesList(BuildContext context) {
+    List<Categories> upperList = [];
+    for (var cat in controller.categories) {
+      if (cat.name?.toLowerCase() == "men" ||
+          cat.name?.toLowerCase() == "women" ||
+          cat.name?.toLowerCase() == "home") {
+        upperList.add(cat);
+      }
+    }
+
     return controller.isCategoryLoading.value
         ? loadingIndicatorWidget()
         : ListView.separated(
@@ -1390,15 +1422,15 @@ class ShopView extends GetView<ShopController> {
                       : () {
                           controller.switchAll(isFromAll: false);
                           controller.changeChoosenCatId(
-                              controller.categories[myIndex].id!.toString(),
-                              controller.categories[myIndex].name!);
+                              upperList[myIndex].id!.toString(),
+                              upperList[myIndex].name!);
 
                           controller.getSubCategoriesInCategory(
-                              controller.categories[myIndex].id!);
+                              upperList[myIndex].id!);
 
                           print("fourth ${controller.choosenCatId.value}");
                           print(
-                              "fourth 2  ${controller.categories[myIndex].id!.toString()}");
+                              "fourth 2  ${upperList[myIndex].id!.toString()}");
                         },
                   child: Obx(() {
                     return Container(
@@ -1406,14 +1438,13 @@ class ShopView extends GetView<ShopController> {
                         // width: 90.w,
                         child: Column(
                           children: [
-                            Text(controller.categories[myIndex].name!,
+                            Text(upperList[myIndex].name!,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 style: primaryTextStyle(
                                   size: 14.sp.round(),
                                   color: controller.choosenCatId.value ==
-                                          controller.categories[myIndex].id!
-                                              .toString()
+                                          upperList[myIndex].id!.toString()
                                       ? Colors.black
                                       : Colors.grey,
                                 )),
@@ -1421,8 +1452,7 @@ class ShopView extends GetView<ShopController> {
                               height: 2.h,
                               width: 55.w,
                               color: controller.choosenCatId.value ==
-                                      controller.categories[myIndex].id!
-                                          .toString()
+                                      upperList[myIndex].id!.toString()
                                   ? Colors.black
                                   : Colors.transparent,
                             ),
@@ -1435,6 +1465,6 @@ class ShopView extends GetView<ShopController> {
             separatorBuilder: (context, index) => SizedBox(
                   width: 5.w,
                 ),
-            itemCount: controller.categories.length + 1);
+            itemCount: upperList.length + 1);
   }
 }
