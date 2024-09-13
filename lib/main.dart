@@ -243,7 +243,7 @@ void _processDeepLink(Uri deepLinkUri) async {
   await Future.wait(futures);
 
   // After all products are added, navigate to the CART route
-  // Get.offNamedUntil(Routes.MAIN, (Route) => false);
+  Get.offNamedUntil(Routes.MAIN, (Route) => false);
 
   Get.toNamed(Routes.CART);
 }
