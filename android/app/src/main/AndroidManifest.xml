@@ -47,37 +47,26 @@
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
                 android:value="ocr" />
 
+          <!-- Intent Filters for App Launching -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Deep Link Configuration -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="mariannela-8c357.web.app" />
+                <!-- You can add pathPrefix if you want to handle specific paths -->
+            </intent-filter>
+
+            <!-- Boot Completed Filter (Optional) -->
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <meta-data
-                android:name="flutter_deeplinking_enabled"
-                android:value="true" />
-
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-
-                <!--                <data android:host="mariannela-8c357.web.app" />-->
-                <!--                <data android:pathPrefix="/product/" />-->
-                <data
-                    android:scheme="https"
-                    android:host="mariannela-8c357.web.app" />
             </intent-filter>
 
 

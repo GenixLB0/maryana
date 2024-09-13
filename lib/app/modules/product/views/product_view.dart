@@ -963,7 +963,7 @@ class ProductView extends GetView<ProductController> {
       ],
     );
   }
-
+ 
   Future<void> _shareProductWithImage() async {
     controller.startSharing();
     final url = "${controller.product.value.image}";

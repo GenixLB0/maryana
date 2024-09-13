@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:avatar_glow/avatar_glow.dart';
@@ -41,6 +42,111 @@ import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
 
 final AuthController authcontroller = Get.put(AuthController());
+// Confetti widget for fireworks
+
+class FireworksEffect extends StatefulWidget {
+  @override
+  _FireworksEffectState createState() => _FireworksEffectState();
+}
+
+class _FireworksEffectState extends State<FireworksEffect>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  final List<Particle> _particles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    )..addListener(() {
+        setState(() {});
+      });
+    _generateParticles();
+    _controller.forward();
+    // اختفاء الـ Dialog بعد 2.5 ثانية
+    Future.delayed(Duration(milliseconds: 600), () {
+      Navigator.of(context).pop(); // إغلاق الـ Dialog بعد انتهاء التأثير
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _generateParticles() {
+    final random = Random();
+    for (int i = 0; i < 100; i++) {
+      _particles.add(
+        Particle(
+          x: 0,
+          y: 0,
+          size: random.nextDouble() * 4 + 2,
+          color: Colors.primaries[random.nextInt(Colors.primaries.length)],
+          velocityX: random.nextDouble() * 4 - 2,
+          velocityY: random.nextDouble() * 4 - 2,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: FireworksPainter(_particles, _controller.value),
+      size: Size.infinite,
+    );
+  }
+}
+
+class FireworksPainter extends CustomPainter {
+  final List<Particle> particles;
+  final double animationValue;
+
+  FireworksPainter(this.particles, this.animationValue);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    for (var particle in particles) {
+      particle.update(animationValue);
+      final position = Offset(
+        center.dx + particle.x * 50,
+        center.dy + particle.y * 50,
+      );
+      final paint = Paint()
+        ..color = particle.color.withOpacity(1 - animationValue)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(position, particle.size, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class Particle {
+  double x, y, size;
+  final Color color;
+  final double velocityX, velocityY;
+
+  Particle({
+    required this.x,
+    required this.y,
+    required this.size,
+    required this.color,
+    required this.velocityX,
+    required this.velocityY,
+  });
+
+  void update(double animationValue) {
+    x += velocityX * animationValue;
+    y += velocityY * animationValue;
+  }
+}
 
 Widget gridSocialIcon() {
   return Row(
@@ -1384,6 +1490,7 @@ buildSearchAndFilter(
     ),
   );
 }
+
 class VideoLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1420,6 +1527,7 @@ class VideoLoading extends StatelessWidget {
     );
   }
 }
+
 class buildProductCard extends StatefulWidget {
   buildProductCard(
       {super.key, required this.product, this.isInWishlist = false});

@@ -26,6 +26,16 @@ class CartController extends GetxController {
   var selectedMethod = ''.obs;
   var loading = true.obs;
   var couponCode = ''.obs;
+  RxBool isSharing = false.obs;
+
+  startSharing() {
+    isSharing.value = true;
+  }
+
+  endSharing() {
+    isSharing.value = false;
+  }
+
   var giftCardCode = ''.obs;
   var discount = Rx<dynamic>(0);
   var subTotal = Rx<dynamic>(0);
@@ -38,7 +48,10 @@ class CartController extends GetxController {
   var giftCardID = ''.obs;
   final box = GetStorage();
   RxBool isAuth = false.obs;
-
+  RxBool shareLoading = false.obs;
+  bool isProductInCart(ViewProductData product) {
+    return cartItems.any((element) => element.product.id == product.id);
+  }
   void toggleDismissible(int index) {
     print('tesdsadsad');
     cartItems[index].isDismissible = !cartItems[index].isDismissible;
@@ -51,7 +64,7 @@ class CartController extends GetxController {
   @override
   void onInit() async {
     if (userToken == null) {
-      isAuth.value = false;
+      isAuth.value = false; 
     } else {
       isAuth.value = true;
       super.onInit();
