@@ -17,10 +17,12 @@ import 'package:maryana/app/modules/global/model/test_model_response.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
+import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:maryana/app/modules/services/api_service.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import 'package:collection/collection.dart';
+import 'package:maryana/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart'; // You have to add this manually, for some reason it cannot be added automatically
 import 'package:http/http.dart' as http;
@@ -42,67 +44,67 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
   late AnimationController _scaleAnimationController;
   late Animation<double> _scaleAnimation;
   List<Product> cartProducts = [];
-  List<ViewProductData> cartShareProducts = [];
-  Uri? _lastProcessedLink;
-  StreamSubscription<String?>? _linkSubscription;
 
-  Future<void> _handleIncomingLinks() async {
-    // Handle initial link if app was launched via a deep link
-    final initialLink = await getInitialLink();
-    if (initialLink != null) {
-      _processIncomingLink(Uri.parse(initialLink));
-    }
+  //  Uri? _lastProcessedLink;
+  // StreamSubscription<String?>? _linkSubscription;
 
-    // Attach a listener to handle deep links after the app is already started
-    _linkSubscription = linkStream.listen((String? link) {
-      if (link != null) {
-        _processIncomingLink(Uri.parse(link));
-      }
-    });
-  }
+  // Future<void> _handleIncomingLinks() async {
+  //   // Handle initial link if app was launched via a deep link
+  //   final initialLink = await getInitialLink();
+  //   if (initialLink != null) {
+  //     _processIncomingLink(Uri.parse(initialLink));
+  //   }
 
-  void _processIncomingLink(Uri uri) {
-    if (_lastProcessedLink == uri) {
-      print("Duplicate deep link ignored: $uri");
-      return;
-    }
+  //   // Attach a listener to handle deep links after the app is already started
+  //   _linkSubscription = linkStream.listen((String? link) {
+  //     if (link != null) {
+  //       _processIncomingLink(Uri.parse(link));
+  //     }
+  //   });
+  // }
 
-    // Process only if the path is /cart/ and has query parameters
-    if (uri.path == '/cart/' && uri.queryParameters.isNotEmpty) {
-      _lastProcessedLink = uri; // Track the processed link
+  // void _processIncomingLink(Uri uri) {
+  //   if (_lastProcessedLink == uri) {
+  //     print("Duplicate deep link ignored: $uri");
+  //     return;
+  //   }
 
-      cartController.shareLoading.value = true;
-      _processDeepLink(uri);
-    }
-  }
+  //   // Process only if the path is /cart/ and has query parameters
+  //   if (uri.path == '/cart/' && uri.queryParameters.isNotEmpty) {
+  //     _lastProcessedLink = uri; // Track the processed link
 
-  void _processDeepLink(Uri deepLinkUri) async {
-    String products = deepLinkUri.queryParameters['products'] ?? '';
+  //     cartController.shareLoading.value = true;
+  //     _processDeepLink(uri);
+  //   }
+  // }
 
-    // Split each product by commas
-    List<String> productDetails = products.split(',');
+  // void _processDeepLink(Uri deepLinkUri) async {
+  //   String products = deepLinkUri.queryParameters['products'] ?? '';
 
-    for (String productDetail in productDetails) {
-      // Each productDetail contains id, size, and color, e.g., "59-XXXL-Pink"
-      List<String> details = productDetail.split('-');
-      if (details.length == 3) {
-        String id = details[0];
-        String size = details[1];
-        String color = details[2];
+  //   // Split each product by commas
+  //   List<String> productDetails = products.split(',');
 
-        // Fetch product by id and assign size and color
-        await productController.getProduct(id);
-        var product = productController.product.value;
-        product.selectedSize = size;
-        product.selectedColor = color;
+  //   for (String productDetail in productDetails) {
+  //     // Each productDetail contains id, size, and color, e.g., "59-XXXL-Pink"
+  //     List<String> details = productDetail.split('-');
+  //     if (details.length == 3) {
+  //       String id = details[0];
+  //       String size = details[1];
+  //       String color = details[2];
 
-        cartShareProducts.add(product);
-      }
-    }
+  //       // Fetch product by id and assign size and color
+  //       await productController.getProduct(id);
+  //       var product = productController.product.value;
+  //       product.selectedSize = size;
+  //       product.selectedColor = color;
 
-    cartController.shareLoading.value = false;
-    setState(() {});
-  }
+  //       cartShareProducts.add(product);
+  //     }
+  //   }
+
+  //   cartController.shareLoading.value = false;
+  //   setState(() {});
+  // }
 
   Future<void> _shareCartWithSingleLink() async {
     cartController.startSharing();
@@ -153,7 +155,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     cartController.fetchCartDetailsFromAPI();
-    _handleIncomingLinks();
+    // _handleIncomingLinks();
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -198,7 +200,8 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
     _controller.dispose();
     _scaleAnimationController.dispose();
     _handAnimationController.dispose();
-    _linkSubscription?.cancel();
+    // _linkSubscription?.cancel();
+    cartShareProducts.clear();
     super.dispose();
   }
 
@@ -521,8 +524,10 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
       return Scaffold(
           appBar: cartController.cartItems.isNotEmpty
               ? CustomAppBar(
-                  title: 'Your Cart',
-                  back: false,
+                  title: cartShareProducts.isNotEmpty
+                      ? 'Shared Cart'
+                      : 'Your Cart',
+                  back: Navigator.canPop(context),
                   actions: [
                     Obx(() {
                       return cartController.isSharing.value
@@ -573,7 +578,14 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                           barrierDismissible: false,
                         );
                       },
-                    )
+                    ),
+                    cartShareProducts.isNotEmpty
+                        ? InkWell(
+                            onTap: () {
+                              Get.off(MainView());
+                            },
+                            child: Icon(Icons.home, color: primaryColor))
+                        : SizedBox()
                   ],
                 )
               : const CustomAppBar(
@@ -976,6 +988,10 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
               child: Text("Add All to Cart",
                   style: primaryTextStyle(color: Colors.white)),
             )),
+          if (cartShareProducts.isNotEmpty)
+            SizedBox(
+              height: 30.h,
+            ),
           if (cartShareProducts.isEmpty)
             Hero(
                 tag: 'checkout',

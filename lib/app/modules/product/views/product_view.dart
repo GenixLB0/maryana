@@ -961,7 +961,7 @@ class ProductView extends GetView<ProductController> {
       ],
     );
   }
- 
+
   Future<void> _shareProductWithImage() async {
     controller.startSharing();
     final url = "${controller.product.value.image}";
@@ -1909,11 +1909,14 @@ class ProductView extends GetView<ProductController> {
                                   ? Colors.black
                                   : Colors.grey[300]!,
                               width: 3.w)),
-                      child: CachedNetworkImage(
-                        imageUrl: myController.productImages[index].path!,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => placeHolderWidget(),
-                      ));
+                      child: index <= myController.productImages.length - 1
+                          ? CachedNetworkImage(
+                              imageUrl: myController.productImages[index].path!,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  placeHolderWidget(),
+                            )
+                          : SizedBox());
                 }),
               ),
           separatorBuilder: (context, index) => SizedBox(

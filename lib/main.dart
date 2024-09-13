@@ -15,10 +15,12 @@ import 'package:googleapis_auth/auth.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/src/client.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -185,23 +187,65 @@ _handleUri() {
   // Subscribe to all events (initial link and further)
   _appLinks.uriLinkStream.listen((uri) {
 // Do something (navigation, ...)
-    print("deep link ${uri}");
-    var id = uri.queryParameters["id"];
-    print("deep link ${id}");
-    isDeepLink = true;
-    if (id == null) {
-      isDeepLink = false;
+    if (uri.path == '/cart/' && uri.queryParameters.isNotEmpty) {
+      _processDeepLink(uri);
     } else {
-      deepLinkproduct = ViewProductData(id: int.parse(id));
-    }
+      print("deep link ${uri}");
+      var id = uri.queryParameters["id"];
+      print("deep link ${id}");
+      isDeepLink = true;
+      if (id == null) {
+        isDeepLink = false;
+      } else {
+        deepLinkproduct = ViewProductData(id: int.parse(id));
+      }
 
-    // Get.toNamed(
-    //   Routes.PRODUCT,
-    //   arguments: ViewProductData(
-    //     id: 1,
-    //   ),
-    // );
+      Get.toNamed(
+        Routes.PRODUCT,
+        arguments: deepLinkproduct,
+      );
+    }
   });
+}
+
+List<ViewProductData> cartShareProducts = [];
+
+void _processDeepLink(Uri deepLinkUri) async {
+  String products = deepLinkUri.queryParameters['products'] ?? '';
+  cartShareProducts.clear();
+  // Split each product by commas
+  List<String> productDetails = products.split(',');
+  final CartController cartController = Get.put(CartController());
+  final ProductController productController = Get.put(ProductController());
+  // List to hold all the async operations
+  List<Future<void>> futures = [];
+
+  for (String productDetail in productDetails) {
+    // Each productDetail contains id, size, and color, e.g., "59-XXXL-Pink"
+    List<String> details = productDetail.split('-');
+    if (details.length == 3) {
+      String id = details[0];
+      String size = details[1];
+      String color = details[2];
+
+      // Add the async operation to the list
+      futures.add(productController.getProduct(id).then((_) {
+        var product = productController.product.value;
+        product.selectedSize = size;
+        product.selectedColor = color;
+
+        cartShareProducts.add(product);
+      }));
+    }
+  }
+
+  // Wait for all async operations to complete
+  await Future.wait(futures);
+
+  // After all products are added, navigate to the CART route
+  // Get.offNamedUntil(Routes.MAIN, (Route) => false);
+
+  Get.toNamed(Routes.CART);
 }
 
 class MyApp extends StatelessWidget {

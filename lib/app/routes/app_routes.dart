@@ -25,7 +25,7 @@ abstract class Routes {
 
   static const SHOP = _Paths.SHOP;
   static const PRODUCT = _Paths.PRODUCT;
-  static const CART = _Paths.CART;
+  static const  CART = _Paths.CART;
 }
 
 abstract class _Paths {

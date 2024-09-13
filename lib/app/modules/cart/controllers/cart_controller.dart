@@ -52,6 +52,7 @@ class CartController extends GetxController {
   bool isProductInCart(ViewProductData product) {
     return cartItems.any((element) => element.product.id == product.id);
   }
+
   void toggleDismissible(int index) {
     print('tesdsadsad');
     cartItems[index].isDismissible = !cartItems[index].isDismissible;
@@ -64,7 +65,7 @@ class CartController extends GetxController {
   @override
   void onInit() async {
     if (userToken == null) {
-      isAuth.value = false; 
+      isAuth.value = false;
     } else {
       isAuth.value = true;
       super.onInit();
@@ -94,7 +95,7 @@ class CartController extends GetxController {
       final response = await apiConsumer.post(
         'checkout/confirm',
         body: {
-          'address_id': cartController.shippingID.value,
+          'address_id': shippingID.value,
           'shipping_id': '1',
           'payment_method_id': paymentMethodId == "Cash" ? "1" : '2',
         },
