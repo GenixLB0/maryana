@@ -5,8 +5,15 @@
 	<key>aps-environment</key>
 	<string>development</string>
 	<key>com.apple.developer.applesignin</key>
-    	<array>
-    		<string>Default</string>
-    	</array>
+	<array>
+		<string>Default</string>
+	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:mariannela-8c357.web.app</string>
+		<string>applinks:https://mariannela-8c357.web.app</string>
+		<string>https://mariannela-8c357.web.app</string>
+		<string>webcredentials:applinks:https://mariannela-8c357.web.app</string>
+	</array>
 </dict>
 </plist>

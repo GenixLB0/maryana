@@ -3,7 +3,12 @@
         "apps": [],
         "details": [{
             "appID": "FLVBQBXARH.maryana.genixs.com.maryana",
-            "paths": ["*"]
+             "paths": ["*", "/"]
         }]
-    }
+    },
+      "webcredentials": {
+        "apps": [
+          "FLVBQBXARH.maryana.genixs.com.maryana"
+        ]
+      }
 }
