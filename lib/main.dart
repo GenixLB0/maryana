@@ -158,22 +158,22 @@ void main() async {
   // GoogleFonts.cormorant
   Get.put(ApiService());
   await _handleUri();
-  // if (kReleaseMode) {
-  //   await SentryFlutter.init(
-  //     (options) {
-  //       options.dsn =
-  //           'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
-  //       // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-  //       // We recommend adjusting this value in production.
-  //       options.tracesSampleRate = 0.01;
-  //       // The sampling rate for profiling is relative to tracesSampleRate
-  //       // Setting to 1.0 will profile 100% of sampled transactions:
-  //     },
-  //     appRunner: () => runApp(MyApp()),
-  //   );
-  // } else {
+  if (kReleaseMode) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn =
+            'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 0.01;
+        // The sampling rate for profiling is relative to tracesSampleRate
+        // Setting to 1.0 will profile 100% of sampled transactions:
+      },
+      appRunner: () => runApp(MyApp()),
+    );
+  } else {
   runApp(MyApp());
-  // }
+  }
 }
 
 var clothingType = "";
