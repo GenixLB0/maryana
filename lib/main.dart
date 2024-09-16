@@ -10,6 +10,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+
 // import 'package:googleapis/vision/v1.dart' as vision;
 // import 'package:googleapis_auth/auth.dart';
 // import 'package:googleapis_auth/auth_io.dart';
@@ -23,6 +24,7 @@ import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 // import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:shorebird_code_push/shorebird_code_push.dart';
@@ -159,22 +161,22 @@ void main() async {
   // GoogleFonts.cormorant
   Get.put(ApiService());
   await _handleUri();
-  // if (kReleaseMode) {
-  //   await SentryFlutter.init(
-  //     (options) {
-  //       options.dsn =
-  //           'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
-  //       // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-  //       // We recommend adjusting this value in production.
-  //       options.tracesSampleRate = 0.01;
-  //       // The sampling rate for profiling is relative to tracesSampleRate
-  //       // Setting to 1.0 will profile 100% of sampled transactions:
-  //     },
-  //     appRunner: () => runApp(MyApp()),
-  //   );
-  // } else {
+  if (kReleaseMode) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn =
+            'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 0.01;
+        // The sampling rate for profiling is relative to tracesSampleRate
+        // Setting to 1.0 will profile 100% of sampled transactions:
+      },
+      appRunner: () => runApp(MyApp()),
+    );
+  } else {
     runApp(MyApp());
-  // }
+  }
 }
 
 var clothingType = "";
