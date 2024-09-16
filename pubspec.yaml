@@ -94,5 +94,4 @@ flutter:
     - assets/images/home/
     - assets/images/product/
     - assets/images/profile/
-    - assets/goolge_vision_api_creds.json
     - shorebird.yaml
