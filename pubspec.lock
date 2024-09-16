@@ -1563,7 +1563,7 @@ packages:
     source: hosted
     version: "2.5.2"
   video_player_avfoundation:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: video_player_avfoundation
       sha256: d1e9a824f2b324000dc8fb2dcb2a3285b6c1c7c487521c63306cc5b394f68a7c
