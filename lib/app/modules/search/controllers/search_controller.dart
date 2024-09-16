@@ -1167,13 +1167,22 @@ class CustomSearchController extends GetxController {
 
   Future<void> detectClothesType() async {
     try {
-      final String jsonresponse = await rootBundle.rootBundle
-          .loadString('assets/goolge_vision_api_creds.json');
-
-      final data = await json.decode(jsonresponse);
+    
 
       final authClient = await clientViaServiceAccount(
-        ServiceAccountCredentials.fromJson(data),
+        ServiceAccountCredentials.fromJson({
+            "type": "service_account",
+  "project_id": "mobile-app-vision-435208",
+  "private_key_id": "AIzaSyCLbTvl3EE5RyFg9vvrVCfrKKMSFrZ3yyg",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDUqCS062PPqll+\nn8LCStDud/BLsvhtcVREa0Mt8G3ooviAD3I5lFHugFTDlZQEVJ/DuHf8HuqdrE+a\na61uxkR90ArB6XDRR37mGjgcjBA4LI+krEEQSiGvSuYArbnoYr/3+vhnwgSP0pcM\nNbViPVTgOsQosR14eWRw7pDMeTwEHGKj0xjkW4YIX8t/OvTf804uTrBR+6IvDumX\n85J/9cfdeLYosisTykKrvz6YMfy+9C/5GBY0VVwLns/0dyyzfhG+EtFzntEPUrVI\nQD0DZWeZFgeJku1/3TDs8HvgA/fXzy9MiD9Hv4t7bgfgf8A+8FRKknwNy9tAp+ov\nkBOxVcYhAgMBAAECggEAXtBpLVEWO2zUYiSRDVeWN/y54sZ1BTbWP3sjhMQB/QtM\niKxaXVnH/fKx2FJEoHmqkfUZagvOx2YgR9ViilVUDFRJt5OBfY3HAokGI5Q/Vwxn\nLyCuEbk7s5BNZFgQ34/Hz6TSRFC4//cA6ay4poh540/QTeRKI4DcS43SeZhELgA5\nmirfc45d6dH0GI64bTFVnHlaIMmnleuEhwxyqOBhKX8yEn/s7JSkbNkKICu5XS1e\nJF+vInVBD4Q89qwGxoI1SreYt8q2Zq3Wl5VC3bAoMqS6Vp8/nAwcJ6GjcjT/onvQ\nTMQD9ObD5L5qpC/2GkCqHDKxwzCmLgd7deTTb/hWkQKBgQD1IY3pD88bzkC4cMzq\nTjmZJ0xsvqZWQI4iJmLd6ZTsCL2a81/To56Ecbj5LfrEvJXQ8rbzsYdrv+nlIkFj\nnLnpKWYTvhpqvRjgchrz2Upd3sCeBxdftpb2dzlJXOSIq2z06ORmFIpPhi5ufGKs\nIEGDEpj7ePR8agzXyvgEeCtTBwKBgQDeFfqHI82er98929YCeYd/tXgqdwTmuhWX\ncfoso2NmK5FoOKIklYyzzi4FRdu9PZHkfn72RBtAQrBbdrNEY2ZhlwzNjfT6eiO1\nCehbZZWtXHD7yoUr6cNV3ewWaGo89Ys9pK4KQRjFaCOaoT5Q1SKi2ORRdxFAgFjB\nLsxVjPWLlwKBgHEYyx21kou0rH2sZY7RCpgT3pnpmFsBK9KrvT+/jlscaUZ9dT/z\nJKbcxUgKI8HzdHfUE/75cI6RG/wAwwSPgeMGm7cOJagLmNetLaxGG56VsG74vJsH\nZj1OopqrhjFcTkfsz7wdS/cG5JNLRkc+Fpu/z99uXfatA0HovmdpfiuvAoGBALf2\nfssYxkevqX2lL3ZnUu1f1cVfR6kT9bS4jiIRydGlP1KUrwMc+isrHAX0Ixxz9vjO\nK781FVm6pDlvbvm0WOd35vwSnh4ptJBPP7ENydmL3G9GB+AjSFJFfT3mijIqt4d9\ndUk7ORi0teFttZ/hnUpF3YL53UmPx3VmnY40MGXLAoGBAJ+jabZYchdqhP4erZTu\ngDWG6wZK0tJiusuwxRUgK8sjjN4eWRFgnnguQOvOPB1yYLL9LmtEyb4o1aqCm14v\n+PHgLIaRWhI/9SszrWW42Wdk4LFpcSy9f34B78G4y2jLtsK8xHiJHpUeYfMp5t4v\nUoqp07pJSfeSv7xPfwunkTRu\n-----END PRIVATE KEY-----\n",
+  "client_email": "mobile-app-vision@mobile-app-vision-435208.iam.gserviceaccount.com",
+  "client_id": "100767580312036770888",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mobile-app-vision%40mobile-app-vision-435208.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+        }),
         [vision.VisionApi.cloudPlatformScope],
       );
       [vision.VisionApi.cloudPlatformScope];
