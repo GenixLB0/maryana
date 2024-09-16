@@ -1,5 +1,5 @@
 name: maryana
-version: 2.0.59+59
+version: 2.0.62+62
 publish_to: none
 description: Mariannella Amazing Ecommerce App In Lebnanon
 environment:
@@ -75,6 +75,8 @@ dependencies:
   smooth_page_indicator:
   googleapis:
   googleapis_auth:
+  sentry_flutter:
+  connectivity_plus:
 
 flutter:
   uses-material-design: true

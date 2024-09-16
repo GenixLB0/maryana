@@ -1170,11 +1170,27 @@ class CustomSearchController extends GetxController {
       ServiceAccountCredentials credentials;
 
       if (Platform.isAndroid) {
-        // Load the credentials from the JSON file for Android
-        final String jsonResponse = await rootBundle.rootBundle
-            .loadString('assets/goolge_vision_api_creds.json');
-        final data = json.decode(jsonResponse);
-        credentials = ServiceAccountCredentials.fromJson(data);
+        // // Load the credentials from the JSON file for Android
+        // final String jsonResponse = await rootBundle.rootBundle
+        //     .loadString('assets/goolge_vision_api_creds.json');
+        // final data = json.decode(jsonResponse);
+        credentials = ServiceAccountCredentials.fromJson({
+          "type": "service_account",
+          "project_id": "mobile-app-vision-435208",
+          "private_key_id": "bc1760a721add2cbb75728492892702493cb0348",
+          "private_key":
+              "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDHpPn23zR7wzTH\nU5Hqm0XNtauFfIl0rlsKjk+rOPcDybPkYHwLpASKEc42XzD8MwHLbeB3yGjDLnyA\ny49mK6tBAiYDepb9jpK5tSBPWBxjMvZhc1RUrzBSqMsmmNChuDABJdMHJi9uWT3E\nd8T2PbyLCqVdFUukP3doDrM+etEEGhWjIVmFLd2LgGgekRkS74IfjjpKUiBb93DC\nfxvA7oQJqbSw3PrMNhsGOKMEpI3Qijkt1Q/bb6LatIC9jLRG6yTvUPGQ1mYeV8+5\nV7vJg5CO3Gt9QOkE0JmtkxCkU4OPs5crpdSy7htL3RU4b065mi9xcSz+kdFoTOIV\ntRE8FzKRAgMBAAECggEAE5ko5qizrMCVcknMZbT3bcG7RD/c+ITTMB6XSI4vhYIr\n9CvakYP45BrqXOEMXH2fW/p90hRs4Fg0ZapV+egoiBmvZKEIqHxx/+P9d3yFUOGk\nWR2qtiN6gWrLgo720CFWKQ6vACEp/9Gn5B0Dy051L0sMv64C/m0yihcDVotU8Gt4\nZKzpHipj+ns6chgRJCuvYT2ZI0hGmDHY/choL/KMXy9kegGryUA/cKQpRffEvMxp\n3zA88Mxx4MVmiujNnDVVVOJrteLl5wSuPPxs+3lRqt5IV8uY3efAfzMZ0TJyMG/U\niJU70/K9GWQDZCWmz0/zK3XsHaXBoZiXoa9U7m6bYQKBgQD/P1fXjkFIEYzhpLmF\nEFzBxyFwVsJvZkgaXG5rKG+SLi+OBWvBt80/+jAAmyO5ZZLTAYoTzbfESn1+948I\nCzX3GPS2Xom3o/nodTW0q7tfD6p1J2KFh6vxx8EwSlwcHj4wrp+hO2XsAE5gfa8b\n/OqApzNfW089x81g8+SVXUIUiQKBgQDIO6o9VzhDEqTM3+MwH5ab8F7YwjkW6EHs\nOq0m7BGp+/Th1YQh3UbdrXwNvsFdHp63bHPipSZxi5ubmIj2gQbzDmqxFk0/PluL\no5tLV92s3RXwwvCvtbPPePc4YPWUA7tvWHHrtxi57KE82b8vandbunXYy+mSR6d3\nVRFMyU27yQKBgEL/K11m93elM6deh1uH6fDrBbno6+w1mqNgs5Lo8DAcc1sBzUDx\nr6wlTUg7cGsPYDSGaOm9y4h4TOxwqlhgKPAM2t6rfdZ38fa0HT6o/Ot8vy81AUUv\nUVCLMAgu3HJ89bHtg/TcFGqXwfrNwpLEFgFi4bcbznbW5O+X1N3ntpqRAoGBAIOG\ntb/PUBS25WvyUQCmbz8FeLf3dJq4e70Zme2sObon1+aUY1P/TvKEZ617tPZfC7C+\n26xwAT2qj894Ndd+T7tOqASk+p7lbirekD7Ae8t1+liJJKK2v2M0OWheQFI21WNB\nfKtyPRq79fnLqosR609kvs5mu4mr6bQ4O8HtpVMJAoGAJ8SBQKVVUCsv/TLojxuW\nI34PdTn4d+sso7Sr5k7HoQtkX2IRlfETZMdzHex/0h8hspRggu/EdXvdNH+OV7St\nnNWOnWkT6ZaN2FjUrSAJ5xq7ykkQtCdkcSHMPB96HfKgRvJUZZUHgsh6GYD7bqNb\nqV9/0B4eNz06M/PgkvlXgI8=\n-----END PRIVATE KEY-----\n",
+          "client_email":
+              "mobilevision-863@mobile-app-vision-435208.iam.gserviceaccount.com",
+          "client_id": "104992424643508425132",
+          "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+          "token_uri": "https://oauth2.googleapis.com/token",
+          "auth_provider_x509_cert_url":
+              "https://www.googleapis.com/oauth2/v1/certs",
+          "client_x509_cert_url":
+              "https://www.googleapis.com/robot/v1/metadata/x509/mobilevision-863%40mobile-app-vision-435208.iam.gserviceaccount.com",
+          "universe_domain": "googleapis.com"
+        });
       } else if (Platform.isIOS) {
         // Load credentials from environment variables for iOS
         final clientEmail = Platform.environment['CLIENT_EMAIL'];

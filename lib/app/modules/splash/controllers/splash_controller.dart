@@ -48,6 +48,7 @@ class SplashController extends GetxController {
   }
 
   void navigateToOnboarding() {
+    print("it navigateToOnboarding");
     Get.offNamedUntil(Routes.ONBOARDING, (route) => false);
 
     //  Get.offAll(() => const OnboardingView());

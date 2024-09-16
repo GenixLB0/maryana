@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:app_links/app_links.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -15,14 +16,19 @@ import 'package:googleapis_auth/auth.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/src/client.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
+import 'package:maryana/app/modules/cart/bindings/cart_binding.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
+import 'package:maryana/app/modules/global/widget/widget.dart';
+import 'package:maryana/app/modules/product/bindings/product_binding.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:maryana/app/modules/onboarding/views/onboarding_view.dart';
@@ -158,22 +164,22 @@ void main() async {
   // GoogleFonts.cormorant
   Get.put(ApiService());
   await _handleUri();
-  // if (kReleaseMode) {
-  //   await SentryFlutter.init(
-  //     (options) {
-  //       options.dsn =
-  //           'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
-  //       // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-  //       // We recommend adjusting this value in production.
-  //       options.tracesSampleRate = 0.01;
-  //       // The sampling rate for profiling is relative to tracesSampleRate
-  //       // Setting to 1.0 will profile 100% of sampled transactions:
-  //     },
-  //     appRunner: () => runApp(MyApp()),
-  //   );
-  // } else {
-  runApp(MyApp());
-  // }
+  if (kReleaseMode) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn =
+            'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 0.01;
+        // The sampling rate for profiling is relative to tracesSampleRate
+        // Setting to 1.0 will profile 100% of sampled transactions:
+      },
+      appRunner: () => runApp(MyApp()),
+    );
+  } else {
+    runApp(MyApp());
+  }
 }
 
 var clothingType = "";
@@ -202,8 +208,8 @@ _handleUri() {
         deepLinkproduct = ViewProductData(id: int.parse(id));
       }
       isDeepLink = true;
-      Future.delayed(Duration(milliseconds: 500), () {
-        Get.toNamed(
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.offNamed(
           Routes.PRODUCT,
           arguments: deepLinkproduct,
         );
@@ -247,8 +253,11 @@ void _processDeepLink(Uri deepLinkUri) async {
   await Future.wait(futures);
   await Future.delayed(const Duration(milliseconds: 700));
   // After all products are added, navigate to the CART route
-
-  Get.toNamed(Routes.CART);
+  if (Platform.isAndroid) {
+    Get.offNamed(Routes.CART);
+  } else {
+    Get.toNamed(Routes.CART);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -258,38 +267,205 @@ class MyApp extends StatelessWidget {
         builder: (_) => FutureBuilder<Color>(
             future: getMaterialYouData(),
             builder: (_, snap) {
-              return ScreenUtilInit(
-                  designSize: const Size(375, 812),
-                  minTextAdapt: true,
-                  splitScreenMode: true,
-                  // Use builder only if you need to use library outside ScreenUtilInit context
-                  builder: (_, child) {
-                    return Platform.isAndroid
-                        ? Observer(
-                            builder: (_) => GetMaterialApp(
-                                  debugShowCheckedModeBanner: false,
-                                  useInheritedMediaQuery: true,
-                                  title: APP_NAME,
-                                  theme: AppTheme.lightTheme(color: snap.data),
-                                  initialRoute: isDeepLink && isCart == false
-                                      ? Routes.PRODUCT
-                                      : isDeepLink == false && isCart
-                                          ? Routes.CART
-                                          : Routes.SPLASH,
-                                  initialBinding: SplashBinding(),
-                                  getPages: AppPages.routes,
-                                ))
-                        : Observer(
-                            builder: (_) => GetMaterialApp(
-                                  debugShowCheckedModeBanner: false,
-                                  useInheritedMediaQuery: true,
-                                  title: APP_NAME,
-                                  theme: AppTheme.lightTheme(color: snap.data),
-                                  initialRoute: Routes.SPLASH,
-                                  initialBinding: SplashBinding(),
-                                  getPages: AppPages.routes,
-                                ));
-                  });
+              return StreamBuilder<List<ConnectivityResult>>(
+                stream: Connectivity().onConnectivityChanged,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Scaffold(
+                        backgroundColor: Colors.white,
+                        body: Center(child: loadingIndicatorWidget()),
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    return Scaffold(
+                      backgroundColor: Colors.white,
+                      body: Center(child: loadingIndicatorWidget()),
+                    );
+                  } else {
+                    return snapshot.data != null
+                        ? snapshot.data!.contains(ConnectivityResult.none)
+                            ? const NoInternetView()
+                            : ScreenUtilInit(
+                                designSize: const Size(375, 812),
+                                minTextAdapt: true,
+                                splitScreenMode: true,
+                                // Use builder only if you need to use library outside ScreenUtilInit context
+                                builder: (_, child) {
+                                  return Platform.isAndroid
+                                      ? Observer(
+                                          builder: (_) => GetMaterialApp(
+                                                debugShowCheckedModeBanner:
+                                                    false,
+                                                useInheritedMediaQuery: true,
+                                                title: APP_NAME,
+                                                theme: AppTheme.lightTheme(
+                                                    color: snap.data),
+                                                initialRoute: isDeepLink &&
+                                                        isCart == false
+                                                    ? Routes.PRODUCT
+                                                    : isDeepLink == false &&
+                                                            isCart
+                                                        ? Routes.CART
+                                                        : Routes.SPLASH,
+                                                initialBinding: isDeepLink &&
+                                                        isCart == false
+                                                    ? ProductBinding()
+                                                    : isDeepLink == false &&
+                                                            isCart
+                                                        ? CartBinding()
+                                                        : SplashBinding(),
+                                                getPages: AppPages.routes,
+                                              ))
+                                      : Observer(
+                                          builder: (_) => GetMaterialApp(
+                                                debugShowCheckedModeBanner:
+                                                    false,
+                                                useInheritedMediaQuery: true,
+                                                title: APP_NAME,
+                                                theme: AppTheme.lightTheme(
+                                                    color: snap.data),
+                                                initialRoute: Routes.SPLASH,
+                                                initialBinding: SplashBinding(),
+                                                getPages: AppPages.routes,
+                                              ));
+                                })
+                        : ScreenUtilInit(
+                            designSize: const Size(375, 812),
+                            minTextAdapt: true,
+                            splitScreenMode: true,
+                            // Use builder only if you need to use library outside ScreenUtilInit context
+                            builder: (_, child) {
+                              return Platform.isAndroid
+                                  ? Observer(
+                                      builder: (_) => GetMaterialApp(
+                                            debugShowCheckedModeBanner: false,
+                                            useInheritedMediaQuery: true,
+                                            title: APP_NAME,
+                                            theme: AppTheme.lightTheme(
+                                                color: snap.data),
+                                            initialRoute: isDeepLink &&
+                                                    isCart == false
+                                                ? Routes.PRODUCT
+                                                : isDeepLink == false && isCart
+                                                    ? Routes.CART
+                                                    : Routes.SPLASH,
+                                            initialBinding: isDeepLink &&
+                                                    isCart == false
+                                                ? ProductBinding()
+                                                : isDeepLink == false && isCart
+                                                    ? CartBinding()
+                                                    : SplashBinding(),
+                                            getPages: AppPages.routes,
+                                          ))
+                                  : Observer(
+                                      builder: (_) => GetMaterialApp(
+                                            debugShowCheckedModeBanner: false,
+                                            useInheritedMediaQuery: true,
+                                            title: APP_NAME,
+                                            theme: AppTheme.lightTheme(
+                                                color: snap.data),
+                                            initialRoute: Routes.SPLASH,
+                                            initialBinding: SplashBinding(),
+                                            getPages: AppPages.routes,
+                                          ));
+                            });
+                  }
+                },
+              );
             }));
+  }
+}
+
+class NoInternetView extends StatefulWidget {
+  const NoInternetView({super.key});
+
+  @override
+  State<NoInternetView> createState() => _NoInternetViewState();
+}
+
+class _NoInternetViewState extends State<NoInternetView> {
+  bool isLoading = false;
+  bool isTicker = true;
+
+  @override
+  void initState() {
+    networkChecker();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TickerMode(
+      enabled: isTicker,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Lottie.asset(
+                "assets/images/no_intenet.json",
+                height: MediaQuery.of(context).size.height / 3,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                'No Internet Connection',
+                style: primaryTextStyle(size: 20, weight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              isLoading
+                  ? CircularProgressIndicator(
+                      backgroundColor: primaryColor,
+                    )
+                  : ElevatedButton(
+                      onPressed: () async {
+                        if (mounted) {
+                          isLoading = true;
+                          setState(() {});
+                        }
+
+                        Future.delayed(const Duration(seconds: 1), () async {
+                          await Connectivity()
+                              .checkConnectivity()
+                              .then((value) async {
+                            if (value.first == ConnectivityResult.none) {
+                              if (mounted) {
+                                isLoading = false;
+                                setState(() {});
+                              }
+                            } else {
+                              await Get.closeCurrentSnackbar();
+                              Get.offAllNamed(Routes.SPLASH);
+                            }
+                          });
+                        });
+                      },
+                      child: Text(
+                        'Retry',
+                        style: primaryTextStyle(),
+                      )),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> networkChecker() async {
+    await Connectivity().checkConnectivity().then((value) async {
+      if (value.first == ConnectivityResult.none) {
+      } else {
+        isTicker = false;
+        await Get.closeCurrentSnackbar();
+      }
+    });
   }
 }
