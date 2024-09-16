@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:googleapis_auth/auth_io.dart';
+// import 'package:googleapis_auth/auth_io.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../main.dart';

@@ -26,7 +26,6 @@ import 'package:maryana/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart'; // You have to add this manually, for some reason it cannot be added automatically
 import 'package:http/http.dart' as http;
-import 'package:uni_links/uni_links.dart';
 
 class CartPage extends StatefulWidget {
   @override
