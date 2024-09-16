@@ -30,7 +30,7 @@ dependencies:
   visibility_detector: 0.4.0+2
   typewritertext: 3.0.8
   get_storage: 2.1.1
-  firebase_core : 11.0.0
+  firebase_core : 3.4.1
   firebase_messaging: ^15.0.3
   carousel_slider: 5.0.0
   url_launcher: ^6.3.0
