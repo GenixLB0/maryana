@@ -22,6 +22,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/services.dart' as rootBundle;
 import '../views/ai_loading_image.dart';
 import '../views/result_view.dart';
+import 'package:firebase_database/firebase_database.dart'; // For Realtime Database
 
 class CustomSearchController extends GetxController {
   List<ViewProductData> products = [];
@@ -1168,33 +1169,22 @@ class CustomSearchController extends GetxController {
   Future<void> detectClothesType() async {
     try {
       ServiceAccountCredentials credentials;
+      print('test email');
 
-      if (Platform.isAndroid) {
-        // Load the credentials from the JSON file for Android
-        final String jsonResponse = await rootBundle.rootBundle
-            .loadString('assets/goolge_vision_api_creds.json');
-        final data = json.decode(jsonResponse);
-        credentials = ServiceAccountCredentials.fromJson(data);
-      } else if (Platform.isIOS) {
-        // Load credentials from environment variables for iOS
-        final clientEmail = Platform.environment['CLIENT_EMAIL'];
-        final privateKey = Platform.environment['PRIVATE_KEY'];
+      if (Platform.isAndroid || Platform.isIOS) {
+        // Fetch credentials from Firebase Realtime Database
+        final credentialsData = await fetchApiCredentials();
+        final clientEmail = credentialsData['client_email'];
+        final privateKey = credentialsData['private_key'];
 
         if (clientEmail == null || privateKey == null) {
-          throw Exception(
-              "Missing Google API credentials in environment variables.");
+          throw Exception("Missing API credentials from Firebase.");
         }
 
-        // Decode the Base64 private key if necessary
-        final decodedPrivateKey = privateKey.contains('BEGIN PRIVATE KEY')
-            ? privateKey
-            : String.fromCharCodes(base64Decode(privateKey));
-
-        // Set up the service account credentials using the environment variables
         credentials = ServiceAccountCredentials(
-          clientEmail!,
+          clientEmail,
           ClientId(""),
-          decodedPrivateKey,
+          privateKey,
         );
       } else {
         throw Exception("Unsupported platform");
@@ -1299,4 +1289,27 @@ class CustomSearchController extends GetxController {
     }
   }
 
+  Future<Map<String, String>> fetchApiCredentials() async {
+    try {
+      final dbRef = FirebaseDatabase.instance.ref().child('api_credentials');
+      print('asdsadsadsadsad2w');
+
+      final DataSnapshot snapshot = await dbRef.get();
+      print('asdsadsadsadsad2');
+
+      final data = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (data != null) {
+        return {
+          'client_email': data['client_email'],
+          'private_key': data['private_key']
+        };
+      } else {
+        throw Exception("API credentials not found in Firebase.");
+      }
+    } catch (e, stackTrace) {
+      print('$e $stackTrace credentials not found in Firebase.');
+      throw Exception("API credentials not found in Firebase.");
+    }
+  }
 }

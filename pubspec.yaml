@@ -29,7 +29,9 @@ dependencies:
   video_player: ^2.8.1
   visibility_detector: 0.4.0+2
   typewritertext: 3.0.8
+  firebase_database : any
   get_storage: 2.1.1
+  firebase_app_check: any
   firebase_messaging: ^15.0.3
   carousel_slider: 5.0.0
   url_launcher: ^6.3.0
