@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart' hide Material;
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:googleapis_auth/auth_io.dart';
+// import 'package:googleapis_auth/auth_io.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart';
-import 'package:googleapis/vision/v1.dart' as vision;
+// import 'package:googleapis/vision/v1.dart' as vision;
 import '../../services/api_consumer.dart';
 import '../../services/api_service.dart';
 import 'package:dio/dio.dart' as dio;
@@ -1166,135 +1166,135 @@ class CustomSearchController extends GetxController {
   }
 
   Future<void> detectClothesType() async {
-    try {
-      ServiceAccountCredentials credentials;
+  //   try {
+  //     ServiceAccountCredentials credentials;
 
-      if (Platform.isAndroid) {
-        // Load the credentials from the JSON file for Android
-        final String jsonResponse = await rootBundle.rootBundle
-            .loadString('assets/goolge_vision_api_creds.json');
-        final data = json.decode(jsonResponse);
-        credentials = ServiceAccountCredentials.fromJson(data);
-      } else if (Platform.isIOS) {
-        // Load credentials from environment variables for iOS
-        final clientEmail = Platform.environment['CLIENT_EMAIL'];
-        final privateKey = Platform.environment['PRIVATE_KEY'];
+  //     if (Platform.isAndroid) {
+  //       // Load the credentials from the JSON file for Android
+  //       final String jsonResponse = await rootBundle.rootBundle
+  //           .loadString('assets/goolge_vision_api_creds.json');
+  //       final data = json.decode(jsonResponse);
+  //       credentials = ServiceAccountCredentials.fromJson(data);
+  //     } else if (Platform.isIOS) {
+  //       // Load credentials from environment variables for iOS
+  //       final clientEmail = Platform.environment['CLIENT_EMAIL'];
+  //       final privateKey = Platform.environment['PRIVATE_KEY'];
 
-        if (clientEmail == null || privateKey == null) {
-          throw Exception(
-              "Missing Google API credentials in environment variables.");
-        }
+  //       if (clientEmail == null || privateKey == null) {
+  //         throw Exception(
+  //             "Missing Google API credentials in environment variables.");
+  //       }
 
-        // Decode the Base64 private key if necessary
-        final decodedPrivateKey = privateKey.contains('BEGIN PRIVATE KEY')
-            ? privateKey
-            : String.fromCharCodes(base64Decode(privateKey));
+  //       // Decode the Base64 private key if necessary
+  //       final decodedPrivateKey = privateKey.contains('BEGIN PRIVATE KEY')
+  //           ? privateKey
+  //           : String.fromCharCodes(base64Decode(privateKey));
 
-        // Set up the service account credentials using the environment variables
-        credentials = ServiceAccountCredentials(
-          clientEmail!,
-          ClientId(""),
-          decodedPrivateKey,
-        );
-      } else {
-        throw Exception("Unsupported platform");
-      }
+  //       // Set up the service account credentials using the environment variables
+  //       credentials = ServiceAccountCredentials(
+  //         clientEmail!,
+  //         ClientId(""),
+  //         decodedPrivateKey,
+  //       );
+  //     } else {
+  //       throw Exception("Unsupported platform");
+  //     }
 
-      // Authorize using the credentials
-      final authClient = await clientViaServiceAccount(
-        credentials,
-        [vision.VisionApi.cloudPlatformScope],
-      );
+  //     // Authorize using the credentials
+  //     final authClient = await clientViaServiceAccount(
+  //       credentials,
+  //       [vision.VisionApi.cloudPlatformScope],
+  //     );
 
-      // Initialize the Vision API client
-      final visionApi = vision.VisionApi(authClient);
+  //     // Initialize the Vision API client
+  //     final visionApi = vision.VisionApi(authClient);
 
-      // Read image file
-      final imageFile = File(_image!.path);
-      final bytes = imageFile.readAsBytesSync();
-      final base64Image = base64Encode(bytes);
+  //     // Read image file
+  //     final imageFile = File(_image!.path);
+  //     final bytes = imageFile.readAsBytesSync();
+  //     final base64Image = base64Encode(bytes);
 
-      // Prepare the request for image annotation
-      final request = vision.BatchAnnotateImagesRequest.fromJson({
-        "requests": [
-          {
-            "image": {"content": base64Image},
-            "features": [
-              {"type": "LABEL_DETECTION", "maxResults": 10}
-            ]
-          }
-        ]
-      });
+  //     // Prepare the request for image annotation
+  //     final request = vision.BatchAnnotateImagesRequest.fromJson({
+  //       "requests": [
+  //         {
+  //           "image": {"content": base64Image},
+  //           "features": [
+  //             {"type": "LABEL_DETECTION", "maxResults": 10}
+  //           ]
+  //         }
+  //       ]
+  //     });
 
-      // Define clothing types to detect
-      final clothingTypes = [
-        'shirt',
-        'dress',
-        'pants',
-        'skirt',
-        'jacket',
-        'coat',
-        'sweater',
-        't-shirt',
-        'jeans',
-        'shorts',
-        'bag',
-        'sock',
-        'shoes',
-        'hat',
-        'glove',
-        'sweatpant',
-        'sweatshirt',
-        'jumper',
-        'bottle',
-        'bra',
-        'underwear',
-        'define',
-        'legging',
-        'sport',
-        'hoodie',
-        'set',
-        'sleeve',
-        'bra',
-        'trouser',
-        'top',
-        'hat',
-        'shoe',
-        'sneaker'
-      ];
+  //     // Define clothing types to detect
+  //     final clothingTypes = [
+  //       'shirt',
+  //       'dress',
+  //       'pants',
+  //       'skirt',
+  //       'jacket',
+  //       'coat',
+  //       'sweater',
+  //       't-shirt',
+  //       'jeans',
+  //       'shorts',
+  //       'bag',
+  //       'sock',
+  //       'shoes',
+  //       'hat',
+  //       'glove',
+  //       'sweatpant',
+  //       'sweatshirt',
+  //       'jumper',
+  //       'bottle',
+  //       'bra',
+  //       'underwear',
+  //       'define',
+  //       'legging',
+  //       'sport',
+  //       'hoodie',
+  //       'set',
+  //       'sleeve',
+  //       'bra',
+  //       'trouser',
+  //       'top',
+  //       'hat',
+  //       'shoe',
+  //       'sneaker'
+  //     ];
 
-      // Send the request to the Vision API
-      final response = await visionApi.images.annotate(request);
-      final annotateImageResponses = response.responses;
+  //     // Send the request to the Vision API
+  //     final response = await visionApi.images.annotate(request);
+  //     final annotateImageResponses = response.responses;
 
-      for (var annotateImageResponse in annotateImageResponses!) {
-        if (annotateImageResponse.labelAnnotations != null) {
-          bool isMatching = false;
-          for (var label in annotateImageResponse.labelAnnotations!) {
-            print("Your label: ${label.description}");
-            if (clothingTypes.contains(label.description?.toLowerCase())) {
-              isMatching = true;
-              myClothingType.value = label.description!;
-            }
-          }
+  //     for (var annotateImageResponse in annotateImageResponses!) {
+  //       if (annotateImageResponse.labelAnnotations != null) {
+  //         bool isMatching = false;
+  //         for (var label in annotateImageResponse.labelAnnotations!) {
+  //           print("Your label: ${label.description}");
+  //           if (clothingTypes.contains(label.description?.toLowerCase())) {
+  //             isMatching = true;
+  //             myClothingType.value = label.description!;
+  //           }
+  //         }
 
-          // If clothing type is detected, proceed; otherwise, show error
-          if (isMatching) {
-            currentFun();
-            Get.back();
-            Get.off(const ResultView());
-          } else {
-            Get.back();
-            Get.snackbar(
-                "Not Recognized", "No Clothing Detected, try another image");
-          }
-        }
-      }
+  //         // If clothing type is detected, proceed; otherwise, show error
+  //         if (isMatching) {
+  //           currentFun();
+  //           Get.back();
+  //           Get.off(const ResultView());
+  //         } else {
+  //           Get.back();
+  //           Get.snackbar(
+  //               "Not Recognized", "No Clothing Detected, try another image");
+  //         }
+  //       }
+  //     }
 
-      // Close the auth client after use
-      authClient.close();
-    } catch (e) {
-      Get.snackbar("Error", e.toString());
-    }
-  }
+  //     // Close the auth client after use
+  //     authClient.close();
+  //   } catch (e) {
+  //     Get.snackbar("Error", e.toString());
+  //   }
+   }
 }
