@@ -1260,7 +1260,8 @@ class CustomSearchController extends GetxController {
         'top',
         'hat',
         'shoe',
-        'sneaker'
+        'sneaker',
+        'glass'
       ];
 
       // Send the request to the Vision API
