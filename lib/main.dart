@@ -149,7 +149,7 @@ void navigateToOnboarding() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _handleUri();
+
 
   await init();
 
@@ -159,6 +159,7 @@ void main() async {
 
   // GoogleFonts.cormorant
   Get.put(ApiService());
+    await _handleUri();
   if (kReleaseMode) {
     await SentryFlutter.init(
       (options) {
@@ -180,6 +181,7 @@ void main() async {
 var clothingType = "";
 
 bool isDeepLink = false;
+bool isCart = false;
 ViewProductData? deepLinkproduct;
 
 _handleUri() {
@@ -188,6 +190,7 @@ _handleUri() {
   _appLinks.uriLinkStream.listen((uri) {
 // Do something (navigation, ...)
     if (uri.path == '/cart/' && uri.queryParameters.isNotEmpty) {
+      isCart = true;
       _processDeepLink(uri);
     } else {
       print("deep link ${uri}");
@@ -198,12 +201,16 @@ _handleUri() {
         isDeepLink = false;
       } else {
         deepLinkproduct = ViewProductData(id: int.parse(id));
+     
       }
-
-      Get.toNamed(
+      isDeepLink = true;
+Future.delayed(Duration(milliseconds: 500), () {
+     Get.toNamed(
         Routes.PRODUCT,
         arguments: deepLinkproduct,
       );
+});
+   
     }
   });
 }
@@ -211,6 +218,7 @@ _handleUri() {
 List<ViewProductData> cartShareProducts = [];
 
 void _processDeepLink(Uri deepLinkUri) async {
+  
   String products = deepLinkUri.queryParameters['products'] ?? '';
   cartShareProducts.clear();
   // Split each product by commas
@@ -243,9 +251,14 @@ void _processDeepLink(Uri deepLinkUri) async {
   await Future.wait(futures);
 
   // After all products are added, navigate to the CART route
+  if(Platform.isAndroid){
+
+  } else {
   Get.offNamedUntil(Routes.MAIN, (Route) => false);
 
   Get.toNamed(Routes.CART);
+  }
+
 }
 
 class MyApp extends StatelessWidget {
@@ -261,7 +274,28 @@ class MyApp extends StatelessWidget {
                   splitScreenMode: true,
                   // Use builder only if you need to use library outside ScreenUtilInit context
                   builder: (_, child) {
-                    return Observer(
+                    return 
+                  Platform.isAndroid ?
+                    Observer(
+                        builder: (_) => GetMaterialApp(
+                              debugShowCheckedModeBanner: false,
+                              useInheritedMediaQuery: true,
+                              title: APP_NAME,
+                              theme: AppTheme.lightTheme(color: snap.data),
+                              initialRoute: isDeepLink && isCart == false ?
+                               Routes.PRODUCT :
+                                isDeepLink == false
+                                 && isCart ?
+                                Routes.CART :
+                                Routes.SPLASH,
+                              initialBinding: SplashBinding(),
+                              getPages: AppPages.routes,
+                            ))
+                    
+
+                    :
+
+                    Observer(
                         builder: (_) => GetMaterialApp(
                               debugShowCheckedModeBanner: false,
                               useInheritedMediaQuery: true,
