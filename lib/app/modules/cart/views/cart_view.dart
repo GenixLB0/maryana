@@ -544,48 +544,48 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                               },
                             );
                     }),
-                    IconButton(
-                      icon: Icon(
-                        Icons.remove_shopping_cart_rounded,
-                        color: primaryColor,
-                      ),
-                      onPressed: () {
-                        Get.defaultDialog(
-                          title: 'Confirm',
-                          titleStyle: primaryTextStyle(
-                            size: 20.sp.round(),
-                            weight: FontWeight.bold,
-                            color: primaryColor,
-                          ),
-                          middleText:
-                              'Are you sure you want to empty the cart?',
-                          middleTextStyle: primaryTextStyle(
-                            size: 14.round(),
-                            color: Colors.black87,
-                          ),
-                          textCancel: 'Cancel',
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20.w, vertical: 10.h),
-                          cancelTextColor: primaryColor,
-                          textConfirm: 'Confirm',
-                          confirmTextColor: Colors.white,
-                          buttonColor: primaryColor,
-                          onConfirm: () {
-                            cartController.clearCart();
-                            Get.back();
-                          },
-                          radius: 15,
-                          barrierDismissible: false,
-                        );
-                      },
-                    ),
-                    cartShareProducts.isNotEmpty
-                        ? InkWell(
-                            onTap: () {
-                              Get.off(MainView());
+                    if (cartShareProducts.isEmpty)
+                      IconButton(
+                        icon: Icon(
+                          Icons.remove_shopping_cart_sharp,
+                        ),
+                        onPressed: () {
+                          Get.defaultDialog(
+                            title: 'Confirm',
+                            titleStyle: primaryTextStyle(
+                              size: 20.sp.round(),
+                              weight: FontWeight.bold,
+                              color: primaryColor,
+                            ),
+                            middleText:
+                                'Are you sure you want to empty the cart?',
+                            middleTextStyle: primaryTextStyle(
+                              size: 14.round(),
+                              color: Colors.black87,
+                            ),
+                            textCancel: 'Cancel',
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20.w, vertical: 10.h),
+                            cancelTextColor: primaryColor,
+                            textConfirm: 'Confirm',
+                            confirmTextColor: Colors.white,
+                            buttonColor: primaryColor,
+                            onConfirm: () {
+                              cartController.clearCart();
+                              Get.back();
                             },
-                            child: Icon(Icons.home, color: primaryColor))
-                        : SizedBox()
+                            radius: 15,
+                            barrierDismissible: false,
+                          );
+                        },
+                      ),
+                    // cartShareProducts.isNotEmpty
+                    //     ? InkWell(
+                    //         onTap: () {
+                    //           Get.off(MainView());
+                    //         },
+                    //         child: Icon(Icons.home, color: primaryColor))
+                    //     : SizedBox()
                   ],
                 )
               : const CustomAppBar(

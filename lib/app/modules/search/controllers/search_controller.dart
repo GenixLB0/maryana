@@ -1167,32 +1167,54 @@ class CustomSearchController extends GetxController {
 
   Future<void> detectClothesType() async {
     try {
-    
+      ServiceAccountCredentials credentials;
 
+      if (Platform.isAndroid) {
+        // Load the credentials from the JSON file for Android
+        final String jsonResponse = await rootBundle.rootBundle
+            .loadString('assets/goolge_vision_api_creds.json');
+        final data = json.decode(jsonResponse);
+        credentials = ServiceAccountCredentials.fromJson(data);
+      } else if (Platform.isIOS) {
+        // Load credentials from environment variables for iOS
+        final clientEmail = Platform.environment['CLIENT_EMAIL'];
+        final privateKey = Platform.environment['PRIVATE_KEY'];
+
+        if (clientEmail == null || privateKey == null) {
+          throw Exception(
+              "Missing Google API credentials in environment variables.");
+        }
+
+        // Decode the Base64 private key if necessary
+        final decodedPrivateKey = privateKey.contains('BEGIN PRIVATE KEY')
+            ? privateKey
+            : String.fromCharCodes(base64Decode(privateKey));
+
+        // Set up the service account credentials using the environment variables
+        credentials = ServiceAccountCredentials(
+          clientEmail!,
+          ClientId(""),
+          decodedPrivateKey,
+        );
+      } else {
+        throw Exception("Unsupported platform");
+      }
+
+      // Authorize using the credentials
       final authClient = await clientViaServiceAccount(
-        ServiceAccountCredentials.fromJson({
-            "type": "service_account",
-  "project_id": "mobile-app-vision-435208",
-  "private_key_id": "AIzaSyCLbTvl3EE5RyFg9vvrVCfrKKMSFrZ3yyg",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDUqCS062PPqll+\nn8LCStDud/BLsvhtcVREa0Mt8G3ooviAD3I5lFHugFTDlZQEVJ/DuHf8HuqdrE+a\na61uxkR90ArB6XDRR37mGjgcjBA4LI+krEEQSiGvSuYArbnoYr/3+vhnwgSP0pcM\nNbViPVTgOsQosR14eWRw7pDMeTwEHGKj0xjkW4YIX8t/OvTf804uTrBR+6IvDumX\n85J/9cfdeLYosisTykKrvz6YMfy+9C/5GBY0VVwLns/0dyyzfhG+EtFzntEPUrVI\nQD0DZWeZFgeJku1/3TDs8HvgA/fXzy9MiD9Hv4t7bgfgf8A+8FRKknwNy9tAp+ov\nkBOxVcYhAgMBAAECggEAXtBpLVEWO2zUYiSRDVeWN/y54sZ1BTbWP3sjhMQB/QtM\niKxaXVnH/fKx2FJEoHmqkfUZagvOx2YgR9ViilVUDFRJt5OBfY3HAokGI5Q/Vwxn\nLyCuEbk7s5BNZFgQ34/Hz6TSRFC4//cA6ay4poh540/QTeRKI4DcS43SeZhELgA5\nmirfc45d6dH0GI64bTFVnHlaIMmnleuEhwxyqOBhKX8yEn/s7JSkbNkKICu5XS1e\nJF+vInVBD4Q89qwGxoI1SreYt8q2Zq3Wl5VC3bAoMqS6Vp8/nAwcJ6GjcjT/onvQ\nTMQD9ObD5L5qpC/2GkCqHDKxwzCmLgd7deTTb/hWkQKBgQD1IY3pD88bzkC4cMzq\nTjmZJ0xsvqZWQI4iJmLd6ZTsCL2a81/To56Ecbj5LfrEvJXQ8rbzsYdrv+nlIkFj\nnLnpKWYTvhpqvRjgchrz2Upd3sCeBxdftpb2dzlJXOSIq2z06ORmFIpPhi5ufGKs\nIEGDEpj7ePR8agzXyvgEeCtTBwKBgQDeFfqHI82er98929YCeYd/tXgqdwTmuhWX\ncfoso2NmK5FoOKIklYyzzi4FRdu9PZHkfn72RBtAQrBbdrNEY2ZhlwzNjfT6eiO1\nCehbZZWtXHD7yoUr6cNV3ewWaGo89Ys9pK4KQRjFaCOaoT5Q1SKi2ORRdxFAgFjB\nLsxVjPWLlwKBgHEYyx21kou0rH2sZY7RCpgT3pnpmFsBK9KrvT+/jlscaUZ9dT/z\nJKbcxUgKI8HzdHfUE/75cI6RG/wAwwSPgeMGm7cOJagLmNetLaxGG56VsG74vJsH\nZj1OopqrhjFcTkfsz7wdS/cG5JNLRkc+Fpu/z99uXfatA0HovmdpfiuvAoGBALf2\nfssYxkevqX2lL3ZnUu1f1cVfR6kT9bS4jiIRydGlP1KUrwMc+isrHAX0Ixxz9vjO\nK781FVm6pDlvbvm0WOd35vwSnh4ptJBPP7ENydmL3G9GB+AjSFJFfT3mijIqt4d9\ndUk7ORi0teFttZ/hnUpF3YL53UmPx3VmnY40MGXLAoGBAJ+jabZYchdqhP4erZTu\ngDWG6wZK0tJiusuwxRUgK8sjjN4eWRFgnnguQOvOPB1yYLL9LmtEyb4o1aqCm14v\n+PHgLIaRWhI/9SszrWW42Wdk4LFpcSy9f34B78G4y2jLtsK8xHiJHpUeYfMp5t4v\nUoqp07pJSfeSv7xPfwunkTRu\n-----END PRIVATE KEY-----\n",
-  "client_email": "mobile-app-vision@mobile-app-vision-435208.iam.gserviceaccount.com",
-  "client_id": "100767580312036770888",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mobile-app-vision%40mobile-app-vision-435208.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-        }),
+        credentials,
         [vision.VisionApi.cloudPlatformScope],
       );
-      [vision.VisionApi.cloudPlatformScope];
 
+      // Initialize the Vision API client
       final visionApi = vision.VisionApi(authClient);
 
+      // Read image file
       final imageFile = File(_image!.path);
       final bytes = imageFile.readAsBytesSync();
-
       final base64Image = base64Encode(bytes);
+
+      // Prepare the request for image annotation
       final request = vision.BatchAnnotateImagesRequest.fromJson({
         "requests": [
           {
@@ -1203,6 +1225,8 @@ class CustomSearchController extends GetxController {
           }
         ]
       });
+
+      // Define clothing types to detect
       final clothingTypes = [
         'shirt',
         'dress',
@@ -1238,40 +1262,36 @@ class CustomSearchController extends GetxController {
         'shoe',
         'sneaker'
       ];
+
+      // Send the request to the Vision API
       final response = await visionApi.images.annotate(request);
       final annotateImageResponses = response.responses;
+
       for (var annotateImageResponse in annotateImageResponses!) {
         if (annotateImageResponse.labelAnnotations != null) {
           bool isMatching = false;
           for (var label in annotateImageResponse.labelAnnotations!) {
-            print("your desc label: ${label.description}");
+            print("Your label: ${label.description}");
             if (clothingTypes.contains(label.description?.toLowerCase())) {
               isMatching = true;
-              // print('Clothing Type: ${label.description}');
-              // isMatching = true;
               myClothingType.value = label.description!;
-            } else {
-              // if (isMatching) {
-              // } else {
-
-              // }
             }
           }
 
+          // If clothing type is detected, proceed; otherwise, show error
           if (isMatching) {
             currentFun();
             Get.back();
             Get.off(const ResultView());
           } else {
             Get.back();
-
-            // Get.off(ShopView());
             Get.snackbar(
-                "Not Recognized", "No Clothing Detected try another image");
+                "Not Recognized", "No Clothing Detected, try another image");
           }
         }
       }
 
+      // Close the auth client after use
       authClient.close();
     } catch (e) {
       Get.snackbar("Error", e.toString());

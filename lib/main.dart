@@ -150,7 +150,6 @@ void navigateToOnboarding() {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
   await init();
 
   await AppConstants.loadUserFromCache();
@@ -159,7 +158,7 @@ void main() async {
 
   // GoogleFonts.cormorant
   Get.put(ApiService());
-    await _handleUri();
+  await _handleUri();
   if (kReleaseMode) {
     await SentryFlutter.init(
       (options) {
@@ -191,6 +190,7 @@ _handleUri() {
 // Do something (navigation, ...)
     if (uri.path == '/cart/' && uri.queryParameters.isNotEmpty) {
       isCart = true;
+      print('test code magic');
       _processDeepLink(uri);
     } else {
       print("deep link ${uri}");
@@ -201,16 +201,14 @@ _handleUri() {
         isDeepLink = false;
       } else {
         deepLinkproduct = ViewProductData(id: int.parse(id));
-     
       }
       isDeepLink = true;
-Future.delayed(Duration(milliseconds: 500), () {
-     Get.toNamed(
-        Routes.PRODUCT,
-        arguments: deepLinkproduct,
-      );
-});
-   
+      Future.delayed(Duration(milliseconds: 500), () {
+        Get.toNamed(
+          Routes.PRODUCT,
+          arguments: deepLinkproduct,
+        );
+      });
     }
   });
 }
@@ -218,7 +216,6 @@ Future.delayed(Duration(milliseconds: 500), () {
 List<ViewProductData> cartShareProducts = [];
 
 void _processDeepLink(Uri deepLinkUri) async {
-  
   String products = deepLinkUri.queryParameters['products'] ?? '';
   cartShareProducts.clear();
   // Split each product by commas
@@ -249,16 +246,10 @@ void _processDeepLink(Uri deepLinkUri) async {
 
   // Wait for all async operations to complete
   await Future.wait(futures);
-
+  await Future.delayed(const Duration(milliseconds: 700));
   // After all products are added, navigate to the CART route
-  if(Platform.isAndroid){
-
-  } else {
-  Get.offNamedUntil(Routes.MAIN, (Route) => false);
 
   Get.toNamed(Routes.CART);
-  }
-
 }
 
 class MyApp extends StatelessWidget {
@@ -274,37 +265,31 @@ class MyApp extends StatelessWidget {
                   splitScreenMode: true,
                   // Use builder only if you need to use library outside ScreenUtilInit context
                   builder: (_, child) {
-                    return 
-                  Platform.isAndroid ?
-                    Observer(
-                        builder: (_) => GetMaterialApp(
-                              debugShowCheckedModeBanner: false,
-                              useInheritedMediaQuery: true,
-                              title: APP_NAME,
-                              theme: AppTheme.lightTheme(color: snap.data),
-                              initialRoute: isDeepLink && isCart == false ?
-                               Routes.PRODUCT :
-                                isDeepLink == false
-                                 && isCart ?
-                                Routes.CART :
-                                Routes.SPLASH,
-                              initialBinding: SplashBinding(),
-                              getPages: AppPages.routes,
-                            ))
-                    
-
-                    :
-
-                    Observer(
-                        builder: (_) => GetMaterialApp(
-                              debugShowCheckedModeBanner: false,
-                              useInheritedMediaQuery: true,
-                              title: APP_NAME,
-                              theme: AppTheme.lightTheme(color: snap.data),
-                              initialRoute: Routes.SPLASH,
-                              initialBinding: SplashBinding(),
-                              getPages: AppPages.routes,
-                            ));
+                    return Platform.isAndroid
+                        ? Observer(
+                            builder: (_) => GetMaterialApp(
+                                  debugShowCheckedModeBanner: false,
+                                  useInheritedMediaQuery: true,
+                                  title: APP_NAME,
+                                  theme: AppTheme.lightTheme(color: snap.data),
+                                  initialRoute: isDeepLink && isCart == false
+                                      ? Routes.PRODUCT
+                                      : isDeepLink == false && isCart
+                                          ? Routes.CART
+                                          : Routes.SPLASH,
+                                  initialBinding: SplashBinding(),
+                                  getPages: AppPages.routes,
+                                ))
+                        : Observer(
+                            builder: (_) => GetMaterialApp(
+                                  debugShowCheckedModeBanner: false,
+                                  useInheritedMediaQuery: true,
+                                  title: APP_NAME,
+                                  theme: AppTheme.lightTheme(color: snap.data),
+                                  initialRoute: Routes.SPLASH,
+                                  initialBinding: SplashBinding(),
+                                  getPages: AppPages.routes,
+                                ));
                   });
             }));
   }
