@@ -1298,4 +1298,5 @@ class CustomSearchController extends GetxController {
       Get.snackbar("Error", e.toString());
     }
   }
+
 }
