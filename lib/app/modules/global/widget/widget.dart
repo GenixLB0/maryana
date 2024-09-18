@@ -1456,6 +1456,7 @@ buildSearchAndFilter(
                   onPressed: () {
                     CustomSearchController controller =
                         Get.put(CustomSearchController());
+
                     controller.showPickerDialog(context);
                   },
                 ),

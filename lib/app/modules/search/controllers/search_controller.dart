@@ -1,17 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart' hide Material;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:maryana/app/modules/home/views/home_view.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/search/views/search_view.dart';
 import 'package:maryana/app/modules/shop/views/shop_view.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart';
@@ -24,7 +29,8 @@ import '../views/ai_loading_image.dart';
 import '../views/result_view.dart';
 import 'package:firebase_database/firebase_database.dart'; // For Realtime Database
 
-class CustomSearchController extends GetxController {
+class CustomSearchController extends GetxController
+    with GetTickerProviderStateMixin {
   List<ViewProductData> products = [];
   List<ViewProductData> resultSearchProducts = <ViewProductData>[].obs;
   RxList<Categories> categories = <Categories>[].obs;
@@ -73,11 +79,37 @@ class CustomSearchController extends GetxController {
 
   Rx<double> minPriceApi = 0.0.obs;
   Rx<double> maxPriceApi = 0.0.obs;
-
+  AnimationController? _controller;
+  Animation<double>? _scaleAnimation;
+  AnimationController? _bumpAnimationController;
+  Animation<double>? _bumpAnimation;
   ////////////////////////////////////////////////////////////
   @override
   void onInit() {
     super.onInit();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    )..forward(); // Starts the animation when the widget is built
+
+    // Scale transition for AI Powered badge
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller!,
+        curve: Curves.elasticOut, // Elastic bounce effect for scaling
+      ),
+    );
+    _bumpAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    )..repeat(reverse: true); // Add a continuous bump effect
+
+    _bumpAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(
+        parent: _bumpAnimationController!,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   @override
@@ -92,6 +124,10 @@ class CustomSearchController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+    _controller?.dispose();
+    _bumpAnimationController?.dispose();
+
+    super.dispose();
   }
 
   getSearchKeywords() async {
@@ -1085,43 +1121,162 @@ class CustomSearchController extends GetxController {
   RxString myClothingType = "".obs;
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
+  Future<void> showPickerDialog(context) async {
+    return showMaterialModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        expand: false,
+        builder: (context) => BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Stack(children: [
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/product/aiSearch.png"),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              // "AI Powered" Badge with animation
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 50.h, right: 10.w),
+                  child: ScaleTransition(
+                    scale: _scaleAnimation!,
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 20.h),
+                        child: AnimatedBuilder(
+                            animation:
+                                _bumpAnimationController!, // Use your AnimationController
+                            builder: (context, child) {
+                              return Transform.scale(
+                                  scale: _bumpAnimation
+                                      ?.value, // Applying the bump scale effect
+                                  child: OutlinedButton(
+                                      onPressed: () {},
+                                      child: Shimmer.fromColors(
+                                          baseColor: Colors.white,
+                                          highlightColor: Colors.blue,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              // Add a robot icon or image
+                                              Icon(
+                                                Icons
+                                                    .android, // You can replace this with any robot icon or image
+                                                color: Colors.white,
+                                                size: 20.sp,
+                                              ),
+                                              SizedBox(
+                                                  width: 10
+                                                      .w), // Space between the icon and the text
+                                              Text(
+                                                'AI Powered',
+                                                style: primaryTextStyle(
+                                                  color: Colors.white,
+                                                  weight: FontWeight.bold,
+                                                  size: 12.sp.round(),
+                                                ),
+                                              ),
+                                            ],
+                                          ))));
+                            })),
+                  ),
+                ),
+              ),
 
-  Future<void> showPickerDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select Image Source'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: Text('Camera'),
-                  onTap: () {
-                    _pickImage(ImageSource.camera);
-                    Navigator.of(context).pop();
-                  },
+              // Lightning-like shimmer scanning effect
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Lightning shimmer effect
+                      Shimmer.fromColors(
+                        baseColor: Colors.grey,
+                        highlightColor: Colors.white,
+                        child: Text(
+                          'Search for an outfit by taking a photo or uploading an image',
+                          textAlign: TextAlign.center,
+                          style: primaryTextStyle(
+                            size: 18.sp.round(),
+                            weight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30.h), // Spacing
+
+                      // Take Photo Button with animation
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _pickImage(ImageSource.camera,
+                              context); // Handle camera pick
+                          //   Navigator.of(context).pop(); // Close the dialog
+                        },
+                        icon: Icon(Icons.camera_alt, color: Colors.black),
+                        label: Text('TAKE PHOTO'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purpleAccent,
+                          foregroundColor: Colors.black,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: 50,
+                          ),
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20.h), // Spacing
+
+                      // Upload a Photo Button with shimmer effect
+                      OutlinedButton(
+                        onPressed: () {
+                          _pickImage(ImageSource.gallery,
+                              context); // Handle gallery pick
+                          //      Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text(
+                          'UPLOAD A PHOTO',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: 50,
+                          ),
+                          side: BorderSide(color: Colors.white, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Padding(padding: EdgeInsets.all(8.0)),
-                GestureDetector(
-                  child: Text('Gallery'),
-                  onTap: () {
-                    _pickImage(ImageSource.gallery);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              ),
+            ])));
   }
 
   List<Categories> aiSearchCats = [];
   var ongoingPayload;
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source, context) async {
     final pickedFile = await _picker.pickImage(
       source: source,
       imageQuality: 100, // Set the image quality to the highest
@@ -1129,10 +1284,14 @@ class CustomSearchController extends GetxController {
 
     if (pickedFile != null) {
       clothingType = "";
+      Navigator.pop(context);
+
       Get.to(FullScreenImageWithLoading(
         image: File(pickedFile.path),
       ));
+
       _image = pickedFile;
+      await Future.delayed(Duration(seconds: 4));
       await detectClothesType();
     }
   }
@@ -1173,7 +1332,9 @@ class CustomSearchController extends GetxController {
 
       if (Platform.isAndroid || Platform.isIOS) {
         // Fetch credentials from Firebase Realtime Database
+        await Future.delayed(Duration(seconds: 2));
         final credentialsData = await fetchApiCredentials();
+        await Future.delayed(Duration(seconds: 2));
         final clientEmail = credentialsData['client_email'];
         final privateKey = credentialsData['private_key'];
 
