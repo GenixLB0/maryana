@@ -176,7 +176,7 @@ class SearchView extends GetView<CustomSearchController> {
                         style: boldTextStyle(
                             weight: FontWeight.w400,
                             size: 20.sp.round(),
-                            color: Color(0xff9B9B9B)),
+                            color: const Color(0xff9B9B9B)),
                       ),
                     ),
                     SizedBox(
@@ -212,14 +212,40 @@ class SearchView extends GetView<CustomSearchController> {
     return Obx(() {
       return Container(
           padding: EdgeInsets.all(15),
-          height: 150.h,
+          height: controller.searchKeywords.isEmpty ? 200.h : 150.h,
           width: MediaQuery.of(context).size.width,
           child: controller.searchKeywords.isEmpty
-              ? Center(
-                  child: Text(
-                    "No Search Words Yet ...",
-                    style: primaryTextStyle(),
-                  ),
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Adding the empty product image
+                    Image.asset(
+                      'assets/images/product/no_products.png',
+                      // Path to your empty state image
+                      width: MediaQuery.of(context).size.width *
+                          0.3, // Adjust width
+
+                      fit: BoxFit.cover,
+                    ),
+                    // Spacing between the image and text
+                    Text(
+                      "Sorry, No Products Found",
+                      style: primaryTextStyle(
+                        size: 14.sp.round(),
+                        color: Colors.black,
+                        weight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10.h), // Spacing after the text
+                    Text(
+                      "Try adjusting your search or filters",
+                      style: primaryTextStyle(
+                        size: 14.sp.round(),
+                        color: Colors.grey,
+                        weight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
                 )
               : GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -227,7 +253,7 @@ class SearchView extends GetView<CustomSearchController> {
                     crossAxisCount: 2,
                   ),
                   itemBuilder: (context, index) {
-                    return Container(
+                    return SizedBox(
                       width: 166.w,
                       height: 38.h,
                       child: Stack(
@@ -265,7 +291,7 @@ class SearchView extends GetView<CustomSearchController> {
                               child: Container(
                                 width: 21.39.w,
                                 height: 21.h,
-                                child: Icon(
+                                child: const Icon(
                                   Icons.close,
                                   color: Colors.grey,
                                 ),

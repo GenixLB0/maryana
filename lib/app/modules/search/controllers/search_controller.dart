@@ -1,17 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart' hide Material;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:maryana/app/modules/home/views/home_view.dart';
 import 'package:maryana/app/modules/main/views/main_view.dart';
 import 'package:maryana/app/modules/search/views/search_view.dart';
 import 'package:maryana/app/modules/shop/views/shop_view.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../main.dart';
 import '../../global/model/model_response.dart';
 import '../../global/model/test_model_response.dart';
@@ -22,8 +27,10 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/services.dart' as rootBundle;
 import '../views/ai_loading_image.dart';
 import '../views/result_view.dart';
+import 'package:firebase_database/firebase_database.dart'; // For Realtime Database
 
-class CustomSearchController extends GetxController {
+class CustomSearchController extends GetxController
+    with GetTickerProviderStateMixin {
   List<ViewProductData> products = [];
   List<ViewProductData> resultSearchProducts = <ViewProductData>[].obs;
   RxList<Categories> categories = <Categories>[].obs;
@@ -72,11 +79,38 @@ class CustomSearchController extends GetxController {
 
   Rx<double> minPriceApi = 0.0.obs;
   Rx<double> maxPriceApi = 0.0.obs;
+  AnimationController? _controller;
+  Animation<double>? _scaleAnimation;
+  AnimationController? _bumpAnimationController;
+  Animation<double>? _bumpAnimation;
 
   ////////////////////////////////////////////////////////////
   @override
   void onInit() {
     super.onInit();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    )..forward(); // Starts the animation when the widget is built
+
+    // Scale transition for AI Powered badge
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller!,
+        curve: Curves.elasticOut, // Elastic bounce effect for scaling
+      ),
+    );
+    _bumpAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    )..repeat(reverse: true); // Add a continuous bump effect
+
+    _bumpAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(
+        parent: _bumpAnimationController!,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   @override
@@ -90,7 +124,17 @@ class CustomSearchController extends GetxController {
 
   @override
   void onClose() {
+    _controller?.dispose();
+    _bumpAnimationController?.dispose();
     super.onClose();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _bumpAnimationController?.dispose();
+
+    super.dispose();
   }
 
   getSearchKeywords() async {
@@ -1085,42 +1129,161 @@ class CustomSearchController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
 
-  Future<void> showPickerDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select Image Source'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: Text('Camera'),
-                  onTap: () {
-                    _pickImage(ImageSource.camera);
-                    Navigator.of(context).pop();
-                  },
+  Future<void> showPickerDialog(context) async {
+    return showMaterialModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        expand: false,
+        builder: (context) => BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Stack(children: [
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/product/aiSearch.png"),
+                    fit: BoxFit.fill,
+                  ),
                 ),
-                Padding(padding: EdgeInsets.all(8.0)),
-                GestureDetector(
-                  child: Text('Gallery'),
-                  onTap: () {
-                    _pickImage(ImageSource.gallery);
-                    Navigator.of(context).pop();
-                  },
+              ),
+              // "AI Powered" Badge with animation
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 50.h, right: 10.w),
+                  child: ScaleTransition(
+                    scale: _scaleAnimation!,
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 20.h),
+                        child: AnimatedBuilder(
+                            animation: _bumpAnimationController!,
+                            // Use your AnimationController
+                            builder: (context, child) {
+                              return Transform.scale(
+                                  scale: _bumpAnimation?.value,
+                                  // Applying the bump scale effect
+                                  child: OutlinedButton(
+                                      onPressed: () {},
+                                      child: Shimmer.fromColors(
+                                          baseColor: Colors.white,
+                                          highlightColor: Colors.blue,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              // Add a robot icon or image
+                                              Icon(
+                                                Icons.android,
+                                                // You can replace this with any robot icon or image
+                                                color: Colors.white,
+                                                size: 20.sp,
+                                              ),
+                                              SizedBox(width: 10.w),
+                                              // Space between the icon and the text
+                                              Text(
+                                                'AI Powered',
+                                                style: primaryTextStyle(
+                                                  color: Colors.white,
+                                                  weight: FontWeight.bold,
+                                                  size: 12.sp.round(),
+                                                ),
+                                              ),
+                                            ],
+                                          ))));
+                            })),
+                  ),
                 ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              ),
+
+              // Lightning-like shimmer scanning effect
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Lightning shimmer effect
+                      Shimmer.fromColors(
+                        baseColor: Colors.grey,
+                        highlightColor: Colors.white,
+                        child: Text(
+                          'Search for an outfit by taking a photo or uploading an image',
+                          textAlign: TextAlign.center,
+                          style: primaryTextStyle(
+                            size: 18.sp.round(),
+                            weight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30.h), // Spacing
+
+                      // Take Photo Button with animation
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _pickImage(ImageSource.camera,
+                              context); // Handle camera pick
+                          //   Navigator.of(context).pop(); // Close the dialog
+                        },
+                        icon: Icon(Icons.camera_alt, color: Colors.black),
+                        label: Text('TAKE PHOTO'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purpleAccent,
+                          foregroundColor: Colors.black,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: 50,
+                          ),
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20.h), // Spacing
+
+                      // Upload a Photo Button with shimmer effect
+                      OutlinedButton(
+                        onPressed: () {
+                          _pickImage(ImageSource.gallery,
+                              context); // Handle gallery pick
+                          //      Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text(
+                          'UPLOAD A PHOTO',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: 50,
+                          ),
+                          side: BorderSide(color: Colors.white, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ])));
   }
 
   List<Categories> aiSearchCats = [];
   var ongoingPayload;
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source, context) async {
     final pickedFile = await _picker.pickImage(
       source: source,
       imageQuality: 100, // Set the image quality to the highest
@@ -1128,10 +1291,14 @@ class CustomSearchController extends GetxController {
 
     if (pickedFile != null) {
       clothingType = "";
+      Navigator.pop(context);
+
       Get.to(FullScreenImageWithLoading(
         image: File(pickedFile.path),
       ));
+
       _image = pickedFile;
+      await Future.delayed(Duration(seconds: 4));
       await detectClothesType();
     }
   }
@@ -1168,49 +1335,24 @@ class CustomSearchController extends GetxController {
   Future<void> detectClothesType() async {
     try {
       ServiceAccountCredentials credentials;
+      print('test email');
 
-      if (Platform.isAndroid) {
-        // // Load the credentials from the JSON file for Android
-        // final String jsonResponse = await rootBundle.rootBundle
-        //     .loadString('assets/goolge_vision_api_creds.json');
-        // final data = json.decode(jsonResponse);
-        credentials = ServiceAccountCredentials.fromJson({
-          "type": "service_account",
-          "project_id": "mobile-app-vision-435208",
-          "private_key_id": "bc1760a721add2cbb75728492892702493cb0348",
-          "private_key":
-              "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDHpPn23zR7wzTH\nU5Hqm0XNtauFfIl0rlsKjk+rOPcDybPkYHwLpASKEc42XzD8MwHLbeB3yGjDLnyA\ny49mK6tBAiYDepb9jpK5tSBPWBxjMvZhc1RUrzBSqMsmmNChuDABJdMHJi9uWT3E\nd8T2PbyLCqVdFUukP3doDrM+etEEGhWjIVmFLd2LgGgekRkS74IfjjpKUiBb93DC\nfxvA7oQJqbSw3PrMNhsGOKMEpI3Qijkt1Q/bb6LatIC9jLRG6yTvUPGQ1mYeV8+5\nV7vJg5CO3Gt9QOkE0JmtkxCkU4OPs5crpdSy7htL3RU4b065mi9xcSz+kdFoTOIV\ntRE8FzKRAgMBAAECggEAE5ko5qizrMCVcknMZbT3bcG7RD/c+ITTMB6XSI4vhYIr\n9CvakYP45BrqXOEMXH2fW/p90hRs4Fg0ZapV+egoiBmvZKEIqHxx/+P9d3yFUOGk\nWR2qtiN6gWrLgo720CFWKQ6vACEp/9Gn5B0Dy051L0sMv64C/m0yihcDVotU8Gt4\nZKzpHipj+ns6chgRJCuvYT2ZI0hGmDHY/choL/KMXy9kegGryUA/cKQpRffEvMxp\n3zA88Mxx4MVmiujNnDVVVOJrteLl5wSuPPxs+3lRqt5IV8uY3efAfzMZ0TJyMG/U\niJU70/K9GWQDZCWmz0/zK3XsHaXBoZiXoa9U7m6bYQKBgQD/P1fXjkFIEYzhpLmF\nEFzBxyFwVsJvZkgaXG5rKG+SLi+OBWvBt80/+jAAmyO5ZZLTAYoTzbfESn1+948I\nCzX3GPS2Xom3o/nodTW0q7tfD6p1J2KFh6vxx8EwSlwcHj4wrp+hO2XsAE5gfa8b\n/OqApzNfW089x81g8+SVXUIUiQKBgQDIO6o9VzhDEqTM3+MwH5ab8F7YwjkW6EHs\nOq0m7BGp+/Th1YQh3UbdrXwNvsFdHp63bHPipSZxi5ubmIj2gQbzDmqxFk0/PluL\no5tLV92s3RXwwvCvtbPPePc4YPWUA7tvWHHrtxi57KE82b8vandbunXYy+mSR6d3\nVRFMyU27yQKBgEL/K11m93elM6deh1uH6fDrBbno6+w1mqNgs5Lo8DAcc1sBzUDx\nr6wlTUg7cGsPYDSGaOm9y4h4TOxwqlhgKPAM2t6rfdZ38fa0HT6o/Ot8vy81AUUv\nUVCLMAgu3HJ89bHtg/TcFGqXwfrNwpLEFgFi4bcbznbW5O+X1N3ntpqRAoGBAIOG\ntb/PUBS25WvyUQCmbz8FeLf3dJq4e70Zme2sObon1+aUY1P/TvKEZ617tPZfC7C+\n26xwAT2qj894Ndd+T7tOqASk+p7lbirekD7Ae8t1+liJJKK2v2M0OWheQFI21WNB\nfKtyPRq79fnLqosR609kvs5mu4mr6bQ4O8HtpVMJAoGAJ8SBQKVVUCsv/TLojxuW\nI34PdTn4d+sso7Sr5k7HoQtkX2IRlfETZMdzHex/0h8hspRggu/EdXvdNH+OV7St\nnNWOnWkT6ZaN2FjUrSAJ5xq7ykkQtCdkcSHMPB96HfKgRvJUZZUHgsh6GYD7bqNb\nqV9/0B4eNz06M/PgkvlXgI8=\n-----END PRIVATE KEY-----\n",
-          "client_email":
-              "mobilevision-863@mobile-app-vision-435208.iam.gserviceaccount.com",
-          "client_id": "104992424643508425132",
-          "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-          "token_uri": "https://oauth2.googleapis.com/token",
-          "auth_provider_x509_cert_url":
-              "https://www.googleapis.com/oauth2/v1/certs",
-          "client_x509_cert_url":
-              "https://www.googleapis.com/robot/v1/metadata/x509/mobilevision-863%40mobile-app-vision-435208.iam.gserviceaccount.com",
-          "universe_domain": "googleapis.com"
-        });
-      } else if (Platform.isIOS) {
-        // Load credentials from environment variables for iOS
-        final clientEmail = Platform.environment['CLIENT_EMAIL'];
-        final privateKey = Platform.environment['PRIVATE_KEY'];
+      if (Platform.isAndroid || Platform.isIOS) {
+        // Fetch credentials from Firebase Realtime Database
+        await Future.delayed(Duration(seconds: 2));
+        final credentialsData = await fetchApiCredentials();
+        await Future.delayed(Duration(seconds: 2));
+        final clientEmail = credentialsData['client_email'];
+        final privateKey = credentialsData['private_key'];
 
         if (clientEmail == null || privateKey == null) {
-          throw Exception(
-              "Missing Google API credentials in environment variables.");
+          throw Exception("Missing API credentials from Firebase.");
         }
 
-        // Decode the Base64 private key if necessary
-        final decodedPrivateKey = privateKey.contains('BEGIN PRIVATE KEY')
-            ? privateKey
-            : String.fromCharCodes(base64Decode(privateKey));
-
-        // Set up the service account credentials using the environment variables
         credentials = ServiceAccountCredentials(
-          clientEmail!,
+          clientEmail,
           ClientId(""),
-          decodedPrivateKey,
+          privateKey,
         );
       } else {
         throw Exception("Unsupported platform");
@@ -1312,6 +1454,30 @@ class CustomSearchController extends GetxController {
       authClient.close();
     } catch (e) {
       Get.snackbar("Error", e.toString());
+    }
+  }
+
+  Future<Map<String, String>> fetchApiCredentials() async {
+    try {
+      final dbRef = FirebaseDatabase.instance.ref().child('api_credentials');
+      print('asdsadsadsadsad2w');
+
+      final DataSnapshot snapshot = await dbRef.get();
+      print('asdsadsadsadsad2');
+
+      final data = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (data != null) {
+        return {
+          'client_email': data['client_email'],
+          'private_key': data['private_key']
+        };
+      } else {
+        throw Exception("API credentials not found in Firebase.");
+      }
+    } catch (e, stackTrace) {
+      print('$e $stackTrace credentials not found in Firebase.');
+      throw Exception("API credentials not found in Firebase.");
     }
   }
 }

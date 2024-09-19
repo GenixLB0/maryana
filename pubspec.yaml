@@ -1,5 +1,5 @@
 name: maryana
-version: 2.0.62+62
+version: 2.0.65+65
 publish_to: none
 description: Mariannella Amazing Ecommerce App In Lebnanon
 environment:
@@ -29,13 +29,16 @@ dependencies:
   video_player: ^2.8.1
   visibility_detector: 0.4.0+2
   typewritertext: 3.0.8
+  firebase_database: any
   get_storage: 2.1.1
+  firebase_app_check: any
   firebase_messaging: ^15.0.3
   carousel_slider: 5.0.0
   url_launcher: ^6.3.0
   delayed_widget: any
   flutter_rating_bar: any
   shorebird_code_push:
+
   restart_app:
   page_transition: any
   flutter_svg: any
@@ -96,5 +99,4 @@ flutter:
     - assets/images/home/
     - assets/images/product/
     - assets/images/profile/
-    - assets/goolge_vision_api_creds.json
     - shorebird.yaml
