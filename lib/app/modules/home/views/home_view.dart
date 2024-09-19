@@ -86,17 +86,17 @@ class HomeView extends GetView<HomeController> {
                               width: MediaQuery.of(context).size.width,
                               // color: primaryColor.withOpacity(0.9),
                               decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.3)
-                                  // gradient: LinearGradient(
-                                  //   colors: [
-                                  //     // Colors.purple.shade200,
-                                  //     // Colors.purple.shade50,
-                                  //
-                                  //   ],
-                                  //   begin: Alignment.topLeft,
-                                  //   end: Alignment.bottomRight,
-                                  // ),
-                                  ),
+ch                                // color: Colors.yellow,
+                                // color: Colors.grey.withOpacity(0.3),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.purple.shade200,
+                                    Colors.purple.shade50,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
                               duration: const Duration(seconds: 1),
                               curve: Curves.fastOutSlowIn,
                               child: Row(

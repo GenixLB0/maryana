@@ -22,6 +22,8 @@ import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/product/bindings/product_binding.dart';
@@ -29,7 +31,6 @@ import 'package:maryana/app/modules/product/controllers/product_controller.dart'
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:maryana/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:maryana/app/modules/services/api_consumer.dart';
@@ -158,6 +159,13 @@ void main() async {
   await init();
 
   await AppConstants.loadUserFromCache();
+ await Firebase.initializeApp();
+
+  // Initialize App Check
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.playIntegrity,
+    appleProvider: AppleProvider.deviceCheck,
+  );
 
   // GoogleFonts.cormorant().fontFamily = GoogleFonts.cormorant().fontFamily;
 

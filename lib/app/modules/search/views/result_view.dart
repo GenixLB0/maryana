@@ -40,6 +40,7 @@ class ResultView extends GetView<CustomSearchController> {
                     InkWell(
                       onTap: () {
                         Get.off(SearchView());
+                        Get.back();
                       },
                       child: Container(
                         height: 35.h,
@@ -419,15 +420,36 @@ class ResultView extends GetView<CustomSearchController> {
       return SizedBox(
           width: MediaQuery.of(context).size.width,
           child: controller.resultSearchProducts.isEmpty
-              ? Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Sorry , No Products Found",
-                    style: primaryTextStyle(
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Adding the empty product image
+                    Image.asset(
+                      'assets/images/product/no_products.png', // Path to your empty state image
+                      width: MediaQuery.of(context).size.width *
+                          0.5, // Adjust width
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(
+                        height: 20.h), // Spacing between the image and text
+                    Text(
+                      "Sorry, No Products Found",
+                      style: primaryTextStyle(
                         size: 20.sp.round(),
                         color: Colors.black,
-                        weight: FontWeight.w400),
-                  ),
+                        weight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10.h), // Spacing after the text
+                    Text(
+                      "Try adjusting your search or filters",
+                      style: primaryTextStyle(
+                        size: 16.sp.round(),
+                        color: Colors.grey,
+                        weight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
                 )
               : GridView.builder(
                   controller: controller.scrollController,
