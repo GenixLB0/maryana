@@ -1769,32 +1769,40 @@ class ProductView extends GetView<ProductController> {
                               onTap: () {
                                 controller.setSize(controller.sizeList[index]);
                               },
-                              child: Container(
-                                width: 55.w,
-                                decoration: ShapeDecoration(
-                                  color: controller.sizeList[index] ==
-                                          controller.selectedSize.value
-                                      ? Color(0xFF515151)
-                                      : Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(26.50),
-                                    side: BorderSide(
-                                        width: 2,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: 55.w,
+                                ),
+                                child: Container(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 2.w),
+                                  // width: 55.w,
+                                  decoration: ShapeDecoration(
+                                    color: controller.sizeList[index] ==
+                                            controller.selectedSize.value
+                                        ? Color(0xFF515151)
+                                        : Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(26.50),
+                                      side: BorderSide(
+                                          width: 2,
+                                          color: controller.sizeList[index] ==
+                                                  controller.selectedSize.value
+                                              ? Color(0xFF515151)
+                                              : Colors.grey[300]!),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      controller.sizeList[index],
+                                      style: primaryTextStyle(
                                         color: controller.sizeList[index] ==
                                                 controller.selectedSize.value
-                                            ? Color(0xFF515151)
-                                            : Colors.grey[300]!),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    controller.sizeList[index],
-                                    style: primaryTextStyle(
-                                      color: controller.sizeList[index] ==
-                                              controller.selectedSize.value
-                                          ? Color(0xffCCCCCC)
-                                          : Colors.black,
-                                      size: 15.sp.round(),
+                                            ? Color(0xffCCCCCC)
+                                            : Colors.black,
+                                        size: 15.sp.round(),
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -82,7 +82,9 @@ class SearchView extends GetView<CustomSearchController> {
                 isSearch: true,
                 onSubmitted: (v) {
                   controller.addSearchKeywords(v);
-                  controller.getSearchResultsFromApi();
+                  controller.getProductsInSection(
+                      sectionName: v, keywords: v, payload: {});
+                  // controller.getSearchResultsFromApi();
 
                   Get.to(() => const ResultView(),
                       transition: Transition.fadeIn,
@@ -102,7 +104,7 @@ class SearchView extends GetView<CustomSearchController> {
                     color: Colors.grey.withOpacity(0.4),
                     spreadRadius: 1,
                     blurRadius: 2,
-                    offset: Offset(0, 1), // changes position of shadow
+                    offset: const Offset(0, 1), // changes position of shadow
                   ),
                 ],
               ),

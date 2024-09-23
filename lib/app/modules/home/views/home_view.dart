@@ -86,8 +86,6 @@ class HomeView extends GetView<HomeController> {
                               width: MediaQuery.of(context).size.width,
                               // color: primaryColor.withOpacity(0.9),
                               decoration: BoxDecoration(
-ch                                // color: Colors.yellow,
-                                // color: Colors.grey.withOpacity(0.3),
                                 gradient: LinearGradient(
                                   colors: [
                                     Colors.purple.shade200,
@@ -96,6 +94,8 @@ ch                                // color: Colors.yellow,
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
+                                // color: Colors.yellow,
+                                // color: Colors.grey.withOpacity(0.3),
                               ),
                               duration: const Duration(seconds: 1),
                               curve: Curves.fastOutSlowIn,
@@ -2370,7 +2370,7 @@ ch                                // color: Colors.yellow,
                                 CustomSearchController controller =
                                     Get.find<CustomSearchController>();
                                 controller.getProductsInSection(
-                                    sectionName: "TRENDING BRANDS ITEMS",
+                                    sectionName: "TRENDING ITEMS",
                                     payload: payload);
 
                                 Get.to(() => const ResultView(),
@@ -2383,7 +2383,7 @@ ch                                // color: Colors.yellow,
                                     Get.put<CustomSearchController>(
                                         CustomSearchController());
                                 controller.getProductsInSection(
-                                    sectionName: "TRENDING BRANDS ITEMS",
+                                    sectionName: "TRENDING ITEMS",
                                     payload: payload);
 
                                 Get.to(() => const ResultView(),
@@ -2441,6 +2441,13 @@ ch                                // color: Colors.yellow,
                                   child: ListView.separated(
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (ctx, index) {
+                                        Map<String, dynamic> payload = {};
+                                        int i = 0;
+                                        for (var brand
+                                            in controller.otherBrandsId) {
+                                          payload["brand_ids[${i}]"] = brand;
+                                          i++;
+                                        }
                                         return index !=
                                                 controller
                                                     .productsInBrands.length
@@ -2459,13 +2466,11 @@ ch                                // color: Colors.yellow,
                                                   CustomSearchController
                                                       controller = Get.find<
                                                           CustomSearchController>();
-                                                  controller.getProductsInSection(
-                                                      sectionName:
-                                                          "TRENDING BRANDS ITEMS",
-                                                      payload: {
-                                                        "brand_ids[0]":
-                                                            otherBrandsId
-                                                      });
+                                                  controller
+                                                      .getProductsInSection(
+                                                          sectionName:
+                                                              "TRENDING ITEMS",
+                                                          payload: payload);
 
                                                   Get.to(
                                                       () => const ResultView(),
@@ -2479,13 +2484,11 @@ ch                                // color: Colors.yellow,
                                                       controller =
                                                       Get.put<CustomSearchController>(
                                                           CustomSearchController());
-                                                  controller.getProductsInSection(
-                                                      sectionName:
-                                                          "TRENDING BRANDS ITEMS",
-                                                      payload: {
-                                                        "brand_ids[0]":
-                                                            otherBrandsId
-                                                      });
+                                                  controller
+                                                      .getProductsInSection(
+                                                          sectionName:
+                                                              "TRENDING ITEMS",
+                                                          payload: payload);
 
                                                   Get.to(
                                                       () => const ResultView(),

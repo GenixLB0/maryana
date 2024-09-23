@@ -219,6 +219,8 @@ class CustomSearchController extends GetxController
   Future<List<dynamic>> getProductsInSection(
       {required String sectionName,
       required payload,
+      String orderTag = "featured",
+      String keywords = "",
       bool isFromAi = false,
       String clothesType = ""}) async {
     // if (categories.isEmpty) {
@@ -242,8 +244,11 @@ class CustomSearchController extends GetxController
 
     bodyFields['current_page'] = currentPage.toString();
     if (!isFromAi) {
-      bodyFields['per_page'] = "6";
+      bodyFields['per_page'] = "8";
     }
+    bodyFields['orderBy'] = orderTag;
+
+    bodyFields['keywords'] = keywords;
 
     print("body feilds ${bodyFields}");
     var headers = {
@@ -318,68 +323,75 @@ class CustomSearchController extends GetxController
   Future<List<dynamic>> continueGettingProductsInSection(
       {required String sectionName, required payload}) async {
     if (isFromSearch.value) {
+      print("none NOW 1");
       return [];
     } else {
-      isEndScroll.value = false;
-      isFromSearch.value = false;
-      titleResult = sectionName;
+      print("none NOW 2");
+      if (isPaginationSearchLoading.value) {
+        isSearchLoading.value = true;
+        return [];
+      } else {
+        isEndScroll.value = false;
+        isFromSearch.value = false;
+        titleResult = sectionName;
 
-      var bodyFields = payload;
+        var bodyFields = payload;
 
-      bodyFields['current_page'] = currentPage.toString();
-      bodyFields['per_page'] = "6";
-      print("body feilds ${bodyFields}");
-      var headers = {
-        'Accept': 'application/json',
-        'x-from': 'app',
-        'x-lang': 'en',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      };
+        bodyFields['current_page'] = currentPage.toString();
+        bodyFields['per_page'] = "8";
+        print("body feilds ${bodyFields}");
+        var headers = {
+          'Accept': 'application/json',
+          'x-from': 'app',
+          'x-lang': 'en',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        };
 
-      final response = await http.post(
-        Uri.parse('https://panel.mariannella.com/api/products'),
-        headers: headers,
-        body: bodyFields,
-      );
+        final response = await http.post(
+          Uri.parse('https://panel.mariannella.com/api/products'),
+          headers: headers,
+          body: bodyFields,
+        );
 
-      try {
-        if (response.statusCode == 200) {
-          var responseData = json.decode(response.body);
-          print("response data ${responseData['data'].length}");
-          if (responseData['data'].length == 0) {
-            isEndScroll.value = true;
-          } else {}
-          for (var product in responseData['data']) {
-            resultSearchProducts.add(ViewProductData.fromJson(product));
-          }
-          int total = responseData['meta']['total'];
-          print("total is ${total}");
-          isPaginationSearchLoading.value = false;
-          if (total != 0) {
-            resultCount.value = total;
+        try {
+          if (response.statusCode == 200) {
+            var responseData = json.decode(response.body);
+            print("response data ${responseData['data'].length}");
+            if (responseData['data'].length == 0) {
+              isEndScroll.value = true;
+            } else {}
+            for (var product in responseData['data']) {
+              resultSearchProducts.add(ViewProductData.fromJson(product));
+            }
+            int total = responseData['meta']['total'];
+            print("total is ${total}");
+            isPaginationSearchLoading.value = false;
+            if (total != 0) {
+              resultCount.value = total;
+            } else {
+              resultCount.value = resultSearchProducts.length;
+            }
+
+            print("your map ${payload}");
+
+            print("your result length 2 is ${resultSearchProducts.length}");
+
+            return resultSearchProducts;
           } else {
-            resultCount.value = resultSearchProducts.length;
+            print(response.reasonPhrase);
+            isPaginationSearchLoading.value = false;
+            print('products fetch failed 1: ${response.reasonPhrase} ');
+
+            return [];
           }
-
-          print("your map ${payload}");
-
-          print("your result length 2 is ${resultSearchProducts.length}");
-
-          return resultSearchProducts;
-        } else {
-          print(response.reasonPhrase);
+        } catch (e, stackTrace) {
           isPaginationSearchLoading.value = false;
-          print('products fetch failed 1: ${response.reasonPhrase} ');
+          print('products fetch failed 2:  ${e} $stackTrace');
+
+          print(e.toString() + stackTrace.toString());
 
           return [];
         }
-      } catch (e, stackTrace) {
-        isPaginationSearchLoading.value = false;
-        print('products fetch failed 2:  ${e} $stackTrace');
-
-        print(e.toString() + stackTrace.toString());
-
-        return [];
       }
     }
   }
@@ -394,26 +406,29 @@ class CustomSearchController extends GetxController
   attachScroll() {
     print("attached...");
     scrollController.addListener(() {
-      print("ttttttttttttttttttttt");
-      if (scrollController.offset >= 100) {
-        showBackToTopButton.value = true; // Show the back-to-top button
-      } else {
-        print("bbbbbbbbbbbbbbbbbbbbbbbbbb");
-        showBackToTopButton.value = false; // Hide the back-to-top button
-      }
+      print("attached...2");
 
-      if (scrollController.position.pixels ==
-              scrollController.position.maxScrollExtent &&
+      print(scrollController.position.pixels.toString() +
+          ' ' +
+          scrollController.position.maxScrollExtent.toString());
+
+      // حساب المسافة المتبقية لنهاية القائمة
+      double remainingScrollDistance =
+          scrollController.position.maxScrollExtent -
+              scrollController.position.pixels;
+
+      // قم بتغيير هذه القيمة بناءً على المسافة التي تريد البدء عندها في تحميل المزيد (مثلاً 200 بكسل قبل النهاية)
+      if (remainingScrollDistance < 200 &&
           !isPaginationSearchLoading.value &&
           !isFromSearch.value &&
           !isFromAiPhase) {
-        print("yes scrolling max");
+        print("loading more data before reaching the end...");
         currentPage++;
-        isPaginationSearchLoading.value = true;
+        isPaginationSearchLoading.value = false;
         continueGettingProductsInSection(
             sectionName: titleResult, payload: controllerPayload);
       } else {
-        print("not scrolling max");
+        print("not yet near the end");
       }
     });
   }
@@ -1479,5 +1494,28 @@ class CustomSearchController extends GetxController
       print('$e $stackTrace credentials not found in Firebase.');
       throw Exception("API credentials not found in Firebase.");
     }
+  }
+
+  int? selectedCatId;
+  String selectedOption = 'featured'; // Ini
+  changeDropDownValue(String option) {
+    selectedOption = option;
+    print("selected option is $selectedOption");
+    getProductsInSection(
+        sectionName: titleResult,
+        payload: controllerPayload,
+        orderTag: option,
+        keywords: titleResult);
+
+    // if (selectedCatId != null) {
+    //
+    //
+    //   // update(['products_in_categories']);
+    //   update();
+    // } else {
+    //   Get.snackbar("Pick A Category",
+    //       "please pick a category first from the left side bar");
+    // }
+    update();
   }
 }

@@ -32,107 +32,212 @@ class ResultView extends GetView<CustomSearchController> {
               height: 10.h,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Get.off(SearchView());
-                        Get.back();
-                      },
-                      child: Container(
-                        height: 35.h,
-                        width: 35.w,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.4),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset:
-                                  Offset(0, 3), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                            "assets/images/forgot_password/BackBTN.svg"),
-                      ),
-                    ),
-                    GetBuilder<CustomSearchController>(
-                      builder: (_) => Center(
-                        child: Text(controller.titleResult,
-                            overflow: TextOverflow.ellipsis,
-                            style: primaryTextStyle(
-                              weight: FontWeight.w900,
-                              size: 18.sp.round(),
-                            )),
-                      ),
-                    ),
-                    Row(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+              child: Column(
+                children: [
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Stack(
-                          alignment: Alignment.centerLeft,
+                        InkWell(
+                          onTap: () {
+                            Get.off(SearchView());
+                            Get.back();
+                          },
+                          child: Container(
+                            height: 35.h,
+                            width: 35.w,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.4),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: SvgPicture.asset(
+                                "assets/images/forgot_password/BackBTN.svg"),
+                          ),
+                        ),
+                        GetBuilder<CustomSearchController>(
+                          builder: (_) => Center(
+                            child: Text(controller.titleResult,
+                                overflow: TextOverflow.ellipsis,
+                                style: primaryTextStyle(
+                                  weight: FontWeight.w900,
+                                  size: 18.sp.round(),
+                                )),
+                          ),
+                        ),
+                        Row(
                           children: [
-                            SvgPicture.asset(
-                              "assets/images/home/star.svg",
-                              width: 30.w,
-                              height: 50.h,
-                              fit: BoxFit.cover,
+                            Stack(
+                              alignment: Alignment.centerLeft,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/images/home/star.svg",
+                                  width: 30.w,
+                                  height: 50.h,
+                                  fit: BoxFit.cover,
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 12.w, top: 1.h),
+                                  child: Obx(() {
+                                    return Text(
+                                      "${controller.resultCount.value} Results",
+                                      style: primaryTextStyle(
+                                          size: 16.sp.round(),
+                                          weight: FontWeight.w700),
+                                    );
+                                  }),
+                                  // Column(
+                                  //   mainAxisAlignment: MainAxisAlignment.start,
+                                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                                  //   children: [
+                                  //     // Text(
+                                  //     //   "Found",
+                                  //     //   style: primaryTextStyle(
+                                  //     //       size: 16.sp.round(),
+                                  //     //       weight: FontWeight.w700),
+                                  //     // ),
+                                  //     Obx(() {
+                                  //       return Text(
+                                  //         "${controller.resultCount.value} Results",
+                                  //         style: primaryTextStyle(
+                                  //             size: 16.sp.round(),
+                                  //             weight: FontWeight.w700),
+                                  //       );
+                                  //     }),
+                                  //   ],
+                                  // ),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 12.w, top: 1.h),
-                              child: Obx(() {
-                                return Text(
-                                  "${controller.resultCount.value} Results",
-                                  style: primaryTextStyle(
-                                      size: 16.sp.round(),
-                                      weight: FontWeight.w700),
-                                );
-                              }),
-                              // Column(
-                              //   mainAxisAlignment: MainAxisAlignment.start,
-                              //   crossAxisAlignment: CrossAxisAlignment.start,
-                              //   children: [
-                              //     // Text(
-                              //     //   "Found",
-                              //     //   style: primaryTextStyle(
-                              //     //       size: 16.sp.round(),
-                              //     //       weight: FontWeight.w700),
-                              //     // ),
-                              //     Obx(() {
-                              //       return Text(
-                              //         "${controller.resultCount.value} Results",
-                              //         style: primaryTextStyle(
-                              //             size: 16.sp.round(),
-                              //             weight: FontWeight.w700),
-                              //       );
-                              //     }),
-                              //   ],
-                              // ),
-                            ),
+
+                            // Container(
+                            //   width: 100.w,
+                            //   height: 40.h,
+                            //   decoration: BoxDecoration(
+                            //       border:
+                            //           Border.all(color: Colors.grey[400]!, width: 1.w),
+                            //       borderRadius: BorderRadius.circular(30.sp)),
+                            //   child: const Row(
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [Text("Filter"), Icon(Icons.arrow_drop_down)],
+                            //   ),
+                            // ),
                           ],
                         ),
+                      ]),
+                  //Filter The Results
+                  GetBuilder<CustomSearchController>(
+                      id: "products_in_categories",
+                      builder: (logic) {
+                        return Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                              width: 120.w,
+                              height: 45.h,
+                              padding: EdgeInsets.all(5.0.w),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 2, color: Colors.grey[200]!),
+                                  borderRadius: BorderRadius.circular(20.sp)),
+                              child: Center(
+                                child: PopupMenuButton<String>(
+                                  color: Colors.white,
+                                  elevation: 5,
+                                  initialValue: "Filter",
+                                  itemBuilder: (context) {
+                                    return <String>[
+                                      "featured",
+                                      "best_selling",
+                                      "latest",
+                                      "oldest",
+                                      "low-high",
+                                      "high-low",
+                                      "a-z",
+                                      "z-a"
+                                    ].map((str) {
+                                      String capitalizeAllWords(String value) {
+                                        var result =
+                                            value.split(' ').map((word) {
+                                          if (word.isNotEmpty) {
+                                            return word[0].toUpperCase() +
+                                                word.substring(1);
+                                          }
+                                          return word;
+                                        }).join(' ');
+                                        return result;
+                                      }
 
-                        // Container(
-                        //   width: 100.w,
-                        //   height: 40.h,
-                        //   decoration: BoxDecoration(
-                        //       border:
-                        //           Border.all(color: Colors.grey[400]!, width: 1.w),
-                        //       borderRadius: BorderRadius.circular(30.sp)),
-                        //   child: const Row(
-                        //     crossAxisAlignment: CrossAxisAlignment.center,
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     children: [Text("Filter"), Icon(Icons.arrow_drop_down)],
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ]),
+                                      String capitalizedString =
+                                          capitalizeAllWords(str);
+
+                                      return PopupMenuItem(
+                                        value: str,
+                                        child: Text(capitalizedString
+                                            .replaceAll("_", " ")),
+                                      );
+                                    }).toList();
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Spacer(),
+                                      GetBuilder<CustomSearchController>(
+                                          builder: (logic) {
+                                        String capitalizeAllWords(
+                                            String value) {
+                                          var result =
+                                              value.split(' ').map((word) {
+                                            if (word.isNotEmpty) {
+                                              return word[0].toUpperCase() +
+                                                  word.substring(1);
+                                            }
+                                            return word;
+                                          }).join(' ');
+                                          return result;
+                                        }
+
+                                        String capitalizedString =
+                                            capitalizeAllWords(
+                                                controller.selectedOption);
+                                        return SizedBox(
+                                          // width: 80.w,
+                                          child: Text(
+                                            controller.selectedOption ==
+                                                    "best_selling"
+                                                ? "Best Selling"
+                                                : capitalizedString.replaceAll(
+                                                    "_", " "),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: primaryTextStyle(
+                                                size: 10.sp.round()),
+                                          ),
+                                        );
+                                      }),
+                                      Spacer(),
+                                      const Icon(Icons.arrow_drop_down),
+                                    ],
+                                  ),
+                                  onSelected: (v) {
+                                    controller.changeDropDownValue(v);
+                                  },
+                                ),
+                              )),
+                        );
+                      }),
+                ],
+              ),
             ),
 
             // Obx(() {
@@ -425,7 +530,8 @@ class ResultView extends GetView<CustomSearchController> {
                   children: [
                     // Adding the empty product image
                     Image.asset(
-                      'assets/images/product/no_products.png', // Path to your empty state image
+                      'assets/images/product/no_products.png',
+                      // Path to your empty state image
                       width: MediaQuery.of(context).size.width *
                           0.5, // Adjust width
                       fit: BoxFit.contain,
