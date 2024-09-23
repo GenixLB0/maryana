@@ -222,11 +222,8 @@ class CustomSearchController extends GetxController
       String orderTag = "featured",
       String keywords = "",
       bool isFromAi = false,
+      bool isFromSection = true,
       String clothesType = ""}) async {
-    // if (categories.isEmpty) {
-    //   await getCategoriesList();
-    // }
-    // mimicCatsForActiveCats(false, 1);
     isFromAiPhase = isFromAi;
     isEndScroll.value = false;
     controllerPayload = payload;
@@ -248,7 +245,10 @@ class CustomSearchController extends GetxController
     }
     bodyFields['orderBy'] = orderTag;
 
-    bodyFields['keywords'] = keywords;
+    if (isFromSection) {
+    } else {
+      bodyFields['keywords'] = keywords;
+    }
 
     print("body feilds ${bodyFields}");
     var headers = {
@@ -279,7 +279,9 @@ class CustomSearchController extends GetxController
                 .contains(clothesType)) {
               resultSearchProducts.add(ViewProductData.fromJson(product));
               print("from ai 2 ${product['name']}");
-            } else {}
+            } else {
+              print("problem over dosee");
+            }
           } else {
             resultSearchProducts.add(ViewProductData.fromJson(product));
           }

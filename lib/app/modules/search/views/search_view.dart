@@ -83,7 +83,10 @@ class SearchView extends GetView<CustomSearchController> {
                 onSubmitted: (v) {
                   controller.addSearchKeywords(v);
                   controller.getProductsInSection(
-                      sectionName: v, keywords: v, payload: {});
+                      sectionName: v,
+                      keywords: v,
+                      payload: {},
+                      isFromSection: false);
                   // controller.getSearchResultsFromApi();
 
                   Get.to(() => const ResultView(),
@@ -154,7 +157,9 @@ class SearchView extends GetView<CustomSearchController> {
                           CustomSearchController controller =
                               Get.find<CustomSearchController>();
                           controller.getProductsInSection(
-                              sectionName: "RECOMMENDED", payload: {});
+                              sectionName: "RECOMMENDED",
+                              payload: {},
+                              isFromSection: false);
 
                           Get.to(() => const ResultView(),
                               transition: Transition.fadeIn,
@@ -165,7 +170,9 @@ class SearchView extends GetView<CustomSearchController> {
                               Get.put<CustomSearchController>(
                                   CustomSearchController());
                           controller.getProductsInSection(
-                              sectionName: "RECOMMENDED", payload: {});
+                              sectionName: "RECOMMENDED",
+                              payload: {},
+                              isFromSection: false);
 
                           Get.to(() => const ResultView(),
                               transition: Transition.fadeIn,
@@ -207,7 +214,7 @@ class SearchView extends GetView<CustomSearchController> {
               ],
             ),
           )
-        : SizedBox();
+        : const SizedBox();
   }
 
   buildSearchKeywords(context) {
