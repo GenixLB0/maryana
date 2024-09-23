@@ -433,7 +433,7 @@ class HomeController extends GetxController {
 
     var bodyFields = {
       'collection_ids[0]': "${mycollection.id}",
-      'per_page': "4"
+      'per_page': "10"
     };
 
     var headers = {

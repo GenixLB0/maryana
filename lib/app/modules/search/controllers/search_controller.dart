@@ -242,7 +242,7 @@ class CustomSearchController extends GetxController
 
     bodyFields['current_page'] = currentPage.toString();
     if (!isFromAi) {
-      bodyFields['per_page'] = "6";
+      bodyFields['per_page'] = "8";
     }
 
     print("body feilds ${bodyFields}");
@@ -327,7 +327,7 @@ class CustomSearchController extends GetxController
       var bodyFields = payload;
 
       bodyFields['current_page'] = currentPage.toString();
-      bodyFields['per_page'] = "6";
+      bodyFields['per_page'] = "8";
       print("body feilds ${bodyFields}");
       var headers = {
         'Accept': 'application/json',
@@ -394,26 +394,29 @@ class CustomSearchController extends GetxController
   attachScroll() {
     print("attached...");
     scrollController.addListener(() {
-      print("ttttttttttttttttttttt");
-      if (scrollController.offset >= 100) {
-        showBackToTopButton.value = true; // Show the back-to-top button
-      } else {
-        print("bbbbbbbbbbbbbbbbbbbbbbbbbb");
-        showBackToTopButton.value = false; // Hide the back-to-top button
-      }
+      print("attached...2");
 
-      if (scrollController.position.pixels ==
-              scrollController.position.maxScrollExtent &&
+      print(scrollController.position.pixels.toString() +
+          ' ' +
+          scrollController.position.maxScrollExtent.toString());
+
+      // حساب المسافة المتبقية لنهاية القائمة
+      double remainingScrollDistance =
+          scrollController.position.maxScrollExtent -
+              scrollController.position.pixels;
+
+      // قم بتغيير هذه القيمة بناءً على المسافة التي تريد البدء عندها في تحميل المزيد (مثلاً 200 بكسل قبل النهاية)
+      if (remainingScrollDistance < 200 &&
           !isPaginationSearchLoading.value &&
           !isFromSearch.value &&
           !isFromAiPhase) {
-        print("yes scrolling max");
+        print("loading more data before reaching the end...");
         currentPage++;
-        isPaginationSearchLoading.value = true;
+        isPaginationSearchLoading.value = false;
         continueGettingProductsInSection(
             sectionName: titleResult, payload: controllerPayload);
       } else {
-        print("not scrolling max");
+        print("not yet near the end");
       }
     });
   }

@@ -86,7 +86,7 @@ class HomeView extends GetView<HomeController> {
                               width: MediaQuery.of(context).size.width,
                               // color: primaryColor.withOpacity(0.9),
                               decoration: BoxDecoration(
-ch                                // color: Colors.yellow,
+                                color: Colors.yellow,
                                 // color: Colors.grey.withOpacity(0.3),
                                 gradient: LinearGradient(
                                   colors: [
