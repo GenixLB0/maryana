@@ -1775,7 +1775,7 @@ class ProductView extends GetView<ProductController> {
                                 ),
                                 child: Container(
                                   padding:
-                                      EdgeInsets.symmetric(horizontal: 2.w),
+                                      EdgeInsets.symmetric(horizontal: 4.w),
                                   // width: 55.w,
                                   decoration: ShapeDecoration(
                                     color: controller.sizeList[index] ==

@@ -84,6 +84,7 @@ class ShopView extends GetView<ShopController> {
                   padding: EdgeInsets.symmetric(vertical: 10.h),
                 ));
           }),
+
           _buildCategories(context),
           // Obx(() {
           //   return Expanded(

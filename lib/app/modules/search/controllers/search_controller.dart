@@ -222,11 +222,8 @@ class CustomSearchController extends GetxController
       String orderTag = "featured",
       String keywords = "",
       bool isFromAi = false,
+      bool isFromSection = true,
       String clothesType = ""}) async {
-    // if (categories.isEmpty) {
-    //   await getCategoriesList();
-    // }
-    // mimicCatsForActiveCats(false, 1);
     isFromAiPhase = isFromAi;
     isEndScroll.value = false;
     controllerPayload = payload;
@@ -248,7 +245,10 @@ class CustomSearchController extends GetxController
     }
     bodyFields['orderBy'] = orderTag;
 
-    bodyFields['keywords'] = keywords;
+    if (isFromSection) {
+    } else {
+      bodyFields['keywords'] = keywords;
+    }
 
     print("body feilds ${bodyFields}");
     var headers = {
@@ -279,7 +279,9 @@ class CustomSearchController extends GetxController
                 .contains(clothesType)) {
               resultSearchProducts.add(ViewProductData.fromJson(product));
               print("from ai 2 ${product['name']}");
-            } else {}
+            } else {
+              print("problem over dosee");
+            }
           } else {
             resultSearchProducts.add(ViewProductData.fromJson(product));
           }
@@ -328,9 +330,12 @@ class CustomSearchController extends GetxController
     } else {
       print("none NOW 2");
       if (isPaginationSearchLoading.value) {
+        print("none NOW 3");
         isSearchLoading.value = true;
         return [];
       } else {
+        currentPage++;
+        print("none NOW 4");
         isEndScroll.value = false;
         isFromSearch.value = false;
         titleResult = sectionName;
@@ -365,7 +370,7 @@ class CustomSearchController extends GetxController
             }
             int total = responseData['meta']['total'];
             print("total is ${total}");
-            isPaginationSearchLoading.value = false;
+
             if (total != 0) {
               resultCount.value = total;
             } else {
@@ -375,7 +380,7 @@ class CustomSearchController extends GetxController
             print("your map ${payload}");
 
             print("your result length 2 is ${resultSearchProducts.length}");
-
+            isPaginationSearchLoading.value = false;
             return resultSearchProducts;
           } else {
             print(response.reasonPhrase);
@@ -423,7 +428,7 @@ class CustomSearchController extends GetxController
           !isFromSearch.value &&
           !isFromAiPhase) {
         print("loading more data before reaching the end...");
-        currentPage++;
+
         isPaginationSearchLoading.value = false;
         continueGettingProductsInSection(
             sectionName: titleResult, payload: controllerPayload);
