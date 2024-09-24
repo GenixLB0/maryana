@@ -446,7 +446,7 @@ class CustomSearchController extends GetxController
 
       // Proceed only if not already loading and close to the bottom
       if (!isDataFullyLoaded &&
-          remainingScrollDistance < 200 &&
+          remainingScrollDistance < 500 &&
           !isPaginationSearchLoading.value &&
           !isFromSearch.value &&
           !isFromAiPhase) {
