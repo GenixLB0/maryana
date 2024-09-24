@@ -453,7 +453,7 @@ class CustomSearchController extends GetxController
         // Debounce to prevent multiple triggers during fast scrolling
         if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-        _debounce = Timer(Duration(milliseconds: 300), () {
+        _debounce = Timer(Duration(milliseconds: 100), () {
           // Increased debounce time
           print("loading more data before reaching the end...");
 
