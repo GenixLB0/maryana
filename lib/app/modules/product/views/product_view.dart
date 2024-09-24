@@ -1226,140 +1226,79 @@ class ProductView extends GetView<ProductController> {
 
   _buildAddToCartButton(myContext, ViewProductData comingProduct) {
     return GestureDetector(
-      onTap: () {
-        // controller.changeAddToCartStatus();
-        // // Future.delayed(Duration(milliseconds: 1700), () {
-        // //   showMaterialModalBottomSheet(
-        // //     context: myContext,
-        // //     backgroundColor: Colors.transparent,
-        // //     expand: false,
-        // //     builder: (context) => BackdropFilter(
-        // //         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        // //         child: buildBottomSheet("", "", "", myContext)),
-        // //   );
-        // // });
-        // if (controller.colorsList.length == 1 &&
-        //     controller.sizeList.length == 1) {
-        //   if (userToken != null) {
-        //     print('teasdsadsa');
-        //     bool isProductInCart = cartController.cartItems.any(
-        //       (element) =>
-        //           element.product != null &&
-        //           controller.product != null &&
-        //           element.selectedSize == controller.selectedSize.value &&
-        //           element.product.id == controller.product.value.id,
-        //     );
-        //     print('teasdsadsa2');
-        //
-        //     if (isProductInCart) {
-        //       cartController.removeItem(cartController.cartItems.firstWhere(
-        //           (element) =>
-        //               element.product.id == controller.product.value.id));
-        //     }
-        //     print('teasdsadsa3');
-        //     cartController.loading.value = true;
-        //     controller.product.value.selectedSize =
-        //         controller.selectedSize.value;
-        //     controller.product.value.selectedColor =
-        //         controller.selectedColor.value;
-        //     cartController.addToCart(
-        //       controller.product.value,
-        //       controller.selectedSize.value,
-        //       controller.selectedColor.value,
-        //       quantity: 1,
-        //     );
-        //     print('teasdsadsa4');
-        //     Get.toNamed(Routes.CART);
-        //     cartController.loading.value = false;
-        //   } else {
-        //     Get.to(() => CartPage());
-        //   }
-        // } else {
-        //   if (controller.colorsList.isEmpty && controller.sizeList.isEmpty) {
-        //     if (userToken != null) {
-        //       print('teasdsadsa');
-        //       bool isProductInCart = cartController.cartItems.any(
-        //         (element) =>
-        //             element.product != null &&
-        //             controller.product != null &&
-        //             element.selectedSize == controller.selectedSize.value &&
-        //             element.product.id == controller.product.value.id,
-        //       );
-        //       print('teasdsadsa2');
-        //
-        //       if (isProductInCart) {
-        //         cartController.removeItem(cartController.cartItems.firstWhere(
-        //             (element) =>
-        //                 element.product.id == controller.product.value.id));
-        //       }
-        //       print('teasdsadsa3');
-        //       cartController.loading.value = true;
-        //       controller.product.value.selectedSize =
-        //           controller.selectedSize.value;
-        //       controller.product.value.selectedColor =
-        //           controller.selectedColor.value;
-        //       cartController.addToCart(
-        //         controller.product.value,
-        //         controller.selectedSize.value,
-        //         controller.selectedColor.value,
-        //         quantity: 1,
-        //       );
-        //       print('teasdsadsa4');
-        //       Get.toNamed(Routes.CART);
-        //       cartController.loading.value = false;
-        //     } else {
-        //       Get.to(() => CartPage());
-        //     }
-        //   }
-        //   // showMaterialModalBottomSheet(
-        //   //   context: myContext,
-        //   //   backgroundColor: Colors.transparent,
-        //   //   expand: false,
-        //   //   builder: (context) => BackdropFilter(
-        //   //       filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        //   //       child: buildBottomSheet(comingProduct, myContext)),
-        //   // );
-        // }
-        // Handle Add to Cart action
-        if (userToken != null) {
-          print('teasdsadsa');
-          bool isProductInCart = cartController.cartItems.any(
-            (element) =>
-                element.product != null &&
-                controller.product != null &&
-                element.selectedSize == controller.selectedSize.value &&
-                element.product.id == controller.product.value.id,
-          );
+      onTap: () async {
+        try {
+          // تحقق مما إذا كان المستخدم مسجلاً
+          if (userToken != null) {
+            print('Starting add to cart process...');
 
-          print('teasdsadsa2');
-
-          if (isProductInCart) {
-            cartController.removeItem(cartController.cartItems.firstWhere(
-                (element) =>
-                    element.product.id == controller.product.value.id));
-          }
-          print('teasdsadsa3');
-          cartController.loading.value = true;
-          controller.product.value.selectedSize = controller.selectedSize.value;
-          controller.product.value.selectedColor =
-              controller.selectedColor.value;
-          if (controller.selectedSize.value.isNotEmpty &&
-              controller.selectedColor.value.isNotEmpty) {
-            cartController.addToCart(
-              controller.product.value,
-              controller.selectedSize.value,
-              controller.selectedColor.value,
-              quantity: 1,
+            // التحقق مما إذا كان المنتج موجودًا بالفعل في السلة
+            bool isProductInCart = cartController.cartItems.any(
+              (element) =>
+                  element.product != null &&
+                  controller.product != null &&
+                  element.selectedSize == controller.selectedSize.value &&
+                  element.product.id == controller.product.value.id,
             );
-            print('teasdsadsa4');
-            Get.toNamed(Routes.CART);
+
+            print('Checking if product is already in cart...');
+
+            // إذا كان المنتج موجودًا في السلة، قم بإزالته
+            // if (isProductInCart) {
+            //   print('Product is in cart, removing...');
+            //   await cartController.removeItem(
+            //     cartController.cartItems.firstWhere((element) =>
+            //         element.product.id == controller.product.value.id),
+            //   );
+            //   print('Product removed from cart.');
+            // }
+
+            // تعيين حالة التحميل إلى true
+            cartController.loading.value = true;
+
+            // ضبط الحجم واللون للمنتج
+            controller.product.value.selectedSize =
+                controller.selectedSize.value;
+            controller.product.value.selectedColor =
+                controller.selectedColor.value;
+
+            // التحقق من أن المستخدم قد اختار الحجم واللون
+            if (controller.selectedSize.value.isNotEmpty &&
+                controller.selectedColor.value.isNotEmpty) {
+              print('Adding product to cart...');
+
+              // إضافة المنتج إلى السلة
+              await cartController.addToCart(
+                controller.product.value,
+                controller.selectedSize.value,
+                controller.selectedColor.value,
+                quantity: 1,
+              );
+
+              print('Product added to cart successfully.');
+
+              // الانتقال إلى صفحة السلة
+              Get.toNamed(Routes.CART);
+            } else {
+              // إظهار رسالة خطأ إذا لم يتم اختيار الحجم أو اللون
+              Get.snackbar("Error", "Please Select From Options First",
+                  backgroundColor: Colors.white);
+            }
+
+            // إيقاف حالة التحميل
             cartController.loading.value = false;
           } else {
-            Get.snackbar("Error", "Please Select From Options First",
-                backgroundColor: Colors.white);
+            // إذا لم يكن هناك userToken، انتقل إلى صفحة السلة
+            Get.to(() => CartPage());
           }
-        } else {
-          Get.to(() => CartPage());
+        } catch (e, stackTrace) {
+          // في حالة حدوث خطأ، عرض الخطأ على وحدة التحكم
+          print('Error adding to cart: $e $stackTrace');
+          Get.snackbar("Error", "Something went wrong. Please try again.",
+              backgroundColor: Colors.white);
+
+          // إيقاف حالة التحميل إذا حدث خطأ
+          cartController.loading.value = false;
         }
       },
       child: SvgPicture.asset(
