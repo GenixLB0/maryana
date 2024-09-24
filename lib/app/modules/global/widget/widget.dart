@@ -1085,8 +1085,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   function!();
                 } else {
                   print('sadsadsadadsa');
-                  // Get.back();
-                  Navigator.pop(context);
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  } else {
+                    Get.back();
+                  }
                 }
               },
             )

@@ -325,6 +325,7 @@ class CustomSearchController extends GetxController
   RxBool isPaginationSearchLoading = false.obs;
   RxBool isEndScroll = false.obs;
   String sectionNameOld = '';
+
   Future<List<dynamic>> continueGettingProductsInSection(
       {required String sectionName, required payload}) async {
     if (isFromSearch.value) {
@@ -1554,7 +1555,40 @@ class CustomSearchController extends GetxController
   int? selectedCatId;
   String selectedOption = 'featured'; // Ini
   changeDropDownValue(String option) {
-    selectedOption = option;
+    String myValue = "Top Picks";
+    if (option == "featured") {
+      myValue = "Top Picks";
+    }
+
+    if (option == "best_selling") {
+      myValue = "Most Popular";
+    }
+
+    if (option == "latest") {
+      myValue = "New Arrivals";
+    }
+
+    if (option == "oldest") {
+      myValue = "Earlier Products";
+    }
+
+    if (option == "low-high") {
+      myValue = "Lowest Price First";
+    }
+
+    if (option == "high-low") {
+      myValue = "Highest Price First";
+    }
+
+    if (option == "featured") {
+      myValue = "Alphabetical: A to Z";
+    }
+
+    if (option == "z-a") {
+      myValue = "Alphabetical: Z to A";
+    }
+
+    selectedOption = myValue;
     print("selected option is $selectedOption");
     getProductsInSection(
         sectionName: titleResult,

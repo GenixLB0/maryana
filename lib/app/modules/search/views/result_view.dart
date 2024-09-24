@@ -151,7 +151,7 @@ class ResultView extends GetView<CustomSearchController> {
                             return Align(
                               alignment: Alignment.centerRight,
                               child: Container(
-                                  width: 130.w,
+                                  width: 162.w,
                                   height: 45.h,
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 15.0.w),
@@ -190,8 +190,41 @@ class ResultView extends GetView<CustomSearchController> {
                                         ].map((str) {
                                           String capitalizeAllWords(
                                               String value) {
+                                            String myValue = "Top Picks";
+                                            if (value == "featured") {
+                                              myValue = "Top Picks";
+                                            }
+
+                                            if (value == "best_selling") {
+                                              myValue = "Most Popular";
+                                            }
+
+                                            if (value == "latest") {
+                                              myValue = "New Arrivals";
+                                            }
+
+                                            if (value == "oldest") {
+                                              myValue = "Earlier Products";
+                                            }
+
+                                            if (value == "low-high") {
+                                              myValue = "Lowest Price First";
+                                            }
+
+                                            if (value == "high-low") {
+                                              myValue = "Highest Price First";
+                                            }
+
+                                            if (value == "featured") {
+                                              myValue = "Alphabetical: A to Z";
+                                            }
+
+                                            if (value == "z-a") {
+                                              myValue = "Alphabetical: Z to A";
+                                            }
+
                                             var result =
-                                                value.split(' ').map((word) {
+                                                myValue.split(' ').map((word) {
                                               if (word.isNotEmpty) {
                                                 return word[0].toUpperCase() +
                                                     word.substring(1);
@@ -239,6 +272,8 @@ class ResultView extends GetView<CustomSearchController> {
                                             return SizedBox(
                                               // width: 80.w,
                                               child: Text(
+                                                // capitalizedString.replaceAll(
+                                                //     "_", " "),
                                                 controller.selectedOption ==
                                                         "best_selling"
                                                     ? "Best Selling"
