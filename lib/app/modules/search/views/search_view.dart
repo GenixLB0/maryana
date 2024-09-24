@@ -38,6 +38,9 @@ class SearchView extends GetView<CustomSearchController> {
                   InkWell(
                     onTap: () {
                       Get.back();
+                      isDataFullyLoaded =
+                          false; // Flag to track if data has already been loaded
+                      print('sadsadsadsadsad');
                     },
                     child: Container(
                       height: 40.h,
@@ -221,7 +224,7 @@ class SearchView extends GetView<CustomSearchController> {
     return Obx(() {
       return Container(
           padding: EdgeInsets.all(15),
-          height: controller.searchKeywords.isEmpty ? 200.h : 150.h,
+          height: controller.searchKeywords.isEmpty ? 300.h : 150.h,
           width: MediaQuery.of(context).size.width,
           child: controller.searchKeywords.isEmpty
               ? Column(

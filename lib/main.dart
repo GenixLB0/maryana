@@ -159,7 +159,7 @@ void main() async {
   await init();
 
   await AppConstants.loadUserFromCache();
- await Firebase.initializeApp();
+  await Firebase.initializeApp();
 
   // Initialize App Check
   await FirebaseAppCheck.instance.activate(
@@ -171,23 +171,23 @@ void main() async {
 
   // GoogleFonts.cormorant
   Get.put(ApiService());
-  await _handleUri();
-  if (kReleaseMode) {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn =
-            'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
-        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-        // We recommend adjusting this value in production.
-        options.tracesSampleRate = 0.01;
-        // The sampling rate for profiling is relative to tracesSampleRate
-        // Setting to 1.0 will profile 100% of sampled transactions:
-      },
-      appRunner: () => runApp(MyApp()),
-    );
-  } else {
-    runApp(MyApp());
-  }
+  // await _handleUri();
+  // if (kReleaseMode) {
+  //   await SentryFlutter.init(
+  //     (options) {
+  //       options.dsn =
+  //           'https://0ac95cbdab209d9255978250ef6e9e29@o4507944885813248.ingest.us.sentry.io/4507944887123968';
+  //       // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+  //       // We recommend adjusting this value in production.
+  //       options.tracesSampleRate = 0.01;
+  //       // The sampling rate for profiling is relative to tracesSampleRate
+  //       // Setting to 1.0 will profile 100% of sampled transactions:
+  //     },
+  //     appRunner: () => runApp(MyApp()),
+  //   );
+  // } else {
+  runApp(MyApp());
+  // }
 }
 
 var clothingType = "";
@@ -275,113 +275,42 @@ class MyApp extends StatelessWidget {
         builder: (_) => FutureBuilder<Color>(
             future: getMaterialYouData(),
             builder: (_, snap) {
-              return StreamBuilder<List<ConnectivityResult>>(
-                stream: Connectivity().onConnectivityChanged,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Scaffold(
-                        backgroundColor: Colors.white,
-                        body: Center(child: loadingIndicatorWidget()),
-                      ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data == null) {
-                    return Scaffold(
-                      backgroundColor: Colors.white,
-                      body: Center(child: loadingIndicatorWidget()),
-                    );
-                  } else {
-                    return snapshot.data != null
-                        ? snapshot.data!.contains(ConnectivityResult.none)
-                            ? const NoInternetView()
-                            : ScreenUtilInit(
-                                designSize: const Size(375, 812),
-                                minTextAdapt: true,
-                                splitScreenMode: true,
-                                // Use builder only if you need to use library outside ScreenUtilInit context
-                                builder: (_, child) {
-                                  return Platform.isAndroid
-                                      ? Observer(
-                                          builder: (_) => GetMaterialApp(
-                                                debugShowCheckedModeBanner:
-                                                    false,
-                                                useInheritedMediaQuery: true,
-                                                title: APP_NAME,
-                                                theme: AppTheme.lightTheme(
-                                                    color: snap.data),
-                                                initialRoute: isDeepLink &&
-                                                        isCart == false
-                                                    ? Routes.PRODUCT
-                                                    : isDeepLink == false &&
-                                                            isCart
-                                                        ? Routes.CART
-                                                        : Routes.SPLASH,
-                                                initialBinding: isDeepLink &&
-                                                        isCart == false
-                                                    ? ProductBinding()
-                                                    : isDeepLink == false &&
-                                                            isCart
-                                                        ? CartBinding()
-                                                        : SplashBinding(),
-                                                getPages: AppPages.routes,
-                                              ))
-                                      : Observer(
-                                          builder: (_) => GetMaterialApp(
-                                                debugShowCheckedModeBanner:
-                                                    false,
-                                                useInheritedMediaQuery: true,
-                                                title: APP_NAME,
-                                                theme: AppTheme.lightTheme(
-                                                    color: snap.data),
-                                                initialRoute: Routes.SPLASH,
-                                                initialBinding: SplashBinding(),
-                                                getPages: AppPages.routes,
-                                              ));
-                                })
-                        : ScreenUtilInit(
-                            designSize: const Size(375, 812),
-                            minTextAdapt: true,
-                            splitScreenMode: true,
-                            // Use builder only if you need to use library outside ScreenUtilInit context
-                            builder: (_, child) {
-                              return Platform.isAndroid
-                                  ? Observer(
-                                      builder: (_) => GetMaterialApp(
-                                            debugShowCheckedModeBanner: false,
-                                            useInheritedMediaQuery: true,
-                                            title: APP_NAME,
-                                            theme: AppTheme.lightTheme(
-                                                color: snap.data),
-                                            initialRoute: isDeepLink &&
-                                                    isCart == false
-                                                ? Routes.PRODUCT
-                                                : isDeepLink == false && isCart
-                                                    ? Routes.CART
-                                                    : Routes.SPLASH,
-                                            initialBinding: isDeepLink &&
-                                                    isCart == false
-                                                ? ProductBinding()
-                                                : isDeepLink == false && isCart
-                                                    ? CartBinding()
-                                                    : SplashBinding(),
-                                            getPages: AppPages.routes,
-                                          ))
-                                  : Observer(
-                                      builder: (_) => GetMaterialApp(
-                                            debugShowCheckedModeBanner: false,
-                                            useInheritedMediaQuery: true,
-                                            title: APP_NAME,
-                                            theme: AppTheme.lightTheme(
-                                                color: snap.data),
-                                            initialRoute: Routes.SPLASH,
-                                            initialBinding: SplashBinding(),
-                                            getPages: AppPages.routes,
-                                          ));
-                            });
-                  }
-                },
-              );
+              return ScreenUtilInit(
+                  designSize: const Size(375, 812),
+                  minTextAdapt: true,
+                  splitScreenMode: true,
+                  // Use builder only if you need to use library outside ScreenUtilInit context
+                  builder: (_, child) {
+                    return Platform.isAndroid
+                        ? Observer(
+                            builder: (_) => GetMaterialApp(
+                                  debugShowCheckedModeBanner: false,
+                                  useInheritedMediaQuery: true,
+                                  title: APP_NAME,
+                                  theme: AppTheme.lightTheme(color: snap.data),
+                                  initialRoute: isDeepLink && isCart == false
+                                      ? Routes.PRODUCT
+                                      : isDeepLink == false && isCart
+                                          ? Routes.CART
+                                          : Routes.SPLASH,
+                                  initialBinding: isDeepLink && isCart == false
+                                      ? ProductBinding()
+                                      : isDeepLink == false && isCart
+                                          ? CartBinding()
+                                          : SplashBinding(),
+                                  getPages: AppPages.routes,
+                                ))
+                        : Observer(
+                            builder: (_) => GetMaterialApp(
+                                  debugShowCheckedModeBanner: false,
+                                  useInheritedMediaQuery: true,
+                                  title: APP_NAME,
+                                  theme: AppTheme.lightTheme(color: snap.data),
+                                  initialRoute: Routes.SPLASH,
+                                  initialBinding: SplashBinding(),
+                                  getPages: AppPages.routes,
+                                ));
+                  });
             }));
   }
 }

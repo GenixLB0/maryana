@@ -667,38 +667,37 @@ class ShopView extends GetView<ShopController> {
                                           duration: const Duration(seconds: 1),
                                           curve: Curves.easeInOut,
                                           child: InkWell(
-                                            onTap: controller
-                                                    .isSubCategoriesLoading
-                                                    .value
-                                                ? () {}
-                                                : () {
-                                                    print(
-                                                        "second ${controller.choosenCatId.value}");
-                                                    print(
-                                                        "second 2  ${filteredCategories[index].id!.toString()}");
-                                                    controller.switchAll(
-                                                        isFromAll: false);
-                                                    controller
-                                                        .changeChoosenCatId(
+                                            onTap:
+                                                controller
+                                                        .isSubCategoriesLoading
+                                                        .value
+                                                    ? () {}
+                                                    : () {
+                                                        print(
+                                                            "second ${controller.choosenCatId.value}");
+                                                        print(
+                                                            "second 2  ${filteredCategories[index].id!.toString()}");
+                                                        controller.switchAll(
+                                                            isFromAll: false);
+                                                        controller.changeChoosenCatId(
                                                             filteredCategories[
                                                                     index]
                                                                 .id!
                                                                 .toString(),
-                                                            controller
-                                                                .categories[
+                                                            filteredCategories[
                                                                     index]
                                                                 .name!);
 
-                                                    controller
-                                                        .getSubCategoriesInCategory(
-                                                            filteredCategories[
-                                                                    index]
-                                                                .id!);
+                                                        controller
+                                                            .getSubCategoriesInCategory(
+                                                                filteredCategories[
+                                                                        index]
+                                                                    .id!);
 
-                                                    // controller.getBrandsInCategory(
-                                                    //     controller
-                                                    //         .categories[index].id!);
-                                                  },
+                                                        // controller.getBrandsInCategory(
+                                                        //     controller
+                                                        //         .categories[index].id!);
+                                                      },
                                             child: Padding(
                                                 padding:
                                                     EdgeInsets.only(left: 1.w),
@@ -1022,7 +1021,8 @@ class ShopView extends GetView<ShopController> {
                                             sectionName: shopController
                                                 .choosenCatName.value,
                                             payload: payload);
-
+                                        controller.titleResult =
+                                            shopController.choosenCatName.value;
                                         Get.to(() => const ResultView(),
                                             transition: Transition.fadeIn,
                                             curve: Curves.easeInOut,
@@ -1035,7 +1035,8 @@ class ShopView extends GetView<ShopController> {
                                             sectionName: shopController
                                                 .choosenCatName.value,
                                             payload: payload);
-
+                                        controller.titleResult =
+                                            shopController.choosenCatName.value;
                                         Get.to(() => const ResultView(),
                                             transition: Transition.fadeIn,
                                             curve: Curves.easeInOut,
@@ -1197,7 +1198,11 @@ class ShopView extends GetView<ShopController> {
                                         controller.getProductsInSection(
                                             sectionName: "RECOMMENDED",
                                             payload: {});
-
+                                        controller.titleResult =
+                                            shopController.choosenCatName.value;
+                                        print(
+                                            controller.titleResult.toString() +
+                                                ' test title reust');
                                         Get.to(() => const ResultView(),
                                             transition: Transition.fadeIn,
                                             curve: Curves.easeInOut,
@@ -1224,7 +1229,8 @@ class ShopView extends GetView<ShopController> {
                                             sectionName: shopController
                                                 .choosenCatName.value,
                                             payload: payload);
-
+                                        controller.titleResult =
+                                            shopController.choosenCatName.value;
                                         Get.to(() => const ResultView(),
                                             transition: Transition.fadeIn,
                                             curve: Curves.easeInOut,
@@ -1237,7 +1243,11 @@ class ShopView extends GetView<ShopController> {
                                             sectionName: shopController
                                                 .choosenCatName.value,
                                             payload: payload);
-
+                                        controller.titleResult =
+                                            shopController.choosenCatName.value;
+                                        print(
+                                            controller.titleResult.toString() +
+                                                ' test title reust');
                                         Get.to(() => const ResultView(),
                                             transition: Transition.fadeIn,
                                             curve: Curves.easeInOut,

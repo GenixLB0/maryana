@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +29,7 @@ import 'package:flutter/services.dart' as rootBundle;
 import '../views/ai_loading_image.dart';
 import '../views/result_view.dart';
 import 'package:firebase_database/firebase_database.dart'; // For Realtime Database
+import 'dart:async';
 
 class CustomSearchController extends GetxController
     with GetTickerProviderStateMixin {
@@ -125,6 +127,7 @@ class CustomSearchController extends GetxController
   @override
   void onClose() {
     _controller?.dispose();
+    scrollController.dispose();
     _bumpAnimationController?.dispose();
     super.onClose();
   }
@@ -241,7 +244,7 @@ class CustomSearchController extends GetxController
 
     bodyFields['current_page'] = currentPage.toString();
     if (!isFromAi) {
-      bodyFields['per_page'] = "8";
+      bodyFields['per_page'] = "7";
     }
     bodyFields['orderBy'] = orderTag;
 
@@ -321,7 +324,7 @@ class CustomSearchController extends GetxController
 
   RxBool isPaginationSearchLoading = false.obs;
   RxBool isEndScroll = false.obs;
-
+  String sectionNameOld = '';
   Future<List<dynamic>> continueGettingProductsInSection(
       {required String sectionName, required payload}) async {
     if (isFromSearch.value) {
@@ -335,7 +338,7 @@ class CustomSearchController extends GetxController
         return [];
       } else {
         currentPage++;
-        print("none NOW 4");
+        print("none NOW 4 ${currentPage}");
         isEndScroll.value = false;
         isFromSearch.value = false;
         titleResult = sectionName;
@@ -343,7 +346,7 @@ class CustomSearchController extends GetxController
         var bodyFields = payload;
 
         bodyFields['current_page'] = currentPage.toString();
-        bodyFields['per_page'] = "8";
+        bodyFields['per_page'] = "7";
         print("body feilds ${bodyFields}");
         var headers = {
           'Accept': 'application/json',
@@ -376,7 +379,17 @@ class CustomSearchController extends GetxController
             } else {
               resultCount.value = resultSearchProducts.length;
             }
+            print(responseData['meta']['total'].toString() +
+                ' test productss' +
+                resultSearchProducts.length.toString());
+            if (responseData['meta']['total'] == resultSearchProducts.length) {
+              isDataFullyLoaded = true;
+              print('sadsadsadsadsadadsadsad {resultSearchProducts.length}');
+            } else {
+              print('sadsadsadsadsadadsadsad2');
 
+              isDataFullyLoaded = false;
+            }
             print("your map ${payload}");
 
             print("your result length 2 is ${resultSearchProducts.length}");
@@ -408,34 +421,71 @@ class CustomSearchController extends GetxController
   ScrollController scrollController = ScrollController();
   RxBool showBackToTopButton = false.obs;
 
-  attachScroll() {
-    print("attached...");
-    scrollController.addListener(() {
-      print("attached...2");
+  Timer? _debounce;
 
-      print(scrollController.position.pixels.toString() +
-          ' ' +
-          scrollController.position.maxScrollExtent.toString());
+// Function to attach the scroll listener
+  void attachScroll() {
+    print("attached...");
+
+    scrollController.addListener(() {
+      // Avoid recalculating distance and running unnecessary code
+      if (isPaginationSearchLoading.value) return;
 
       // حساب المسافة المتبقية لنهاية القائمة
       double remainingScrollDistance =
           scrollController.position.maxScrollExtent -
               scrollController.position.pixels;
 
-      // قم بتغيير هذه القيمة بناءً على المسافة التي تريد البدء عندها في تحميل المزيد (مثلاً 200 بكسل قبل النهاية)
-      if (remainingScrollDistance < 200 &&
+      // Only proceed if data is not fully loaded
+      if (isDataFullyLoaded) {
+        if (sectionNameOld.isEmpty || sectionNameOld != titleResult) {
+          isDataFullyLoaded = false;
+          sectionNameOld = titleResult;
+        }
+      }
+
+      // Proceed only if not already loading and close to the bottom
+      if (!isDataFullyLoaded &&
+          remainingScrollDistance < 200 &&
           !isPaginationSearchLoading.value &&
           !isFromSearch.value &&
           !isFromAiPhase) {
-        print("loading more data before reaching the end...");
+        // Debounce to prevent multiple triggers during fast scrolling
+        if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-        isPaginationSearchLoading.value = false;
-        continueGettingProductsInSection(
-            sectionName: titleResult, payload: controllerPayload);
+        _debounce = Timer(Duration(milliseconds: 5), () {
+          // Increased debounce time
+          print("loading more data before reaching the end...");
+
+          // Set the flag to prevent multiple API calls
+
+          // Fetch new products for the section
+          continueGettingProductsInSection(
+                  sectionName: titleResult, payload: controllerPayload)
+              .then((_) {
+            // After successfully loading data, mark as fully loaded if no more data is available
+            isPaginationSearchLoading.value = false;
+
+            // Check if more data exists and set `isDataFullyLoaded` accordingly
+            // For example, you might check the API response to see if there are more pages
+          }).catchError((error) {
+            // Handle any errors from the API call
+            isPaginationSearchLoading.value =
+                false; // Reset the loading state if error occurs
+          });
+        });
+      } else if (isDataFullyLoaded) {
+        print("Data is fully loaded, no need to load more.");
       } else {
-        print("not yet near the end");
+        print("Not yet near the end or already loading.");
       }
     });
+  }
+
+// This can be called to reset the fully loaded flag,
+// if needed when the user navigates to a new section
+  void resetDataLoadFlag() {
+    isDataFullyLoaded = false;
   }
 
   void scrollToTop() {

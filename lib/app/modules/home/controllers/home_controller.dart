@@ -433,7 +433,7 @@ class HomeController extends GetxController {
 
     var bodyFields = {
       'collection_ids[0]': "${mycollection.id}",
-      'per_page': "10"
+      'per_page': "7"
     };
 
     var headers = {
@@ -992,28 +992,30 @@ class HomeController extends GetxController {
   }
 
   ////////////////////////////////////////////////////////////////
+  bool isDataLoaded = false;
 
-  listenForFirstScroll() {
+  void listenForFirstScroll() {
     scrollController.value.addListener(() async {
-      if (scrollController.value.position.pixels >=
-          scrollController.value.position.maxScrollExtent - 350.h) {
+      // Check if the user has already loaded the data and is not reloading it
+      if (!isDataLoaded &&
+          scrollController.value.position.pixels >=
+              scrollController.value.position.maxScrollExtent - 350.h) {
         print('Reached before max scroll by 850 pixels');
 
+        // Load the collections only once
         await getHomeScreenCollections();
-
         if (isCollectionsReached) {
-          print("Reached what ?  collections");
-
+          print("Reached what? Collections");
           await getHomeScreenBrands();
         }
 
         if (isBrandsReached && isCollectionsReached) {
-          print("Reached what ?  coupons");
+          print("Reached what? Coupons");
           await getHomeScreenCoupons();
         }
 
         if (isCouponReached && isBrandsReached && isCollectionsReached) {
-          print("Reached what ?  gift cards");
+          print("Reached what? Gift cards");
           await getHomeScreenGiftCards();
         }
 
@@ -1021,7 +1023,7 @@ class HomeController extends GetxController {
             isCouponReached &&
             isBrandsReached &&
             isCollectionsReached) {
-          print("Reached what ?  sytles");
+          print("Reached what? Styles");
           await getHomeScreenStyles();
         }
 
@@ -1032,10 +1034,14 @@ class HomeController extends GetxController {
             isCollectionsReached) {
           isOtherBrandReached = true;
         }
-        {
-          print("Reached what ?  other brands");
+
+        if (isOtherBrandReached) {
+          print("Reached what? Other brands");
           await getHomeScreenOtherBrands();
         }
+
+        // Set the flag to prevent reloading data
+        isDataLoaded = true;
       }
     });
   }
