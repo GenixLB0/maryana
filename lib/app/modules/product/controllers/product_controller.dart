@@ -51,7 +51,7 @@ class ProductController extends GetxController {
   }
 
   Rx<String> placeHolderImg = "".obs;
-
+  
   @override
   void onReady() {
     isFirstTimeGettingReviews = true;
