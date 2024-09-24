@@ -23,7 +23,7 @@ bool isDataFullyLoaded = false; // Flag to track if data has already been loaded
 final smallSpacing = 5.w;
 final crossAxisSpacing = 5.w;
 final mainAxisSpacing = 15.w;
-const heightDevidedRatio = 0.81;
+const heightDevidedRatio = 0.83;
 final productsSectionHeight = 300.h;
 
 extension HexColor on Color {

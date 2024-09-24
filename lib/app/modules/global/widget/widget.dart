@@ -1084,7 +1084,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 if (function != null) {
                   function!();
                 } else {
-                  Get.back();
+                  print('sadsadsadadsa');
+                  // Get.back();
+                  Navigator.pop(context);
                 }
               },
             )
@@ -1689,7 +1691,7 @@ class _buildCardProductState extends State<buildProductCard> {
                   //   height: 1.h,
                   // ),
                   Padding(
-                    padding: EdgeInsets.only(left: 7.w),
+                    padding: EdgeInsets.only(left: 7.w, bottom: 10.h),
                     child: GestureDetector(
                       onTap: () {
                         Get.toNamed(
@@ -1712,48 +1714,48 @@ class _buildCardProductState extends State<buildProductCard> {
                   // SizedBox(
                   //   height: 6.h,
                   // ),
-                  widget.isInWishlist
-                      ? GestureDetector(
-                          onTap: () {
-                            //todo
-                            // take Product arguments from here
-                            ViewProductData product = widget.product;
+                  // widget.isInWishlist
+                  //     ? GestureDetector(
+                  //         onTap: () {
+                  //           //todo
+                  //           // take Product arguments from here
+                  //           ViewProductData product = widget.product;
 
-                            //todo
-                            //Nav To Cart Screen
-                            //Setted to Main Screen for now
-                            Get.toNamed(Routes.MAIN);
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(left: 10.w),
-                            padding: EdgeInsets.only(left: 10.w),
-                            height: 30.h,
-                            width: 125.w,
-                            decoration: BoxDecoration(
-                                color: Color(0xff21034F),
-                                borderRadius: BorderRadius.circular(35.sp)),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.shopping_cart_outlined,
-                                  color: Colors.white,
-                                  size: 12.sp,
-                                ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
-                                Text(
-                                  "ADD TO CART",
-                                  style: primaryTextStyle(
-                                      weight: FontWeight.w700,
-                                      color: Colors.white,
-                                      size: 9.sp.round()),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
+                  //           //todo
+                  //           //Nav To Cart Screen
+                  //           //Setted to Main Screen for now
+                  //           Get.toNamed(Routes.MAIN);
+                  //         },
+                  //         child: Container(
+                  //           margin: EdgeInsets.only(left: 10.w),
+                  //           padding: EdgeInsets.only(left: 10.w),
+                  //           height: 30.h,
+                  //           width: 125.w,
+                  //           decoration: BoxDecoration(
+                  //               color: Color(0xff21034F),
+                  //               borderRadius: BorderRadius.circular(35.sp)),
+                  //           child: Row(
+                  //             children: [
+                  //               Icon(
+                  //                 Icons.shopping_cart_outlined,
+                  //                 color: Colors.white,
+                  //                 size: 12.sp,
+                  //               ),
+                  //               SizedBox(
+                  //                 width: 4.w,
+                  //               ),
+                  //               Text(
+                  //                 "ADD TO CART",
+                  //                 style: primaryTextStyle(
+                  //                     weight: FontWeight.w700,
+                  //                     color: Colors.white,
+                  //                     size: 9.sp.round()),
+                  //               )
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       )
+                  //     : const SizedBox(),
                 ],
               )
             : placeHolderWidget(),

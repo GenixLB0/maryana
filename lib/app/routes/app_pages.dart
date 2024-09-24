@@ -11,6 +11,8 @@ import 'package:maryana/app/modules/gift_card/views/history.dart';
 import 'package:maryana/app/modules/order/bindings/orders_binding.dart';
 import 'package:maryana/app/modules/order/views/order_detalis.dart';
 import 'package:maryana/app/modules/order/views/orders_view.dart';
+import 'package:maryana/app/modules/wishlist/bindings/wishlist_binding.dart';
+import 'package:maryana/app/modules/wishlist/views/wishlist_view.dart';
 
 import '../modules/address/bindings/address_binding.dart';
 import '../modules/address/views/address_view.dart';
@@ -76,6 +78,11 @@ class AppPages {
       name: _Paths.REGISTER,
       page: () => RegisterView(),
       binding: AuthBinding(),
+    ),
+    GetPage(
+      name: _Paths.MYWISHLIST, 
+      page: () => const WishlistView(),
+      binding: WishlistBinding(),
     ),
     GetPage(
       name: _Paths.SPLASH,

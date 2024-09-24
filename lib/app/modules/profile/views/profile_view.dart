@@ -51,7 +51,7 @@ class _ProfileViewState extends State<ProfileView>
                       SizedBox(height: 45.h),
                       Container(
                         width: 327.w,
-                        height: 575.h,
+                        height: 670.h,
                         decoration: ShapeDecoration(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -77,6 +77,9 @@ class _ProfileViewState extends State<ProfileView>
                             //     'payment.svg', 'Payment method', () {}, 21, 2),
                             _buildMenuItem('coupon.svg', 'Coupons', () {
                               Get.toNamed(Routes.COUPON);
+                            }, 24, 2),
+                            _buildMenuItem('heart.svg', 'My Wishlist', () {
+                              Get.toNamed(Routes.MYWISHLIST);
                             }, 24, 2),
                             _buildMenuItem('gift.svg', 'Gift Card', () {
                               Get.to(() => TransactionHistoryScreen());
@@ -387,11 +390,8 @@ class _ProfileViewState extends State<ProfileView>
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SvgPicture.asset(
-                          'assets/images/profile/$icon',
-                          width: size.w,
-                          height: size.h,
-                        ),
+                        SvgPicture.asset('assets/images/profile/$icon',
+                            width: size.w, height: size.h, color: Colors.grey),
                         SizedBox(width: 10.w),
                         Text(
                           title,

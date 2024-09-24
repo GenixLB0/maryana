@@ -16,6 +16,7 @@ abstract class Routes {
   static const ONBOARDING = _Paths.ONBOARDING;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const SEARCH = _Paths.SEARCH;
+  static const MYWISHLIST = _Paths.MYWISHLIST;
   static const PROFILE = _Paths.PROFILE;
   static const ProfileUpdate = _Paths.ProfileUpdate;
   static const HOME = _Paths.HOME;
@@ -41,6 +42,7 @@ abstract class _Paths {
   static const REGISTER = '/register';
   static const SPLASH = '/splash';
   static const ONBOARDING = '/onboarding';
+  static const MYWISHLIST = '/mywishlist';
   static const FORGOT_PASSWORD = '/forgot-password';
   static const SEARCH = '/search';
   static const PROFILE = '/profile';
