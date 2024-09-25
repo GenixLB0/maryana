@@ -14,10 +14,10 @@ import 'package:geocoding/geocoding.dart';
 class AddAddressScreen extends GetView<AddressController> {
   Position? location;
   final bool? viewsOnly;
+
   AddAddressScreen({super.key, this.viewsOnly}) {
-    controller.fetchCurrentLocation();
     controller.getPermission();
-    
+    controller.fetchCurrentLocation();
   }
 
   @override
@@ -115,7 +115,7 @@ class AddAddressScreen extends GetView<AddressController> {
                                 return DropdownMenuItem<String>(
                                   value: country.name,
                                   child: Text(
-                                    country.name,
+                                    country.name ?? "",
                                     style: primaryTextStyle(
                                       color: const Color(0xFFA6AAC3),
                                       size: 14.sp.round(),

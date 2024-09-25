@@ -20,7 +20,7 @@ class ResultView extends GetView<CustomSearchController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.attachScroll();
+    // controller.attachScroll();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(

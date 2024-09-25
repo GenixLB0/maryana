@@ -237,14 +237,14 @@ class CustomSearchController extends GetxController
     titleResult = sectionName;
     resultSearchProducts.clear();
     isSearchLoading.value = true;
-
+    maxPages = resultCount.value / perPage;
     print("the payload ${controllerPayload}");
     print("should called once...");
     var bodyFields = controllerPayload;
 
     bodyFields['current_page'] = currentPage.toString();
     if (!isFromAi) {
-      bodyFields['per_page'] = "7";
+      bodyFields['per_page'] = perPage.toString();
     }
     bodyFields['orderBy'] = orderTag;
 
@@ -325,6 +325,8 @@ class CustomSearchController extends GetxController
   RxBool isPaginationSearchLoading = false.obs;
   RxBool isEndScroll = false.obs;
   String sectionNameOld = '';
+  int perPage = 10;
+  double maxPages = 1;
 
   Future<List<dynamic>> continueGettingProductsInSection(
       {required String sectionName, required payload}) async {
@@ -339,6 +341,7 @@ class CustomSearchController extends GetxController
         return [];
       } else {
         currentPage++;
+
         print("none NOW 4 ${currentPage}");
         isEndScroll.value = false;
         isFromSearch.value = false;
@@ -347,7 +350,7 @@ class CustomSearchController extends GetxController
         var bodyFields = payload;
 
         bodyFields['current_page'] = currentPage.toString();
-        bodyFields['per_page'] = "7";
+        bodyFields['per_page'] = perPage.toString();
         print("body feilds ${bodyFields}");
         var headers = {
           'Accept': 'application/json',
@@ -425,6 +428,7 @@ class CustomSearchController extends GetxController
   Timer? _debounce;
 
 // Function to attach the scroll listener
+
   void attachScroll() {
     print("attached...");
 
@@ -447,33 +451,38 @@ class CustomSearchController extends GetxController
 
       // Proceed only if not already loading and close to the bottom
       if (!isDataFullyLoaded &&
-          remainingScrollDistance < 500 &&
+          remainingScrollDistance <= 500 &&
           !isPaginationSearchLoading.value &&
           !isFromSearch.value &&
           !isFromAiPhase) {
         // Debounce to prevent multiple triggers during fast scrolling
         if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-        _debounce = Timer(Duration(milliseconds: 30), () {
+        _debounce = Timer(const Duration(milliseconds: 30), () {
           // Increased debounce time
           print("loading more data before reaching the end...");
+          if (currentPage > maxPages || currentPage == maxPages) {
+            // Set the flag to prevent multiple API calls
 
-          // Set the flag to prevent multiple API calls
+            // Fetch new products for the section
 
-          // Fetch new products for the section
-          continueGettingProductsInSection(
-                  sectionName: titleResult, payload: controllerPayload)
-              .then((_) {
-            // After successfully loading data, mark as fully loaded if no more data is available
-            isPaginationSearchLoading.value = false;
+            continueGettingProductsInSection(
+                    sectionName: titleResult, payload: controllerPayload)
+                .then((_) {
+              // After successfully loading data, mark as fully loaded if no more data is available
 
-            // Check if more data exists and set `isDataFullyLoaded` accordingly
-            // For example, you might check the API response to see if there are more pages
-          }).catchError((error) {
-            // Handle any errors from the API call
-            isPaginationSearchLoading.value =
-                false; // Reset the loading state if error occurs
-          });
+              isPaginationSearchLoading.value = false;
+
+              // Check if more data exists and set `isDataFullyLoaded` accordingly
+              // For example, you might check the API response to see if there are more pages
+            }).catchError((error) {
+              // Handle any errors from the API call
+              isPaginationSearchLoading.value =
+                  false; // Reset the loading state if error occurs
+            });
+          } else {
+            print("No more data to load.");
+          }
         });
       } else if (isDataFullyLoaded) {
         print("Data is fully loaded, no need to load more.");

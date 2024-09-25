@@ -20,6 +20,8 @@ class AddressListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    addressController.fetchAddresses();
+    addressController.fetchCountries();
     return Scaffold(
       appBar: viewOnly == null || viewOnly == false
           ? const CustomAppBar(
@@ -43,7 +45,8 @@ class AddressListScreen extends StatelessWidget {
                       ShowUp(
                           delay: 200,
                           child: Image.asset(
-                            'assets/images/profile/emptyAddress.jpg', // Replace with your own illustration asset
+                            'assets/images/profile/emptyAddress.jpg',
+                            // Replace with your own illustration asset
                             height: 150.h,
                           )),
                       SizedBox(height: 20.h),
@@ -199,9 +202,8 @@ class AddressListScreen extends StatelessWidget {
                                                 },
                                               ),
                                             )),
-                                        SizedBox(
-                                            width: 0
-                                                .w), // Space between radio and icon
+                                        SizedBox(width: 0.w),
+                                        // Space between radio and icon
                                         Padding(
                                             padding: EdgeInsetsDirectional.only(
                                                 top: 22.h),
@@ -209,10 +211,10 @@ class AddressListScreen extends StatelessWidget {
                                               'assets/images/profile/home.svg',
                                               width: 30.w,
                                               height: 30.h,
-                                            )), // Example icon, replace with your own
-                                        SizedBox(
-                                            width: 14
-                                                .w), // Space between icon and text
+                                            )),
+                                        // Example icon, replace with your own
+                                        SizedBox(width: 14.w),
+                                        // Space between icon and text
                                         Expanded(
                                             child: Padding(
                                           padding: EdgeInsetsDirectional.only(
@@ -260,9 +262,8 @@ class AddressListScreen extends StatelessWidget {
                                               ),
                                             ),
 
-                                            SizedBox(
-                                                width: 8
-                                                    .w), // Space between text and delete icon
+                                            SizedBox(width: 8.w),
+                                            // Space between text and delete icon
                                             IconButton(
                                               icon: Icon(Icons.delete,
                                                   size: 20.sp),

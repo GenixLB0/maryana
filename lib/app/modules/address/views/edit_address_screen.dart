@@ -119,7 +119,7 @@ class EditAddressScreen extends GetView<AddressController> {
                                   return DropdownMenuItem<String>(
                                     value: country.name,
                                     child: Text(
-                                      country.name,
+                                      country.name ?? "",
                                       style: primaryTextStyle(
                                         color: const Color(0xFFA6AAC3),
                                         size: 14.sp.round(),
@@ -234,8 +234,8 @@ class EditAddressScreen extends GetView<AddressController> {
                                       initialValue: controller.floor.value,
 
                                       labelText: 'Floor',
-                                      keyboardType: TextInputType
-                                          .number, // For numeric input
+                                      keyboardType: TextInputType.number,
+                                      // For numeric input
                                       onChanged: (value) {
                                         controller.floor.value = value;
                                         controller.validateField(

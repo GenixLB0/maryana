@@ -1,15 +1,15 @@
 class Country {
-  final String name;
-  final String code;
-  final String phoneCode;
+  final String? name;
+  final String? code;
+  final String? phoneCode;
 
   Country({required this.name, required this.code, required this.phoneCode});
 
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
-      name: json['name'],
-      code: json['code'],
-      phoneCode: json['phone_code'],
+      name: json['name'] ?? "",
+      code: json['code'] ?? "",
+      phoneCode: json['phone_code'] ?? "",
     );
   }
 }
