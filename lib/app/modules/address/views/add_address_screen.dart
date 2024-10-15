@@ -93,44 +93,17 @@ class AddAddressScreen extends GetView<AddressController> {
                 SizedBox(
                   height: 15.h,
                 ),
-                SizedBox(
-                    width: 310.w,
-                    child: Obx(() => InputDecorator(
-                          decoration: InputDecoration(),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              underline: Container(
-                                height: 1,
-                                color: const Color(0xFFA6AAC3),
-                              ),
-                              isDense: true,
-                              value: controller.selectedCountry.value,
-                              isExpanded: true,
-                              onChanged: (String? newValue) {
-                                controller.selectedCountry.value = newValue!;
-                              },
-                              items: controller.countriesList
-                                  .map<DropdownMenuItem<String>>(
-                                      (Country country) {
-                                return DropdownMenuItem<String>(
-                                  value: country.name,
-                                  child: Text(
-                                    country.name ?? "",
-                                    style: primaryTextStyle(
-                                      color: const Color(0xFFA6AAC3),
-                                      size: 14.sp.round(),
-                                      weight: FontWeight.w400,
-                                      height: 1,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ))),
-                SizedBox(
-                  height: 15.h,
-                ),
+                // SizedBox(
+                //     width: 310.w,
+                //     child: Text(
+                //       controller.selectedCountry.value,
+                //       style: primaryTextStyle(
+                //         color: const Color(0xFFA6AAC3),
+                //         size: 14.sp.round(),
+                //         weight: FontWeight.w400,
+                //         height: 1,
+                //       ),
+                //     )),
                 Obx(() => CustomTextField(
                       labelText: 'Address *',
                       onChanged: (value) {

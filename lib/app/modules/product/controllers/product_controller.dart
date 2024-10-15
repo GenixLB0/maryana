@@ -162,7 +162,7 @@ class ProductController extends GetxController {
 
     update();
   }
-
+ 
   changeImagesList(incomingColor) {
     print("updating..");
     print("old attachmants are ${productImages}");

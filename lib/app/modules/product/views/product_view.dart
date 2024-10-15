@@ -80,11 +80,18 @@ class ProductView extends GetView<ProductController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 //Product Name and Rating
-                                _buildProductNameAndStartRating(
-                                    context, controller.product.value),
+
                                 //Product Price
                                 _buildProductPrice(
                                     context, controller.product.value),
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                _buildProductNameAndStartRating(
+                                    context, controller.product.value),
+                                SizedBox(
+                                  height: 10.h,
+                                ),
 
                                 //Product Details
                                 _buildProductDetails(
@@ -118,14 +125,21 @@ class ProductView extends GetView<ProductController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               //build Small Photos
-                              _buildSmallImagesView(),
+                              //      _buildSmallImagesView(),
 
                               //Product Name and Rating
-                              _buildProductNameAndStartRating(
-                                  context, controller.product.value),
-                              //Product Price
                               _buildProductPrice(
                                   context, controller.product.value),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              _buildProductNameAndStartRating(
+                                  context, controller.product.value),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+
+                              //Product Price
 
 //Product Colors
                               _buildProductColors(context),
@@ -993,7 +1007,7 @@ class ProductView extends GetView<ProductController> {
       delay: 200,
       child: Container(
         child: Container(
-            height: MediaQuery.of(context).size.height / 2.06,
+            height: MediaQuery.of(context).size.height / 2.15,
             decoration: const BoxDecoration(
               color: Colors.white,
             ),
@@ -1007,53 +1021,50 @@ class ProductView extends GetView<ProductController> {
 
   _buildProductNameAndStartRating(
       BuildContext context, ViewProductData comingProduct) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 10.h,
-        ),
-        //Name
-        Padding(
-            padding: EdgeInsets.only(left: 15.w),
-            child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(comingProduct.name ?? "",
-                    style: boldTextStyle(
-                        size: 25.sp.round(), letterSpacing: 1.5.w)))),
+    return SizedBox(
+        width: 400.w,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            //Name
+            Padding(
+                padding: EdgeInsets.only(left: 15.w),
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: SizedBox(
+                        width: 250.w,
+                        child: Text(comingProduct.name ?? "",
+                            style: primaryTextStyle(
+                                size: 18.sp.round(), letterSpacing: 1.5.w))))),
 
-        //Star Rating
-        Padding(
-          padding: EdgeInsets.only(left: 10.w),
-          child: Row(
-            children: [
-              StarRating(
-                onRatingChanged: (double rating) {},
-                color: Colors.green,
-                rating: controller.product.value.rating == null
-                    ? 0
-                    : controller.product.value.rating.toDouble(),
-                isCustomer: false,
+            //Star Rating
+            Padding(
+              padding: EdgeInsets.only(left: 10.w),
+              child: Row(
+                children: [
+                  Icon(Icons.star, color: Colors.orange),
+                  Padding(
+                    padding: EdgeInsets.only(top: 0.h),
+                    child: comingProduct.rating == null
+                        ? Text(
+                            "(0)",
+                            style: primaryTextStyle(),
+                          )
+                        : Text(
+                            "(${comingProduct.rating.toString()})",
+                            style: primaryTextStyle(),
+                          ),
+                  )
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 10.h),
-                child: comingProduct.rating == null
-                    ? Text(
-                        "(0)",
-                        style: primaryTextStyle(),
-                      )
-                    : Text(
-                        "(${comingProduct.rating.toString()})",
-                        style: primaryTextStyle(),
-                      ),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 5.h,
-        ),
-      ],
-    );
+            ),
+            SizedBox(
+              height: 5.h,
+            ),
+          ],
+        ));
   }
 
   _buildProductPrice(BuildContext context, ViewProductData comingProduct) {
@@ -1064,12 +1075,9 @@ class ProductView extends GetView<ProductController> {
           padding: EdgeInsets.only(left: 10.w),
           child: Text("\$ ${comingProduct.price ?? ""}",
               style: primaryTextStyle(
-                  size: 27.sp.round(),
+                  size: 20.sp.round(),
                   letterSpacing: 1.7.w,
                   weight: FontWeight.w700)),
-        ),
-        SizedBox(
-          height: 13.h,
         ),
       ],
     );
@@ -1470,7 +1478,24 @@ class ProductView extends GetView<ProductController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Colors", style: boldTextStyle(size: 22.sp.round())),
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            Text("Colors", style: boldTextStyle(size: 22.sp.round())),
+            SizedBox(
+              width: 10.w,
+            ),
+            Text(
+              controller.selectedColor.value, // اسم اللون
+              style: boldTextStyle(
+                size: 22.sp.round(),
+              ), // تعديل حجم النص
+            ),
+            SizedBox(width: 5.w), // مسافة صغيرة بين النص والأيقونة
+            Icon(
+              Icons.arrow_drop_down_sharp, // أيقونة السهم لأسفل
+              size: 22.sp, // حجم الأيقونة
+              color: Colors.black, // لون الأيقونة
+            ),
+          ]),
           SizedBox(height: 5.h),
           Divider(
             color: Colors.grey[300],
@@ -1486,73 +1511,66 @@ class ProductView extends GetView<ProductController> {
                       builder: (logic) {
                         return Container(
                           margin: EdgeInsets.symmetric(horizontal: 5.w),
-                          height:
-                              70.h, // Increase height to accommodate the text
+                          height: 50.h, // زيادة الارتفاع لاستيعاب الصور والنص
                           width: MediaQuery.of(context).size.width,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, index) => GestureDetector(
-                              onTap: () {
-                                controller.setColor(
-                                    controller.colorsList[index].name);
-                                controller.changeImagesList(
-                                    controller.colorsList[index].name);
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 45.w,
-                                    height: 43.h,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.grey.withOpacity(0.3)),
-                                      color: Color(int.parse(
-                                          '0xff${controller.colorsList[index].hex!.split('#')[1]}')),
-                                    ),
-                                    child: Stack(
+                          child: Column(
+                            children: [
+                              // عرض الصور بناءً على اللون المختار
+                              Expanded(
+                                child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: controller.colorsList.length,
+                                  itemBuilder: (ctx, index) => GestureDetector(
+                                    onTap: () {
+                                      // عند النقر، قم بتغيير اللون والصور
+                                      controller.setColor(
+                                          controller.colorsList[index].name);
+                                      controller.changeImagesList(
+                                          controller.colorsList[index].name);
+                                    },
+                                    child: Column(
                                       children: [
-                                        Center(
-                                          child:
-                                              controller.selectedColor.value ==
+                                        // عرض اسم اللون فوق الصورة
+                                        // Text(
+                                        //   '${controller.colorsList[index].name}', // اسم اللون
+                                        //   style: primaryTextStyle(
+                                        //       size: 14.sp.round(),
+                                        //       weight: FontWeight
+                                        //           .w500), // تعديل حجم النص
+                                        // ),
+                                        // SizedBox(height: 5.h),
+                                        // عرض صورة المنتج المرتبطة باللون
+                                        Container(
+                                          width: 50.w,
+                                          height: 50.h,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: controller.selectedColor
+                                                          .value ==
                                                       controller
                                                           .colorsList[index]
                                                           .name
-                                                  ? ShowUp(
-                                                      delay: 200,
-                                                      child: SvgPicture.asset(
-                                                          'assets/images/selected.svg',
-                                                          width: 20.w,
-                                                          height: 20.w,
-                                                          color: controller
-                                                                      .colorsList[
-                                                                          index]
-                                                                      .name ==
-                                                                  'White'
-                                                              ? Colors.black
-                                                              : Colors.white),
-                                                    )
-                                                  : SizedBox(),
+                                                  ? Colors
+                                                      .black // تحديد اللون المختار بإطار
+                                                  : Colors.transparent,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: Image.network(
+                                            controller
+                                                    .colorsList[index].images![
+                                                0], // أول صورة للون المختار
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  SizedBox(height: 5.h),
-                                  // Spacing between the circle and the text
-                                  Text(
-                                    controller.colorsList[index].name ??
-                                        '', // Display color name
-                                    style: primaryTextStyle(
-                                        size: 12.sp.round(),
-                                        weight: FontWeight
-                                            .w400), // Adjust font size
-                                  ),
-                                ],
+                                  separatorBuilder: (ctx, index) =>
+                                      SizedBox(width: 10.w),
+                                ),
                               ),
-                            ),
-                            separatorBuilder: (ctx, index) =>
-                                SizedBox(width: 5.w),
-                            itemCount: controller.colorsList.length,
+                            ],
                           ),
                         );
                       },
@@ -2078,7 +2096,6 @@ class ImageSliderWithIndicators extends StatefulWidget {
 }
 
 class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
-  // int _currentIndex = 0;
   ProductController productController = Get.put(ProductController());
 
   @override
@@ -2106,10 +2123,10 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                         CachedNetworkImage(
                           imageUrl: image.path!,
                           height: MediaQuery.of(context).size.height / 1.2,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                           width: MediaQuery.of(context).size.width,
                           placeholder: (context, url) => placeHolderWidget(),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -2134,54 +2151,74 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                 viewportFraction: 1.0,
                 onPageChanged: (index, reason) {
                   productController.setSelectedIndex(index);
-                  // setState(() {
-                  //   _currentIndex = index;
-                  // });
                 },
               ),
             ),
-            Container(
-              decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white12,
-                    blurRadius: 2.0,
-                    offset: Offset(0, -2),
-                  ),
-                ],
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20.0),
-                  topLeft: Radius.circular(20.0),
-                ),
-                color: Colors.white,
-              ),
-              height: 8.h,
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: widget.imgList.asMap().entries.map((entry) {
-                  return Obx(() {
-                    return GestureDetector(
-                      onTap: () => productController.carouselController
-                          ?.animateToPage(entry.key),
-                      child: Container(
-                        width: 6.0,
-                        height: 6.0,
-                        margin: EdgeInsets.only(
-                            top: 4.0.h, left: 2.0.w, right: 2.0.w),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color:
-                              productController.selectedIndex.value == entry.key
-                                  ? const Color.fromRGBO(0, 0, 0, 0.9)
-                                  : const Color.fromRGBO(0, 0, 0, 0.4),
-                        ),
+            Positioned(
+              bottom: 16.0, // Position it at the bottom center
+              child: Obx(() {
+                // Display the current image index out of total images
+                final currentIndex = productController.selectedIndex.value + 1;
+                final totalImages = widget.imgList.length;
+                return Container(
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Center(
+                        child: Text(
+                      '$currentIndex / $totalImages',
+                      style: primaryTextStyle(
+                        color: Colors.white,
+                        size: 10.sp.round(),
+                        weight: FontWeight.bold,
                       ),
-                    );
-                  });
-                }).toList(),
-              ),
+                    )));
+              }),
             ),
+            // // The existing indicator dots
+            // Container(
+            //   decoration: const BoxDecoration(
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: Colors.white12,
+            //         blurRadius: 2.0,
+            //         offset: Offset(0, -2),
+            //       ),
+            //     ],
+            //     borderRadius: BorderRadius.only(
+            //       topRight: Radius.circular(20.0),
+            //       topLeft: Radius.circular(20.0),
+            //     ),
+            //     color: Colors.white,
+            //   ),
+            //   height: 8.h,
+            //   width: MediaQuery.of(context).size.width,
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: widget.imgList.asMap().entries.map((entry) {
+            //       return Obx(() {
+            //         return GestureDetector(
+            //           onTap: () => productController.carouselController
+            //               ?.animateToPage(entry.key),
+            //           child: Container(
+            //             width: 6.0,
+            //             height: 6.0,
+            //             margin: EdgeInsets.only(
+            //                 top: 4.0.h, left: 2.0.w, right: 2.0.w),
+            //             decoration: BoxDecoration(
+            //               shape: BoxShape.circle,
+            //               color:
+            //                   productController.selectedIndex.value == entry.key
+            //                       ? const Color.fromRGBO(0, 0, 0, 0.9)
+            //                       : const Color.fromRGBO(0, 0, 0, 0.4),
+            //             ),
+            //           ),
+            //         );
+            //       });
+            //     }).toList(),
+            //   ),
+            // ),
           ],
         ),
       ],
