@@ -16,7 +16,7 @@ import '../../../routes/app_pages.dart';
 
 class ProfileController extends GetxController {
   RxBool isAuth = false.obs;
-
+RxString aboutUs = "".obs;
   @override
   void onInit() {
     super.onInit();
@@ -255,6 +255,25 @@ class ProfileController extends GetxController {
       print('teasdsada');
       userModel.value = User.fromJson(response['data']);
       isLoading(false);
+    } catch (e) {
+      print('test $e');
+      isLoading(false);
+    }
+  }
+
+  void getAboutUs() async {
+    try {
+      isLoading(true);
+
+      var response = await apiConsumer.get(
+        'about-page',
+      );
+
+// print("the run time type is ${response['data']['content'].runtimeType}");
+      aboutUs.value = response['data']['content'].toString();
+
+      isLoading(false);
+     print("your about data is ${aboutUs.value}");
     } catch (e) {
       print('test $e');
       isLoading(false);

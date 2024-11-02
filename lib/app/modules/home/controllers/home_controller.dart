@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'dart:ui';
 import 'dart:ui';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
 
 // import 'package:awesome_notifications/awesome_notifications.dart';
@@ -25,6 +26,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/state_manager.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:image/image.dart' as img;
+import 'package:maryana/app/modules/global/widget/widget.dart';
 
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
 import 'package:maryana/app/modules/search/views/result_view.dart';
@@ -57,7 +59,7 @@ class HomeController extends GetxController {
   final wishlistProductIds = <int>[].obs;
   bool isVideoInit = false;
   RxBool zeroNavBar = false.obs;
-
+  RxString videoPath = "".obs;
   //////////////Upper Bar Check//////////////
   RxString currentSectionName = "".obs;
   var ongoingPayload = {};
@@ -183,7 +185,7 @@ class HomeController extends GetxController {
   void onReady() {
     getHomeApi();
 
-    runVideo();
+
     getCountryFromIp();
     checkForUpdates();
     // mimicCatsForActiveCats(false, null);
@@ -292,7 +294,10 @@ class HomeController extends GetxController {
         // Handle successful home data
         // await _cacheUser(apiResponse.data!);
         // AppConstants.userData = apiResponse.data!;
-
+        videoPath.value = apiResponse.data!.setting![0].home_video!;
+        print("the video url is  ${apiResponse.data!.setting![0].home_video!}");
+        await runVideo();
+        update(['home-video']);
         print("the categories are ${apiResponse.data!.categories}");
         mimicCatsForActiveCats(false, null);
         // await getHomeScreenCollections();
@@ -319,18 +324,62 @@ class HomeController extends GetxController {
     update();
   }
 
-  runVideo() {
+
+  var myChewieController;
+  runVideo() async {
     print("started... 1");
-    videoController = VideoPlayerController.asset(
-        'assets/images/home/home_video.mp4',
-        videoPlayerOptions: VideoPlayerOptions())
-      ..initialize().then((_) {
-        print("started... 2");
-      });
-    videoController.play(); // Autoplay the video
-    videoController.setLooping(true); // Enable video looping
+
+    final videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(
+        videoPath.value));
+
+    await videoPlayerController.initialize();
+
+     myChewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      aspectRatio: 9/16,
+      autoInitialize: true,
+      placeholder: loadingIndicatorWidget(),
+      showOptions: false,
+      showControls: false,
+
+      autoPlay: true,
+      looping: true,
+    );
+
     isVideoInit = true;
     update(['home-video']);
+    // videoController = videoPath.value.isEmpty
+    //     ? VideoPlayerController.asset('assets/images/home/home_video.mp4',
+    //     videoPlayerOptions: VideoPlayerOptions())
+    //     :
+
+    // videoController = VideoPlayerController.network( videoPath.value, )
+    //   ..initialize().then((_) {
+    //
+    //     videoController.play(); // Autoplay the video
+    //     videoController.setLooping(true); // Enable video looping
+
+    //   });
+    //   // Ensure the first frame is shown after the video is initialized. }); }
+    //
+    //
+    // Future.delayed(Duration(seconds: 2), () {
+    //   VideoPlayerController.networkUrl(Uri.parse(videoPath.value),
+    //       videoPlayerOptions: VideoPlayerOptions())
+    //     ..initialize().then((_) {
+    //       print("started... 2");
+    //     });
+    //   Future.delayed(Duration(seconds: 2), () async{
+    //    await  videoController.initialize();
+    //     videoController.play(); // Autoplay the video
+    //     videoController.setLooping(true); // Enable video looping
+    //     print("current vid path is ${videoPath.value}");
+    //     isVideoInit = true;
+    //     update(['home-video']);
+    //   });
+    //
+    // });
+
   }
 
   void mimicCatsForActiveCats(bool isCategoryFilter, int? incomingId) {

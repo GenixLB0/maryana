@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/address/controllers/address_controller.dart';
 import 'package:maryana/app/modules/address/views/address_view.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
+import 'package:maryana/app/modules/cart/views/payment_view.dart';
 import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart' as model;
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
@@ -49,6 +50,7 @@ class _CheckoutPageState extends State<CheckoutPage>
     );
     _controller.forward();
     //  addressController.fetchAddresses();
+
   }
 
   @override
@@ -432,13 +434,18 @@ class _CheckoutPageState extends State<CheckoutPage>
     return GestureDetector(
         onTap: () {
           cartController.selectedMethod.value = method;
+          if(icon == 'credit'){
+            // cartController.initCardCheckOut();
+            // showPaymentWindow();
+          }
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          width: 94.w,
+          width: 120.w,
           height: 64.w,
           decoration: ShapeDecoration(
-            color: isSelected ? const Color(0xff43484B) : Colors.white,
+            // color: isSelected ? const Color(0xff43484B) : Colors.white,
+              color:Color(0xff43484B),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
             shadows: const [
@@ -453,19 +460,48 @@ class _CheckoutPageState extends State<CheckoutPage>
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              SvgPicture.asset(
-                'assets/images/cart/$icon.svg',
-                color: method == 'Cash'
-                    ? null
-                    : isSelected
-                        ? Colors.white
-                        : Colors.grey,
-                width: width,
-                height: height,
-              ),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/cart/$icon.svg',
+                        color: method == 'Cash'
+                            ? null
+                            : isSelected
+                            ? Colors.white
+                            : Colors.grey,
+                        width: width,
+                        height: height,
+                      ),
+
               SizedBox(height: 6.h),
-              Text(
+                      icon == 'credit'?
+                     Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Text(
+                           method,
+                           style: TextStyle(
+                             color:
+                             // isSelected ? Colors.white : const Color(0xFF6D758A),
+                             Colors.white,
+                             fontSize: 12.sp,
+                             fontFamily: GoogleFonts.poppins().fontFamily,
+                             fontWeight: FontWeight.w400,
+                             letterSpacing: 0.36,
+                           ),
+                         ),
+                         SizedBox(width: 5.w,),
+                         Icon(Icons.launch , color:
+
+                         // isSelected? Colors.white :  Colors.black,
+                           Colors.white
+                         )
+                       ],
+                     )
+                      :
+                      Text(
                 method,
                 style: TextStyle(
                   color: isSelected ? Colors.white : const Color(0xFF6D758A),
@@ -488,17 +524,17 @@ class _CheckoutPageState extends State<CheckoutPage>
           children: [
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30.w),
+                padding: EdgeInsets.symmetric(horizontal: 0.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    _buildPaymentMethodCard(
-                      "Cash",
-                      'cash',
-                      cartController.selectedMethod.value == "Cash",
-                      36.49.w,
-                      22.h,
-                    ),
+                    // _buildPaymentMethodCard(
+                    //   "Cash",
+                    //   'cash',
+                    //   cartController.selectedMethod.value == "Cash",
+                    //   36.49.w,
+                    //   22.h,
+                    // ),
                     SizedBox(
                       width: 20.w,
                     ),
@@ -546,7 +582,12 @@ class _CheckoutPageState extends State<CheckoutPage>
 
   Widget orderSummary() {
     return Obx(
-      () => Container(
+      () =>
+      cartController.isCardCheckOutLoading.value?
+      loadingIndicatorWidget()
+          :
+
+          Container(
         width: 0.9.sw,
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
@@ -943,6 +984,13 @@ class _CheckoutPageState extends State<CheckoutPage>
                                             .shippingID.value.isNotEmpty) {
                                           showCustomBottomSheet(context);
                                           ;
+                                          if(cartController.sessionId.value.isNotEmpty){
+
+                                            Get.to(() => const PaymentView());
+                                          }
+
+                                          //show html page
+
                                         } else {
                                           Get.snackbar('Sorry',
                                               'You should choose the default shipping address.',
@@ -1178,5 +1226,10 @@ class _CheckoutPageState extends State<CheckoutPage>
         );
       },
     );
+  }
+
+  void showPaymentWindow() {
+
+
   }
 }

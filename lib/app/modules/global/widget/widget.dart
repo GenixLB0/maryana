@@ -25,6 +25,7 @@ import 'package:maryana/app/modules/global/theme/app_theme.dart';
 import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/home/controllers/home_controller.dart';
 import 'package:maryana/app/modules/main/controllers/tab_controller.dart';
+import 'package:maryana/app/modules/order/controllers/orders_controller.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
 import 'package:maryana/app/modules/product/views/product_view.dart';
 import 'package:maryana/app/modules/search/controllers/search_controller.dart';
@@ -60,7 +61,8 @@ class _FireworksEffectState extends State<FireworksEffect>
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
-    )..addListener(() {
+    )
+      ..addListener(() {
         setState(() {});
       });
     _generateParticles();
@@ -286,47 +288,51 @@ class SecondMyDefaultButtonState extends State<SecondMyDefaultButton> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
+    var screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     return widget.isloading!
         ? Center(
-            child: LoadingAnimationWidget.flickr(
-            leftDotColor: primaryColor,
-            rightDotColor: const Color(0xFFFF0084),
-            size: 50,
-          ))
+        child: LoadingAnimationWidget.flickr(
+          leftDotColor: primaryColor,
+          rightDotColor: const Color(0xFFFF0084),
+          size: 50,
+        ))
         : InkWell(
-            onTap: () => {
-              widget.onPressed(),
-            },
-            child: Container(
-              width: 315,
-              height: 48,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: Color(0xFF21034F),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                      widget.localeText
-                          ? widget.btnText!.toUpperCase()
-                          : widget.btnText!,
-                      textAlign: TextAlign.center,
-                      style: primaryTextStyle(
-                        color: widget.textColor ?? Colors.white,
-                        size: 16.sp.round(),
-                        weight: FontWeight.w700,
-                      )),
-                ],
-              ),
-            ),
-          );
+      onTap: () =>
+      {
+        widget.onPressed(),
+      },
+      child: Container(
+        width: 315,
+        height: 48,
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: Color(0xFF21034F),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+                widget.localeText
+                    ? widget.btnText!.toUpperCase()
+                    : widget.btnText!,
+                textAlign: TextAlign.center,
+                style: primaryTextStyle(
+                  color: widget.textColor ?? Colors.white,
+                  size: 16.sp.round(),
+                  weight: FontWeight.w700,
+                )),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -372,46 +378,50 @@ class MySecondDefaultButtonState extends State<MySecondDefaultButton> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
+    var screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     return widget.isloading!
         ? Center(
-            child: LoadingAnimationWidget.flickr(
-            leftDotColor: primaryColor,
-            rightDotColor: const Color(0xFFFF0084),
-            size: 50,
-          ))
+        child: LoadingAnimationWidget.flickr(
+          leftDotColor: primaryColor,
+          rightDotColor: const Color(0xFFFF0084),
+          size: 50,
+        ))
         : InkWell(
-            onTap: () => {
-              widget.onPressed(),
-            },
-            child: Container(
-              width: 315.w,
-              height: 48.h,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                  color: widget.color ?? Color(0xFF21034F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  )),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                      widget.localeText
-                          ? widget.btnText!.toUpperCase()
-                          : widget.btnText!,
-                      textAlign: TextAlign.center,
-                      style: primaryTextStyle(
-                        color: Colors.white,
-                        size: 16.sp.round(),
-                        weight: FontWeight.w700,
-                      )),
-                ],
-              ),
-            ),
-          );
+      onTap: () =>
+      {
+        widget.onPressed(),
+      },
+      child: Container(
+        width: 315.w,
+        height: 48.h,
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+            color: widget.color ?? Color(0xFF21034F),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+                widget.localeText
+                    ? widget.btnText!.toUpperCase()
+                    : widget.btnText!,
+                textAlign: TextAlign.center,
+                style: primaryTextStyle(
+                  color: Colors.white,
+                  size: 16.sp.round(),
+                  weight: FontWeight.w700,
+                )),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -421,21 +431,22 @@ Widget MainLoading({double? width, double? height}) {
       height: height ?? 812.h,
       child: Center(
           child: LoadingAnimationWidget.flickr(
-        leftDotColor: primaryColor,
-        rightDotColor: const Color(0xFFFF0084),
-        size: 50,
-      )));
+            leftDotColor: primaryColor,
+            rightDotColor: const Color(0xFFFF0084),
+            size: 50,
+          )));
 }
 
 Color getColorStatusOrder(status) {
   return status == 'PENDING'
       ? const Color(0xFFCF6112)
       : status == 'Delivered'
-          ? const Color(0xFF33C200)
-          : const Color(0xFFC40000);
+      ? const Color(0xFF33C200)
+      : const Color(0xFFC40000);
 }
 
 Widget orderCard(Order order) {
+  OrdersController ordersController = Get.find();
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
     decoration: BoxDecoration(
@@ -481,6 +492,7 @@ Widget orderCard(Order order) {
         Row(
           children: [
             Expanded(
+              flex: 3,
               child: Text(
                 'Tracking number: ${order.code}',
                 style: primaryTextStyle(
@@ -491,6 +503,40 @@ Widget orderCard(Order order) {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            Spacer(),
+            Expanded(
+              flex: 1,
+              child: order.can_cancel && order.status == 'pending'   ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 7.h),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(17.5.r),
+                  border: Border.all(color: Colors.red, width: 1.w),
+                ),
+                child: Obx(() {
+                  return InkWell(
+                    onTap: () {
+                      if (ordersController.loading.value) {
+                        return;
+                      }
+                      ordersController.cancelOrder(order.code);
+                    },
+                    child: ordersController.loading.value ?
+                    loadingIndicatorWidget() :
+                    Center(
+                      child: Text(
+                        'Cancel',
+                        style: primaryTextStyle(
+                          color: Colors.red,
+                          size: 7.sp.round(),
+                          weight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ) : SizedBox(),)
+
           ],
         ),
         SizedBox(height: 24.h),
@@ -586,55 +632,59 @@ class MyDefaultButtonState extends State<MyDefaultButton> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
+    var screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     return widget.isloading!
         ? Center(
-            child: LoadingAnimationWidget.flickr(
-            leftDotColor: primaryColor,
-            rightDotColor: const Color(0xFFFF0084),
-            size: 50,
-          ))
+        child: LoadingAnimationWidget.flickr(
+          leftDotColor: primaryColor,
+          rightDotColor: const Color(0xFFFF0084),
+          size: 50,
+        ))
         : InkWell(
-            onTap: () => {
-              widget.onPressed(),
-            },
-            child: Container(
-              width: 315.w,
-              height: widget.height ?? 48.h,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    widget.Icon ?? 'assets/icons/cart_in_button.svg',
-                    width: 20.w,
-                    height: 20.h,
-                  ),
-                  SizedBox(
-                    width: 16.w,
-                  ),
-                  Text(
-                      widget.localeText
-                          ? widget.btnText!.toUpperCase()
-                          : widget.btnText!,
-                      textAlign: TextAlign.center,
-                      style: primaryTextStyle(
-                        color: widget.textColor ?? Color(0xFF21034F),
-                        size: 16.sp.round(),
-                        weight: FontWeight.w700,
-                      )),
-                ],
-              ),
+      onTap: () =>
+      {
+        widget.onPressed(),
+      },
+      child: Container(
+        width: 315.w,
+        height: widget.height ?? 48.h,
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              widget.Icon ?? 'assets/icons/cart_in_button.svg',
+              width: 20.w,
+              height: 20.h,
             ),
-          );
+            SizedBox(
+              width: 16.w,
+            ),
+            Text(
+                widget.localeText
+                    ? widget.btnText!.toUpperCase()
+                    : widget.btnText!,
+                textAlign: TextAlign.center,
+                style: primaryTextStyle(
+                  color: widget.textColor ?? Color(0xFF21034F),
+                  size: 16.sp.round(),
+                  weight: FontWeight.w700,
+                )),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -721,29 +771,29 @@ class _CustomTextFieldState extends State<CustomTextField> {
               labelText: widget.labelText,
               prefixIcon: widget.icon != null
                   ? Padding(
-                      padding: EdgeInsets.all(12.w),
-                      child: SvgPicture.asset(
-                        widget.icon!,
-                        width: 13.w,
-                        height: 13.h,
-                      ),
-                    )
+                padding: EdgeInsets.all(12.w),
+                child: SvgPicture.asset(
+                  widget.icon!,
+                  width: 13.w,
+                  height: 13.h,
+                ),
+              )
                   : null,
               suffixIcon: widget.obscureText
                   ? IconButton(
-                      icon: SvgPicture.asset(
-                        _obscureText
-                            ? 'assets/icons/eye_closed.svg'
-                            : 'assets/icons/eye_open.svg',
-                        width: _obscureText ? 20.w : 18.w,
-                        height: _obscureText ? 20.h : 18.h,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                    )
+                icon: SvgPicture.asset(
+                  _obscureText
+                      ? 'assets/icons/eye_closed.svg'
+                      : 'assets/icons/eye_open.svg',
+                  width: _obscureText ? 20.w : 18.w,
+                  height: _obscureText ? 20.h : 18.h,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              )
                   : null,
             ),
           ),
@@ -788,14 +838,13 @@ Widget DividerSocial() {
   );
 }
 
-Widget buttonSocialMedia(
-    {txtColor,
-    bool? axis,
-    required index,
-    required text,
-    required icon,
-    required color,
-    required borderColor}) {
+Widget buttonSocialMedia({txtColor,
+  bool? axis,
+  required index,
+  required text,
+  required icon,
+  required color,
+  required borderColor}) {
   return ShowUp(
       delay: index * 100,
       child: Container(
@@ -810,50 +859,49 @@ Widget buttonSocialMedia(
           ),
           child: axis == null || axis == false
               ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      icon,
-                      width: 25.w,
-                      height: 25.h,
-                      fit: BoxFit.cover,
-                    ),
-                    Text(
-                      text,
-                      style: primaryTextStyle(
-                        size: 16.sp.round(),
-                        color: Color(txtColor),
-                        weight: FontWeight.w500,
-                        height: 0.06,
-                      ),
-                    ),
-                    const SizedBox()
-                  ],
-                )
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                icon,
+                width: 25.w,
+                height: 25.h,
+                fit: BoxFit.cover,
+              ),
+              Text(
+                text,
+                style: primaryTextStyle(
+                  size: 16.sp.round(),
+                  color: Color(txtColor),
+                  weight: FontWeight.w500,
+                  height: 0.06,
+                ),
+              ),
+              const SizedBox()
+            ],
+          )
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                      const SizedBox(),
-                      SvgPicture.asset(icon),
-                      Text(
-                        text,
-                        style: primaryTextStyle(
-                          size: 16.sp.round(),
-                          color: Color(txtColor),
-                          weight: FontWeight.w500,
-                          height: 0.06,
-                        ),
-                      ),
-                    ])));
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(),
+                SvgPicture.asset(icon),
+                Text(
+                  text,
+                  style: primaryTextStyle(
+                    size: 16.sp.round(),
+                    color: Color(txtColor),
+                    weight: FontWeight.w500,
+                    height: 0.06,
+                  ),
+                ),
+              ])));
 }
 
-void buildCustomShowModel(
-    {required BuildContext context,
-    required Widget child,
-    double? height,
-    EdgeInsets? padding}) async {
+void buildCustomShowModel({required BuildContext context,
+  required Widget child,
+  double? height,
+  EdgeInsets? padding}) async {
   showModalBottomSheet(
     backgroundColor: Colors.transparent,
     context: context,
@@ -893,22 +941,26 @@ void imagesSourcesShowModel({
           child: TextButton(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Take a Photo",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
             onPressed: onCameraPressed != null
                 ? () {
-                    onCameraPressed();
-                  }
+              onCameraPressed();
+            }
                 : null,
           ),
         ),
@@ -918,22 +970,26 @@ void imagesSourcesShowModel({
           child: TextButton(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Select from Gallery",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
             onPressed: onGalleryPressed != null
                 ? () {
-                    onGalleryPressed();
-                  }
+              onGalleryPressed();
+            }
                 : null,
           ),
         ),
@@ -963,7 +1019,7 @@ class _ShowUpState extends State<ShowUp> with TickerProviderStateMixin {
     _animController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     final curve =
-        CurvedAnimation(curve: Curves.decelerate, parent: _animController);
+    CurvedAnimation(curve: Curves.decelerate, parent: _animController);
     _animOffset =
         Tween<Offset>(begin: const Offset(0.0, 0.35), end: Offset.zero)
             .animate(curve);
@@ -1062,43 +1118,45 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: back ?? true
           ? IconButton(
-              icon: Container(
-                height: 40.h,
-                width: 40.w,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 0,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: SvgPicture.asset(
-                    "assets/images/forgot_password/Frame 361.svg"),
+        icon: Container(
+          height: 40.h,
+          width: 40.w,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                spreadRadius: 0,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
               ),
-              onPressed: () {
-                if (function != null) {
-                  function!();
-                } else {
-                  print('sadsadsadadsa');
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  } else {
-                    Get.back();
-                  }
-                }
-              },
-            )
+            ],
+          ),
+          child: SvgPicture.asset(
+              "assets/images/forgot_password/Frame 361.svg"),
+        ),
+        onPressed: () {
+          if (function != null) {
+            function!();
+          } else {
+            print('sadsadsadadsa');
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Get.back();
+            }
+          }
+        },
+      )
           : const SizedBox(),
       title: Text(title ?? '',
           style: TextStyle(
             color: Color(0xFF1D1F22),
             fontSize: 22.sp,
-            fontFamily: GoogleFonts.cormorant().fontFamily,
+            fontFamily: GoogleFonts
+                .cormorant()
+                .fontFamily,
             fontWeight: FontWeight.w700,
             height: 0,
           )),
@@ -1119,7 +1177,9 @@ Widget LoadingWidget(Widget child) {
 }
 
 String GetMaxChar(String value, int max) {
-  return value.toString().length > max
+  return value
+      .toString()
+      .length > max
       ? value.toString().substring(0, max) + '..'
       : value.toString();
 }
@@ -1130,9 +1190,9 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeController homeController =
-        HomeController().initialized ? Get.find() : Get.put(HomeController());
+    HomeController().initialized ? Get.find() : Get.put(HomeController());
     return Obx(
-      () {
+          () {
         return AnimatedBuilder(
             animation: homeController.scrollController.value,
             builder: (BuildContext context, Widget? child) {
@@ -1141,10 +1201,10 @@ class CustomNavBar extends StatelessWidget {
                 duration: const Duration(milliseconds: 400),
                 height: homeController.scrollController.value.hasClients
                     ? homeController.scrollController.value.position
-                                .userScrollDirection ==
-                            ScrollDirection.reverse
-                        ? 0
-                        : 95.h
+                    .userScrollDirection ==
+                    ScrollDirection.reverse
+                    ? 0
+                    : 95.h
                     : 95.h,
                 child: child,
               );
@@ -1159,7 +1219,8 @@ class CustomNavBar extends StatelessWidget {
                 showUnselectedLabels: false,
                 onTap: (index) {
                   print(
-                      " it have clients ${homeController.scrollController!.value.hasClients}");
+                      " it have clients ${homeController.scrollController!.value
+                          .hasClients}");
                   _tabController.changeIndex(index);
                   if (index == 2) {
                     // تحقق من أنك على علامة التبويب الخاصة بالعربة
@@ -1186,8 +1247,8 @@ class CustomNavBar extends StatelessWidget {
     );
   }
 
-  BottomNavigationBarItem _buildBottomNavigationBarItem(
-      int tabIndex, String label, String iconName) {
+  BottomNavigationBarItem _buildBottomNavigationBarItem(int tabIndex,
+      String label, String iconName) {
     final isSelected = _tabController.selectedIndex.value == tabIndex;
     return BottomNavigationBarItem(
       icon: isSelected
@@ -1237,18 +1298,18 @@ class CustomNavBar extends StatelessWidget {
                 right: 0,
                 child: cartController.cartItems.isNotEmpty
                     ? Container(
-                        padding: EdgeInsets.all(4.r), // Use .r for radius
-                        decoration: boxDecorationDefault(
-                            color: primaryColor, shape: BoxShape.circle),
-                        child: FittedBox(
-                          child: Text(
-                            cartController.cartItems.length.toString(),
-                            style: primaryTextStyle(
-                                size: 8.sp.round(),
-                                color: Colors.white), // Use .sp for font size
-                          ),
-                        ),
-                      )
+                  padding: EdgeInsets.all(4.r), // Use .r for radius
+                  decoration: boxDecorationDefault(
+                      color: primaryColor, shape: BoxShape.circle),
+                  child: FittedBox(
+                    child: Text(
+                      cartController.cartItems.length.toString(),
+                      style: primaryTextStyle(
+                          size: 8.sp.round(),
+                          color: Colors.white), // Use .sp for font size
+                    ),
+                  ),
+                )
                     : const Offstage(),
               );
             }),
@@ -1275,19 +1336,19 @@ class CustomNavBar extends StatelessWidget {
                       right: 0,
                       child: cartController.cartItems.isNotEmpty
                           ? Container(
-                              padding: EdgeInsets.all(4.r), // Use .r for radius
-                              decoration: boxDecorationDefault(
-                                  color: primaryColor, shape: BoxShape.circle),
-                              child: FittedBox(
-                                child: Text(
-                                  cartController.cartItems.length.toString(),
-                                  style: primaryTextStyle(
-                                      size: 8.sp.round(),
-                                      color: Colors
-                                          .white), // Use .sp for font size
-                                ),
-                              ),
-                            )
+                        padding: EdgeInsets.all(4.r), // Use .r for radius
+                        decoration: boxDecorationDefault(
+                            color: primaryColor, shape: BoxShape.circle),
+                        child: FittedBox(
+                          child: Text(
+                            cartController.cartItems.length.toString(),
+                            style: primaryTextStyle(
+                                size: 8.sp.round(),
+                                color: Colors
+                                    .white), // Use .sp for font size
+                          ),
+                        ),
+                      )
                           : const Offstage());
                 }),
             ])),
@@ -1315,25 +1376,27 @@ class CustomNavBar extends StatelessWidget {
 Widget loadingIndicatorWidget() {
   return Center(
       child: LoadingAnimationWidget.flickr(
-    leftDotColor: primaryColor,
-    rightDotColor: const Color(0xFFFF0084),
-    size: 50,
-  ));
+        leftDotColor: primaryColor,
+        rightDotColor: const Color(0xFFFF0084),
+        size: 50,
+      ));
 }
 
 Widget placeHolderWidget() {
   return Lottie.asset("assets/images/placeholder.json");
 }
 
-buildSearchAndFilter(
-    {required BuildContext context,
-    List<ViewProductData>? products,
-    List<Categories>? categories,
-    required bool isSearch,
-    final Function(String)? onSubmitted, // Add this parameter
-    final double height = 65}) {
+buildSearchAndFilter({required BuildContext context,
+  List<ViewProductData>? products,
+  List<Categories>? categories,
+  required bool isSearch,
+  final Function(String)? onSubmitted, // Add this parameter
+  final double height = 65}) {
   return Container(
-    width: MediaQuery.of(context).size.width,
+    width: MediaQuery
+        .of(context)
+        .size
+        .width,
     height: height.h,
     child: Row(
       mainAxisSize: MainAxisSize.min,
@@ -1460,7 +1523,7 @@ buildSearchAndFilter(
                   ),
                   onPressed: () {
                     CustomSearchController controller =
-                        Get.put(CustomSearchController());
+                    Get.put(CustomSearchController());
 
                     controller.showPickerDialog(context);
                   },
@@ -1478,10 +1541,11 @@ buildSearchAndFilter(
               context: context,
               backgroundColor: Colors.transparent,
               expand: false,
-              builder: (context) => BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                  child: buildFilterBottomSheet(
-                      context: context, comingProducts: products)),
+              builder: (context) =>
+                  BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                      child: buildFilterBottomSheet(
+                          context: context, comingProducts: products)),
             );
           },
           child: Container(
@@ -1565,202 +1629,206 @@ class _buildCardProductState extends State<buildProductCard> {
         ),
         child: widget.product.image != null
             ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //this column is for product image and details
-                children: [
-                  //this column is for product image and details
-                  Stack(
-                    alignment: Alignment.topRight,
-                    children: [
-                      GestureDetector(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //this column is for product image and details
+          children: [
+            //this column is for product image and details
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    print("new product name 22 ${widget.product.name}");
+                    if (Get.isRegistered<ProductController>()) {
+                      print("yes it's registeded");
+                      Get.delete<ProductController>();
+                    }
+                    Get.toNamed(Routes.PRODUCT,
+                        arguments: widget.product,
+                        preventDuplicates: false);
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: widget.product.image!,
+                    width: 175.w,
+                    height: 208.h,
+                    fit: BoxFit.cover,
+                    placeholder: (ctx, v) {
+                      return placeHolderWidget();
+                    },
+                  ),
+                ),
+                Obx(() {
+                  return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
                         onTap: () {
-                          print("new product name 22 ${widget.product.name}");
-                          if (Get.isRegistered<ProductController>()) {
-                            print("yes it's registeded");
-                            Get.delete<ProductController>();
-                          }
-                          Get.toNamed(Routes.PRODUCT,
-                              arguments: widget.product,
-                              preventDuplicates: false);
+                          homeController.wishlistProductIds
+                              .contains(widget.product.id!)
+                              ? homeController
+                              .removeFromWishlist(widget.product.id!)
+                              : homeController
+                              .addToWishlist(widget.product.id!);
                         },
-                        child: CachedNetworkImage(
-                          imageUrl: widget.product.image!,
-                          width: 175.w,
-                          height: 210.h,
-                          fit: BoxFit.cover,
-                          placeholder: (ctx, v) {
-                            return placeHolderWidget();
-                          },
+                        child: homeController.wishlistProductIds
+                            .contains(widget.product.id!)
+                            ? ShowUp(
+                          delay: 500,
+                          child: AvatarGlow(
+                            curve: Curves.fastOutSlowIn,
+                            glowColor: Colors.purpleAccent,
+                            repeat: false,
+                            child: SvgPicture.asset(
+                              "assets/images/home/wishlisted.svg",
+                              width: 33.w,
+                              height: 33.h,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                            : ShowUp(
+                          delay: 500,
+                          child: SvgPicture.asset(
+                            "assets/images/home/add_to_wishlist.svg",
+                            width: 33.w,
+                            height: 33.h,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      Obx(() {
-                        return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: InkWell(
-                              onTap: () {
-                                homeController.wishlistProductIds
-                                        .contains(widget.product.id!)
-                                    ? homeController
-                                        .removeFromWishlist(widget.product.id!)
-                                    : homeController
-                                        .addToWishlist(widget.product.id!);
-                              },
-                              child: homeController.wishlistProductIds
-                                      .contains(widget.product.id!)
-                                  ? ShowUp(
-                                      delay: 500,
-                                      child: AvatarGlow(
-                                        curve: Curves.fastOutSlowIn,
-                                        glowColor: Colors.purpleAccent,
-                                        repeat: false,
-                                        child: SvgPicture.asset(
-                                          "assets/images/home/wishlisted.svg",
-                                          width: 33.w,
-                                          height: 33.h,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    )
-                                  : ShowUp(
-                                      delay: 500,
-                                      child: SvgPicture.asset(
-                                        "assets/images/home/add_to_wishlist.svg",
-                                        width: 33.w,
-                                        height: 33.h,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                            ));
-                      }),
-                    ],
-                  ),
-                  // SizedBox(
-                  //   height: 3.h,
-                  // ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 7.w),
-                    child: GestureDetector(
-                      onTap: () {
-                        print(
-                            "the sent product model is ${widget.product.sizes}");
-                        Get.toNamed(
-                          Routes.PRODUCT,
-                          arguments: widget.product,
-                        );
-                      },
-                      child: Container(
-                        width: 150.w,
-                        child: Padding(
-                            padding: EdgeInsets.only(left: 5.w),
-                            child: Text(
-                              widget.product.name!,
-                              overflow: TextOverflow.ellipsis,
-                              style: primaryTextStyle(
-                                  weight: FontWeight.w700,
-                                  size: 16.sp.round(),
-                                  color: Colors.black),
-                            )),
-                      ),
-                    ),
-                  ),
-                  // SizedBox(
-                  //   height: 1.h,
-                  // ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 7.w),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.toNamed(
-                          Routes.PRODUCT,
-                          arguments: widget.product,
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(left: 5.w),
-                        width: 150.w,
-                        child: Text(
-                          widget.product.description!,
-                          overflow: TextOverflow.ellipsis,
-                          style: primaryTextStyle(
-                              weight: FontWeight.w300,
-                              size: 14.sp.round(),
-                              color: Color(0xff9B9B9B)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // SizedBox(
-                  //   height: 1.h,
-                  // ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 7.w, bottom: 10.h),
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.toNamed(
-                          Routes.PRODUCT,
-                          arguments: widget.product,
-                        );
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 5.w),
-                        child: Text(
-                          "\$ ${widget.product.price} ",
-                          style: primaryTextStyle(
-                              weight: FontWeight.w600,
-                              size: 15.sp.round(),
-                              color: const Color(0xff370269)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // SizedBox(
-                  //   height: 6.h,
-                  // ),
-                  // widget.isInWishlist
-                  //     ? GestureDetector(
-                  //         onTap: () {
-                  //           //todo
-                  //           // take Product arguments from here
-                  //           ViewProductData product = widget.product;
+                      ));
+                }),
+              ],
+            ),
+            // SizedBox(
+            //   height: 3.h,
+            // ),
+            Padding(
+              padding: EdgeInsets.only(left: 7.w),
+              child: GestureDetector(
+                onTap: () {
+                  print(
+                      "the sent product model is ${widget.product.sizes}");
+                  Get.toNamed(
+                    Routes.PRODUCT,
+                    arguments: widget.product,
+                  );
+                },
+                child: Container(
+                  width: 150.w,
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 5.w),
+                      child: Text(
+                        widget.product.name!,
+                        overflow: TextOverflow.ellipsis,
+                        style: primaryTextStyle(
+                            weight: FontWeight.w700,
+                            size: 16.sp.round(),
+                            color: Colors.black),
+                      )),
+                ),
+              ),
+            ),
+            // SizedBox(
+            //   height: 1.h,
+            // ),
+            Padding(
+              padding: EdgeInsets.only(left: 7.w),
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed(
+                    Routes.PRODUCT,
+                    arguments: widget.product,
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.only(left: 5.w),
+                  width: 150.w,
 
-                  //           //todo
-                  //           //Nav To Cart Screen
-                  //           //Setted to Main Screen for now
-                  //           Get.toNamed(Routes.MAIN);
-                  //         },
-                  //         child: Container(
-                  //           margin: EdgeInsets.only(left: 10.w),
-                  //           padding: EdgeInsets.only(left: 10.w),
-                  //           height: 30.h,
-                  //           width: 125.w,
-                  //           decoration: BoxDecoration(
-                  //               color: Color(0xff21034F),
-                  //               borderRadius: BorderRadius.circular(35.sp)),
-                  //           child: Row(
-                  //             children: [
-                  //               Icon(
-                  //                 Icons.shopping_cart_outlined,
-                  //                 color: Colors.white,
-                  //                 size: 12.sp,
-                  //               ),
-                  //               SizedBox(
-                  //                 width: 4.w,
-                  //               ),
-                  //               Text(
-                  //                 "ADD TO CART",
-                  //                 style: primaryTextStyle(
-                  //                     weight: FontWeight.w700,
-                  //                     color: Colors.white,
-                  //                     size: 9.sp.round()),
-                  //               )
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       )
-                  //     : const SizedBox(),
-                ],
-              )
+                  child: Text(
+                    widget.product.description!.replaceAll(" ", "")
+                        .toString()
+                        .replaceAll(RegExp(r'\s+'), "")
+                        .toString(),
+                    overflow: TextOverflow.ellipsis,
+                    style: primaryTextStyle(
+                        weight: FontWeight.w300,
+                        size: 14.sp.round(),
+                        color: Color(0xff9B9B9B)),
+                  ),
+                ),
+              ),
+            ),
+            // SizedBox(
+            //   height: 1.h,
+            // ),
+            Padding(
+              padding: EdgeInsets.only(left: 7.w, bottom: 10.h),
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed(
+                    Routes.PRODUCT,
+                    arguments: widget.product,
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(left: 5.w),
+                  child: Text(
+                    "\$ ${widget.product.price} ",
+                    style: primaryTextStyle(
+                        weight: FontWeight.w600,
+                        size: 15.sp.round(),
+                        color: const Color(0xff370269)),
+                  ),
+                ),
+              ),
+            ),
+            // SizedBox(
+            //   height: 6.h,
+            // ),
+            // widget.isInWishlist
+            //     ? GestureDetector(
+            //         onTap: () {
+            //           //todo
+            //           // take Product arguments from here
+            //           ViewProductData product = widget.product;
+
+            //           //todo
+            //           //Nav To Cart Screen
+            //           //Setted to Main Screen for now
+            //           Get.toNamed(Routes.MAIN);
+            //         },
+            //         child: Container(
+            //           margin: EdgeInsets.only(left: 10.w),
+            //           padding: EdgeInsets.only(left: 10.w),
+            //           height: 30.h,
+            //           width: 125.w,
+            //           decoration: BoxDecoration(
+            //               color: Color(0xff21034F),
+            //               borderRadius: BorderRadius.circular(35.sp)),
+            //           child: Row(
+            //             children: [
+            //               Icon(
+            //                 Icons.shopping_cart_outlined,
+            //                 color: Colors.white,
+            //                 size: 12.sp,
+            //               ),
+            //               SizedBox(
+            //                 width: 4.w,
+            //               ),
+            //               Text(
+            //                 "ADD TO CART",
+            //                 style: primaryTextStyle(
+            //                     weight: FontWeight.w700,
+            //                     color: Colors.white,
+            //                     size: 9.sp.round()),
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       )
+            //     : const SizedBox(),
+          ],
+        )
             : placeHolderWidget(),
       ),
     );
@@ -1928,7 +1996,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                       height: 40.h,
                       decoration: BoxDecoration(
                           color: my_search_controller.selectedSizes
-                                  .contains(my_search_controller.sizes[index])
+                              .contains(my_search_controller.sizes[index])
                               ? Color(0xffE7D3FF)
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(10.sp)),
@@ -1975,45 +2043,45 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
               ),
               itemBuilder: (context, index) {
                 final Color colorFromHex =
-                    HexColor.fromHex(my_search_controller.colors[index].hex!);
+                HexColor.fromHex(my_search_controller.colors[index].hex!);
 
                 return index != 4
                     ? GestureDetector(
-                        onTap: () {
-                          my_search_controller.addOrRemoveColor(
-                              my_search_controller.colors[index]);
-                        },
-                        child: Obx(() {
-                          return Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    color: my_search_controller.selectedColors
-                                            .contains(my_search_controller
-                                                .colors[index])
-                                        ? Colors.black
-                                        : Colors.grey[300]!,
-                                    width: 4.w),
-                                color: Colors.grey[200]),
-                            child: Container(
-                              height: 25.h,
-                              width: 25.w,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(colorFromHex.value)),
-                            ),
-                          );
-                        }),
-                      )
+                  onTap: () {
+                    my_search_controller.addOrRemoveColor(
+                        my_search_controller.colors[index]);
+                  },
+                  child: Obx(() {
+                    return Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: my_search_controller.selectedColors
+                                  .contains(my_search_controller
+                                  .colors[index])
+                                  ? Colors.black
+                                  : Colors.grey[300]!,
+                              width: 4.w),
+                          color: Colors.grey[200]),
+                      child: Container(
+                        height: 25.h,
+                        width: 25.w,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(colorFromHex.value)),
+                      ),
+                    );
+                  }),
+                )
                     : InkWell(
-                        onTap: () {
-                          my_search_controller.changeLength(
-                              my_search_controller.colorFullLength);
-                        },
-                        child: Icon(my_search_controller.colorFullLength.value
-                            ? Icons.keyboard_arrow_up_outlined
-                            : Icons.keyboard_arrow_down_outlined),
-                      );
+                  onTap: () {
+                    my_search_controller.changeLength(
+                        my_search_controller.colorFullLength);
+                  },
+                  child: Icon(my_search_controller.colorFullLength.value
+                      ? Icons.keyboard_arrow_up_outlined
+                      : Icons.keyboard_arrow_down_outlined),
+                );
               },
               itemCount: my_search_controller.colorFullLength.value
                   ? my_search_controller.colors.length
@@ -2061,8 +2129,8 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                             border: Border.all(
                                 width: 3.w,
                                 color: my_search_controller.selectedBrands
-                                        .contains(
-                                            my_search_controller.brands[index])
+                                    .contains(
+                                    my_search_controller.brands[index])
                                     ? Color(0xffE7D3FF)
                                     : Colors.grey[300]!)),
                         child: CachedNetworkImage(
@@ -2096,57 +2164,57 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
           child: Obx(() {
             return my_search_controller.styles.isEmpty
                 ? Center(
-                    child: Text(
-                      "No Styles Yet..",
-                      style: primaryTextStyle(
-                          size: 20.sp.round(), color: Colors.black),
-                    ),
-                  )
+              child: Text(
+                "No Styles Yet..",
+                style: primaryTextStyle(
+                    size: 20.sp.round(), color: Colors.black),
+              ),
+            )
                 : GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5,
-                      mainAxisSpacing: 15,
-                      crossAxisSpacing: 10,
-                      // width / height: fixed for *all* items
-                      childAspectRatio: (1 / .8),
-                    ),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          my_search_controller.addOrRemoveStyle(
-                              my_search_controller.styles[index]);
-                        },
-                        child: Obx(() {
-                          return Container(
-                            padding: EdgeInsets.all(8.w),
-                            width: 70.w,
-                            height: 40.h,
-                            decoration: BoxDecoration(
-                                color: my_search_controller.selectedStyles
-                                        .contains(
-                                            my_search_controller.styles[index])
-                                    ? Color(0xffE7D3FF)
-                                    : Colors.grey[200],
-                                borderRadius: BorderRadius.circular(10.sp)),
-                            child: Center(
-                              child: Text(
-                                overflow: TextOverflow.ellipsis,
-                                my_search_controller.styles[index].name!,
-                                style: primaryTextStyle(
-                                    size: 10.sp.round(),
-                                    color: Colors.black,
-                                    weight: FontWeight.w500),
-                              ),
-                            ),
-                          );
-                        }),
-                      );
-                    },
-                    itemCount: my_search_controller.styles.length,
-                  );
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 15,
+                crossAxisSpacing: 10,
+                // width / height: fixed for *all* items
+                childAspectRatio: (1 / .8),
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    my_search_controller.addOrRemoveStyle(
+                        my_search_controller.styles[index]);
+                  },
+                  child: Obx(() {
+                    return Container(
+                      padding: EdgeInsets.all(8.w),
+                      width: 70.w,
+                      height: 40.h,
+                      decoration: BoxDecoration(
+                          color: my_search_controller.selectedStyles
+                              .contains(
+                              my_search_controller.styles[index])
+                              ? Color(0xffE7D3FF)
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10.sp)),
+                      child: Center(
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          my_search_controller.styles[index].name!,
+                          style: primaryTextStyle(
+                              size: 10.sp.round(),
+                              color: Colors.black,
+                              weight: FontWeight.w500),
+                        ),
+                      ),
+                    );
+                  }),
+                );
+              },
+              itemCount: my_search_controller.styles.length,
+            );
           }),
           // Add more widgets as needed
         )
@@ -2190,7 +2258,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                       height: 40.h,
                       decoration: BoxDecoration(
                           color: my_search_controller.selectedSeasons
-                                  .contains(my_search_controller.seasons[index])
+                              .contains(my_search_controller.seasons[index])
                               ? Color(0xffE7D3FF)
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(10.sp)),
@@ -2253,8 +2321,8 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                       height: 40.h,
                       decoration: BoxDecoration(
                           color: my_search_controller.selectedMaterials
-                                  .contains(
-                                      my_search_controller.materials[index])
+                              .contains(
+                              my_search_controller.materials[index])
                               ? Color(0xffE7D3FF)
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(10.sp)),
@@ -2295,7 +2363,10 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
             padding: EdgeInsets.symmetric(horizontal: 4.w),
             child: Container(
               height: 130.h,
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
               child: Column(
                 children: [
                   Expanded(
@@ -2306,7 +2377,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                             child: TextField(
                               keyboardType: TextInputType.number,
                               controller:
-                                  my_search_controller.minPriceController.value,
+                              my_search_controller.minPriceController.value,
                               onChanged: (val) {
                                 String minPriceText = my_search_controller
                                     .minPriceController.value.text;
@@ -2315,9 +2386,9 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                                     .maxPriceController.value.text;
 
                                 double minDouble =
-                                    double.tryParse(minPriceText) == null
-                                        ? 0
-                                        : double.tryParse(minPriceText)!;
+                                double.tryParse(minPriceText) == null
+                                    ? 0
+                                    : double.tryParse(minPriceText)!;
 
                                 my_search_controller.setNewValue(RangeValues(
                                   minDouble,
@@ -2332,7 +2403,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                               ),
                               decoration: InputDecoration(
                                 contentPadding:
-                                    EdgeInsets.symmetric(vertical: 17.h),
+                                EdgeInsets.symmetric(vertical: 17.h),
                                 //Imp Line
 
                                 enabledBorder: OutlineInputBorder(
@@ -2380,7 +2451,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                             child: TextField(
                               keyboardType: TextInputType.number,
                               controller:
-                                  my_search_controller.maxPriceController.value,
+                              my_search_controller.maxPriceController.value,
                               onChanged: (val) {
                                 String minPriceText = my_search_controller
                                     .minPriceController.value.text;
@@ -2389,9 +2460,9 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                                     .maxPriceController.value.text;
 
                                 double maxDouble =
-                                    double.tryParse(maxPriceText) == null
-                                        ? 0
-                                        : double.tryParse(maxPriceText)!;
+                                double.tryParse(maxPriceText) == null
+                                    ? 0
+                                    : double.tryParse(maxPriceText)!;
 
                                 my_search_controller.setNewValue(RangeValues(
                                     double.parse(minPriceText.toString()),
@@ -2405,7 +2476,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                               ),
                               decoration: InputDecoration(
                                 contentPadding:
-                                    EdgeInsets.symmetric(vertical: 17.h),
+                                EdgeInsets.symmetric(vertical: 17.h),
                                 //Imp Line
 
                                 enabledBorder: OutlineInputBorder(
@@ -2469,8 +2540,8 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                 ],
               ),
             )
-            // Add more widgets as needed
-            ),
+          // Add more widgets as needed
+        ),
       ];
 
     case FilterTypeEnum.Collection:
@@ -2511,8 +2582,8 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
                             border: Border.all(
                                 width: 4.w,
                                 color: my_search_controller.selectedCollections
-                                        .contains(my_search_controller
-                                            .collections[index])
+                                    .contains(my_search_controller
+                                    .collections[index])
                                     ? Colors.black
                                     : Colors.grey[300]!)),
                         child: Column(
@@ -2543,7 +2614,7 @@ List<Widget> buildChildren(FilterTypeEnum filterName,
           // Add more widgets as needed
         )
       ];
-    // Handle other animation states similarly
+  // Handle other animation states similarly
     default:
       return []; // Return an empty list if no match
   }
@@ -2553,19 +2624,22 @@ buildFilterBottomSheet(
     {List<ViewProductData>? comingProducts, required BuildContext context}) {
   List<ViewProductData> filteredProducts = [];
   CustomSearchController my_search_controller =
-      CustomSearchController().initialized
-          ? Get.find<CustomSearchController>()
-          : Get.put(CustomSearchController());
+  CustomSearchController().initialized
+      ? Get.find<CustomSearchController>()
+      : Get.put(CustomSearchController());
 
   final DraggableScrollableController sheetController =
-      DraggableScrollableController();
+  DraggableScrollableController();
 
   final ScrollController scrollController = ScrollController();
 
   // print("before setting sized ${comingProduct.sizes}");
 
   return Container(
-      height: MediaQuery.of(context).size.height - 50.h,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height - 50.h,
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(
         boxShadow: [
@@ -2589,7 +2663,7 @@ buildFilterBottomSheet(
           title: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child:
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               InkWell(
                 onTap: () {
                   Get.back();
@@ -2619,7 +2693,9 @@ buildFilterBottomSheet(
                   child: Text("Filters",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontFamily: GoogleFonts.cormorant().fontFamily,
+                          fontFamily: GoogleFonts
+                              .cormorant()
+                              .fontFamily,
                           fontWeight: FontWeight.w700,
                           fontSize: 22.sp)),
                 ),
@@ -2634,7 +2710,9 @@ buildFilterBottomSheet(
                     child: Text("Reset",
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            fontFamily: GoogleFonts.cormorant().fontFamily,
+                            fontFamily: GoogleFonts
+                                .cormorant()
+                                .fontFamily,
                             fontWeight: FontWeight.w700,
                             color: Colors.orange,
                             fontSize: 18.sp)),
@@ -2649,54 +2727,57 @@ buildFilterBottomSheet(
             children: [
               Obx(() {
                 return Container(
-                  height: MediaQuery.of(context).size.height - 200.h,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height - 200.h,
                   child: my_search_controller.isFilterLoading.value
                       ? loadingIndicatorWidget()
                       : SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    height: 20.h,
-                                  ),
+                    child: Column(
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 20.h,
+                            ),
 
-                                  ///////////////////Price//////////////////////////////
-                                  buildFilterItem(FilterTypeEnum.Price, context,
-                                      my_search_controller),
+                            ///////////////////Price//////////////////////////////
+                            buildFilterItem(FilterTypeEnum.Price, context,
+                                my_search_controller),
 
-                                  ///////////////////Color//////////////////////////////
-                                  buildFilterItem(FilterTypeEnum.Colors,
-                                      context, my_search_controller),
-                                  ///////////////////Brand//////////////////////////////
+                            ///////////////////Color//////////////////////////////
+                            buildFilterItem(FilterTypeEnum.Colors,
+                                context, my_search_controller),
+                            ///////////////////Brand//////////////////////////////
 
-                                  buildFilterItem(FilterTypeEnum.Brands,
-                                      context, my_search_controller),
-                                  ///////////////////Styles//////////////////////////////
+                            buildFilterItem(FilterTypeEnum.Brands,
+                                context, my_search_controller),
+                            ///////////////////Styles//////////////////////////////
 
-                                  buildFilterItem(FilterTypeEnum.Style, context,
-                                      my_search_controller),
+                            buildFilterItem(FilterTypeEnum.Style, context,
+                                my_search_controller),
 
-                                  ///////////////////Collections//////////////////////////////
-                                  buildFilterItem(FilterTypeEnum.Collection,
-                                      context, my_search_controller),
+                            ///////////////////Collections//////////////////////////////
+                            buildFilterItem(FilterTypeEnum.Collection,
+                                context, my_search_controller),
 
-                                  ///////////////////Season//////////////////////////////
+                            ///////////////////Season//////////////////////////////
 
-                                  buildFilterItem(FilterTypeEnum.Season,
-                                      context, my_search_controller),
-                                  ///////////////////Materials//////////////////////////////
-                                  buildFilterItem(FilterTypeEnum.Materials,
-                                      context, my_search_controller),
+                            buildFilterItem(FilterTypeEnum.Season,
+                                context, my_search_controller),
+                            ///////////////////Materials//////////////////////////////
+                            buildFilterItem(FilterTypeEnum.Materials,
+                                context, my_search_controller),
 
-                                  ///////////////////Sizes//////////////////////////////
-                                  buildFilterItem(FilterTypeEnum.Sizes, context,
-                                      my_search_controller),
-                                ],
-                              ),
-                            ],
-                          ),
+                            ///////////////////Sizes//////////////////////////////
+                            buildFilterItem(FilterTypeEnum.Sizes, context,
+                                my_search_controller),
+                          ],
                         ),
+                      ],
+                    ),
+                  ),
                 );
               }),
             ],
@@ -2707,7 +2788,10 @@ buildFilterBottomSheet(
           child: ElevatedButton(
             style: ButtonStyle(
               minimumSize: WidgetStateProperty.all(
-                  Size(MediaQuery.of(context).size.width - 200.w, 50.h)),
+                  Size(MediaQuery
+                      .of(context)
+                      .size
+                      .width - 200.w, 50.h)),
               backgroundColor: WidgetStateProperty.all(Color(0xff21034F)),
             ),
             onPressed: () {
@@ -2799,7 +2883,10 @@ buildFilterItem(FilterTypeEnum filterName, context,
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 15.w),
     child: Container(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

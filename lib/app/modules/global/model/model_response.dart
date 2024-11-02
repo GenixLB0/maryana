@@ -17,8 +17,9 @@ class Order {
   final Address? address;
   final List<Item> items;
   final String date;
+  final bool can_cancel;
 
-  Order({
+  Order( {
     required this.id,
     required this.code,
     required this.subTotal,
@@ -31,6 +32,8 @@ class Order {
     required this.address,
     required this.items,
     required this.date,
+    required this.can_cancel,
+
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -48,6 +51,7 @@ class Order {
           json['address'] != null ? Address.fromJson(json['address']) : null,
       items: (json['items'] as List).map((i) => Item.fromJson(i)).toList(),
       date: json['date'] ?? 'Today',
+      can_cancel: json['can_cancel'],
     );
   }
 }
@@ -1345,3 +1349,44 @@ class OneFilterData {
     return data;
   }
 }
+
+class AboutUs {
+  String? status;
+  String? message;
+  AboutData? data;
+
+  AboutUs({this.status, this.message, this.data});
+
+  AboutUs.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    data = json['data'] != null ? new AboutData.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
+}
+
+class AboutData {
+  String? content;
+
+  AboutData({this.content});
+
+  AboutData.fromJson(Map<String, dynamic> json) {
+    content = json['content'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['content'] = this.content;
+    return data;
+  }
+}
+

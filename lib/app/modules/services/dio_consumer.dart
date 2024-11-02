@@ -173,4 +173,23 @@ class DioConsumer implements ApiConsumer {
             'NoInternetConnectionException');
     }
   }
+
+  @override
+  Future patch(String path, {Map<String, dynamic>? body, Map<String, dynamic>? queryParameters}) async {
+    try {
+      if (userToken != null) {
+        client.options.headers[HttpHeaders.authorizationHeader] =
+        'Bearer $userToken';
+      }
+      client.options.headers[HttpHeaders.acceptLanguageHeader] = 'en';
+
+      final response =
+          await client.patch(path, queryParameters: queryParameters);
+      return _handleResponseAsJson(response);
+    } on DioError catch (error) {
+      _handleDioError(error);
+    } catch (error) {
+      throw Exception();
+    }
+  }
 }

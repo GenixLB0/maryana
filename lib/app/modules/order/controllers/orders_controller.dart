@@ -116,4 +116,24 @@ class OrdersController extends GetxController {
     // fetchOrdersTest(status);
     fetchOrders();
   }
+
+  cancelOrder(id) async{
+    loading.value = true;
+    try {
+      final response = await apiConsumer.patch(
+        'orders/cancel/${id}',
+      );
+
+      if (response['status'] == 'success') {
+        Get.snackbar("Cancelled", "Order has been cancelled successfully");
+        fetchOrders();
+      } else {
+        print('Failed to cancel order: ${response['data']}');
+      }
+    } catch (e, stackTrace) {
+      print('Error cancelling order: $e $stackTrace');
+    } finally {
+      loading.value = false;
+    }
+  }
 }

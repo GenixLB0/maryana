@@ -54,7 +54,7 @@ class Address {
       building: json['building'],
       address: json['address'],
       phone: json['phone'],
-      city: json['city'],
+      city: json['city'] ?? "",
       country: json['country'],
       state: json['state'],
       latitude: json['latitude'],

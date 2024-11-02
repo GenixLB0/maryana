@@ -50,6 +50,8 @@ import 'app/modules/onboarding/controllers/onboarding_controller.dart';
 
 import 'package:flutter/services.dart';
 
+import 'app/modules/services/api_consumer.dart';
+
 final sl = GetIt.instance;
 ApiConsumer apiConsumer = sl();
 bool isFlutterLocalNotificationsInitialized = false;
@@ -405,4 +407,7 @@ class _NoInternetViewState extends State<NoInternetView> {
       }
     });
   }
+
+
+
 }

@@ -6,11 +6,14 @@ import 'package:get/get.dart';
 import 'package:maryana/app/modules/address/views/address_view.dart';
 import 'package:maryana/app/modules/auth/views/login_view.dart';
 import 'package:maryana/app/modules/gift_card/views/history.dart';
+import 'package:maryana/app/modules/global/config/configs.dart';
 import 'package:maryana/app/modules/global/theme/app_theme.dart';
-import 'package:maryana/app/modules/global/widget/widget.dart';
+
+import 'package:maryana/app/modules/profile/views/about_us.dart';
 import 'package:maryana/app/modules/profile/views/update_profile.dart';
 import 'package:maryana/app/routes/app_pages.dart';
 import '../../auth/views/register_view.dart';
+import '../../global/widget/widget.dart';
 import '../controllers/profile_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,7 +54,7 @@ class _ProfileViewState extends State<ProfileView>
                       SizedBox(height: 45.h),
                       Container(
                         width: 327.w,
-                        height: 670.h,
+                        height: 730.h,
                         decoration: ShapeDecoration(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -102,11 +105,15 @@ class _ProfileViewState extends State<ProfileView>
                             }, 24, 4),
                             _buildMenuItem('terms.svg', 'Terms of Use', () {
                               _launchURL(
-                                  'https://mariannella.genixarea.pro/terms.html');
+                                  '$BASE_URL/terms.html');
                             }, 24, 5),
                             _buildMenuItem('privacy.svg', 'Privacy Policy', () {
                               _launchURL(
-                                  'https://mariannella.genixarea.pro/privacy.html');
+                                  '$BASE_URL/privacy.html');
+                            }, 24, 6),
+                            _buildMenuItem('about-us.svg', 'About Us', () {
+                               controller.getAboutUs();
+                            Get.to(() => AboutUs());
                             }, 24, 6),
                             _buildMenuItem('logout.svg', 'Log out', () {
                               _showLogoutConfirmation(context, controller);

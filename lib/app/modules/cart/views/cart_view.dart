@@ -545,7 +545,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                     }),
                     if (cartShareProducts.isEmpty)
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.remove_shopping_cart_sharp,
                         ),
                         onPressed: () {

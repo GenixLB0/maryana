@@ -388,7 +388,7 @@ class Attachments {
 }
 
 class HomeData {
-  List<String>? setting;
+  List<Settings>? setting;
   int? totalPoints;
   List<Categories>? categories;
   List<Brands>? brands;
@@ -405,9 +405,9 @@ class HomeData {
 
   HomeData.fromJson(Map<String, dynamic> json) {
     if (json['setting'] != null) {
-      setting = <String>[];
+      setting = <Settings>[];
       json['setting'].forEach((v) {
-        // setting!.add(new Null.fromJson(v));
+        setting!.add(new Settings.fromJson(v));
       });
     }
     totalPoints = json['total_points'];
@@ -456,5 +456,16 @@ class HomeData {
       data['product'] = this.product!.map((v) => v.toJson()).toList();
     }
     return data;
+  }
+}
+class Settings {
+  String? home_video;
+
+  Settings({
+    this.home_video,
+  });
+
+  Settings.fromJson(Map<String, dynamic> json) {
+    home_video = json['home_video'];
   }
 }

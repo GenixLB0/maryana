@@ -2123,7 +2123,7 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                         CachedNetworkImage(
                           imageUrl: image.path!,
                           height: MediaQuery.of(context).size.height / 1.2,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           width: MediaQuery.of(context).size.width,
                           placeholder: (context, url) => placeHolderWidget(),
                         ),
