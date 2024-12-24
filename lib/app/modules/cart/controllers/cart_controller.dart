@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -51,7 +50,6 @@ class CartController extends GetxController {
   final box = GetStorage();
   RxBool isAuth = false.obs;
   RxBool shareLoading = false.obs;
-  RxString sessionId = ''.obs;
   bool isProductInCart(ViewProductData product) {
     return cartItems.any((element) => element.product.id == product.id);
   }
@@ -307,7 +305,6 @@ class CartController extends GetxController {
         total.value = (response['data']['total'] as num).toDouble();
         couponCode.value = response['data']['coupon'] ?? '';
         update();
-        initCardCheckOut();
       } else {
         print('Failed to fetch checkout details: ${response['data']}');
       }
@@ -454,26 +451,14 @@ class CartController extends GetxController {
   }
 
   RxBool isCardCheckOutLoading = false.obs;
-RxString orderId = "".obs;
-String sentOrderId = "";
-RxBool isWebPaymentLoading = false.obs; // isWebPaymentLoading.value
-
 
   initCardCheckOut() async{
     isCardCheckOutLoading.value = true;
-    orderId.value = Random().nextInt(1000).toString();
-    sentOrderId = orderId.value;
-print("your order total is ${subTotal.value}");
-    print("your order total 2 is ${shipping.value}");
-    var totalToSend = subTotal.value + shipping.value;
-    print("your order total 3 is ${subTotal.value + shipping.value}");
-    print("your order total 4 is ${totalToSend}");
-    print("your order total 5 is ${total.value}");
 
   String username = 'merchant.test222207917001';
-  String theLoginWord = '3fd961d6600754cce1738fc27068802d';
+  String password = '3fd961d6600754cce1738fc27068802d';
   // Encode the username and password to base64
-   String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$theLoginWord'))}';
+   String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': basicAuth
@@ -483,7 +468,7 @@ print("your order total is ${subTotal.value}");
       "interaction": {
         "operation": "PURCHASE",
         "merchant": {
-          "name": "MARIANNELLA ",
+          "name": "Marianella",
           "address": {
             "line1": "200 Sample St",
             "line2": "1234 Lebanon"
@@ -492,8 +477,8 @@ print("your order total is ${subTotal.value}");
       },
       "order": {
         "currency": "USD",
-        "id": sentOrderId,
-        "amount": total.value.toString(),
+        "id": "1",
+        "amount": 5,
         "description": "ordered goods"
       }
     });
@@ -510,59 +495,11 @@ print("your order total is ${subTotal.value}");
     if (response.data['result'] == 'SUCCESS') {
       print("card checkout successs" + json.encode(response.data));
       isCardCheckOutLoading.value = false;
-      sessionId.value = response.data['session']['id'];
     }
     else {
 
       print( "card checkout falied for reason" + "${response.data}");
       isCardCheckOutLoading.value = false;
-    }
-
-  }
-
-  RxBool isOrderSuccess = false.obs;
-  RxBool isGettingOrderLoading = false.obs;
-
-  getOrderResult()async{
-
-    isGettingOrderLoading.value = true;
-    String username = 'merchant.test222207917001';
-    String theLoginWord = '3fd961d6600754cce1738fc27068802d';
-    // Encode the username and password to base64
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$theLoginWord'))}';
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': basicAuth
-    };
-
-    var dio = Dio();
-    try{
-      var response = await dio.request(
-        'https://epayment.areeba.com/api/rest/version/82/merchant/test222207917001/order/${sentOrderId};',
-        options: Options(
-          method: 'GET',
-          headers: headers,
-        ),
-
-      );
-
-      if (response.data['result'] == 'SUCCESS') {
-        print("order data gotten  successs" + json.encode(response.data));
-        Get.snackbar('Success', 'Order Paid Success');
-        await confirmCheckout('2');
-        isOrderSuccess.value = true;
-        isGettingOrderLoading.value = false;
-      }
-      else {
-
-        print( " falied for reason" + "${response.data}");
-
-        isOrderSuccess.value = false;
-        isGettingOrderLoading.value = false;
-      }
-    }catch(e){
-      print("order data gotten falied Error ${e.toString()}");
-      isGettingOrderLoading.value = false;
     }
 
   }

@@ -9,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maryana/app/modules/address/controllers/address_controller.dart';
 import 'package:maryana/app/modules/address/views/address_view.dart';
 import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
-import 'package:maryana/app/modules/cart/views/payment_view.dart';
 import 'package:maryana/app/modules/gift_card/controllers/gift_card_controller.dart';
 import 'package:maryana/app/modules/global/model/model_response.dart' as model;
 import 'package:maryana/app/modules/global/model/test_model_response.dart';
@@ -50,7 +49,7 @@ class _CheckoutPageState extends State<CheckoutPage>
     );
     _controller.forward();
     //  addressController.fetchAddresses();
-
+    cartController.initCardCheckOut();
   }
 
   @override
@@ -441,11 +440,10 @@ class _CheckoutPageState extends State<CheckoutPage>
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          width: 120.w,
+          width: 110.w,
           height: 64.w,
           decoration: ShapeDecoration(
-            // color: isSelected ? const Color(0xff43484B) : Colors.white,
-              color:Color(0xff43484B),
+            color: isSelected ? const Color(0xff43484B) : Colors.white,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
             shadows: const [
@@ -483,9 +481,7 @@ class _CheckoutPageState extends State<CheckoutPage>
                          Text(
                            method,
                            style: TextStyle(
-                             color:
-                             // isSelected ? Colors.white : const Color(0xFF6D758A),
-                             Colors.white,
+                             color: isSelected ? Colors.white : const Color(0xFF6D758A),
                              fontSize: 12.sp,
                              fontFamily: GoogleFonts.poppins().fontFamily,
                              fontWeight: FontWeight.w400,
@@ -495,9 +491,7 @@ class _CheckoutPageState extends State<CheckoutPage>
                          SizedBox(width: 5.w,),
                          Icon(Icons.launch , color:
 
-                         // isSelected? Colors.white :  Colors.black,
-                           Colors.white
-                         )
+                         isSelected? Colors.white :  Colors.black,)
                        ],
                      )
                       :
@@ -524,26 +518,26 @@ class _CheckoutPageState extends State<CheckoutPage>
           children: [
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 0.w),
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // _buildPaymentMethodCard(
-                    //   "Cash",
-                    //   'cash',
-                    //   cartController.selectedMethod.value == "Cash",
-                    //   36.49.w,
-                    //   22.h,
-                    // ),
+                    _buildPaymentMethodCard(
+                      "Cash",
+                      'cash',
+                      cartController.selectedMethod.value == "Cash",
+                      36.49.w,
+                      22.h,
+                    ),
                     SizedBox(
                       width: 20.w,
                     ),
-                    _buildPaymentMethodCard(
-                        "Credit Card",
-                        'credit',
-                        cartController.selectedMethod.value == "Credit Card",
-                        35.w,
-                        22.h),
+                    // _buildPaymentMethodCard(
+                    //     "Credit Card",
+                    //     'credit',
+                    //     cartController.selectedMethod.value == "Credit Card",
+                    //     35.w,
+                    //     22.h),
                     // Container(
                     //     width: 94.w,
                     //     height: 64.w,
@@ -584,7 +578,7 @@ class _CheckoutPageState extends State<CheckoutPage>
     return Obx(
       () =>
       cartController.isCardCheckOutLoading.value?
-      loadingIndicatorWidget()
+       Center(child: loadingIndicatorWidget())
           :
 
           Container(
@@ -982,13 +976,9 @@ class _CheckoutPageState extends State<CheckoutPage>
                                           '2') {
                                         if (cartController
                                             .shippingID.value.isNotEmpty) {
-                                          showCustomBottomSheet(context);
-                                          ;
-                                          if(cartController.sessionId.value.isNotEmpty){
-
-                                            Get.to(() => const PaymentView());
-                                          }
-
+                                           showCustomBottomSheet(context);
+                                          // ;
+// Get.to(() => PaymentView());
                                           //show html page
 
                                         } else {

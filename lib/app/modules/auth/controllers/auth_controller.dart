@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
@@ -10,7 +11,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart' as authTest;
-import 'package:device_info_plus/device_info_plus.dart';
+
 import 'package:maryana/main.dart';
 import '../../../routes/app_pages.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
