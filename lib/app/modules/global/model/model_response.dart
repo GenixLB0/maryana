@@ -1390,3 +1390,62 @@ class AboutData {
   }
 }
 
+
+class OnBoardingData {
+  OnBoardingData({
+    required this.status,
+    required this.message,
+    required this.data,
+  });
+
+  final String? status;
+  final String? message;
+  final OnBoardingInnerData? data;
+
+  factory OnBoardingData.fromJson(Map<String, dynamic> json){
+    return OnBoardingData(
+      status: json["status"],
+      message: json["message"],
+      data: json["data"] == null ? null : OnBoardingInnerData.fromJson(json["data"]),
+    );
+  }
+
+}
+
+class OnBoardingInnerData {
+  OnBoardingInnerData({
+    required this.splashes,
+  });
+
+  final List<Splash> splashes;
+
+  factory OnBoardingInnerData.fromJson(Map<String, dynamic> json){
+    return OnBoardingInnerData(
+      splashes: json["splashes"] == null ? [] : List<Splash>.from(json["splashes"]!.map((x) => Splash.fromJson(x))),
+    );
+  }
+
+}
+
+class Splash {
+  Splash({
+    required this.id,
+    required this.image,
+    required this.caption,
+  });
+
+  final int? id;
+  final String? image;
+  final String? caption;
+
+  factory Splash.fromJson(Map<String, dynamic> json){
+    return Splash(
+      id: json["id"],
+      image: json["image"],
+      caption: json["caption"],
+    );
+  }
+
+}
+
+

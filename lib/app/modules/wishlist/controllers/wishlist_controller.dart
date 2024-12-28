@@ -111,6 +111,7 @@ class WishlistController extends GetxController {
 
   removeFromGrid(id) {
     resultSearchProducts.removeWhere((product) => product.id! == id);
+
   }
 
   addToGrid(id) async {

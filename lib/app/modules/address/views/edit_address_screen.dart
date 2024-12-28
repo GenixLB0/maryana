@@ -41,7 +41,7 @@ class EditAddressScreen extends GetView<AddressController> {
       zoom: 11.0,
     )));
     controller.setCustomMarker();
-    controller.getPermission();
+    //controller.getPermission();
   }
 
   @override
@@ -269,48 +269,48 @@ class EditAddressScreen extends GetView<AddressController> {
                   SizedBox(
                     height: 15.h,
                   ),
-                  Obx(() => controller.kGooglePlex.value != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(14)),
-                          child: InkWell(
-                              onTap: () {
-                                controller.getCurrentLocation(context);
-                              },
-                              child: Container(
-                                  width: 326.w,
-                                  height: 243.h,
-                                  child: Stack(children: [
-                                    Obx(() => GoogleMap(
-                                          onMapCreated: controller.onMapCreated,
-                                          initialCameraPosition:
-                                              controller.kGooglePlex.value,
-                                          markers:
-                                              controller.markers.values.toSet(),
-                                        )),
-                                    Align(
-                                        alignment:
-                                            AlignmentDirectional.bottomStart,
-                                        child: Container(
-                                            width: 327.w,
-                                            height: 50.h,
-                                            color: const Color(0xFFFFFFff)
-                                                .withOpacity(0.5),
-                                            child: Center(
-                                              child: Text(
-                                                'Select on the map',
-                                                style: primaryTextStyle(
-                                                  size: 10.sp.round(),
-                                                  color:
-                                                      const Color(0xff252b5c),
-                                                  letterSpacing: 0.3,
-                                                  height: 1.7,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                softWrap: false,
-                                              ),
-                                            ))),
-                                  ]))))
-                      : SizedBox()),
+                  // Obx(() => controller.kGooglePlex.value != null
+                  //     ? ClipRRect(
+                  //         borderRadius: BorderRadius.all(Radius.circular(14)),
+                  //         child: InkWell(
+                  //             onTap: () {
+                  //               controller.getCurrentLocation(context);
+                  //             },
+                  //             child: Container(
+                  //                 width: 326.w,
+                  //                 height: 243.h,
+                  //                 child: Stack(children: [
+                  //                   Obx(() => GoogleMap(
+                  //                         onMapCreated: controller.onMapCreated,
+                  //                         initialCameraPosition:
+                  //                             controller.kGooglePlex.value,
+                  //                         markers:
+                  //                             controller.markers.values.toSet(),
+                  //                       )),
+                  //                   // Align(
+                  //                   //     alignment:
+                  //                   //         AlignmentDirectional.bottomStart,
+                  //                   //     child: Container(
+                  //                   //         width: 327.w,
+                  //                   //         height: 50.h,
+                  //                   //         color: const Color(0xFFFFFFff)
+                  //                   //             .withOpacity(0.5),
+                  //                   //         child: Center(
+                  //                   //           child: Text(
+                  //                   //             'Select on the map',
+                  //                   //             style: primaryTextStyle(
+                  //                   //               size: 10.sp.round(),
+                  //                   //               color:
+                  //                   //                   const Color(0xff252b5c),
+                  //                   //               letterSpacing: 0.3,
+                  //                   //               height: 1.7,
+                  //                   //             ),
+                  //                   //             textAlign: TextAlign.center,
+                  //                   //             softWrap: false,
+                  //                   //           ),
+                  //                   //         ))),
+                  //                 ]))))
+                  //     : SizedBox()),
                   SizedBox(height: 20.h),
                   Obx(() => MySecondDefaultButton(
                         isloading: controller.isLoading.value,

@@ -128,21 +128,31 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
     String cartText = 'Check out these products from our store: $cartLink';
 
     // Optionally, download product images to share along with the link
-    List<XFile> imageFiles = [];
-    for (var item in cartProducts) {
-      final url = item.product.image;
+    XFile? imageFile;
+    if (cartProducts.isNotEmpty) {
+      final url = cartProducts.first.product.image;
       final response = await http.get(Uri.parse(url!));
       final documentDirectory = await getApplicationDocumentsDirectory();
       final file =
-          File('${documentDirectory.path}/${item.product.id}_image.jpg');
+          File('${documentDirectory.path}/${cartProducts.first.product.id}_image.jpg');
       file.writeAsBytesSync(response.bodyBytes);
-      final xFile = XFile(file.path);
-      imageFiles.add(xFile);
+      imageFile = XFile(file.path);
     }
+    // List<XFile> imageFiles = [];
+    // for (var item in cartProducts) {
+    //   final url = item.product.image;
+    //   final response = await http.get(Uri.parse(url!));
+    //   final documentDirectory = await getApplicationDocumentsDirectory();
+    //   final file =
+    //       File('${documentDirectory.path}/${item.product.id}_image.jpg');
+    //   file.writeAsBytesSync(response.bodyBytes);
+    //   final xFile = XFile(file.path);
+    //   imageFiles.add(xFile);
+    // }
 
     // Share the link with the product images if available
-    if (imageFiles.isNotEmpty) {
-      Share.shareXFiles(imageFiles, text: cartText);
+    if (imageFile != null ) {
+      Share.shareXFiles([imageFile], text: cartText);
     } else {
       Share.share(cartText); // Just share the text if no images
     }
@@ -545,7 +555,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                     }),
                     if (cartShareProducts.isEmpty)
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.remove_shopping_cart_sharp,
                         ),
                         onPressed: () {
@@ -710,12 +720,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                   placeholder: (context, url) => Center(
                                       child: CircularProgressIndicator()),
                                   errorWidget: (context, url, error) =>
-                                      Image.network(
-                                    'https://via.assets.so/shoe.png?id=1&q=95&w=360&h=360&fit=fill',
-                                    fit: BoxFit.cover,
-                                    width: 97.88.w,
-                                    height: 117.72.h,
-                                  ),
+                                      placeHolderWidget(),
                                 ),
                               ),
                       ),

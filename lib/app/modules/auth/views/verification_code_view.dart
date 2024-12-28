@@ -19,7 +19,8 @@ class VerificationCodeView extends GetView<ForgotPasswordController> {
     final defaultPinTheme = PinTheme(
       width: 60.w,
       height: 60.h,
-      textStyle: TextStyle(
+
+      textStyle: const TextStyle(
           fontSize: 20,
           color: Color.fromRGBO(30, 60, 87, 1),
           fontWeight: FontWeight.w600),
@@ -126,16 +127,18 @@ class VerificationCodeView extends GetView<ForgotPasswordController> {
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Pinput(
+length: 5,
                     defaultPinTheme: defaultPinTheme,
                     focusedPinTheme: focusedPinTheme,
                     submittedPinTheme: submittedPinTheme,
-                    validator: (s) {
-                      controller.validateOTP(s);
-                      return s == '1111' ? null : 'Pin is incorrect';
-                    },
-                    pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                    // validator: (s) {
+                    //   controller.validateOTP(s);
+                    //   return s == '1111' ? null : 'Pin is incorrect';
+                    // },
+                    // pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                     showCursor: true,
-                    onCompleted: (pin) => print(pin),
+                    onCompleted: (pin) => controller.validateOTP(pin),
+                    onSubmitted: (value) => controller.validateOTP(value),
                   )),
               SizedBox(
                 height: 20.h,
@@ -205,6 +208,8 @@ class VerificationCodeView extends GetView<ForgotPasswordController> {
                       ),
                     )),
               ),
+
+
               SizedBox(
                 height: 100.h,
               ),

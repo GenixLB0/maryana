@@ -189,7 +189,7 @@ class HomeView extends GetView<HomeController> {
                           height: 15.h,
                         ),
 
-                        // here we need brands
+                        //here we need brands
                         GetBuilder<HomeController>(
                             id: 'brands',
                             builder: (logic) {
@@ -235,12 +235,12 @@ class HomeView extends GetView<HomeController> {
                               return buildOtherBrands(context);
                             }),
 
-                        // here we need other brands Products
-                        GetBuilder<HomeController>(
-                            id: 'products-in-other-brands',
-                            builder: (logic) {
-                              return buildProductsInBrands(context);
-                            }),
+                        // // here we need other brands Products
+                        // GetBuilder<HomeController>(
+                        //     id: 'products-in-other-brands',
+                        //     builder: (logic) {
+                        //       return buildProductsInBrands(context);
+                        //     }),
 
                         // buildProductsScroll(context),
                         SizedBox(
@@ -249,9 +249,9 @@ class HomeView extends GetView<HomeController> {
 
                         // here we need recommended section
 
-                        Obx(() {
-                          return buildRecommendedScroll(context);
-                        }),
+                        // Obx(() {
+                        //   return buildRecommendedScroll(context);
+                        // }),
 
                         SizedBox(
                           height: 15.h,
@@ -304,46 +304,70 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Obx(() {
                       return
-                        controller.isHomeLoading.value?
+                        controller.isHomeLoading.value ?
                         Center(child: loadingIndicatorWidget())
                             :
                         AspectRatio(
-                        aspectRatio: 9 / 16,
-                        child:
-                        controller.myChewieController == null ?
-                        SizedBox()
-                        :
-                        Chewie(
-                          controller: controller.myChewieController,
-                        )
-                        // VideoPlayer(logic.videoController!),
-                      );
+                            aspectRatio: 9 / 16,
+                            child:
+                            controller.myChewieController == null ?
+                            SizedBox()
+                                :
+                            Chewie(
+                              controller: controller.myChewieController,
+                            )
+                          // VideoPlayer(logic.videoController!),
+                        );
                     }),
                     Transform.translate(
                       offset: Offset(0, -50.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("WINTER ",
-                              style: boldTextStyle(
+                      child: Obx(() {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ShaderMask(
+                              shaderCallback: (rect) {
+                                return const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.white,
+                                    Colors.white12,
+                                  ],
+                                ).createShader(rect);
+                              },
+                              child: Text(controller.videoCaption.value,
+                                  maxLines: 7,
+                              textAlign:  TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                                  style: boldTextStyle(
                                 color: Colors.white,
                                 size: 50.sp.round(),
                                 weight: FontWeight.w400,
+
                               )),
-                          Text("COLLECTION",
-                              style: boldTextStyle(
-                                color: Colors.white,
-                                size: 50.sp.round(),
-                                weight: FontWeight.w400,
-                              )),
-                          Text("2025",
-                              style: boldTextStyle(
-                                color: Colors.white,
-                                size: 50.sp.round(),
-                                weight: FontWeight.w400,
-                              )),
-                        ],
-                      ),
+                            )
+                            // Text("WINTER ",
+                            //     style: boldTextStyle(
+                            //       color: Colors.white,
+                            //       size: 50.sp.round(),
+                            //       weight: FontWeight.w400,
+                            //     )),
+                            // Text("COLLECTION",
+                            //     style: boldTextStyle(
+                            //       color: Colors.white,
+                            //       size: 50.sp.round(),
+                            //       weight: FontWeight.w400,
+                            //     )),
+                            // Text("2025",
+                            //     style: boldTextStyle(
+                            //       color: Colors.white,
+                            //       size: 50.sp.round(),
+                            //       weight: FontWeight.w400,
+                            //     )),
+                          ],
+                        );
+                      }),
                     ),
                   ],
                 ),
@@ -1354,6 +1378,7 @@ class HomeView extends GetView<HomeController> {
                           ),
                           TypeWriter(
                               controller: typeController,
+                              key: UniqueKey(),
                               builder: (context, value) {
                                 return Text(
                                   overflow: TextOverflow.ellipsis,
@@ -1382,208 +1407,208 @@ class HomeView extends GetView<HomeController> {
                       ))
                 ],
               ),
-              FutureBuilder(
-                  future: controller.getProductsInCollection(collection),
-                  builder: (ctx, snapshot) {
-                    // Checking if future is resolved
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      print("snap done !!!!!");
-                      return snapshot.data!.isEmpty
-                          ? const SizedBox()
-                          : Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w),
-                        child: ListView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 50.h,
-                              child: Row(
-                                children: [
-                                  Text(
-                                    collection.name!,
-                                    style: boldTextStyle(
-                                        weight: FontWeight.w400,
-                                        size: 18.sp.round(),
-                                        color: Colors.black),
-                                  ),
-                                  Spacer(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      if (CustomSearchController()
-                                          .initialized) {
-                                        CustomSearchController
-                                        controller = Get.find<
-                                            CustomSearchController>();
-                                        controller.getProductsInSection(
-                                            sectionName: collection.name!,
-                                            payload: {
-                                              "collection_ids[0]":
-                                              collection.id.toString()
-                                            });
-
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration: Duration(
-                                                milliseconds: 400));
-                                      } else {
-                                        CustomSearchController
-                                        controller =
-                                        Get.put<CustomSearchController>(
-                                            CustomSearchController());
-                                        controller.getProductsInSection(
-                                            sectionName: collection.name!,
-                                            payload: {
-                                              "collection_ids[0]":
-                                              collection.id.toString()
-                                            });
-                                        Get.to(() => const ResultView(),
-                                            transition: Transition.fadeIn,
-                                            curve: Curves.easeInOut,
-                                            duration: Duration(
-                                                milliseconds: 400));
-                                      }
-                                    },
-                                    child: Text(
-                                      "SHOW ALL",
-                                      style: boldTextStyle(
-                                          weight: FontWeight.w400,
-                                          size: 16.sp.round(),
-                                          color: Color(0xff9B9B9B)),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: smallSpacing,
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: productsSectionHeight,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width,
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (ctx, index) {
-                                  return snapshot.data!.isEmpty
-                                      ? Padding(
-                                      padding: EdgeInsets.only(
-                                          left: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width /
-                                              3.5),
-                                      child: Shimmer.fromColors(
-                                          baseColor: Colors.black,
-                                          highlightColor:
-                                          primaryColor,
-                                          child: Text(
-                                            "Coming Soon ..",
-                                            style: primaryTextStyle(
-                                                color: Colors.black,
-                                                weight:
-                                                FontWeight.w800,
-                                                size: 22.sp.round()),
-                                          )))
-                                      : index != snapshot.data!.length
-                                      ? buildProductCard(
-                                    product: ViewProductData
-                                        .fromJson(snapshot
-                                        .data![index]),
-                                  )
-                                      : buildProductShowAll(() {
-                                    if (CustomSearchController()
-                                        .initialized) {
-                                      CustomSearchController
-                                      controller = Get.find<
-                                          CustomSearchController>();
-                                      controller
-                                          .getProductsInSection(
-                                          sectionName:
-                                          collection
-                                              .name!,
-                                          payload: {
-                                            "collection_ids[0]":
-                                            collection.id
-                                                .toString()
-                                          });
-
-                                      Get.to(
-                                              () =>
-                                          const ResultView(),
-                                          transition:
-                                          Transition.fadeIn,
-                                          curve:
-                                          Curves.easeInOut,
-                                          duration: Duration(
-                                              milliseconds:
-                                              400));
-                                    } else {
-                                      CustomSearchController
-                                      controller =
-                                      Get.put<CustomSearchController>(
-                                          CustomSearchController());
-                                      controller
-                                          .getProductsInSection(
-                                          sectionName:
-                                          collection
-                                              .name!,
-                                          payload: {
-                                            "collection_ids[0]":
-                                            collection.id
-                                                .toString()
-                                          });
-                                      Get.to(
-                                              () =>
-                                          const ResultView(),
-                                          transition:
-                                          Transition.fadeIn,
-                                          curve:
-                                          Curves.easeInOut,
-                                          duration: Duration(
-                                              milliseconds:
-                                              400));
-                                    }
-                                  });
-                                },
-                                separatorBuilder: (ctx, index) =>
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                itemCount: snapshot.data!.length + 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting ||
-                        snapshot.connectionState == ConnectionState.active) {
-                      return Container(
-                          height: 60.h,
-                          child: LoadingWidget(placeHolderWidget()));
-                    }
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          '${snapshot.error} occurred',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      );
-
-                      // if we got our data
-                    } else if (snapshot.hasData) {
-                      // Extracting data from snapshot object
-
-                      return SizedBox();
-                    }
-                    return SizedBox();
-                  }),
+              // FutureBuilder(
+              //     future: controller.getProductsInCollection(collection),
+              //     builder: (ctx, snapshot) {
+              //       // Checking if future is resolved
+              //       if (snapshot.connectionState == ConnectionState.done) {
+              //         print("snap done !!!!!");
+              //         return snapshot.data!.isEmpty
+              //             ? const SizedBox()
+              //             : Padding(
+              //           padding: EdgeInsets.symmetric(horizontal: 10.w),
+              //           child: ListView(
+              //             physics: const NeverScrollableScrollPhysics(),
+              //             shrinkWrap: true,
+              //             children: <Widget>[
+              //               SizedBox(
+              //                 height: 50.h,
+              //                 child: Row(
+              //                   children: [
+              //                     Text(
+              //                       collection.name!,
+              //                       style: boldTextStyle(
+              //                           weight: FontWeight.w400,
+              //                           size: 18.sp.round(),
+              //                           color: Colors.black),
+              //                     ),
+              //                     Spacer(),
+              //                     GestureDetector(
+              //                       onTap: () {
+              //                         if (CustomSearchController()
+              //                             .initialized) {
+              //                           CustomSearchController
+              //                           controller = Get.find<
+              //                               CustomSearchController>();
+              //                           controller.getProductsInSection(
+              //                               sectionName: collection.name!,
+              //                               payload: {
+              //                                 "collection_ids[0]":
+              //                                 collection.id.toString()
+              //                               });
+              //
+              //                           Get.to(() => const ResultView(),
+              //                               transition: Transition.fadeIn,
+              //                               curve: Curves.easeInOut,
+              //                               duration: Duration(
+              //                                   milliseconds: 400));
+              //                         } else {
+              //                           CustomSearchController
+              //                           controller =
+              //                           Get.put<CustomSearchController>(
+              //                               CustomSearchController());
+              //                           controller.getProductsInSection(
+              //                               sectionName: collection.name!,
+              //                               payload: {
+              //                                 "collection_ids[0]":
+              //                                 collection.id.toString()
+              //                               });
+              //                           Get.to(() => const ResultView(),
+              //                               transition: Transition.fadeIn,
+              //                               curve: Curves.easeInOut,
+              //                               duration: Duration(
+              //                                   milliseconds: 400));
+              //                         }
+              //                       },
+              //                       child: Text(
+              //                         "SHOW ALL",
+              //                         style: boldTextStyle(
+              //                             weight: FontWeight.w400,
+              //                             size: 16.sp.round(),
+              //                             color: Color(0xff9B9B9B)),
+              //                       ),
+              //                     ),
+              //                     SizedBox(
+              //                       width: smallSpacing,
+              //                     )
+              //                   ],
+              //                 ),
+              //               ),
+              //               Container(
+              //                 height: productsSectionHeight,
+              //                 width: MediaQuery
+              //                     .of(context)
+              //                     .size
+              //                     .width,
+              //                 child: ListView.separated(
+              //                   shrinkWrap: true,
+              //                   scrollDirection: Axis.horizontal,
+              //                   itemBuilder: (ctx, index) {
+              //                     return snapshot.data!.isEmpty
+              //                         ? Padding(
+              //                         padding: EdgeInsets.only(
+              //                             left: MediaQuery
+              //                                 .of(context)
+              //                                 .size
+              //                                 .width /
+              //                                 3.5),
+              //                         child: Shimmer.fromColors(
+              //                             baseColor: Colors.black,
+              //                             highlightColor:
+              //                             primaryColor,
+              //                             child: Text(
+              //                               "Coming Soon ..",
+              //                               style: primaryTextStyle(
+              //                                   color: Colors.black,
+              //                                   weight:
+              //                                   FontWeight.w800,
+              //                                   size: 22.sp.round()),
+              //                             )))
+              //                         : index != snapshot.data!.length
+              //                         ? buildProductCard(
+              //                       product: ViewProductData
+              //                           .fromJson(snapshot
+              //                           .data![index]),
+              //                     )
+              //                         : buildProductShowAll(() {
+              //                       if (CustomSearchController()
+              //                           .initialized) {
+              //                         CustomSearchController
+              //                         controller = Get.find<
+              //                             CustomSearchController>();
+              //                         controller
+              //                             .getProductsInSection(
+              //                             sectionName:
+              //                             collection
+              //                                 .name!,
+              //                             payload: {
+              //                               "collection_ids[0]":
+              //                               collection.id
+              //                                   .toString()
+              //                             });
+              //
+              //                         Get.to(
+              //                                 () =>
+              //                             const ResultView(),
+              //                             transition:
+              //                             Transition.fadeIn,
+              //                             curve:
+              //                             Curves.easeInOut,
+              //                             duration: Duration(
+              //                                 milliseconds:
+              //                                 400));
+              //                       } else {
+              //                         CustomSearchController
+              //                         controller =
+              //                         Get.put<CustomSearchController>(
+              //                             CustomSearchController());
+              //                         controller
+              //                             .getProductsInSection(
+              //                             sectionName:
+              //                             collection
+              //                                 .name!,
+              //                             payload: {
+              //                               "collection_ids[0]":
+              //                               collection.id
+              //                                   .toString()
+              //                             });
+              //                         Get.to(
+              //                                 () =>
+              //                             const ResultView(),
+              //                             transition:
+              //                             Transition.fadeIn,
+              //                             curve:
+              //                             Curves.easeInOut,
+              //                             duration: Duration(
+              //                                 milliseconds:
+              //                                 400));
+              //                       }
+              //                     });
+              //                   },
+              //                   separatorBuilder: (ctx, index) =>
+              //                       SizedBox(
+              //                         width: 10.w,
+              //                       ),
+              //                   itemCount: snapshot.data!.length + 1,
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //         );
+              //       }
+              //
+              //       if (snapshot.connectionState == ConnectionState.waiting ||
+              //           snapshot.connectionState == ConnectionState.active) {
+              //         return Container(
+              //             height: 60.h,
+              //             child: LoadingWidget(placeHolderWidget()));
+              //       }
+              //       if (snapshot.hasError) {
+              //         return Center(
+              //           child: Text(
+              //             '${snapshot.error} occurred',
+              //             style: TextStyle(fontSize: 18),
+              //           ),
+              //         );
+              //
+              //         // if we got our data
+              //       } else if (snapshot.hasData) {
+              //         // Extracting data from snapshot object
+              //
+              //         return SizedBox();
+              //       }
+              //       return SizedBox();
+              //     }),
             ],
           ),
         ),
@@ -1667,194 +1692,231 @@ class HomeView extends GetView<HomeController> {
             SizedBox(
               height: 4.h,
             ),
-            CachedNetworkImage(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
-                height: 255.h,
-                imageUrl: brand.image!,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    LoadingWidget(
-                      Image.asset(
-                        "assets/images/placeholder.png",
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: 200.h,
-                        fit: BoxFit.cover,
-                      ),
-                    )),
-            FutureBuilder(
-                future: controller.getProductsInBrand(brand),
-                builder: (ctx, snapshot) {
-                  // Checking if future is resolved
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return snapshot.data!.isEmpty
-                        ? const SizedBox()
-                        : Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w),
-                      child: ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 50.h,
-                            child: Row(
-                              children: [
-                                Text(
-                                  "${brand.name!} BEST SELLING",
-                                  style: boldTextStyle(
-                                      weight: FontWeight.w400,
-                                      size: 18.sp.round(),
-                                      color: Colors.black),
-                                ),
-                                Spacer(),
-                                GestureDetector(
-                                  onTap: () {
-                                    if (CustomSearchController()
-                                        .initialized) {
-                                      CustomSearchController controller =
-                                      Get.find<
-                                          CustomSearchController>();
-                                      controller.getProductsInSection(
-                                          sectionName: brand.name!,
-                                          payload: {
-                                            "brand_ids[0]":
-                                            brand.id.toString()
-                                          });
+            GestureDetector(
+              onTap : () {
+                                        if (CustomSearchController()
+                                            .initialized) {
+                                          CustomSearchController controller =
+                                          Get.find<
+                                              CustomSearchController>();
+                                          controller.getProductsInSection(
+                                              sectionName: brand.name!,
+                                              payload: {
+                                                "brand_ids[0]":
+                                                brand.id.toString()
+                                              });
 
-                                      Get.to(() => const ResultView(),
-                                          transition: Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration: Duration(
-                                              milliseconds: 400));
-                                    } else {
-                                      CustomSearchController controller =
-                                      Get.put<CustomSearchController>(
-                                          CustomSearchController());
-                                      controller.getProductsInSection(
-                                          sectionName: brand.name!,
-                                          payload: {
-                                            "brand_ids[0]":
-                                            brand.id.toString()
-                                          });
-                                      Get.to(() => const ResultView(),
-                                          transition: Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration: Duration(
-                                              milliseconds: 400));
-                                    }
-                                  },
-                                  child: Text(
-                                    "SHOW ALL",
-                                    style: boldTextStyle(
-                                        weight: FontWeight.w400,
-                                        size: 16.sp.round(),
-                                        color: Color(0xff9B9B9B)),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: smallSpacing,
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            height: productsSectionHeight,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
-                            child: ListView.separated(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (ctx, index) {
-                                  return index != snapshot.data!.length
-                                      ? buildProductCard(
-                                      product:
-                                      ViewProductData.fromJson(
-                                          snapshot.data![index]))
-                                      : buildProductShowAll(() {
-                                    if (CustomSearchController()
-                                        .initialized) {
-                                      CustomSearchController
-                                      controller = Get.find<
-                                          CustomSearchController>();
-                                      controller
-                                          .getProductsInSection(
-                                          sectionName:
-                                          brand.name!,
-                                          payload: {
-                                            "brand_ids[0]":
-                                            brand.id.toString()
-                                          });
-
-                                      Get.to(
-                                              () => const ResultView(),
-                                          transition:
-                                          Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration: Duration(
-                                              milliseconds: 800));
-                                    } else {
-                                      CustomSearchController
-                                      controller =
-                                      Get.put<CustomSearchController>(
-                                          CustomSearchController());
-                                      controller
-                                          .getProductsInSection(
-                                          sectionName:
-                                          brand.name!,
-                                          payload: {
-                                            "brand_ids[0]":
-                                            brand.id.toString()
-                                          });
-                                      Get.to(
-                                              () => const ResultView(),
-                                          transition:
-                                          Transition.fadeIn,
-                                          curve: Curves.easeInOut,
-                                          duration: Duration(
-                                              milliseconds: 800));
-                                    }
-                                  });
-                                },
-                                separatorBuilder: (ctx, index) =>
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                itemCount: snapshot.data!.length + 1),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.connectionState == ConnectionState.active) {
-                    return Container(
-                        height: 60.h,
-                        child: LoadingWidget(placeHolderWidget()));
-                  }
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        '${snapshot.error} occurred',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    );
-
-                    // if we got our data
-                  } else if (snapshot.hasData) {
-                    // Extracting data from snapshot object
-
-                    return const SizedBox();
-                  }
-                  return const SizedBox();
-                }),
+                                          Get.to(() => const ResultView(),
+                                              transition: Transition.fadeIn,
+                                              curve: Curves.easeInOut,
+                                              duration: Duration(
+                                                  milliseconds: 400));
+                                        } else {
+                                          CustomSearchController controller =
+                                          Get.put<CustomSearchController>(
+                                              CustomSearchController());
+                                          controller.getProductsInSection(
+                                              sectionName: brand.name!,
+                                              payload: {
+                                                "brand_ids[0]":
+                                                brand.id.toString()
+                                              });
+                                          Get.to(() => const ResultView(),
+                                              transition: Transition.fadeIn,
+                                              curve: Curves.easeInOut,
+                                              duration: Duration(
+                                                  milliseconds: 400));
+                                        }
+              },
+              child: CachedNetworkImage(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: 255.h,
+                  imageUrl: brand.image!,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      LoadingWidget(
+                        Image.asset(
+                          "assets/images/placeholder.png",
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          height: 200.h,
+                          fit: BoxFit.cover,
+                        ),
+                      )),
+            ),
+            // FutureBuilder(
+            //     future: controller.getProductsInBrand(brand),
+            //     builder: (ctx, snapshot) {
+            //       // Checking if future is resolved
+            //       if (snapshot.connectionState == ConnectionState.done) {
+            //         return snapshot.data!.isEmpty
+            //             ? const SizedBox()
+            //             : Padding(
+            //           padding: EdgeInsets.symmetric(horizontal: 10.w),
+            //           child: ListView(
+            //             physics: const NeverScrollableScrollPhysics(),
+            //             shrinkWrap: true,
+            //             children: <Widget>[
+            //               SizedBox(
+            //                 height: 50.h,
+            //                 child: Row(
+            //                   children: [
+            //                     Text(
+            //                       "${brand.name!} BEST SELLING",
+            //                       style: boldTextStyle(
+            //                           weight: FontWeight.w400,
+            //                           size: 18.sp.round(),
+            //                           color: Colors.black),
+            //                     ),
+            //                     Spacer(),
+            //                     GestureDetector(
+            //                       onTap: () {
+            //                         if (CustomSearchController()
+            //                             .initialized) {
+            //                           CustomSearchController controller =
+            //                           Get.find<
+            //                               CustomSearchController>();
+            //                           controller.getProductsInSection(
+            //                               sectionName: brand.name!,
+            //                               payload: {
+            //                                 "brand_ids[0]":
+            //                                 brand.id.toString()
+            //                               });
+            //
+            //                           Get.to(() => const ResultView(),
+            //                               transition: Transition.fadeIn,
+            //                               curve: Curves.easeInOut,
+            //                               duration: Duration(
+            //                                   milliseconds: 400));
+            //                         } else {
+            //                           CustomSearchController controller =
+            //                           Get.put<CustomSearchController>(
+            //                               CustomSearchController());
+            //                           controller.getProductsInSection(
+            //                               sectionName: brand.name!,
+            //                               payload: {
+            //                                 "brand_ids[0]":
+            //                                 brand.id.toString()
+            //                               });
+            //                           Get.to(() => const ResultView(),
+            //                               transition: Transition.fadeIn,
+            //                               curve: Curves.easeInOut,
+            //                               duration: Duration(
+            //                                   milliseconds: 400));
+            //                         }
+            //                       },
+            //                       child: Text(
+            //                         "SHOW ALL",
+            //                         style: boldTextStyle(
+            //                             weight: FontWeight.w400,
+            //                             size: 16.sp.round(),
+            //                             color: Color(0xff9B9B9B)),
+            //                       ),
+            //                     ),
+            //                     SizedBox(
+            //                       width: smallSpacing,
+            //                     )
+            //                   ],
+            //                 ),
+            //               ),
+            //               Container(
+            //                 height: productsSectionHeight,
+            //                 width: MediaQuery
+            //                     .of(context)
+            //                     .size
+            //                     .width,
+            //                 child: ListView.separated(
+            //                     shrinkWrap: true,
+            //                     scrollDirection: Axis.horizontal,
+            //                     itemBuilder: (ctx, index) {
+            //                       return index != snapshot.data!.length
+            //                           ? buildProductCard(
+            //                           product:
+            //                           ViewProductData.fromJson(
+            //                               snapshot.data![index]))
+            //                           : buildProductShowAll(() {
+            //                         if (CustomSearchController()
+            //                             .initialized) {
+            //                           CustomSearchController
+            //                           controller = Get.find<
+            //                               CustomSearchController>();
+            //                           controller
+            //                               .getProductsInSection(
+            //                               sectionName:
+            //                               brand.name!,
+            //                               payload: {
+            //                                 "brand_ids[0]":
+            //                                 brand.id.toString()
+            //                               });
+            //
+            //                           Get.to(
+            //                                   () => const ResultView(),
+            //                               transition:
+            //                               Transition.fadeIn,
+            //                               curve: Curves.easeInOut,
+            //                               duration: Duration(
+            //                                   milliseconds: 800));
+            //                         } else {
+            //                           CustomSearchController
+            //                           controller =
+            //                           Get.put<CustomSearchController>(
+            //                               CustomSearchController());
+            //                           controller
+            //                               .getProductsInSection(
+            //                               sectionName:
+            //                               brand.name!,
+            //                               payload: {
+            //                                 "brand_ids[0]":
+            //                                 brand.id.toString()
+            //                               });
+            //                           Get.to(
+            //                                   () => const ResultView(),
+            //                               transition:
+            //                               Transition.fadeIn,
+            //                               curve: Curves.easeInOut,
+            //                               duration: Duration(
+            //                                   milliseconds: 800));
+            //                         }
+            //                       });
+            //                     },
+            //                     separatorBuilder: (ctx, index) =>
+            //                         SizedBox(
+            //                           width: 10.w,
+            //                         ),
+            //                     itemCount: snapshot.data!.length + 1),
+            //               ),
+            //             ],
+            //           ),
+            //         );
+            //       }
+            //
+            //       if (snapshot.connectionState == ConnectionState.waiting ||
+            //           snapshot.connectionState == ConnectionState.active) {
+            //         return Container(
+            //             height: 60.h,
+            //             child: LoadingWidget(placeHolderWidget()));
+            //       }
+            //       if (snapshot.hasError) {
+            //         return Center(
+            //           child: Text(
+            //             '${snapshot.error} occurred',
+            //             style: TextStyle(fontSize: 18),
+            //           ),
+            //         );
+            //
+            //         // if we got our data
+            //       } else if (snapshot.hasData) {
+            //         // Extracting data from snapshot object
+            //
+            //         return const SizedBox();
+            //       }
+            //       return const SizedBox();
+            //     }),
           ],
         ),
       ),

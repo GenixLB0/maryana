@@ -30,6 +30,7 @@ import '../../../../main.dart';
 import '../../global/theme/app_theme.dart';
 import '../../global/theme/colors.dart';
 import '../../search/views/search_view.dart';
+import '../../services/saved_images.dart';
 import '../controllers/product_controller.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
@@ -714,6 +715,9 @@ class ProductView extends GetView<ProductController> {
                                   controller.selectedColor.value;
                               if (controller.selectedSize.value.isNotEmpty &&
                                   controller.selectedColor.value.isNotEmpty) {
+
+
+
                                 cartController.addToCart(
                                   controller.product.value,
                                   controller.selectedSize.value,
@@ -729,6 +733,7 @@ class ProductView extends GetView<ProductController> {
                                     backgroundColor: Colors.white);
                               }
                             } else {
+
                               Get.to(() => CartPage());
                             }
                           },
@@ -1274,12 +1279,15 @@ class ProductView extends GetView<ProductController> {
             if (controller.selectedSize.value.isNotEmpty &&
                 controller.selectedColor.value.isNotEmpty) {
               print('Adding product to cart...');
-
+              print("the product colors are ${controller.product.value.colors?[0].images?[0]}");
               // إضافة المنتج إلى السلة
               await cartController.addToCart(
+
                 controller.product.value,
                 controller.selectedSize.value,
+
                 controller.selectedColor.value,
+
                 quantity: 1,
               );
 
@@ -1297,6 +1305,7 @@ class ProductView extends GetView<ProductController> {
             cartController.loading.value = false;
           } else {
             // إذا لم يكن هناك userToken، انتقل إلى صفحة السلة
+
             Get.to(() => CartPage());
           }
         } catch (e, stackTrace) {
@@ -2116,15 +2125,19 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
               child: Hero(
                 tag: image.path!,
                 child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5.0),
                     child: Stack(
                       children: <Widget>[
                         CachedNetworkImage(
+                          errorWidget: (context, url, error) => placeHolderWidget(),
                           imageUrl: image.path!,
-                          height: MediaQuery.of(context).size.height / 1.2,
-                          fit: BoxFit.cover,
-                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 1.0,
+                          fit: BoxFit.fill,
+                          width: MediaQuery.of(context).size.width / 1.3,
                           placeholder: (context, url) => placeHolderWidget(),
                         ),
                       ],
@@ -2143,12 +2156,16 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
             CarouselSlider(
               carouselController: productController.carouselController,
               items: imageWidgets,
+
               options: CarouselOptions(
                 autoPlay: true,
                 enlargeCenterPage: true,
+
                 initialPage: productController.selectedIndex.value,
                 aspectRatio: 1.1,
-                viewportFraction: 1.0,
+                viewportFraction: 0.7,
+                animateToClosest: true,
+
                 onPageChanged: (index, reason) {
                   productController.setSelectedIndex(index);
                 },
@@ -2176,49 +2193,6 @@ class _ImageSliderWithIndicatorsState extends State<ImageSliderWithIndicators> {
                     )));
               }),
             ),
-            // // The existing indicator dots
-            // Container(
-            //   decoration: const BoxDecoration(
-            //     boxShadow: [
-            //       BoxShadow(
-            //         color: Colors.white12,
-            //         blurRadius: 2.0,
-            //         offset: Offset(0, -2),
-            //       ),
-            //     ],
-            //     borderRadius: BorderRadius.only(
-            //       topRight: Radius.circular(20.0),
-            //       topLeft: Radius.circular(20.0),
-            //     ),
-            //     color: Colors.white,
-            //   ),
-            //   height: 8.h,
-            //   width: MediaQuery.of(context).size.width,
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: widget.imgList.asMap().entries.map((entry) {
-            //       return Obx(() {
-            //         return GestureDetector(
-            //           onTap: () => productController.carouselController
-            //               ?.animateToPage(entry.key),
-            //           child: Container(
-            //             width: 6.0,
-            //             height: 6.0,
-            //             margin: EdgeInsets.only(
-            //                 top: 4.0.h, left: 2.0.w, right: 2.0.w),
-            //             decoration: BoxDecoration(
-            //               shape: BoxShape.circle,
-            //               color:
-            //                   productController.selectedIndex.value == entry.key
-            //                       ? const Color.fromRGBO(0, 0, 0, 0.9)
-            //                       : const Color.fromRGBO(0, 0, 0, 0.4),
-            //             ),
-            //           ),
-            //         );
-            //       });
-            //     }).toList(),
-            //   ),
-            // ),
           ],
         ),
       ],

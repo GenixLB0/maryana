@@ -10,6 +10,8 @@ import 'package:get/state_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:maryana/app/modules/auth/views/create_new_password_view.dart';
 
+import '../../../../main.dart';
+
 class ForgotPasswordController extends GetxController {
   final count = 0.obs;
   RxBool isResetDone = false.obs;
@@ -117,11 +119,33 @@ class ForgotPasswordController extends GetxController {
   randomTheId() {
     randomId = Random().nextInt(999999);
   }
+String myOtp= "";
+  validateOTP(otp) async {
+     print("opt verification started");
+     myOtp = otp;
+     try {
+       final response = await apiConsumer
+           .post('password/verify', body: {
+         'email': myEmail,
+         'otp': otp
+       });
 
-  validateOTP(otp) {
-    if (otp == "1111") {
-      Get.to(() => const CreateNewPasswordView());
-    }
+       if (response['status'] == 'success') {
+         Get.off(() => const CreateNewPasswordView());
+         print('verify successful');
+       } else {
+         Get.snackbar('Error', '${response['data']}');
+         print('Failed to verify: ${response['data']}');
+       }
+     } catch (e) {
+       print('Failed to verify data: $e');
+       Get.snackbar('Error', '$e');
+
+     }
+
+
+
+
   }
 
   changeConfirmPasswordTypingStatus() {
@@ -162,7 +186,7 @@ class ForgotPasswordController extends GetxController {
       var request = http.Request('POST',
           Uri.parse('https://panel.mariannella.com/api/password/reset'));
       request.bodyFields = {
-        'token': '1111',
+        'token': myOtp,
         'password': newPasswordController.text,
         'password_confirmation': confirmPasswordController.text,
       };

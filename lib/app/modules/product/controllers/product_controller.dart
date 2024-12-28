@@ -175,12 +175,18 @@ class ProductController extends GetxController {
           print("images in color ${color.images}");
           productImages.addNonNull(
               Attachments(type: "image", name: "app_show", path: image));
+
         }
+
       }
     }
 
+
     print("new attachmants are ${productImages}");
+
   }
+
+
 
   CarouselSliderController? carouselController;
   Rx<int> selectedIndex = 0.obs;
@@ -210,7 +216,7 @@ class ProductController extends GetxController {
 
       product.value = ViewProduct.fromJson(response).data!;
       print("the value is ${product.runtimeType}");
-      print("the product is ${product.value.name}");
+
 
       //adding attachments
       for (var attachment in product.value.attachments!) {
@@ -224,7 +230,9 @@ class ProductController extends GetxController {
         sizeList.addNonNull(size);
         print(size.toString() + 'test sizesss');
       }
-
+if(sizeList.length == 1){
+  setSize(sizeList[0]);
+}
       //adding colors
       for (var color in product.value.colors!) {
         colorsList.addNonNull(color);
@@ -252,7 +260,9 @@ class ProductController extends GetxController {
     } catch (e, stackTrace) {
       print(stackTrace.toString() + ' product test error' + '${e.toString()}');
       isProductLoading.value = false;
-      product.value = ViewProductData();
+      product.value = ViewProductData(
+
+      );
       Get.snackbar("Error", "Product Not Found Redirect..");
       Get.off(() => MainView());
     }

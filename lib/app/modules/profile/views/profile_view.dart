@@ -105,11 +105,11 @@ class _ProfileViewState extends State<ProfileView>
                             }, 24, 4),
                             _buildMenuItem('terms.svg', 'Terms of Use', () {
                               _launchURL(
-                                  '$BASE_URL/terms.html');
+                                  'https://mariannella.com/terms.html');
                             }, 24, 5),
                             _buildMenuItem('privacy.svg', 'Privacy Policy', () {
                               _launchURL(
-                                  '$BASE_URL/privacy.html');
+                                  'https://mariannella.com/privacy.html');
                             }, 24, 6),
                             _buildMenuItem('about-us.svg', 'About Us', () {
                                controller.getAboutUs();

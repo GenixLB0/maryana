@@ -23,6 +23,7 @@ class AddressListScreen extends StatelessWidget {
     addressController.fetchAddresses();
     addressController.fetchCountries();
     return Scaffold(
+
       appBar: viewOnly == null || viewOnly == false
           ? const CustomAppBar(
               title: "Delivery address",
@@ -83,7 +84,7 @@ class AddressListScreen extends StatelessWidget {
                                     ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                                 child: Container(
                                   width: 375.w,
-                                  height: 0.6.sh,
+                                  height: 0.9.sh,
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 20.w, vertical: 40.h),
                                   decoration: const BoxDecoration(

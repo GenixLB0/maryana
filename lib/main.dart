@@ -28,6 +28,7 @@ import 'package:maryana/app/modules/global/theme/colors.dart';
 import 'package:maryana/app/modules/global/widget/widget.dart';
 import 'package:maryana/app/modules/product/bindings/product_binding.dart';
 import 'package:maryana/app/modules/product/controllers/product_controller.dart';
+import 'package:maryana/app/modules/services/saved_images.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -119,12 +120,13 @@ Future<void> init() async {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
       showFlutterNotification(message);
+      Get.put(SavedImages());
     } as void Function(RemoteMessage event)?);
   } catch (error, stackTrace) {
     print('test error $stackTrace ');
   }
 }
-
+SavedImages savedImages = Get.put(SavedImages());
 void showFlutterNotification(RemoteMessage message) {
   var notification = message.data;
 
