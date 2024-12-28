@@ -176,7 +176,8 @@ class CouponCard extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        capitalize(coupon.name),
+                                        // capitalize(coupon.name),
+                                  coupon.name,
                                         style: primaryTextStyle(
                                           color: Color(0xFF42474A),
                                           size: 16.round(),

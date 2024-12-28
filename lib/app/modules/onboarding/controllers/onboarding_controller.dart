@@ -8,6 +8,8 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../main.dart';
+import '../../auth/views/login_view.dart';
+import '../../global/model/model_response.dart';
 
 class OnboardingController extends GetxController {
   RxInt currentIndex = 0.obs;
@@ -18,7 +20,13 @@ class OnboardingController extends GetxController {
   PageController pageController = PageController();
 
   nextFunction() {
+    print("current index is ${currentIndex.value}");
+    if(currentIndex.value == splashes.length -1 ){
+      Get.off(LoginView());
+      return;
+    }
     pageController.nextPage(duration: _kDuration, curve: _kCurve);
+    currentIndex++;
   }
 
   previousFunction() {
@@ -28,6 +36,7 @@ class OnboardingController extends GetxController {
   @override
   void onInit() {
     print("init controller");
+    getOnBoardingData();
     super.onInit();
   }
 
@@ -50,8 +59,8 @@ class OnboardingController extends GetxController {
   }
 
   changeIndexValue(index) {
-    currentIndex.value = index;
-    print('comming value is ${index}');
+    currentIndex.value = index++;
+    print('comming value is ${index++}');
     print('current value is ${currentIndex}');
     update();
   }
@@ -60,5 +69,36 @@ class OnboardingController extends GetxController {
     currentIndex.value++;
     print('current value is ${currentIndex}');
     update();
+  }
+
+ RxBool isOnBoardingLoading = false.obs;
+  RxList<Splash> splashes = <Splash>[].obs;
+  getOnBoardingData() async{
+    isOnBoardingLoading.value = true;
+    splashes.clear();
+    print('onBoarding api started ....');
+try{
+  final response = await apiConsumer.get(
+    'splashes',
+  );
+
+
+if(response['status'] == 'success'){
+  isOnBoardingLoading.value = false;
+  OnBoardingData result = OnBoardingData.fromJson(response);
+  for(var splash in result.data!.splashes){
+    splashes.add(splash);
+  }
+  print('onBoarding api successful ${splashes.length}');
+}else{
+  print("error getting splashes }");
+}
+
+}catch(e){
+
+  print('onBoarding api failed $e');
+
+}
+
   }
 }

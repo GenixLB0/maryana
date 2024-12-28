@@ -8,6 +8,7 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:googleapis/datastore/v1.dart' hide LatLng;
 import 'package:maryana/app/modules/address/model/address_model.dart';
+import 'package:maryana/app/modules/cart/controllers/cart_controller.dart';
 import 'package:maryana/app/modules/global/config/constant.dart';
 import 'package:maryana/app/modules/global/config/map_view.dart';
 import 'package:maryana/app/modules/product/views/product_view.dart';
@@ -192,7 +193,9 @@ class AddressController extends GetxController {
           // Attempt to find the address with the given condition
           Address address =
           addressList.firstWhere((address) => address.isDefault == 1);
-          cartController.shippingID.value = address.id.toString();
+          CartController newCartController = Get.find();
+          newCartController.shippingID.value = address.id.toString();
+          print("gotten shipping id here : ${cartController.shippingID.value}");
           // Handle the found address
         } catch (e) {
           if (e is StateError) {

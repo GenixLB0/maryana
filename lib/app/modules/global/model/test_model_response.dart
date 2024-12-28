@@ -460,12 +460,15 @@ class HomeData {
 }
 class Settings {
   String? home_video;
+  String? video_caption;
 
   Settings({
     this.home_video,
+    this.video_caption
   });
 
   Settings.fromJson(Map<String, dynamic> json) {
     home_video = json['home_video'];
+    video_caption = json['video_caption'];
   }
 }

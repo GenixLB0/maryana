@@ -83,9 +83,10 @@ class WishlistView extends GetView<WishlistController> {
               ? Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "Sorry , No Products Found",
-                    style: primaryTextStyle(
-                        size: 20.sp.round(),
+                    "No Products Found ..",
+                    textAlign: TextAlign.center,
+                    style: secondaryTextStyle(
+                        size: 17.sp.round(),
                         color: Colors.black,
                         weight: FontWeight.w400),
                   ),

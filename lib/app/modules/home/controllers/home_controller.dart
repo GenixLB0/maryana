@@ -60,6 +60,7 @@ class HomeController extends GetxController {
   bool isVideoInit = false;
   RxBool zeroNavBar = false.obs;
   RxString videoPath = "".obs;
+  RxString videoCaption = "".obs;
   //////////////Upper Bar Check//////////////
   RxString currentSectionName = "".obs;
   var ongoingPayload = {};
@@ -294,8 +295,10 @@ class HomeController extends GetxController {
         // Handle successful home data
         // await _cacheUser(apiResponse.data!);
         // AppConstants.userData = apiResponse.data!;
+
         videoPath.value = apiResponse.data!.setting![0].home_video!;
-        print("the video url is  ${apiResponse.data!.setting![0].home_video!}");
+        videoCaption.value = apiResponse.data!.setting![1].video_caption ?? "";
+      print("the video path is ${videoPath.value}");
         await runVideo();
         update(['home-video']);
         print("the categories are ${apiResponse.data!.categories}");
@@ -920,18 +923,7 @@ class HomeController extends GetxController {
   }
 
   removeFromWishlist(product_id) async {
-    // Get.snackbar('Removing ...', 'Removing From Wishlist',
-    //     showProgressIndicator: true,
-    //     progressIndicatorBackgroundColor: Colors.white,
-    //     backgroundColor: primaryColor,
-    //     duration: const Duration(milliseconds: 1200),
-    //     icon: Center(
-    //         child: LoadingAnimationWidget.flickr(
-    //       leftDotColor: Colors.purpleAccent,
-    //       rightDotColor: Colors.white,
-    //       size: 40.sp,
-    //     )),
-    //     isDismissible: true);
+
 
     if (userToken != null) {
       Get.closeCurrentSnackbar();
@@ -975,18 +967,7 @@ class HomeController extends GetxController {
   }
 
   addToWishlist(product_id) async {
-    // Get.snackbar('Adding ...', 'Adding To Wishlist',
-    //     showProgressIndicator: true,
-    //     duration: const Duration(milliseconds: 1200),
-    //     progressIndicatorBackgroundColor: Colors.white,
-    //     backgroundColor: primaryColor,
-    //     icon: Center(
-    //         child: LoadingAnimationWidget.flickr(
-    //       leftDotColor: Colors.purpleAccent,
-    //       rightDotColor: Colors.white,
-    //       size: 40.sp,
-    //     )),
-    //     isDismissible: true);
+
 
     if (userToken != null) {
       Get.closeCurrentSnackbar();

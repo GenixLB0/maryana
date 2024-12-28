@@ -224,7 +224,9 @@ class ProductController extends GetxController {
         sizeList.addNonNull(size);
         print(size.toString() + 'test sizesss');
       }
-
+if(sizeList.length == 1){
+  setSize(sizeList[0]);
+}
       //adding colors
       for (var color in product.value.colors!) {
         colorsList.addNonNull(color);
