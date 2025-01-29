@@ -195,7 +195,7 @@ class AddressController extends GetxController {
           addressList.firstWhere((address) => address.isDefault == 1);
           CartController newCartController = Get.find();
           newCartController.shippingID.value = address.id.toString();
-          print("gotten shipping id here : ${cartController.shippingID.value}");
+          print("gotten country is : ${addressList.first.country}");
           // Handle the found address
         } catch (e) {
           if (e is StateError) {
@@ -242,11 +242,13 @@ class AddressController extends GetxController {
         body: newAddress.toJson(),
       );
       print('tsadsad2');
-
+      Navigator.pop(Get.context!);
+//       Get.snackbar('Success', 'Address added successfully');
+// Get.back();
       fetchAddresses();
 
       //addressList.add(Address.fromJson(response.data));
-      Get.snackbar('Success', 'Address added successfully');
+
     } catch (e) {
       Get.snackbar('Error', 'Failed to add address');
     } finally {
@@ -444,10 +446,12 @@ class AddressController extends GetxController {
       if (isDefualt) cartController.shippingID.value = '';
       addressList.removeWhere((address) => address.id == id);
       Get.snackbar('Success', 'Address deleted successfully');
-      Get.back();
+      // Get.back();
+      Navigator.pop(Get.context!);
     } catch (e) {
       Get.snackbar('Error', 'Failed to delete address');
-      Get.back();
+      Navigator.pop(Get.context!);
+      // Get.back();
     } finally {
       isLoading(false);
     }
