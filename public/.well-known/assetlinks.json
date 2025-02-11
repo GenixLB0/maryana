@@ -1,0 +1,26 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "maryana.genixs.com.maryana",
+      "package_name": "maryana.genixs.com.maryana",
+      "sha256_cert_fingerprints": [
+        "CA:D3:C9:79:B7:8E:39:61:E7:AD:84:C9:07:15:22:06:62:53:C0:8B:3D:B4:3F:58:C0:61:24:CC:84:89:EB:05"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "maryana.genixs.com.maryana",
+      "sha256_cert_fingerprints": [
+        "A4:AD:E7:EB:82:87:B2:89:1B:51:D1:F4:FB:FF:2E:EA:16:E8:E0:CC:7D:A6:03:1E:DE:8D:D2:60:52:0B:71:79"
+      ]
+    }
+  }
+]

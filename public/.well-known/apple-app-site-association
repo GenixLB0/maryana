@@ -1,0 +1,14 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [{
+            "appID": "FLVBQBXARH.maryana.genixs.com.maryana",
+             "paths": ["*", "/"]
+        }]
+    },
+      "webcredentials": {
+        "apps": [
+          "FLVBQBXARH.maryana.genixs.com.maryana"
+        ]
+      }
+}
