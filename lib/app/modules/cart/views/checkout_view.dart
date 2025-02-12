@@ -975,6 +975,7 @@ class _CheckoutPageState extends State<CheckoutPage>
                                             .shippingID.value.isNotEmpty) {
                                           cartController.step.value = '2';
                                           cartController.fetchCheckoutDetails();
+                                            print("moved after step 2");
 
                                           //       cartController.checkoutApi();
                                         } else {
@@ -983,6 +984,7 @@ class _CheckoutPageState extends State<CheckoutPage>
                                         }
                                       } else if (cartController.step.value ==
                                           '2') {
+                                          
                                         if (cartController
                                             .shippingID.value.isNotEmpty) {
                                           // showCustomBottomSheet(context);

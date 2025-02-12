@@ -191,6 +191,7 @@ class AddressController extends GetxController {
             .toList();
         try {
           // Attempt to find the address with the given condition
+          myDefaultAddressId.value = addressList.firstWhere((address) => address.isDefault == 1).id;
           Address address =
           addressList.firstWhere((address) => address.isDefault == 1);
           CartController newCartController = Get.find();
@@ -479,10 +480,14 @@ class AddressController extends GetxController {
     longitudeError.value = '';
   }
 
+
+RxInt myDefaultAddressId = 1.obs;
   void setDefaultAddress(int id) async {
     try {
       isLoading(true);
       await apiConsumer.post('profile/default-address', body: {'id': id});
+      myDefaultAddressId.value = id;
+      print("my custom address is ${myDefaultAddressId.value}");
       fetchAddresses();
       // Get.snackbar('Success', 'Default address set successfully');
     } catch (e) {

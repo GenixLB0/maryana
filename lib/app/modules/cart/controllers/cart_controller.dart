@@ -95,10 +95,11 @@ class CartController extends GetxController {
   Future<String> confirmCheckout(String paymentMethodId) async {
     loading.value = true;
     try {
+
       final response = await apiConsumer.post(
         'checkout/confirm',
         body: {
-          'address_id': shippingID.value,
+          'address_id': addressController.myDefaultAddressId.value.toString(),
           'shipping_id': '1',
           'payment_method_id': paymentMethodId == "Cash" ? "1" : '2',
         },
@@ -183,18 +184,28 @@ class CartController extends GetxController {
     box.write('cartItems', itemsJson);
   }
 
-  Future<void> checkoutApi() async {
+  Future checkoutApi() async {
     try {
       final response = await apiConsumer.post(
         'checkout',
-        // body: {
-        //   'shipping_id': shippingID.value,
-        // },
+        body: {
+          'shipping_id': shippingID.value.toString(),
+          'address_id' : addressController.myDefaultAddressId.value.toString()
+        },
       );
 
       if (response['status'] == 'success') {
         print('Checkout successful');
-        clearCart();
+           subTotal.value = (response['data']['sub_total'] as num).toDouble();
+        shipping.value = (response['data']['shipping'] as num).toDouble();
+        discount.value = (response['data']['discount'] as num).toDouble();
+        couponValue.value =
+            (response['data']['coupon_value'] as num).toDouble();
+        giftCardValue.value = (response['data']['giftCard'] as num).toDouble();
+        total.value = (response['data']['total'] as num).toDouble();
+        couponCode.value = response['data']['coupon'] ?? '';
+        update();
+        //clearCart();
 
         // Handle successful checkout logic here
       } else {
@@ -292,10 +303,13 @@ class CartController extends GetxController {
   }
 
   // ignore: non_constant_identifier_names
-  Future<void> fetchCheckoutDetails({int shipping_id = 1}) async {
+  Future<void> fetchCheckoutDetails() async {
     try {
       final response = await apiConsumer
-          .post('checkout', body: {'shipping_id': shipping_id});
+          .post('checkout', body: {
+            'shipping_id': '1',
+            'address_id' : addressController.myDefaultAddressId.value.toString()
+            });
 
       if (response['status'] == 'success') {
         subTotal.value = (response['data']['sub_total'] as num).toDouble();
